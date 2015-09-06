@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:id="@+id/name"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        />
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/avatar"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="centerCrop"
+        android:cropToPadding="true"
+        android:src="@drawable/ic_launcher"
+        android:layout_marginTop="20dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点击更换头像"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

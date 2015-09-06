@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+                android:background="@color/white">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="自己的评价"
+        android:id="@+id/button"
+        android:layout_above="@+id/imageView"
+        android:background="@color/white"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="好友评价"
+        android:id="@+id/button2"
+        android:layout_alignTop="@+id/button3"
+        android:layout_toLeftOf="@+id/button"
+        android:background="@color/white"
+        android:layout_toStartOf="@+id/button"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="交易评价"
+        android:id="@+id/button3"
+        android:layout_below="@+id/imageView"
+        android:layout_toRightOf="@+id/button"
+        android:background="@color/white"
+        android:layout_toEndOf="@+id/button"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/ping"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
+</RelativeLayout>

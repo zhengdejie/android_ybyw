@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/firstclass"
+            android:gravity="left|center"
+            android:paddingLeft="10dp"
+            android:background="@color/white"
+            android:id="@+id/firstclass"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/secondclass"
+            android:gravity="left|center"
+            android:paddingLeft="10dp"
+            android:background="@color/white"
+            android:id="@+id/secondclass"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/firstandsecond"
+            android:gravity="left|center"
+            android:paddingLeft="10dp"
+            android:background="@color/white"
+            android:id="@+id/firstandsecond"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/all"
+            android:gravity="left|center"
+            android:paddingLeft="10dp"
+            android:background="@color/white"
+            android:id="@+id/radioButton"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+    </RadioGroup>
+</LinearLayout>

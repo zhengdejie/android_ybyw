@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "appframe.appframe.activity.LoginActivity"/>
+      <point      
+        x = "3120"      
+        y = "288"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "appframe.appframe.activity.SplashActivity"/>
+      <point      
+        x = "2248"      
+        y = "276"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "appframe.appframe.activity.RegisterActivity"/>
+      <point      
+        x = "1436"      
+        y = "260"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "appframe.appframe.activity.HomeActivity"/>
+      <point      
+        x = "760"      
+        y = "272"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "appframe.appframe.activity.FramedWebViewActivity"/>
+      <point      
+        x = "572"      
+        y = "288"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>
