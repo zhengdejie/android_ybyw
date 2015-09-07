@@ -116,6 +116,7 @@
             <!--</ListView>-->
 
         <!--</appframe.appframe.widget.swiperefresh.SwipeRefreshListView>-->
+
         <appframe.appframe.widget.swiperefresh.SwipeRefreshX
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"

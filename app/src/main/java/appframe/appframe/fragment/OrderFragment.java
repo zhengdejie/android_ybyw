@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -22,6 +23,10 @@ import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.OrderDetailsActivity;
+import appframe.appframe.app.API;
+import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.Http;
 import appframe.appframe.widget.dropdownmenu.DropdownButton;
 import appframe.appframe.widget.dropdownmenu.DropdownItemObject;
 import appframe.appframe.widget.dropdownmenu.DropdownListView;
@@ -92,6 +97,8 @@ public class OrderFragment extends BaseFragment  {
     private static final String SELECT_OFFLINE = "线下支付";
     private static final String SELECT_ONLINE = "线上支付";
 
+    public static final int SCAN_CODE = 1;
+
     String type;
     ListView listView;
     View mask;
@@ -99,7 +106,7 @@ public class OrderFragment extends BaseFragment  {
     DropdownListView dropdownType, dropdownMulti, dropdownMoney, dropdownSelect;
     SwipeRefreshX swipeRefresh;
     Animation dropdown_in, dropdown_out, dropdown_mask_out;
-
+    View root;
 
     private List<TopicLabelObject> labels = new ArrayList<>();
 
@@ -118,9 +125,28 @@ public class OrderFragment extends BaseFragment  {
 //        Toast.makeText(getActivity(),type,Toast.LENGTH_SHORT).show();
 //    }
 
+
+
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        switch (requestCode) {
+//            case SCAN_CODE:
+//                TextView scanResult = (TextView) root.findViewById(R.id.txt_scanresult);
+//                if (resultCode == getActivity().RESULT_OK) {
+//                    String result = data.getStringExtra("scan_result");
+//                    scanResult.setText(result);
+//                } else if (resultCode == getActivity().RESULT_CANCELED) {
+//                    scanResult.setText("扫描出错");
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.fragment_order,null);
+        root = inflater.inflate(R.layout.fragment_order,null);
 
 //        // 模拟一些数据
 //        final List<String> datas = new ArrayList<String>();
@@ -192,12 +218,21 @@ public class OrderFragment extends BaseFragment  {
         listView = (ListView) root.findViewById(R.id.lv_order);
 //        //ArrayAdapter mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mDatas);
 //        //listView.setAdapter(mAdapter);
-        listView.setAdapter(new SwipeRefreshListViewAdapater(getActivity()));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        Http.request(getActivity(), API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //Toast.makeText(getActivity(), "df", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getActivity(), OrderDetailsActivity.class));
+            public void onSuccess(List<OrderDetails> result) {
+                super.onSuccess(result);
+
+                listView.setAdapter(new SwipeRefreshListViewAdapater(getActivity(), result));
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        //Toast.makeText(getActivity(), "df", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(getActivity(), OrderDetailsActivity.class));
+                    }
+                });
+
             }
         });
 

@@ -1,5 +1,6 @@
 package appframe.appframe.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -7,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.viewpagerindicator.PageIndicator;
 
@@ -25,6 +27,7 @@ public class HomeActivity extends BaseFrameActivity{
 
     String[] titles;
     BaseFragment[] fragments;
+    public static final int SCAN_CODE = 1;
     class TabsAdapter extends FragmentPagerAdapter {
 
         public TabsAdapter() {
@@ -111,4 +114,22 @@ public class HomeActivity extends BaseFrameActivity{
         if(getCurrentFragment().onOptionsItemSelected(item)) return true;
         return super.onOptionsItemSelected(item);
     }
+
+        @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SCAN_CODE:
+                //TextView scanResult = (TextView) root.findViewById(R.id.txt_scanresult);
+                if (resultCode == RESULT_OK) {
+                    String result = data.getStringExtra("scan_result");
+                    //scanResult.setText(result);
+                } else if (resultCode == RESULT_CANCELED) {
+                    //scanResult.setText("扫描出错");
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
 }

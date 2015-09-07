@@ -1,7 +1,10 @@
 package appframe.appframe.widget.actionbar;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.view.ActionProvider;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -10,12 +13,13 @@ import android.widget.SearchView;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.OrderSendActivity;
+import appframe.appframe.com.google.zxing.client.android.CaptureActivity;
 
 /**
  * Created by Administrator on 2015/8/5.
  */
 public class AddActionProvider extends ActionProvider {
-
+    public static final int SCAN_CODE = 1;
     Context context;
     public AddActionProvider(Context context){
         super(context);
@@ -35,6 +39,8 @@ public class AddActionProvider extends ActionProvider {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 //Intent intent = new Intent(context,CaptureActivity.this);
+                Intent intent = new Intent(context, CaptureActivity.class);
+                ((FragmentActivity)context).startActivityForResult(intent, SCAN_CODE);
                 return false;
             }
         });
