@@ -8,8 +8,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="自己的评价"
-        android:id="@+id/button"
+        android:text="@string/selfestimate"
+        android:id="@+id/btn_self"
         android:layout_above="@+id/imageView"
         android:background="@color/white"
         android:layout_centerHorizontal="true"/>
@@ -17,22 +17,22 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="好友评价"
-        android:id="@+id/button2"
-        android:layout_alignTop="@+id/button3"
-        android:layout_toLeftOf="@+id/button"
+        android:text="@string/friendestimate"
+        android:id="@+id/btn_friend"
+        android:layout_alignTop="@+id/btn_order"
+        android:layout_toLeftOf="@+id/btn_self"
         android:background="@color/white"
-        android:layout_toStartOf="@+id/button"/>
+        android:layout_toStartOf="@+id/btn_self"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="交易评价"
-        android:id="@+id/button3"
+        android:text="@string/orderestimate"
+        android:id="@+id/btn_order"
         android:layout_below="@+id/imageView"
-        android:layout_toRightOf="@+id/button"
+        android:layout_toRightOf="@+id/btn_self"
         android:background="@color/white"
-        android:layout_toEndOf="@+id/button"/>
+        android:layout_toEndOf="@+id/btn_self"/>
 
     <ImageView
         android:layout_width="wrap_content"

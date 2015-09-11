@@ -16,7 +16,7 @@ import appframe.appframe.app.API;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
-import appframe.appframe.widget.swiperefresh.SwipeRefreshListViewAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 
 /**
  * Created by Administrator on 2015/8/8.
@@ -30,6 +30,7 @@ public class MyOrderFragment extends BaseFragment {
         return root;
     }
 
+
     public void init()
     {
         proListView = (ListView) root.findViewById(R.id.proListView);
@@ -39,7 +40,7 @@ public class MyOrderFragment extends BaseFragment {
             public void onSuccess(List<OrderDetails> result) {
                 super.onSuccess(result);
 
-                proListView.setAdapter(new SwipeRefreshListViewAdapater(getActivity(), result));
+                proListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
                 proListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -55,7 +56,7 @@ public class MyOrderFragment extends BaseFragment {
             public void onSuccess(List<OrderDetails> result) {
                 super.onSuccess(result);
 
-                closeListView.setAdapter(new SwipeRefreshListViewAdapater(getActivity(), result));
+                closeListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
                 closeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

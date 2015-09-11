@@ -10,15 +10,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import appframe.appframe.R;
@@ -31,7 +27,7 @@ import appframe.appframe.widget.dropdownmenu.DropdownButton;
 import appframe.appframe.widget.dropdownmenu.DropdownItemObject;
 import appframe.appframe.widget.dropdownmenu.DropdownListView;
 import appframe.appframe.widget.dropdownmenu.TopicLabelObject;
-import appframe.appframe.widget.swiperefresh.SwipeRefreshListViewAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 
 /**
@@ -119,11 +115,27 @@ public class OrderFragment extends BaseFragment  {
         return fragment;
     }
 
-//    @Override
-//    protected void onLoadData() {
-//        super.onLoadData();
-//        Toast.makeText(getActivity(),type,Toast.LENGTH_SHORT).show();
-//    }
+    @Override
+    protected void onLoadData() {
+        if(type.equals("需求")) {
+            Http.request(getActivity(), API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
+                @Override
+                public void onSuccess(List<OrderDetails> result) {
+                    super.onSuccess(result);
+
+                    listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            //Toast.makeText(getActivity(), "df", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(getActivity(), OrderDetailsActivity.class));
+                        }
+                    });
+
+                }
+            });
+        }
+    }
 
 
 
@@ -148,93 +160,12 @@ public class OrderFragment extends BaseFragment  {
 
         root = inflater.inflate(R.layout.fragment_order,null);
 
-//        // 模拟一些数据
-//        final List<String> datas = new ArrayList<String>();
-//        for (int i = 0; i < 20; i++) {
-//            datas.add("item - " + i);
-//        }
-//
-//        // 构造适配器
-//        final BaseAdapter adapter = new ArrayAdapter<String>(getActivity(),
-//                android.R.layout.simple_list_item_1,
-//                datas);
-//        // 获取listview实例
-//        listView = (ListView) root.findViewById(R.id.lv_order);
-//        listView.setAdapter(adapter);
-//
-//        // 获取RefreshLayout实例
-//        final SwipeRefreshX myRefreshListView = (SwipeRefreshX)
-//                root.findViewById(R.id.swipeRefresh);
-//        // 设置下拉刷新时的颜色值,颜色值需要定义在xml中
-//        myRefreshListView.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
-//                android.R.color.holo_orange_light, android.R.color.holo_red_light);
-//        // 设置下拉刷新监听器
-//        myRefreshListView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//
-//            @Override
-//            public void onRefresh() {
-//
-//                Toast.makeText(getActivity(), "refresh", Toast.LENGTH_SHORT).show();
-//
-//                myRefreshListView.postDelayed(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        // 更新数据
-//                        datas.add(new Date().toGMTString());
-//                        adapter.notifyDataSetChanged();
-//                        // 更新完后调用该方法结束刷新
-//                        myRefreshListView.setRefreshing(false);
-//                    }
-//                }, 1000);
-//            }
-//        });
-//        // 加载监听器
-//        myRefreshListView.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
-//
-//            @Override
-//            public void onLoad() {
-//
-//                Toast.makeText(getActivity(), "load", Toast.LENGTH_SHORT).show();
-//
-//                myRefreshListView.postDelayed(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        datas.add(new Date().toGMTString());
-//                        adapter.notifyDataSetChanged();
-//                        // 加载完后调用该方法
-//                        myRefreshListView.setLoading(false);
-//                    }
-//                }, 1500);
-//
-//            }
-//        });
 
         swipeRefresh = (SwipeRefreshX)root.findViewById(R.id.swipeRefresh);
-//        swipeRefresh.setOnRefreshListener(this);
+
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
         listView = (ListView) root.findViewById(R.id.lv_order);
-//        //ArrayAdapter mAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, mDatas);
-//        //listView.setAdapter(mAdapter);
-
-        Http.request(getActivity(), API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
-            @Override
-            public void onSuccess(List<OrderDetails> result) {
-                super.onSuccess(result);
-
-                listView.setAdapter(new SwipeRefreshListViewAdapater(getActivity(), result));
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //Toast.makeText(getActivity(), "df", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getActivity(), OrderDetailsActivity.class));
-                    }
-                });
-
-            }
-        });
 
         // 设置下拉刷新监听器
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

@@ -9,11 +9,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import appframe.appframe.R;
-import appframe.appframe.dto.OrderDetails;
 
 
 public class SwipeRefreshListView extends SwipeRefreshAdapterViewBase<ListView> {
@@ -37,8 +33,7 @@ public class SwipeRefreshListView extends SwipeRefreshAdapterViewBase<ListView> 
         mLoadMoreBar = LayoutInflater.from(getContext()).inflate(
                 R.layout.layout_loading_more, null);
         mLoadMorePb = (ProgressBar) mLoadMoreBar.findViewById(R.id.swipe_load_more_pb);
-        List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
-        createRefreshableView().setAdapter(new SwipeRefreshListViewAdapater(getContext(),orderDetails));
+
         getRefreshableView().setDivider(null);
     }
 

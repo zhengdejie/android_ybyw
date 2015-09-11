@@ -27,6 +27,15 @@
     <string name="firstandsecond">一度和二度朋友</string>
     <string name="all">所有人</string>
     <string name="action_search">搜索</string>
+    <string name="friendestimate">好友评价</string>
+    <string name="orderestimate">他人评价</string>
+    <string name="strengths">我的强项</string>
+    <string name="hobby">我的爱好</string>
+    <string name="credentials">有图为证</string>
+    <string name="take_photo">拍照</string>
+    <string name="cancel">取消</string>
+    <string name="select_from_local">从相册中选取</string>
+
 
 
 

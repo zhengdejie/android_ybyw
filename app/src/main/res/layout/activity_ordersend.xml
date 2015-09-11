@@ -171,26 +171,17 @@
                         android:text="添加图片:"
                         android:textSize="17sp"/>
 
-                    <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/ic_launcher"
-                        android:layout_weight="2"
-                        android:id="@+id/img_addimg1"/>
-
-                    <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/ic_launcher"
-                        android:layout_weight="2"
-                        android:id="@+id/img_addimg2"/>
-
-                    <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/ic_launcher"
-                        android:layout_weight="2"
-                        android:id="@+id/img_addimg3"/>
+                    <GridView
+                        android:id="@+id/gridview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:horizontalSpacing="3dp"
+                        android:numColumns="3"
+                        android:scrollbars="none"
+                        android:verticalSpacing="5dp" >
+                    </GridView>
 
                 </LinearLayout>
 
