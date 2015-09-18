@@ -17,6 +17,7 @@ import appframe.appframe.fragment.BaseFragment;
 import appframe.appframe.fragment.EstimateFragment;
 import appframe.appframe.fragment.HomeFragment;
 import appframe.appframe.fragment.MyOrderFragment;
+import appframe.appframe.fragment.OrderFragment;
 import appframe.appframe.fragment.PersonFragment;
 import appframe.appframe.fragment.ProfileFragment;
 

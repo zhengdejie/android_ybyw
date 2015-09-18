@@ -5,8 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import appframe.appframe.R;
+import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.dto.OrderReviewDetail;
 
 /**
  * Created by Administrator on 2015/9/8.
@@ -14,36 +20,36 @@ import appframe.appframe.R;
 public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
-    //List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
+    List<OrderReviewDetail> orderReviewDetails = new ArrayList<OrderReviewDetail>();
+    TextView tv_content,tv_title,tv_name;
 
-    public SwipeRefreshXOrderEstimateAdapater(Context context)
+    public SwipeRefreshXOrderEstimateAdapater(Context context,List<OrderReviewDetail> orderReviewDetails)
     {
         this.context =context;
         this.layoutInflater = LayoutInflater.from(context);
-        //this.orderDetails = orderDetails;
+        this.orderReviewDetails = orderReviewDetails;
     }
     @Override
     public int getCount() {
-        return 1;
+        return orderReviewDetails.size();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = layoutInflater.inflate(R.layout.swiperefreshx_orderestimate, null);
-//        txt_title = (TextView)convertView.findViewById(R.id.txt_title);
-//        txt_bounty = (TextView)convertView.findViewById(R.id.txt_bounty);
-//        txt_type = (TextView)convertView.findViewById(R.id.txt_type);
-//        txt_location = (TextView)convertView.findViewById(R.id.txt_location);
-//        txt_title.setText(orderDetails.get(position).getTitle());
-//        txt_bounty.setText("￥" + String.valueOf(orderDetails.get(position).getBounty()));
-//        txt_type.setText("类别：" + orderDetails.get(position).getCategory());
-//        txt_location.setText(orderDetails.get(position).getPosition());
+        tv_title = (TextView)convertView.findViewById(R.id.tv_title);
+        tv_content = (TextView)convertView.findViewById(R.id.tv_content);
+        tv_name = (TextView)convertView.findViewById(R.id.tv_name);
+        tv_title.setText(orderReviewDetails.get(position).getTitle());
+        tv_content.setText(orderReviewDetails.get(position).getContent());
+        tv_name.setText(orderReviewDetails.get(position).getCommontatorName());
+
         return convertView;
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return orderReviewDetails.get(position);
     }
 
     @Override

@@ -73,7 +73,7 @@
             android:paddingLeft="10dp"
             android:background="@color/white"
             android:drawableBottom="@color/default_underline_indicator_selected_color"
-            android:clickable="true"
+            android:id="@+id/btn_contact"
             />
         <View
             android:layout_width="match_parent"

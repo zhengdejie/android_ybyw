@@ -117,8 +117,8 @@ public class OrderFragment extends BaseFragment  {
 
     @Override
     protected void onLoadData() {
-        if(type.equals("需求")) {
-            Http.request(getActivity(), API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
+     //   if(type.equals("需求")) {
+            Http.request(getActivity(), API.GET_SELFORDER, new Http.RequestListener<List<OrderDetails>>() {
                 @Override
                 public void onSuccess(List<OrderDetails> result) {
                     super.onSuccess(result);
@@ -134,7 +134,7 @@ public class OrderFragment extends BaseFragment  {
 
                 }
             });
-        }
+        //}
     }
 
 

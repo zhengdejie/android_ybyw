@@ -39,7 +39,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         convertView = layoutInflater.inflate(R.layout.swiperefreshx_order, null);
         txt_title = (TextView)convertView.findViewById(R.id.txt_title);
         txt_bounty = (TextView)convertView.findViewById(R.id.txt_bounty);
@@ -53,6 +53,8 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         btn_estimate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                Intent intent = new Intent();
+//                intent.putExtra("OrderId",orderDetails.get(position).getId());
                 context.startActivity(new Intent(context, OrderCommentActivity.class));
             }
         });

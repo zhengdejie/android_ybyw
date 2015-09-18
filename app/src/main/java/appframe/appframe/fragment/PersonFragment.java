@@ -19,7 +19,7 @@ import appframe.appframe.activity.SettingActivity;
  */
 public class PersonFragment extends BaseFragment implements View.OnClickListener{
     TextView txt_myinfo,txt_privacy;
-    Button btn_setting;
+    Button btn_setting,btn_contact;
     View root;
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_person, null);
@@ -27,6 +27,12 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
 
         return root;
     }
+
+    @Override
+    protected void onLoadData() {
+
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId())
@@ -38,6 +44,9 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
                 startActivity(new Intent(getActivity(), PrivacyActivity.class));
                 break;
             case R.id.btn_setting:
+                startActivity(new Intent(getActivity(), SettingActivity.class));
+                break;
+            case R.id.btn_contact:
                 startActivity(new Intent(getActivity(), SettingActivity.class));
                 break;
 

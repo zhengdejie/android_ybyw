@@ -150,15 +150,16 @@ public class OrderSendActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
 
-                Http.request(OrderSendActivity.this, API.ORDER_SEND, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
+                        "Id",String.valueOf(Auth.getCurrentUserId()),
                         "Title", edit_title.getText().toString(),
                         "Content", edit_content.getText().toString(),
-                        "Position", "12",
+                        "Position", txt_location.getText().toString(),
                         "Category", spinner_category.getSelectedItem().toString(),
                         "Visibility", "0",
                         "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
                         "PaymentMethod", radio_online.isChecked() ? "online" : "offline",
-                        "Bounty", "10"
+                        "Bounty", edit_bounty.getText().toString()
                 ), new Http.RequestListener<UserDetail>() {
                     @Override
                     public void onSuccess(UserDetail result) {

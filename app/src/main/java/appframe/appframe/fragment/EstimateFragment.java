@@ -27,6 +27,12 @@ public class EstimateFragment extends BaseFragment implements View.OnClickListen
         init();
         return root;
     }
+
+    @Override
+    protected void onLoadData() {
+
+    }
+
     public void init()
     {
         btn_self = (Button) root.findViewById(R.id.btn_self);

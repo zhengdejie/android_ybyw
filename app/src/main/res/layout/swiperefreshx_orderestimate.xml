@@ -29,6 +29,7 @@
                     android:text="夜黑风高"
                     android:textColor="@color/font_gray"
                     android:layout_weight="2"
+                    android:id="@+id/tv_name"
                     />
                 <TextView
                     android:id="@+id/title2"
@@ -50,6 +51,7 @@
                     android:text="关于吃货所关心的问题"
                     android:textSize="15dp"
                     android:layout_marginRight="10dp"
+                    android:id="@+id/tv_title"
                     />
 
                 <RatingBar
@@ -72,7 +74,8 @@
             android:text="很好"
             android:layout_marginLeft="70dp"
             android:textSize="20dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:id="@+id/tv_content"/>
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

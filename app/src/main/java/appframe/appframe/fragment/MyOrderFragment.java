@@ -35,6 +35,11 @@ public class MyOrderFragment extends BaseFragment {
     {
         proListView = (ListView) root.findViewById(R.id.proListView);
         closeListView = (ListView) root.findViewById(R.id.closeListView);
+
+    }
+
+    @Override
+    protected void onLoadData() {
         Http.request(getActivity(), API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
             @Override
             public void onSuccess(List<OrderDetails> result) {
@@ -68,5 +73,4 @@ public class MyOrderFragment extends BaseFragment {
             }
         });
     }
-    
 }
