@@ -1,5 +1,6 @@
 package appframe.appframe.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import appframe.appframe.utils.Http;
@@ -7,7 +8,7 @@ import appframe.appframe.utils.Http;
 /**
  * Created by Administrator on 2015/8/28.
  */
-public class OrderDetails extends Http.BaseDto{
+public class OrderDetails extends Http.BaseDto implements Serializable {
     private int Id ;
     private String Title;
     private String Content;

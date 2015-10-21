@@ -139,4 +139,43 @@
   <string name="result_wifi">发现网络配置</string>
   <string name="sbc_name">Google图书搜索</string>
   <string name="wifi_changing_network">请求连接到网络\u2026</string>
+
+
+
+  <string name="app_name">友帮</string>
+  <string name="comment">设计备注与标签</string>
+  <string name="district">地区</string>
+  <string name="effect">TA的口碑</string>
+  <string name="sendmessage">发消息</string>
+  <string name="avatar">头像</string>
+  <string name="nickname">昵称</string>
+  <string name="sex">性别</string>
+  <string name="selfestimate">自我评价</string>
+  <string name="whocansee">谁可以看我的资料</string>
+  <string name="whocansend">谁可以给我发消息</string>
+  <string name="blacklist">黑名单</string>
+  <string name="account">账号信息</string>
+  <string name="newmessage">新消息通知</string>
+  <string name="about">关于友帮</string>
+  <string name="security">安全中心</string>
+  <string name="exit">退出登入</string>
+  <string name="ybnum">友帮号</string>
+  <string name="telnum">手机号</string>
+  <string name="modifypassword">修改密码</string>
+  <string name="score">去评分</string>
+  <string name="help">帮助与反馈</string>
+  <string name="receivemessage">接收新消息通知</string>
+  <string name="firstclass">一度朋友</string>
+  <string name="secondclass">二度朋友</string>
+  <string name="firstandsecond">一度和二度朋友</string>
+  <string name="all">所有人</string>
+  <string name="action_search">搜索</string>
+  <string name="friendestimate">好友评价</string>
+  <string name="orderestimate">他人评价</string>
+  <string name="strengths">我的强项</string>
+  <string name="hobby">我的爱好</string>
+  <string name="credentials">有图为证</string>
+  <string name="take_photo">拍照</string>
+  <string name="cancel">取消</string>
+  <string name="select_from_local">从相册中选取</string>
 </resources>

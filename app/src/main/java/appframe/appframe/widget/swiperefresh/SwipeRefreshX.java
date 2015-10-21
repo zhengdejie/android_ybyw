@@ -150,7 +150,7 @@ public class SwipeRefreshX extends SwipeRefreshLayout implements AbsListView.OnS
      * @return
      */
     private boolean isPullUp() {
-        return (mYDown - mLastY) >= mTouchSlop;
+        return (mLastY != 0) ? ((mYDown - mLastY) >= mTouchSlop) : false;
     }
 
     /**

@@ -3,12 +3,25 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:layout_margin="10dp">
+              >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:id="@+id/ll_tb">
+        <include
+            android:id="@+id/title_bar"
+            layout="@layout/titlebar" />
+        </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/lly_send">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lly_send"
+        android:layout_below="@+id/ll_tb"
+        android:layout_margin="10dp">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,7 +44,7 @@
                         android:src="@drawable/ic_launcher"
                         android:layout_gravity="center_horizontal"/>
                     <TextView
-                        android:id="@+id/txt_name"
+                        android:id="@+id/tv_name"
                         android:layout_width="match_parent"
                         android:layout_height="25dp"
                         android:gravity="center"
@@ -56,7 +69,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/txt_title"
+                            android:id="@+id/tv_title"
                             android:layout_weight="1"
                             android:text="谁给我打包鸭脖"
                             android:textSize="17sp"
@@ -68,7 +81,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/edit_bounty"
+                            android:id="@+id/tv_money"
                             android:layout_weight="1"
                             android:text="20"/>
 
@@ -90,7 +103,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/txt_time"
+                            android:id="@+id/tv_time"
                             android:text="2015-08-13 10:11"
                             android:layout_gravity="bottom"
                             android:layout_weight="1"/>
@@ -120,7 +133,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/txt_location"
+                            android:id="@+id/tv_location"
                             android:text="杭州市西湖区"
                             android:layout_gravity="bottom"
                             android:layout_weight="2"/>
@@ -142,6 +155,7 @@
                             android:layout_weight="2"/>
 
                         <TextView
+                            android:id="@+id/tv_type"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="食"
@@ -166,6 +180,7 @@
                             android:layout_weight="2"/>
 
                         <TextView
+                            android:id="@+id/tv_status"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="未开始"
@@ -199,7 +214,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:id="@+id/txt_content"
+                    android:id="@+id/tv_content"
                     android:layout_weight="1"
                     android:textSize="20sp"
                     android:text="晚上6点前给我送鸭脖过来"/>
@@ -253,7 +268,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/txt_range"
+                        android:id="@+id/tv_range"
                         android:layout_weight="1"
                         android:text="一度朋友"
                         android:textSize="17sp"
@@ -280,7 +295,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/txt_deadlinedate"
+                        android:id="@+id/tv_deadline"
                         android:layout_weight="1"
                         android:layout_gravity="bottom"
                         android:textSize="17sp"
@@ -314,7 +329,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/edit_require"
+                        android:id="@+id/tv_require"
                         android:textSize="17sp"
                         android:layout_gravity="bottom"
                         android:text="杭州范围内"
@@ -339,6 +354,7 @@
                         android:layout_weight="2"/>
 
                     <TextView
+                        android:id="@+id/tv_paymethod"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="线上支付"
@@ -399,18 +415,20 @@
                 android:orientation="horizontal">
 
                 <ImageButton
+                    android:id="@+id/imgbtn_conversation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_launcher"
+                    android:src="@drawable/ic_menu_start_conversation"
                     android:layout_weight="1"
-                    android:background="@color/default_circle_indicator_fill_color"/>
+                    android:background="@color/white"/>
 
                 <ImageButton
+                    android:id="@+id/imgbtn_call"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_launcher"
+                    android:src="@drawable/ic_menu_call"
                     android:layout_weight="1"
-                    android:background="@color/default_circle_indicator_fill_color"/>
+                    android:background="@color/white"/>
 
             </LinearLayout>
 
@@ -441,5 +459,6 @@
             android:layout_weight="1"
             />
     </LinearLayout>
+
 
 </RelativeLayout>

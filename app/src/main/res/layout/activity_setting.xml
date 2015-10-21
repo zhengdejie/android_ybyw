@@ -3,6 +3,15 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/divide"
+        />
 
     <Button
         android:layout_width="match_parent"
@@ -26,6 +35,20 @@
         android:paddingLeft="10dp"
         android:background="@color/white"
         android:id="@+id/btn_newmessage"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/privacy"
+        android:gravity="left|center"
+        android:paddingLeft="10dp"
+        android:background="@color/white"
+        android:id="@+id/btn_privacy"
         />
     <View
         android:layout_width="match_parent"

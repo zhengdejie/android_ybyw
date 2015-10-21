@@ -32,6 +32,7 @@
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
 
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
 
 
@@ -87,7 +88,7 @@
         <activity android:name=".activity.HomeActivity" android:launchMode="singleTop" android:screenOrientation="portrait" />
         <activity android:name=".activity.LoginActivity" android:label="登入" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
         <activity android:name=".activity.RegisterActivity" android:label="注册" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OrderSendActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.OrderSendActivity"   android:screenOrientation="portrait"/>
         <activity android:name=".activity.OrderDetailsActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.MyInfoActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.PrivacyActivity"  android:screenOrientation="portrait"/>
@@ -101,14 +102,15 @@
         <activity android:name=".activity.FriendEstimateActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.OrderEstimateActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.OrderCommentActivity"  android:screenOrientation="portrait"/>
-        <activity
-            android:name=".activity.FramedWebViewActivity"
-            android:screenOrientation="portrait"
-            />
+        <activity android:name=".activity.RelativenetActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.WalletActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.FramedWebViewActivity" android:screenOrientation="portrait"/>
+
 
         <activity android:name=".widget.photopicker.view.ImageBucketChooseActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.photopicker.view.ImageChooseActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.photopicker.view.ImageZoomActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".widget.sortlistview.SortListViewActivity"  android:screenOrientation="portrait"/>
         <!-- ............................................................................................ -->
         <activity android:name=".com.google.zxing.client.android.CaptureActivity"
 

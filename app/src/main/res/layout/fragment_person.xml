@@ -4,6 +4,26 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:background="@color/divide"
+                />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -11,6 +31,7 @@
         android:background="@color/white"
         >
         <ImageView
+            android:id="@+id/iv_avater"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:src="@drawable/ic_launcher"
@@ -34,23 +55,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
-                    android:text="我的档案"
+                    android:text="友帮号:"
                     android:clickable="true"
                     android:textSize="17sp"
                     android:gravity="left|center"
                     android:id="@+id/txt_myinfo"
                     android:layout_marginLeft="10dp"
-                    android:textColor="@color/default_underline_indicator_selected_color"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:text="隐私设置"
-                    android:clickable="true"
-                    android:textSize="17sp"
-                    android:gravity="left|center"
-                    android:id="@+id/txt_privacy"
-                    android:layout_marginLeft="30dp"
-                    android:textColor="@color/default_underline_indicator_selected_color"/>
+                    />
+
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -95,6 +107,7 @@
             android:background="@color/divide"
             />
         <Button
+            android:id="@+id/btn_wallet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="我的钱包"
@@ -137,6 +150,7 @@
             android:background="@color/divide"
             />
         <Button
+            android:id="@+id/btn_expandhr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="拓展人脉"
@@ -168,5 +182,7 @@
 
 
     </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

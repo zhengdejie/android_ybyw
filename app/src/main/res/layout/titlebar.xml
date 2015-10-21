@@ -1,21 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center_vertical"
-              android:orientation="horizontal" >
-
-    <Button
-        android:id="@+id/back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="sdf"
-        android:textSize="18sp"/>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/title_bar"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/white" >
 
     <TextView
+        android:id="@+id/tb_back"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:gravity="center"
+        android:textColor="@drawable/text_selector"
+        android:textSize="15sp"
+        android:text=""
+        android:drawableLeft="@drawable/ic_ab_back_holo_light_am"/>
+
+    <TextView
+        android:id="@+id/tb_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="b"
-        android:textSize="18sp"
- />
-</LinearLayout>
+        android:layout_centerInParent="true"
+        android:text="标题"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tb_action"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        android:gravity="center"
+
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/light_gray"/>
+</RelativeLayout>

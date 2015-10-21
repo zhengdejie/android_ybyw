@@ -1,19 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:layout_margin="10dp"
-    android:id="@+id/ordersend">
+              android:id="@+id/ordersend">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:id="@+id/ll_tb">
+        <include
+            android:id="@+id/title_bar"
+            layout="@layout/titlebar" />
+    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/lly_send">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/lly_send"
+        android:layout_below="@+id/ll_tb"
+        android:layout_margin="10dp"
+        android:gravity="center_horizontal|center_vertical"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_horizontal|center_vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -143,9 +158,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
+                android:orientation="vertical">
 
                 <EditText
                     android:layout_width="match_parent"
@@ -174,7 +187,7 @@
                     <GridView
                         android:id="@+id/gridview"
                         android:layout_width="wrap_content"
-                        android:layout_height="100dp"
+                        android:layout_height="145dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
@@ -217,9 +230,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -231,12 +242,31 @@
                         android:text="可见范围:"
                         android:textSize="17sp"
                         android:layout_gravity="bottom"
-                        android:layout_weight="2"/>
-                    <Spinner
+                        android:layout_weight="1"/>
+                    <CheckBox
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/spinner_range"
-                        android:layout_weight="1"/>
+                        android:text="一度"
+                        android:id="@+id/checkBox_oneclass"
+                        android:layout_weight="1"
+                        android:layout_gravity="bottom"
+                        android:checked="true"/>
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="二度"
+                        android:id="@+id/checkBox_twoclass"
+                        android:layout_weight="1"
+                        android:layout_gravity="bottom"
+                        android:checked="true"/>
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="陌生人"
+                        android:id="@+id/checkBox_stranger"
+                        android:layout_weight="1"
+                        android:layout_gravity="bottom"
+                        android:checked="true"/>
                 </LinearLayout>
 
                 <View
@@ -371,13 +401,13 @@
                         android:layout_weight="1"
                         android:checked="true"/>
 
-                    <!--<CheckBox-->
-                        <!--android:layout_width="match_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:text="匿电话号码"-->
-                        <!--android:id="@+id/checkBox_donotshowphonenum"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:checked="true"/>-->
+                    <CheckBox
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="匿电话"
+                        android:id="@+id/checkBox_donotshowphonenum"
+                        android:layout_weight="1"
+                        android:checked="true"/>
 
                 </LinearLayout>
 

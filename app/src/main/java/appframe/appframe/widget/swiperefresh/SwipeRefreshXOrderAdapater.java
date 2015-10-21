@@ -2,6 +2,7 @@ package appframe.appframe.widget.swiperefresh;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +54,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         btn_estimate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent();
-//                intent.putExtra("OrderId",orderDetails.get(position).getId());
+                Log.i("estimate", "test");
                 context.startActivity(new Intent(context, OrderCommentActivity.class));
             }
         });

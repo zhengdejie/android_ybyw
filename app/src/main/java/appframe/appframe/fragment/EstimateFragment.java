@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import com.github.snowdream.android.util.Log;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.FriendEstimateActivity;
@@ -21,8 +24,10 @@ import appframe.appframe.activity.SettingActivity;
 public class EstimateFragment extends BaseFragment implements View.OnClickListener{
     Button btn_self,btn_friend,btn_order;
     View root;
+    TextView tb_title,tb_back;
 
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         root  = inflater.inflate(R.layout.fragment_estimate, null);
         init();
         return root;
@@ -41,6 +46,10 @@ public class EstimateFragment extends BaseFragment implements View.OnClickListen
         btn_self.setOnClickListener(this);
         btn_friend.setOnClickListener(this);
         btn_order.setOnClickListener(this);
+        tb_title = (TextView)root.findViewById(R.id.tb_title);
+        tb_back = (TextView)root.findViewById(R.id.tb_back);
+        tb_title.setText("我的口碑");
+        tb_back.setVisibility(View.GONE);
     }
     @Override
     public void onClick(View v) {

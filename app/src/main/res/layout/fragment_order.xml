@@ -6,10 +6,15 @@
               android:layout_height="match_parent"
     android:id="@+id/ly">
 
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/title_bar"
+            layout="@layout/titlebar_order" />
 
     <LinearLayout
         android:id="@+id/tabs"

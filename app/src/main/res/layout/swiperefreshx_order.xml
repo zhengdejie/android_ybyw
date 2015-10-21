@@ -3,7 +3,9 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/white">
+              android:background="@color/white"
+              android:descendantFocusability="blocksDescendants">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +31,7 @@
                 android:layout_height="30dp"
                 android:gravity="center"
                 android:textSize="17sp"
-                android:text="帅哥" />
+                android:text="昵称" />
 
         </LinearLayout>
 
@@ -47,7 +49,7 @@
                 android:layout_height="30dp"
                 android:textSize="17sp"
                 android:layout_marginTop="10dp"
-                android:text="黄龙附近有好吃的餐厅吗"/>
+                android:text="标题"/>
 
             <ImageView
                 android:id="@+id/star"
@@ -67,7 +69,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="17sp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:text="类别"/>
 
 
                 <TextView
@@ -76,7 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textSize="17sp"
-                    android:text="北京市海淀区" />
+                    android:text="地址" />
             </LinearLayout>
 
         </LinearLayout>
@@ -122,6 +125,7 @@
         android:textSize="16dp"
         android:layout_gravity="right"
         android:background="@color/white"
-        android:focusable="false"/>
+        android:focusable="false"
+        />
 
 </LinearLayout>

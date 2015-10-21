@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/white">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/lly_send">
 
         <LinearLayout
@@ -29,15 +34,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="服务:"
-                        android:textSize="20sp"/>
+                        android:text="专业熟练度:"
+                        android:textSize="20sp"
+                        android:layout_weight="1"/>
                     <RatingBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rb_service"
                         android:stepSize="1"
                         android:numStars="5"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="2"/>
                     <!--style="?android:attr/ratingBarStyleSmall"-->
                 </LinearLayout>
 
@@ -49,15 +56,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="态度:"
-                        android:textSize="20sp"/>
+                        android:text="诚信值:"
+                        android:textSize="20sp"
+                        android:layout_weight="9"/>
                     <RatingBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rb_attitude"
                         android:stepSize="1"
                         android:numStars="5"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"/>
                     <!--style="?android:attr/ratingBarStyleSmall"-->
                 </LinearLayout>
 
@@ -69,15 +78,17 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="人品:"
-                        android:textSize="20sp"/>
+                        android:text="服务态度:"
+                        android:textSize="20sp"
+                        android:layout_weight="7"/>
                     <RatingBar
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:id="@+id/rb_personality"
                         android:stepSize="1"
                         android:numStars="5"
-                        android:layout_marginLeft="10dp"/>
+                        android:layout_marginLeft="10dp"
+                        android:layout_weight="1"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -180,4 +191,4 @@
         </LinearLayout>
 
 
-</RelativeLayout>
+</LinearLayout>

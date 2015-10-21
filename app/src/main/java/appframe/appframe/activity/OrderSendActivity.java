@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
@@ -82,11 +83,9 @@ import appframe.appframe.widget.popupwindow.SelectPicPopupWindow;
  * Created by Administrator on 2015/8/12.
  */
 public class OrderSendActivity extends BaseActivity{
-    private TextView txt_deadlinedate;
-    private TextView txt_deadlinetime;
+    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title;
     private EditText edit_title;
     private EditText edit_bounty;
-    private TextView txt_location;
     private Spinner spinner_category;
     private EditText edit_content;
     private Spinner spinner_range;
@@ -285,6 +284,9 @@ public class OrderSendActivity extends BaseActivity{
                     intent.putExtra(IntentConstants.EXTRA_IMAGE_LIST,
                             (Serializable) mDataList);
                     intent.putExtra(IntentConstants.EXTRA_CURRENT_IMG_POSITION, position);
+
+                    intent.putExtra("from",
+                            "OrderSendActivity");
                     startActivity(intent);
                 }
             }
@@ -346,18 +348,19 @@ public class OrderSendActivity extends BaseActivity{
             setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
             setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
             setFocusable(true);
+            setBackgroundDrawable(new BitmapDrawable());
             setOutsideTouchable(true);
             setContentView(view);
             showAtLocation(parent, Gravity.BOTTOM, 0, 0);
             update();
 
-            Button bt1 = (Button) view
+            Button btn_camera = (Button) view
                     .findViewById(R.id.item_popupwindows_camera);
-            Button bt2 = (Button) view
+            Button btn_photo = (Button) view
                     .findViewById(R.id.item_popupwindows_Photo);
-            Button bt3 = (Button) view
+            Button btn_cancel = (Button) view
                     .findViewById(R.id.item_popupwindows_cancel);
-            bt1.setOnClickListener(new View.OnClickListener()
+            btn_camera.setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {
@@ -365,7 +368,7 @@ public class OrderSendActivity extends BaseActivity{
                     dismiss();
                 }
             });
-            bt2.setOnClickListener(new View.OnClickListener()
+            btn_photo.setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {
@@ -373,11 +376,13 @@ public class OrderSendActivity extends BaseActivity{
                             ImageBucketChooseActivity.class);
                     intent.putExtra(IntentConstants.EXTRA_CAN_ADD_IMAGE_SIZE,
                             getAvailableSize());
+                    intent.putExtra(IntentConstants.EXTRA_IMAGE_CLASS,
+                             OrderSendActivity.class);
                     startActivity(intent);
                     dismiss();
                 }
             });
-            bt3.setOnClickListener(new View.OnClickListener()
+            btn_cancel.setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {
@@ -558,14 +563,27 @@ public class OrderSendActivity extends BaseActivity{
         edit_title = (EditText)findViewById(R.id.edit_title);
         edit_bounty = (EditText)findViewById(R.id.edit_bounty);
         txt_location = (TextView)findViewById(R.id.txt_location);
+        tb_back = (TextView)findViewById(R.id.tb_back);
+        tb_title = (TextView)findViewById(R.id.tb_title);
+        tb_back.setText("取消");
+        tb_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeTempFromPref();
+                mDataList.clear();
+                finish();
+            }
+        });
 
         if(getIntent().getStringExtra("self") != null && getIntent().getStringExtra("self").equals("self"))
         {
             edit_bounty.setHint("索酬");
+            tb_title.setText("自荐单");
         }
         if(getIntent().getStringExtra("demand")!=null && getIntent().getStringExtra("demand").equals("demand"))
         {
             edit_bounty.setHint("赏金");
+            tb_title.setText("需求单");
         }
 
         final String category[]=new String[]{
@@ -591,22 +609,22 @@ public class OrderSendActivity extends BaseActivity{
                 "一度和二度朋友",
                 "全平台可见"
         };
-        spinner_range = (Spinner)findViewById(R.id.spinner_range);
-        spinner_range.setAdapter(getAdapter(range));
-        spinner_range.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (((TextView) view).getText().toString().equals("全平台可见")) {
-                    Toast.makeText(OrderSendActivity.this, "全平台一天只能发5次", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+//        spinner_range = (Spinner)findViewById(R.id.spinner_range);
+//        spinner_range.setAdapter(getAdapter(range));
+//        spinner_range.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if (((TextView) view).getText().toString().equals("全平台可见")) {
+//                    Toast.makeText(OrderSendActivity.this, "全平台一天只能发5次", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
 
 
         edit_require = (EditText) findViewById(R.id.edit_require);

@@ -5,14 +5,19 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.alibaba.mobileim.IYWLoginService;
+import com.alibaba.mobileim.YWLoginParam;
+import com.alibaba.mobileim.channel.event.IWxCallback;
 import com.viewpagerindicator.PageIndicator;
 
 import appframe.appframe.R;
+import appframe.appframe.app.App;
 import appframe.appframe.fragment.BaseFragment;
 import appframe.appframe.fragment.EstimateFragment;
 import appframe.appframe.fragment.HomeFragment;
@@ -20,6 +25,8 @@ import appframe.appframe.fragment.MyOrderFragment;
 import appframe.appframe.fragment.OrderFragment;
 import appframe.appframe.fragment.PersonFragment;
 import appframe.appframe.fragment.ProfileFragment;
+import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.Utils;
 
 /**
  * Created by dashi on 15/6/20.
@@ -59,24 +66,32 @@ public class HomeActivity extends BaseFrameActivity{
         //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_home);
         //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);  //titlebar为自己标题栏的布局
+        Log.i("-----IM STATE:------",String.format("%s",App.mIMKit.getIMCore().getLoginState()));
+        if(!App.mIMKit.getIMCore().getLoginState().equals("success")) {
 
+            Utils.IMLogin(String.valueOf(Auth.getCurrentUserId()),"1",this);
+
+        }
 
 
         titles = new String[]{
                 "友帮",
-                "我的挂单",
+                "我的发单",
                 "我的口碑",
-                "会员中心"
+                "个人中心"
         };
 
         fragments = new BaseFragment[]{
-                new HomeFragment(),
+                new OrderFragment(),
                 new MyOrderFragment(),
                 new EstimateFragment(),
                 new PersonFragment(),
         };
 
         pager = (ViewPager) findViewById(R.id.pager);
+        //默认预先加载下一个view...
+        //设置预先加载几个view
+        pager.setOffscreenPageLimit(4);
         pager.setAdapter(new TabsAdapter());
 
         tabs = (PageIndicator) findViewById(R.id.tabs);
@@ -98,6 +113,8 @@ public class HomeActivity extends BaseFrameActivity{
 
             }
         });
+
+
     }
 
     BaseFragment getCurrentFragment(){

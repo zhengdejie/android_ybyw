@@ -24,7 +24,7 @@ import appframe.appframe.widget.tagview.TagView;
  */
 public class OrderCommentActivity extends BaseActivity implements View.OnClickListener {
 
-    private TextView tv_addtag;
+    private TextView tv_addtag,tb_back,tb_title;
     private EditText edit_tag,et_content;
     private TagView tagView;
     private Button btn_evaluate;
@@ -48,6 +48,11 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
         rb_personality = (RatingBar)findViewById(R.id.rb_personality);
         tv_addtag.setOnClickListener(this);
         btn_evaluate.setOnClickListener(this);
+        tb_title = (TextView)findViewById(R.id.tb_title);
+        tb_back = (TextView)findViewById(R.id.tb_back);
+        tb_title.setText("评价");
+        tb_back.setText("我的发单");
+        tb_back.setOnClickListener(this);
 //        rb_attitude.getRating(true);
     }
 
@@ -98,7 +103,9 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
                     }
                 });
                 break;
-
+            case R.id.tb_back:
+                finish();
+                break;
 
         }
     }

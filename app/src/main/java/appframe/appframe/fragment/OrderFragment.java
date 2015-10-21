@@ -1,8 +1,14 @@
 package appframe.appframe.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -10,8 +16,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
+
+
 
 
 import java.util.ArrayList;
@@ -19,7 +31,9 @@ import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.OrderDetailsActivity;
+import appframe.appframe.activity.OrderSendActivity;
 import appframe.appframe.app.API;
+import appframe.appframe.com.google.zxing.client.android.CaptureActivity;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
@@ -27,6 +41,8 @@ import appframe.appframe.widget.dropdownmenu.DropdownButton;
 import appframe.appframe.widget.dropdownmenu.DropdownItemObject;
 import appframe.appframe.widget.dropdownmenu.DropdownListView;
 import appframe.appframe.widget.dropdownmenu.TopicLabelObject;
+import appframe.appframe.widget.photopicker.util.IntentConstants;
+import appframe.appframe.widget.photopicker.view.ImageBucketChooseActivity;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 
@@ -103,6 +119,7 @@ public class OrderFragment extends BaseFragment  {
     SwipeRefreshX swipeRefresh;
     Animation dropdown_in, dropdown_out, dropdown_mask_out;
     View root;
+    TextView tv_back,tv_require,tv_recommand,tv_action;
 
     private List<TopicLabelObject> labels = new ArrayList<>();
 
@@ -118,17 +135,28 @@ public class OrderFragment extends BaseFragment  {
     @Override
     protected void onLoadData() {
      //   if(type.equals("需求")) {
+
             Http.request(getActivity(), API.GET_SELFORDER, new Http.RequestListener<List<OrderDetails>>() {
                 @Override
-                public void onSuccess(List<OrderDetails> result) {
+                public void onSuccess(final List<OrderDetails> result) {
                     super.onSuccess(result);
 
                     listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            //Toast.makeText(getActivity(), "df", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(getActivity(), OrderDetailsActivity.class));
+                            Intent intent = new Intent();
+                            intent.setClass(getActivity(), OrderDetailsActivity.class);
+                            OrderDetails orderDetails = new OrderDetails();
+                            orderDetails.setTitle(result.get(position).getTitle());
+                            orderDetails.setContent(result.get(position).getContent());
+                            orderDetails.setCategory(result.get(position).getCategory());
+                            orderDetails.setBounty(result.get(position).getBounty());
+                            orderDetails.setPosition(result.get(position).getPosition());
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("OrderDetails", orderDetails);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
                         }
                     });
 
@@ -159,6 +187,88 @@ public class OrderFragment extends BaseFragment  {
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_order,null);
+
+        tv_back = (TextView)root.findViewById(R.id.tv_back);
+        tv_require = (TextView)root.findViewById(R.id.tv_require);
+        tv_recommand = (TextView)root.findViewById(R.id.tv_recommand);
+        tv_action = (TextView)root.findViewById(R.id.tv_action);
+
+
+        tv_action.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new PopupWindows(getActivity(), tv_action);
+            }
+        });
+        tv_require.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_require.setBackgroundColor(Color.GREEN);
+                tv_recommand.setBackgroundColor(Color.WHITE);
+
+                Http.request(getActivity(), API.GET_SELFORDER, new Http.RequestListener<List<OrderDetails>>() {
+                    @Override
+                    public void onSuccess(final List<OrderDetails> result) {
+                        super.onSuccess(result);
+
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent = new Intent();
+                                intent.setClass(getActivity(), OrderDetailsActivity.class);
+                                OrderDetails orderDetails = new OrderDetails();
+                                orderDetails.setTitle(result.get(position).getTitle());
+                                orderDetails.setContent(result.get(position).getContent());
+                                orderDetails.setCategory(result.get(position).getCategory());
+                                orderDetails.setBounty(result.get(position).getBounty());
+                                orderDetails.setPosition(result.get(position).getPosition());
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("OrderDetails", orderDetails);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
+
+                    }
+                });
+            }
+        });
+
+        tv_recommand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_require.setBackgroundColor(Color.WHITE);
+                tv_recommand.setBackgroundColor(Color.GREEN);
+
+                Http.request(getActivity(), API.GET_SELFORDER, new Http.RequestListener<List<OrderDetails>>() {
+                    @Override
+                    public void onSuccess(final List<OrderDetails> result) {
+                        super.onSuccess(result);
+
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent = new Intent();
+                                intent.setClass(getActivity(), OrderDetailsActivity.class);
+                                OrderDetails orderDetails = new OrderDetails();
+                                orderDetails.setTitle(result.get(position).getTitle());
+                                orderDetails.setContent(result.get(position).getContent());
+                                orderDetails.setCategory(result.get(position).getCategory());
+                                orderDetails.setBounty(result.get(position).getBounty());
+                                orderDetails.setPosition(result.get(position).getPosition());
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("OrderDetails", orderDetails);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
+
+                    }
+                });
+            }
+        });
 
 
         swipeRefresh = (SwipeRefreshX)root.findViewById(R.id.swipeRefresh);
@@ -533,5 +643,79 @@ public class OrderFragment extends BaseFragment  {
 //        inflater.inflate(R.menu.menu_main,menu);
 //        MenuItem addItem = menu.findItem(R.id.action_add);
         super.createOptionsMenu(menu);
+    }
+
+    public class PopupWindows extends PopupWindow
+    {
+
+        public PopupWindows(Context mContext, View parent)
+        {
+
+            View view = View.inflate(mContext, R.layout.popupwindow_add, null);
+            view.startAnimation(AnimationUtils.loadAnimation(mContext,
+                    R.anim.fade_ins));
+            LinearLayout ll_popup = (LinearLayout) view
+                    .findViewById(R.id.ll_popup);
+            ll_popup.startAnimation(AnimationUtils.loadAnimation(mContext,
+                    R.anim.push_bottom_in_2));
+
+            setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+            setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            setFocusable(true);
+            setBackgroundDrawable(new BitmapDrawable());
+            setOutsideTouchable(true);
+            setContentView(view);
+            showAsDropDown(parent, 0,0);
+            update();
+
+            Button btn_scan = (Button) view
+                    .findViewById(R.id.item_popupwindows_scan);
+            Button btn_require = (Button) view
+                    .findViewById(R.id.item_popupwindows_send_require_order);
+            Button btn_recommand = (Button) view
+                    .findViewById(R.id.item_popupwindows_send_recommand_order);
+            Button btn_search = (Button) view
+                    .findViewById(R.id.item_popupwindows_search);
+            btn_scan.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent(getActivity(), CaptureActivity.class);
+                    ((FragmentActivity)getActivity()).startActivityForResult(intent, SCAN_CODE);
+                    dismiss();
+                }
+            });
+            btn_require.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent();
+                    intent.putExtra("demand","demand");
+                    intent.setClass(getActivity(), OrderSendActivity.class);
+                    getActivity().startActivity(intent);
+                    dismiss();
+                }
+            });
+            btn_recommand.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent();
+                    intent.putExtra("self","self");
+                    intent.setClass(getActivity(), OrderSendActivity.class);
+                    getActivity().startActivity(intent);
+                    dismiss();
+                }
+            });
+
+            btn_search.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+
+                    dismiss();
+                }
+            });
+        }
     }
 }

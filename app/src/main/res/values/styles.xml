@@ -8,7 +8,7 @@
         <item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>
         <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
         <item name="vpiUnderlinePageIndicatorStyle">@style/CustomUnderlinePageIndicator</item>
-        <!--<item name="android:windowNoTitle">true</item>-->
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="FullscreenTheme" parent="android:Theme">

@@ -4,6 +4,7 @@ package appframe.appframe.utils;
  * Created by dashi on 15/6/21.
  */
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -16,7 +17,11 @@ import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.TypedValue;
+import android.widget.Toast;
 
+import com.alibaba.mobileim.IYWLoginService;
+import com.alibaba.mobileim.YWLoginParam;
+import com.alibaba.mobileim.channel.event.IWxCallback;
 import com.github.snowdream.android.util.Log;
 
 import java.io.File;
@@ -30,6 +35,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import appframe.appframe.BuildConfig;
+import appframe.appframe.activity.LoginActivity;
+import appframe.appframe.activity.SplashActivity;
 import appframe.appframe.app.App;
 
 public final class Utils {
@@ -188,5 +195,33 @@ public final class Utils {
     public static int dpToPx(float dp){
         if(dp == 0) return 0;
         return (int)(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, App.instance.getResources().getDisplayMetrics()) + 0.5f);
+    }
+
+    public static void IMLogin(String userid,String password,final Context context)
+    {
+
+        IYWLoginService loginService = App.mIMKit.getLoginService();
+        YWLoginParam loginParam = YWLoginParam.createLoginParam(userid, password);
+        loginService.login(loginParam, new IWxCallback() {
+
+            @Override
+            public void onSuccess(Object... arg0) {
+
+            }
+
+            @Override
+            public void onProgress(int arg0) {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void onError(int errCode, String description) {
+                Auth.login(null, null);
+
+                // 进首页
+                SplashActivity.startRootActivity((Activity)context);
+                Toast.makeText(context,"IM登入失败，请重新登入",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

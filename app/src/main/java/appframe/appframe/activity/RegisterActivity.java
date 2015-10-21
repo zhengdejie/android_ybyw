@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
@@ -35,6 +36,7 @@ import appframe.appframe.utils.Utils;
  */
 public class RegisterActivity extends BaseActivity {
     private static final int SELECT_PHOTO = 100;
+    TextView tb_back,tb_action,tb_title;
     EditText email, password, name;
     View ok;
     ImageButton avatar;
@@ -46,6 +48,9 @@ public class RegisterActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        tb_back = (TextView)findViewById(R.id.tb_back);
+        tb_action = (TextView)findViewById(R.id.tb_action);
+        tb_title = (TextView)findViewById(R.id.tb_title);
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
         name = (EditText)findViewById(R.id.name);
@@ -87,6 +92,17 @@ public class RegisterActivity extends BaseActivity {
 
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+            }
+        });
+
+        tb_back.setVisibility(View.GONE);
+        tb_action.setText("登入");
+        tb_title.setText("友帮");
+        tb_action.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
             }
         });
     }

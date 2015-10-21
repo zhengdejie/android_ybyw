@@ -12,7 +12,7 @@ import appframe.appframe.utils.Http;
  * Created by dashi on 15/6/11.
  */
 public final class API {
-    static String HOST = "192.168.31.124";
+    static String HOST = "192.168.31.123";   //42.96.152.105       //192.168.31.123
     public static String API_BASE = "http://" + HOST + ":1337";
     public static String[] OFFICAL_HOSTS = new String[]{"localhost", HOST};
 

@@ -28,6 +28,7 @@ repositories {
     maven {
         url "https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/"
     }
+    maven { url "https://jitpack.io" }
 
 
 }
@@ -48,4 +49,6 @@ dependencies {
     compile('org.apache.httpcomponents:httpcore:4.+') {
         exclude module: "httpclient"
     }
+    compile project(':OneSDK')
+    compile 'com.github.PhilJay:MPAndroidChart:v2.1.5'
 }

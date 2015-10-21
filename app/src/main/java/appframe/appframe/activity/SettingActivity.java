@@ -10,7 +10,11 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.alibaba.mobileim.IYWLoginService;
+import com.alibaba.mobileim.channel.event.IWxCallback;
+
 import appframe.appframe.R;
+import appframe.appframe.app.App;
 import appframe.appframe.com.google.zxing.BarcodeFormat;
 import appframe.appframe.com.google.zxing.MultiFormatWriter;
 import appframe.appframe.com.google.zxing.WriterException;
@@ -22,7 +26,8 @@ import appframe.appframe.utils.Auth;
  * Created by Administrator on 2015/8/24.
  */
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
-    Button btn_about,btn_account,btn_newmessage,btn_exit;
+    Button btn_about,btn_account,btn_newmessage,btn_exit,btn_privacy;
+    TextView tb_title,tb_back;
     //public static final int SCAN_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +41,17 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         btn_account = (Button)findViewById(R.id.btn_account);
         btn_newmessage = (Button)findViewById(R.id.btn_newmessage);
         btn_exit =(Button)findViewById(R.id.btn_exit);
+        btn_privacy = (Button)findViewById(R.id.btn_privacy);
         btn_about.setOnClickListener(this);
         btn_account.setOnClickListener(this);
         btn_newmessage.setOnClickListener(this);
         btn_exit.setOnClickListener(this);
+        btn_privacy.setOnClickListener(this);
+        tb_title = (TextView)findViewById(R.id.tb_title);
+        tb_back = (TextView)findViewById(R.id.tb_back);
+        tb_back.setText("个人中心");
+        tb_title.setText("设置");
+        tb_back.setOnClickListener(this);
 
     }
 
@@ -65,10 +77,33 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 startActivity(new Intent(this,NewMessageActivity.class));
                 break;
             case R.id.btn_exit:
-                Auth.login(null, null);
+                IYWLoginService loginService = App.mIMKit.getLoginService();
+                loginService.logout(new IWxCallback() {
+                    @Override
+                    public void onSuccess(Object... arg0) {
+                        Auth.login(null, null);
 
-                // 进首页
-                SplashActivity.startRootActivity(this);
+                        // 进首页
+                        SplashActivity.startRootActivity(SettingActivity.this);
+                    }
+
+                    @Override
+                    public void onProgress(int arg0) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void onError(int errCode, String description) {
+                        //登出失败，errCode为错误码,description是错误的具体描述信息
+                    }
+                });
+
+                break;
+            case R.id.tb_back:
+                finish();
+                break;
+            case R.id.btn_privacy:
+                startActivity(new Intent(this, PrivacyActivity.class));
                 break;
         }
 
