@@ -6,9 +6,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -20,7 +17,6 @@ import android.widget.TextView;
 
 import appframe.appframe.R;
 import appframe.appframe.app.App;
-import appframe.appframe.fragment.EstimateFragment;
 
 /**
  * Created by Administrator on 2015/8/21.
@@ -70,7 +66,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                 new PopupWindows(FriendsInfoActivity.this,tb_action);
                 break;
             case R.id.btn_friendsestimate:
-                startActivity(new Intent(this, EstimateFragment.class));
+                startActivity(new Intent(this, EstimateActivity.class));
                 break;
         }
     }

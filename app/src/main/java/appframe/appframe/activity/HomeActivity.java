@@ -8,23 +8,18 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.widget.TextView;
 
-import com.alibaba.mobileim.IYWLoginService;
-import com.alibaba.mobileim.YWLoginParam;
-import com.alibaba.mobileim.channel.event.IWxCallback;
+import com.igexin.sdk.PushManager;
+import com.viewpagerindicator.IconPagerAdapter;
 import com.viewpagerindicator.PageIndicator;
 
 import appframe.appframe.R;
 import appframe.appframe.app.App;
 import appframe.appframe.fragment.BaseFragment;
-import appframe.appframe.fragment.EstimateFragment;
-import appframe.appframe.fragment.HomeFragment;
+import appframe.appframe.fragment.DiscoveryFragment;
 import appframe.appframe.fragment.MyOrderFragment;
 import appframe.appframe.fragment.OrderFragment;
 import appframe.appframe.fragment.PersonFragment;
-import appframe.appframe.fragment.ProfileFragment;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Utils;
 
@@ -36,7 +31,7 @@ public class HomeActivity extends BaseFrameActivity{
     String[] titles;
     BaseFragment[] fragments;
     public static final int SCAN_CODE = 1;
-    class TabsAdapter extends FragmentPagerAdapter {
+    class TabsAdapter extends FragmentPagerAdapter  {
 
         public TabsAdapter() {
             super(getSupportFragmentManager());
@@ -56,6 +51,17 @@ public class HomeActivity extends BaseFrameActivity{
         public CharSequence getPageTitle(int position) {
             return titles[position];
         }
+
+//        private  final int[] ICONS = new int[] {
+//                R.drawable.ic_add_black_24dp,
+//                R.drawable.ic_add_black_24dp,
+//                R.drawable.ic_add_black_24dp,
+//                R.drawable.ic_add_black_24dp, };
+//
+//        @Override
+//        public int getIconResId(int index) {
+//            return ICONS[index];
+//        }
     }
 
     ViewPager pager;
@@ -66,25 +72,28 @@ public class HomeActivity extends BaseFrameActivity{
         //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_home);
         //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.titlebar);  //titlebar为自己标题栏的布局
-        Log.i("-----IM STATE:------",String.format("%s",App.mIMKit.getIMCore().getLoginState()));
+        Log.i("-----IM STATE:------", String.format("%s", App.mIMKit.getIMCore().getLoginState()));
         if(!App.mIMKit.getIMCore().getLoginState().equals("success")) {
 
-            Utils.IMLogin(String.valueOf(Auth.getCurrentUserId()),"1",this);
+            Utils.IMLogin(String.valueOf(Auth.getCurrentUserId()), "1", this);
 
+            PushManager.getInstance().initialize(this);
+            Log.i("-----ClientID:------", String.format("%s", PushManager.getInstance().getClientid(this)));
         }
+
 
 
         titles = new String[]{
                 "友帮",
                 "我的发单",
-                "我的口碑",
+                "发现",
                 "个人中心"
         };
 
         fragments = new BaseFragment[]{
                 new OrderFragment(),
                 new MyOrderFragment(),
-                new EstimateFragment(),
+                new DiscoveryFragment(),
                 new PersonFragment(),
         };
 

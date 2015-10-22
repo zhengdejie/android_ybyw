@@ -1,4 +1,4 @@
-package appframe.appframe.fragment;
+package appframe.appframe.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.github.snowdream.android.util.Log;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.BaseActivity;
 import appframe.appframe.activity.FriendEstimateActivity;
 import appframe.appframe.activity.MyInfoActivity;
 import appframe.appframe.activity.OrderEstimateActivity;
@@ -21,33 +22,27 @@ import appframe.appframe.activity.SettingActivity;
 /**
  * Created by Administrator on 2015/8/7.
  */
-public class EstimateFragment extends BaseFragment implements View.OnClickListener{
+public class EstimateActivity extends BaseActivity implements View.OnClickListener{
     Button btn_self,btn_friend,btn_order;
-    View root;
     TextView tb_title,tb_back;
-
-    public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        root  = inflater.inflate(R.layout.fragment_estimate, null);
-        init();
-        return root;
-    }
-
     @Override
-    protected void onLoadData() {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_estimate);
+        init();
     }
+
 
     public void init()
     {
-        btn_self = (Button) root.findViewById(R.id.btn_self);
-        btn_friend = (Button) root.findViewById(R.id.btn_friend);
-        btn_order = (Button) root.findViewById(R.id.btn_order);
+        btn_self = (Button) findViewById(R.id.btn_self);
+        btn_friend = (Button) findViewById(R.id.btn_friend);
+        btn_order = (Button) findViewById(R.id.btn_order);
         btn_self.setOnClickListener(this);
         btn_friend.setOnClickListener(this);
         btn_order.setOnClickListener(this);
-        tb_title = (TextView)root.findViewById(R.id.tb_title);
-        tb_back = (TextView)root.findViewById(R.id.tb_back);
+        tb_title = (TextView)findViewById(R.id.tb_title);
+        tb_back = (TextView)findViewById(R.id.tb_back);
         tb_title.setText("我的口碑");
         tb_back.setVisibility(View.GONE);
     }
@@ -56,13 +51,13 @@ public class EstimateFragment extends BaseFragment implements View.OnClickListen
         switch (v.getId())
         {
             case R.id.btn_self:
-                startActivity(new Intent(getActivity(),SelfEstimateActivity.class));
+                startActivity(new Intent(this,SelfEstimateActivity.class));
                 break;
             case R.id.btn_friend:
-                startActivity(new Intent(getActivity(), FriendEstimateActivity.class));
+                startActivity(new Intent(this, FriendEstimateActivity.class));
                 break;
             case R.id.btn_order:
-                startActivity(new Intent(getActivity(), OrderEstimateActivity.class));
+                startActivity(new Intent(this, OrderEstimateActivity.class));
                 break;
 
         }
