@@ -10,4 +10,8 @@ public class AppConfig {
 
     public static final int MAX_BITMAP_WIDTH = 1280;
     public static final int MAX_BITMAP_HEIGHT = 1280;
+
+    public static final int ORDER_SIZE = 10;
+    public static final String ORDERSTATUS_PROGRESS = "progress";
+    public static final String ORDERSTATUS_CLOSE = "close";
 }

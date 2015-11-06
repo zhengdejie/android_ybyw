@@ -93,6 +93,7 @@
             android:background="@color/divide"
             />
         <Button
+            android:id="@+id/btn_collect"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="我的收藏"
@@ -124,7 +125,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="账号信息"
+            android:text="我的信息"
             android:gravity="left|center"
             android:paddingLeft="10dp"
             android:background="@color/white"

@@ -38,8 +38,8 @@
     <string name="select_from_local">从相册中选取</string>
     <string name="scan">扫一扫</string>
     <string name="search">搜索</string>
-    <string name="send_require_order">发需求单</string>
-    <string name="send_recommand_order">发自荐单</string>
+    <string name="send_require_order">老板模式</string>
+    <string name="send_recommand_order">打工模式</string>
     <string name="viewfdinfo">查看帮友资料</string>
     <string name="collectorder">收藏本单</string>
     <string name="toporder">置顶本单</string>
@@ -50,6 +50,7 @@
     <string name="report">举报</string>
     <string name="topfs">热门友商</string>
     <string name="nearby">附近的人</string>
+    <string name="feedback">帮助与反馈</string>
 
 
 

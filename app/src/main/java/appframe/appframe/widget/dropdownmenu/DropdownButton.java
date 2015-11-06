@@ -42,6 +42,7 @@ public class DropdownButton extends RelativeLayout {
         textView.setText(text);
     }
 
+
     public void setChecked(boolean checked) {
         Drawable icon;
         if (checked) {

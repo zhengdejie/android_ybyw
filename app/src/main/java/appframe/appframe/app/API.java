@@ -3,8 +3,10 @@ package appframe.appframe.app;
 import java.util.List;
 
 import appframe.appframe.dto.AuthResult;
+import appframe.appframe.dto.OrderComment;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.OrderReviewDetail;
+import appframe.appframe.dto.UserContact;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Http;
 
@@ -22,7 +24,18 @@ public final class API {
     public static final Http.API<UserDetail> USER_PROFILE_UPDATE = Http.API.post("/profile/%s/update.json", UserDetail.class);
     public static final Http.API<UserDetail> ORDER_SEND = Http.API.post("/order/place.json", UserDetail.class);
     public static final Http.API<List<OrderDetails>> GET_SELFORDER = Http.API.getList("/order/self.json", OrderDetails.class);
+    public static final Http.API<List<UserDetail>> GET_SECOND = Http.API.getList("/contact/%s/second.json", UserDetail.class);
+    public static final Http.API<List<OrderDetails>> GET_ORDER = Http.API.getList("/order/friends.json%s", OrderDetails.class);
     public static final Http.API<UserDetail> EVALUATION_ORDER = Http.API.post("/review/order/make.json", UserDetail.class);
     public static final Http.API<List<OrderReviewDetail>> GET_ORDEREVALUATION = Http.API.getList("/review/order/%s.json", OrderReviewDetail.class);
-    public static final Http.API<AuthResult> USER_CONTACT_UPLOAD = Http.API.post("/contactupload.json", AuthResult.class);
+    public static final Http.API USER_CONTACT_UPLOAD = Http.API.postEmpty("/contact/upload.json");
+    public static final Http.API<UserDetail> ORDER_ACCEPT = Http.API.post("/order/%s/accept.json", UserDetail.class);
+    public static final Http.API<List<OrderDetails>> SEARCH_ORDER = Http.API.getList("/order/search.json%s", OrderDetails.class);
+    public static final Http.API USER_FEEDBACK = Http.API.postEmpty("/%s/feedback.json");
+    public static final Http.API ORDER_MAKECOOMENT = Http.API.postEmpty("/Order/%s/makecomment.json");
+    public static final Http.API<List<OrderComment>> ORDER_GETCOOMENT = Http.API.getList("/Order/%s/getComment.json", OrderComment.class);
+    public static final Http.API ORDER_DELETECOOMENT = Http.API.deleteEmpty("/Order/DeleteComment.json%s");
+    public static final Http.API<List<OrderDetails>> GET_FAVORITEORDER = Http.API.getList("/favoriteorder.json", OrderDetails.class);
+    public static final Http.API ADD_FAVORITEORDER = Http.API.postEmpty("/favoriteorder/add.json");
+    public static final Http.API DELETE_FAVORITEORDER = Http.API.deleteEmpty("/favoriteorder/%s.json");
 }

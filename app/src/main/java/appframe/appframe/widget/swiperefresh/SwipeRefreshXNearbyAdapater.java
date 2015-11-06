@@ -32,6 +32,10 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
     }
     @Override
     public int getCount() {
+        if(nearby == null)
+        {
+            return 0;
+        }
         return nearby.size();
     }
 

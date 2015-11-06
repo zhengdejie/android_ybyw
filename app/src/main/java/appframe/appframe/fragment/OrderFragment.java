@@ -2,11 +2,13 @@ package appframe.appframe.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,18 +26,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.baidu.location.BDLocation;
 
-
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.FeedbackActivity;
 import appframe.appframe.activity.OrderDetailsActivity;
 import appframe.appframe.activity.OrderSendActivity;
+import appframe.appframe.activity.SearchActivity;
 import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.com.google.zxing.client.android.CaptureActivity;
 import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.BaiduLocation;
+import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.widget.dropdownmenu.DropdownButton;
 import appframe.appframe.widget.dropdownmenu.DropdownItemObject;
@@ -84,17 +96,20 @@ public class OrderFragment extends BaseFragment  {
     private static final int ID_MULTI_DISTANCE = 51;
     private static final int ID_MULTI_INTEGRITY = 52;
     private static final int ID_MULTI_TIME = 53;
+    private static final int ID_MULTI_Ass_TIME = 54;
     private static final String MULTI_ALL = "智能";
     private static final String MULTI_DISTANCE = "距离最近";
-    private static final String MULTI_INTEGRITY = "诚信度最高";
-    private static final String MULTI_TIME = "发布时间";
+    private static final String MULTI_INTEGRITY = "诚信度高";
+    private static final String MULTI_TIME = "发布时间近";
+    private static final String MULTI_Ass_TIME = "截止时间近";
     //赏金
     private static final int ID_MONEY_ALL = 100;
     private static final int ID_MONEY_MONEY = 101;
-    private static final int ID_MONEY_TIME = 102;
-    private static final String MONEY_ALL = "赏金";
+    private static final int ID_MONEY_MONEY_LOW = 102;
+    private static final String MONEY_ALL = "金额";
     private static final String MONEY_MONEY = "任务赏金高";
-    private static final String MONEY_TIME = "任务时间长";
+    private static final String MONEY_MONEY_LOW = "任务赏金低";
+    //private static final String MONEY_TIME = "任务时间长";
     //筛选
     private static final int ID_SELECT_ALL = 150;
     private static final int ID_SELECT_FIRST = 151;
@@ -105,12 +120,12 @@ public class OrderFragment extends BaseFragment  {
     private static final String SELECT_ALL = "筛选";
     private static final String SELECT_FIRST = "一度朋友";
     private static final String SELECT_SECOND = "二度朋友";
-    private static final String SELECT_BOTH = "一度和二度朋友";
+    private static final String SELECT_BOTH = "陌生人";
     private static final String SELECT_OFFLINE = "线下支付";
     private static final String SELECT_ONLINE = "线上支付";
 
     public static final int SCAN_CODE = 1;
-
+    BDLocation bdLocation = new BDLocation();
     String type;
     ListView listView;
     View mask;
@@ -120,6 +135,7 @@ public class OrderFragment extends BaseFragment  {
     Animation dropdown_in, dropdown_out, dropdown_mask_out;
     View root;
     TextView tv_back,tv_require,tv_recommand,tv_action;
+    public OrderDetails topOrderDetails;
 
     private List<TopicLabelObject> labels = new ArrayList<>();
 
@@ -132,37 +148,144 @@ public class OrderFragment extends BaseFragment  {
         return fragment;
     }
 
+    protected int TransferOrderBy(String type)
+    {
+        if(type.equals(MULTI_ALL))
+        {
+            return 3;
+        }
+        else if(type.equals(MULTI_DISTANCE))
+        {
+            return 1;
+        }
+        else if(type.equals(MULTI_INTEGRITY))
+        {
+            return 2;
+        }
+        else if(type.equals(MULTI_TIME))
+        {
+            return 3;
+        }
+        else
+        {
+            return 4;
+        }
+    }
+
+    protected int TransferMoney(String type)
+    {
+        if(type.equals(MONEY_ALL))
+        {
+            return 2;
+        }
+        else if(type.equals(MONEY_MONEY))
+        {
+            return 2;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
+    protected int TransferSelect(String type)
+    {
+
+        if(type.equals(SELECT_FIRST))
+        {
+            return 1;
+        }
+        else if(type.equals(SELECT_SECOND))
+        {
+            return 2;
+        }
+        else if(type.equals(SELECT_BOTH))
+        {
+            return 4;
+        }
+        else if(type.equals(SELECT_ONLINE))
+        {
+            return 1;
+        }
+        else
+        {
+            return 2;
+        }
+    }
+
+    //获取置顶单子
+    protected  OrderDetails  getTopOrder()
+    {
+        OrderDetails orderDetails = new OrderDetails();
+        SharedPreferences sp = getActivity().getSharedPreferences("TOPORDER", Context.MODE_PRIVATE);
+        String OrderDetails = sp.getString("OrderDetails", null);
+        if (!TextUtils.isEmpty(OrderDetails)) {
+            orderDetails = GsonHelper.getGson().fromJson(OrderDetails, OrderDetails.class);
+        }
+
+        return orderDetails;
+    }
+
+    //判断有没置顶单
+    protected boolean hasTopOrder()
+    {
+        SharedPreferences sp = getActivity().getSharedPreferences("TOPORDER", Context.MODE_PRIVATE);
+        String OrderDetails = sp.getString("OrderDetails", null);
+        if (!TextUtils.isEmpty(OrderDetails)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    protected  List<OrderDetails> getOrders(List<OrderDetails> result,OrderDetails topOrder)
+    {
+        OrderDetails tempOrder = new OrderDetails();
+        for(OrderDetails od : result)
+        {
+            if(od.getId() == topOrder.getId())
+            {
+                tempOrder = od;
+            }
+        }
+        result.remove(tempOrder);
+        result.add(0, topOrder);
+
+        return result;
+    }
+
+
     @Override
     protected void onLoadData() {
-     //   if(type.equals("需求")) {
 
-            Http.request(getActivity(), API.GET_SELFORDER, new Http.RequestListener<List<OrderDetails>>() {
-                @Override
-                public void onSuccess(final List<OrderDetails> result) {
-                    super.onSuccess(result);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("Page", "1");
+        map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
 
-                    listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            Intent intent = new Intent();
-                            intent.setClass(getActivity(), OrderDetailsActivity.class);
-                            OrderDetails orderDetails = new OrderDetails();
-                            orderDetails.setTitle(result.get(position).getTitle());
-                            orderDetails.setContent(result.get(position).getContent());
-                            orderDetails.setCategory(result.get(position).getCategory());
-                            orderDetails.setBounty(result.get(position).getBounty());
-                            orderDetails.setPosition(result.get(position).getPosition());
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("OrderDetails", orderDetails);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                        }
-                    });
 
+        Http.request(getActivity(), API.GET_ORDER,new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+            @Override
+            public void onSuccess( List<OrderDetails> result) {
+                super.onSuccess(result);
+
+                if(hasTopOrder())
+                {
+                    OrderDetails topOrder = getTopOrder();
+                    List<OrderDetails> list_OD = getOrders(result,topOrder);
+                    listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD,AppConfig.ORDERSTATUS_PROGRESS, true));
                 }
-            });
-        //}
+                else
+                {
+                    listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS, false));
+                }
+
+
+
+            }
+        });
+
+
     }
 
 
@@ -205,30 +328,28 @@ public class OrderFragment extends BaseFragment  {
             public void onClick(View v) {
                 tv_require.setBackgroundColor(Color.GREEN);
                 tv_recommand.setBackgroundColor(Color.WHITE);
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
 
-                Http.request(getActivity(), API.GET_SELFORDER, new Http.RequestListener<List<OrderDetails>>() {
+
+                Http.request(getActivity(), API.GET_ORDER,new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
                     @Override
-                    public void onSuccess(final List<OrderDetails> result) {
+                    public void onSuccess( List<OrderDetails> result) {
                         super.onSuccess(result);
 
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Intent intent = new Intent();
-                                intent.setClass(getActivity(), OrderDetailsActivity.class);
-                                OrderDetails orderDetails = new OrderDetails();
-                                orderDetails.setTitle(result.get(position).getTitle());
-                                orderDetails.setContent(result.get(position).getContent());
-                                orderDetails.setCategory(result.get(position).getCategory());
-                                orderDetails.setBounty(result.get(position).getBounty());
-                                orderDetails.setPosition(result.get(position).getPosition());
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("OrderDetails", orderDetails);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            }
-                        });
+                        if(hasTopOrder())
+                        {
+                            OrderDetails topOrder = getTopOrder();
+                            List<OrderDetails> list_OD = getOrders(result,topOrder);
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD,AppConfig.ORDERSTATUS_PROGRESS, true));
+                        }
+                        else
+                        {
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS, false));
+                        }
+
+
 
                     }
                 });
@@ -241,29 +362,13 @@ public class OrderFragment extends BaseFragment  {
                 tv_require.setBackgroundColor(Color.WHITE);
                 tv_recommand.setBackgroundColor(Color.GREEN);
 
-                Http.request(getActivity(), API.GET_SELFORDER, new Http.RequestListener<List<OrderDetails>>() {
+                Http.request(getActivity(), API.GET_SELFORDER,new Http.RequestListener<List<OrderDetails>>() {
                     @Override
                     public void onSuccess(final List<OrderDetails> result) {
                         super.onSuccess(result);
 
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Intent intent = new Intent();
-                                intent.setClass(getActivity(), OrderDetailsActivity.class);
-                                OrderDetails orderDetails = new OrderDetails();
-                                orderDetails.setTitle(result.get(position).getTitle());
-                                orderDetails.setContent(result.get(position).getContent());
-                                orderDetails.setCategory(result.get(position).getCategory());
-                                orderDetails.setBounty(result.get(position).getBounty());
-                                orderDetails.setPosition(result.get(position).getPosition());
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("OrderDetails", orderDetails);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            }
-                        });
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
+
 
                     }
                 });
@@ -277,25 +382,53 @@ public class OrderFragment extends BaseFragment  {
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
         listView = (ListView) root.findViewById(R.id.lv_order);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), OrderDetailsActivity.class);
+                OrderDetails orderDetails = (OrderDetails)parent.getAdapter().getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("OrderDetails", orderDetails);
+                if( hasTopOrder() && orderDetails.getId() == getTopOrder().getId())
+                {
+                    bundle.putString("hasTopOrder","1");
+                }
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
         // 设置下拉刷新监听器
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
             public void onRefresh() {
 
-                Toast.makeText(getActivity(), "refresh", Toast.LENGTH_SHORT).show();
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
 
-//                myRefreshListView.postDelayed(new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        // 更新数据
-//                        datas.add(new Date().toGMTString());
-//                        adapter.notifyDataSetChanged();
-//                        // 更新完后调用该方法结束刷新
-//                        myRefreshListView.setRefreshing(false);
-//                    }
-//                }, 1000);
+
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                    @Override
+                    public void onSuccess(final List<OrderDetails> result) {
+                        super.onSuccess(result);
+
+                        if(hasTopOrder())
+                        {
+                            OrderDetails topOrder = getTopOrder();
+                            List<OrderDetails> list_OD = getOrders(result,topOrder);
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD,AppConfig.ORDERSTATUS_PROGRESS, true));
+                        }
+                        else
+                        {
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS, false));
+                        }
+
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
             }
         });
         // 加载监听器
@@ -352,79 +485,7 @@ public class OrderFragment extends BaseFragment  {
         });
 
 
-//        dropdownButtonsController.flushCounts();
-//        dropdownButtonsController.flushAllLabels();
-//        dropdownButtonsController.flushMyLabels();
 
-//        View root = inflater.inflate(R.layout.fragment_order, null);
-//        test_button = root.findViewById(R.id.test_button);
-//        UploadContact_button = root.findViewById(R.id.UploadContact_button);
-//        test_button.setOnClickListener(new View.OnClickListener(){
-//
-//            @Override
-//            public void onClick(View v) {
-//                UriHandler.openWebActivity(getActivity(), "/public/js/webframe-test.html");
-//            }
-//        });
-//        UploadContact_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //Cursor cursor = null;
-//                List<UserContact> contactsList = new ArrayList<UserContact>();
-//                try {
-//                    //Get Contacts
-//                    Cursor cursor = getActivity().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-//                    while (cursor.moveToNext()) {
-//                        //At least one phone number
-//                        if(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))>0)
-//                        {
-//                            int ContactID = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-//                            String ContactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-//                            Cursor cursorPhone = getActivity().getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactID, null, null);
-//                            while(cursorPhone.moveToNext())
-//                            {
-//                                String ContactMobile = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                                Pattern pattern = Pattern.compile("^\\d{11}$");
-//                                Matcher matcher = pattern.matcher(ContactMobile);
-//                                if(matcher.matches()) {
-//                                    UserContact userContact = new UserContact(ContactName, ContactMobile);
-//                                    contactsList.add(userContact);
-//                                }
-//                            }
-//                            cursorPhone.close();
-//                        }
-//
-//                    }
-//                    cursor.close();
-//                }
-//                catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
-//                /*finally {
-//                    if (cursor != null) {
-//                        cursor.close();
-//                    }
-//                    if (cursorPhone != null) {
-//                        cursorPhone.close();
-//                    }
-//                }*/
-//                //SharedPreferences sp = getActivity().getSharedPreferences("Auth", getActivity().MODE_PRIVATE);
-//
-//                Http.request(getActivity(), API.USER_CONTACT_UPLOAD, Http.map(
-//                        "Mobile", String.valueOf(Auth.getCurrentUserMobile()),
-//                        "UserContact", GsonHelper.getGson().toJson(contactsList)
-//                ), new Http.RequestListener<AuthResult>() {
-//                    @Override
-//                    public void onSuccess(AuthResult result) {
-//                        super.onSuccess(result);
-//                        //
-//
-//
-//                    }
-//                });
-//            }
-//        });
         return root;
     }
 
@@ -483,9 +544,71 @@ public class OrderFragment extends BaseFragment  {
 
         @Override
         public void onSelectionChanged(DropdownListView view) {
-//            if (view == dropdownType) {
-//                updateLabels(getCurrentLabels());
-//            }
+
+            Map<String, String> map = new HashMap<String, String>();
+            map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
+            map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
+            map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
+            map.put("FriendsFilter", String.valueOf(TransferSelect(dropdownSelect.current.text)));
+            map.put("PaymentMethodFilter", String.valueOf(TransferSelect(dropdownSelect.current.text)));
+            map.put("lantitude", String.valueOf(bdLocation.getLatitude()));
+            map.put("longtitude", String.valueOf(bdLocation.getLongitude()));
+            map.put("Page", "1");
+            map.put("Size", "10");
+
+            if (view == dropdownType) {
+
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                    @Override
+                    public void onSuccess(final List<OrderDetails> result) {
+                        super.onSuccess(result);
+
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
+
+
+                    }
+                });
+            }
+            else if ( view == dropdownMulti)
+            {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                    @Override
+                    public void onSuccess(final List<OrderDetails> result) {
+                        super.onSuccess(result);
+
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
+
+
+                    }
+                });
+
+            }
+            else if(view == dropdownMoney)
+            {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                    @Override
+                    public void onSuccess(final List<OrderDetails> result) {
+                        super.onSuccess(result);
+
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
+
+
+                    }
+                });
+            }
+            else
+            {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                    @Override
+                    public void onSuccess(final List<OrderDetails> result) {
+                        super.onSuccess(result);
+
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
+
+
+                    }
+                });
+            }
 
         }
 
@@ -537,13 +660,15 @@ public class OrderFragment extends BaseFragment  {
             datasetMulti.add(new DropdownItemObject(MULTI_DISTANCE, ID_MULTI_DISTANCE,"DISTANCE"));
             datasetMulti.add(new DropdownItemObject(MULTI_INTEGRITY, ID_MULTI_INTEGRITY,"INTEGRITY"));
             datasetMulti.add(new DropdownItemObject(MULTI_TIME, ID_MULTI_TIME, "TIME"));
+            datasetMulti.add(new DropdownItemObject(MULTI_Ass_TIME, ID_MULTI_Ass_TIME, "AssTIME"));
 
             dropdownMulti.bind(datasetMulti, chooseMulti, this, ID_MULTI_ALL);
 
             //赏金
             datasetMoney.add(new DropdownItemObject(MONEY_ALL, ID_MONEY_ALL,"ALL"));
             datasetMoney.add(new DropdownItemObject(MONEY_MONEY, ID_MONEY_MONEY,"MONEY"));
-            datasetMoney.add(new DropdownItemObject(MONEY_TIME, ID_MONEY_TIME, "TIME"));
+            datasetMoney.add(new DropdownItemObject(MONEY_MONEY_LOW, ID_MONEY_MONEY_LOW,"MONEYLOW"));
+            //datasetMoney.add(new DropdownItemObject(MONEY_TIME, ID_MONEY_TIME, "TIME"));
 
             dropdownMoney.bind(datasetMoney, chooseMoney, this, ID_MONEY_ALL);
 
@@ -676,6 +801,8 @@ public class OrderFragment extends BaseFragment  {
                     .findViewById(R.id.item_popupwindows_send_recommand_order);
             Button btn_search = (Button) view
                     .findViewById(R.id.item_popupwindows_search);
+            Button btn_feedback = (Button) view
+                    .findViewById(R.id.item_popupwindows_feedback);
             btn_scan.setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
@@ -712,7 +839,15 @@ public class OrderFragment extends BaseFragment  {
             {
                 public void onClick(View v)
                 {
-
+                    getActivity().startActivity(new Intent(getActivity(), SearchActivity.class));
+                    dismiss();
+                }
+            });
+            btn_feedback.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    getActivity().startActivity(new Intent(getActivity(), FeedbackActivity.class));
                     dismiss();
                 }
             });

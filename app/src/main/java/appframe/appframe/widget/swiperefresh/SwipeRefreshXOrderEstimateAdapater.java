@@ -31,6 +31,10 @@ public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
     }
     @Override
     public int getCount() {
+        if(orderReviewDetails == null)
+        {
+            return 0;
+        }
         return orderReviewDetails.size();
     }
 

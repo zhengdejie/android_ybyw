@@ -46,6 +46,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -168,6 +169,14 @@ public final class Http {
             r.method = RequestMethod.POST;
             r.resultClass = resultClass;
             r.resultIsList = true;
+            return r;
+        }
+        public static <T extends BaseDto> API<T> deleteEmpty(String url){
+            API<T> r = new API<>();
+            r.url = url;
+            r.method = RequestMethod.DELETE;
+            r.resultClass = BaseDto.class;
+            r.resultIsList = false;
             return r;
         }
     }
@@ -769,7 +778,7 @@ public final class Http {
         r.delayTime = delay;
         r.params = params;
         r.context = new WeakReference<>(context);
-        if(listener == null) listener = new RequestListener<>();
+        if (listener == null) listener = new RequestListener<>();
         return request(r, listener);
     }
     public static <T> Response<T> request(
@@ -893,5 +902,23 @@ public final class Http {
     }
     static String getAdditionalHeaderKey(String k){
         return k.substring(ADDITIONAL_HEADER_FIELD_KEY.length());
+    }
+    public static String getURL(Map<String,String> map)
+    {
+        StringBuilder sb = new StringBuilder();
+        if(map != null) {
+            Iterator<String> iter = map.keySet().iterator();
+            sb.append("?");
+            String key ="";
+            while (iter.hasNext()) {
+                key = iter.next();
+                sb.append(key);
+                sb.append("=");
+                sb.append(map.get(key));
+                sb.append("&");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        return sb.toString();
     }
 }

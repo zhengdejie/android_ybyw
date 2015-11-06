@@ -7,8 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,11 +24,17 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
 import appframe.appframe.dto.AuthResult;
+import appframe.appframe.dto.UserContact;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.UploadUtils;
 import appframe.appframe.utils.Utils;
@@ -40,6 +48,7 @@ public class RegisterActivity extends BaseActivity {
     EditText email, password, name;
     View ok;
     ImageButton avatar;
+    List<UserContact> contactsList = new ArrayList<UserContact>();
 
     String uploadedAvatarId;
 
@@ -72,7 +81,44 @@ public class RegisterActivity extends BaseActivity {
                     @Override
                     public void onSuccess(AuthResult result) {
                         super.onSuccess(result);
+                        try {
+                            //Get Contacts
+                            Cursor cursor = RegisterActivity.this.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+                            while (cursor.moveToNext()) {
+                                //At least one phone number
+                                if(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))>0)
+                                {
+                                    int ContactID = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                                    String ContactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                                    Cursor cursorPhone = RegisterActivity.this.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactID, null, null);
+                                    while(cursorPhone.moveToNext())
+                                    {
+                                        String ContactMobile = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                        Pattern pattern = Pattern.compile("^\\d{11}$");
+                                        Matcher matcher = pattern.matcher(ContactMobile);
+                                        if(matcher.matches()) {
+                                            UserContact userContact = new UserContact(ContactName, ContactMobile);
+                                            contactsList.add(userContact);
+                                        }
+                                    }
+                                    cursorPhone.close();
+                                }
 
+                            }
+                            cursor.close();
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+
+
+                        Http.request(RegisterActivity.this, API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList)), new Http.RequestListener<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                super.onSuccess(result);
+                            }
+                        });
 
                         Auth.login(result.Token, result.User);
 

@@ -391,7 +391,7 @@
                         android:text="匿名"
                         android:id="@+id/checkBox_anonymous"
                         android:layout_weight="1"
-                        android:checked="true"/>
+                        android:checked="false"/>
 
                     <CheckBox
                         android:layout_width="match_parent"
@@ -399,7 +399,7 @@
                         android:text="匿地"
                         android:id="@+id/checkBox_donotshowlocation"
                         android:layout_weight="1"
-                        android:checked="true"/>
+                        android:checked="false"/>
 
                     <CheckBox
                         android:layout_width="match_parent"
@@ -407,7 +407,7 @@
                         android:text="匿电话"
                         android:id="@+id/checkBox_donotshowphonenum"
                         android:layout_weight="1"
-                        android:checked="true"/>
+                        android:checked="false"/>
 
                 </LinearLayout>
 

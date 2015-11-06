@@ -107,6 +107,9 @@
         <activity android:name=".activity.FramedWebViewActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.FriendShopsActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.EstimateActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MyCollectActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SearchActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.FeedbackActivity" android:screenOrientation="portrait"/>
 
 
         <activity android:name=".widget.photopicker.view.ImageBucketChooseActivity"  android:screenOrientation="portrait"/>

@@ -1,6 +1,7 @@
 package appframe.appframe.widget.sortlistview;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -14,7 +15,14 @@ import android.widget.Toast;
 import appframe.appframe.R;
 
 //import com.example.sortlistview.SideBar.OnTouchingLetterChangedListener;
+import appframe.appframe.activity.OrderDetailsActivity;
+import appframe.appframe.app.API;
+import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.dto.UserDetail;
+import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.Http;
 import appframe.appframe.widget.sortlistview.SideBar.OnTouchingLetterChangedListener;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,22 +90,62 @@ public class SortListViewActivity extends Activity {
 		});
 		
 		sortListView = (ListView) findViewById(R.id.country_lvcountry);
-		sortListView.setOnItemClickListener(new OnItemClickListener() {
+//		sortListView.setOnItemClickListener(new OnItemClickListener() {
+//
+//			@Override
+//			public void onItemClick(AdapterView<?> parent, View view,
+//									int position, long id) {
+//				//����Ҫ����adapter.getItem(position)����ȡ��ǰposition����Ӧ�Ķ���
+//				Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
+//			}
+//		});
 
+		Http.request(SortListViewActivity.this, API.GET_SECOND, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<UserDetail>>() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				//����Ҫ����adapter.getItem(position)����ȡ��ǰposition����Ӧ�Ķ���
-				Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
+			public void onSuccess(final List<UserDetail> result) {
+				super.onSuccess(result);
+
+				SourceDateList = filledData(result);
+				Collections.sort(SourceDateList, pinyinComparator);
+				adapter = new SortAdapter(SortListViewActivity.this, SourceDateList);
+				sortListView.setAdapter(adapter);
+				sortListView.setOnItemClickListener(new OnItemClickListener() {
+
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+											int position, long id) {
+						//����Ҫ����adapter.getItem(position)����ȡ��ǰposition����Ӧ�Ķ���
+						Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
+					}
+				});
+//				listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
+//				listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//					@Override
+//					public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//						Intent intent = new Intent();
+//						intent.setClass(getActivity(), OrderDetailsActivity.class);
+//						OrderDetails orderDetails = new OrderDetails();
+//						orderDetails.setTitle(result.get(position).getTitle());
+//						orderDetails.setContent(result.get(position).getContent());
+//						orderDetails.setCategory(result.get(position).getCategory());
+//						orderDetails.setBounty(result.get(position).getBounty());
+//						orderDetails.setPosition(result.get(position).getPosition());
+//						Bundle bundle = new Bundle();
+//						bundle.putSerializable("OrderDetails", orderDetails);
+//						intent.putExtras(bundle);
+//						startActivity(intent);
+//					}
+//				});
+
 			}
 		});
-		
-		SourceDateList = filledData(getResources().getStringArray(R.array.date));
+
+		//SourceDateList = filledData(getResources().getStringArray(R.array.date));
 		
 		// ����a-z��������Դ����
-		Collections.sort(SourceDateList, pinyinComparator);
-		adapter = new SortAdapter(this, SourceDateList);
-		sortListView.setAdapter(adapter);
+//		Collections.sort(SourceDateList, pinyinComparator);
+//		adapter = new SortAdapter(this, SourceDateList);
+//		sortListView.setAdapter(adapter);
 		
 		
 		mClearEditText = (ClearEditText) findViewById(R.id.filter_edit);
@@ -129,14 +177,14 @@ public class SortListViewActivity extends Activity {
 	 * @param date
 	 * @return
 	 */
-	private List<SortModel> filledData(String[] date){
+	private List<SortModel> filledData(List<UserDetail> date){
 		List<SortModel> mSortList = new ArrayList<SortModel>();
 		
-		for(int i=0; i<date.length; i++){
+		for(int i=0; i<date.size(); i++){
 			SortModel sortModel = new SortModel();
-			sortModel.setName(date[i]);
+			sortModel.setName(date.get(i).Name.toString());
 			//����ת����ƴ��
-			String pinyin = characterParser.getSelling(date[i]);
+			String pinyin = characterParser.getSelling(date.get(i).Name.toString());
 			String sortString = pinyin.substring(0, 1).toUpperCase();
 			
 			// ������ʽ���ж�����ĸ�Ƿ���Ӣ����ĸ

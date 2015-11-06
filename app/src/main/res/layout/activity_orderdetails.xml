@@ -3,6 +3,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+                android:background="@color/white"
               >
 
     <LinearLayout
@@ -77,7 +78,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="￥"/>
+                            android:text="赏 ￥"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -289,7 +290,7 @@
                         android:text="截止日期:"
                         android:textSize="17sp"
                         android:layout_gravity="bottom"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:singleLine="true"/>
 
                     <TextView
@@ -301,14 +302,14 @@
                         android:textSize="17sp"
                         android:text="2015-08-13"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/txt_deadlinetime"
-                        android:layout_weight="1"
-                        android:layout_gravity="bottom"
-                        android:textSize="17sp"
-                        android:text="08:00"/>
+                    <!--<TextView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:id="@+id/txt_deadlinetime"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:layout_gravity="bottom"-->
+                        <!--android:textSize="17sp"-->
+                        <!--android:text="08:00"/>-->
                 </LinearLayout>
 
                 <View
@@ -432,6 +433,45 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="评价（13）"
+                    android:gravity="left|center"
+                    android:background="@color/white"
+                    android:id="@+id/btn_estimate"
+                    />
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:text="留言"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="120dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ListView
+                        android:id="@+id/lv_ordercomment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+
         </LinearLayout>
 
     </ScrollView>
@@ -445,10 +485,18 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="留言"
+            android:id="@+id/btn_comment"
+            android:layout_gravity="bottom"
+            android:layout_weight="4"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="我要接单"
             android:id="@+id/btn_select"
             android:layout_gravity="bottom"
-            android:layout_weight="1"
+            android:layout_weight="3"
             />
         <Button
             android:layout_width="match_parent"
@@ -456,7 +504,7 @@
             android:text="推荐朋友接单"
             android:id="@+id/btn_recommend"
             android:layout_gravity="bottom"
-            android:layout_weight="1"
+            android:layout_weight="3"
             />
     </LinearLayout>
 

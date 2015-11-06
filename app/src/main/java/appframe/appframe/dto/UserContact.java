@@ -6,27 +6,27 @@ import appframe.appframe.utils.Http;
  * Created by Administrator on 2015/8/5.
  */
 public class UserContact extends Http.BaseDto{
-    public String ContactName;
-    public String ContactMobile;
+    public String Name;
+    public String Mobile;
 
-    public UserContact(String contactName, String contactMobile) {
-        ContactName = contactName;
-        ContactMobile = contactMobile;
+    public UserContact(String name, String mobile) {
+        Name = name;
+        Mobile = mobile;
     }
 
-    public String getContactName() {
-        return ContactName;
+    public String getName() {
+        return Name;
     }
 
-    public void setContactName(String contactName) {
-        ContactName = contactName;
+    public void setName(String name) {
+        Name = name;
     }
 
-    public String getContactMobile() {
-        return ContactMobile;
+    public String getMobile() {
+        return Mobile;
     }
 
-    public void setContactMobile(String contactMobile) {
-        ContactMobile = contactMobile;
+    public void setMobile(String mobile) {
+        Mobile = mobile;
     }
 }

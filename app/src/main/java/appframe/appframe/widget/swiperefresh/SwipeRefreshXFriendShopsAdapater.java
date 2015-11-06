@@ -30,6 +30,10 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
     }
     @Override
     public int getCount() {
+        if(friendshops == null)
+        {
+            return 0;
+        }
         return friendshops.size();
     }
 

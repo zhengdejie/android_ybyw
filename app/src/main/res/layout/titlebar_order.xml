@@ -25,7 +25,7 @@
 
     <TextView
         android:id="@+id/tv_require"
-        android:text="需求"
+        android:text="赚钱"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -38,7 +38,7 @@
 
     <TextView
         android:id="@+id/tv_recommand"
-        android:text="自荐"
+        android:text="消费"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"

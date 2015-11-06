@@ -11,19 +11,24 @@ import appframe.appframe.utils.Http;
 public class OrderDetails extends Http.BaseDto implements Serializable {
     private int Id ;
     private String Title;
-    private String Content;
-    private String Position;
-    private Date CreatedAt;
-    private String Category;
-    private String OrderStatus;
-    private int Visibility;
-    private Date Deadline;
-    private String PaymentMethod;
     private float Bounty;
+    private String Address;
+    private String Category;
+    private String Content;
+    private String Photos;
+    private int Visibility;
+    private int NameAnonymity;
+    private int LocationAnonymity;
+    private int PhoneAnonymity;
+    private String Deadline;
+    private String request;
+    private String PaymentMethod;
+    private String CreatedAt;
+    private String UpdatedAt;
+    private String AcceptedAt;
+    private String OrderStatus;
     private UserDetail Orderer;
     private UserDetail Orderee;
-
-
 
 
     public int getId() {
@@ -42,28 +47,20 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
         Title = title;
     }
 
-    public String getContent() {
-        return Content;
+    public float getBounty() {
+        return Bounty;
     }
 
-    public void setContent(String content) {
-        Content = content;
+    public void setBounty(float bounty) {
+        Bounty = bounty;
     }
 
-    public String getPosition() {
-        return Position;
+    public String getAddress() {
+        return Address;
     }
 
-    public void setPosition(String position) {
-        Position = position;
-    }
-
-    public Date getCreatedAt() {
-        return CreatedAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        CreatedAt = createdAt;
+    public void setAddress(String address) {
+        Address = address;
     }
 
     public String getCategory() {
@@ -74,12 +71,20 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
         Category = category;
     }
 
-    public String getOrderStatus() {
-        return OrderStatus;
+    public String getContent() {
+        return Content;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        OrderStatus = orderStatus;
+    public void setContent(String content) {
+        Content = content;
+    }
+
+    public String getPhotos() {
+        return Photos;
+    }
+
+    public void setPhotos(String photos) {
+        Photos = photos;
     }
 
     public int getVisibility() {
@@ -90,12 +95,44 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
         Visibility = visibility;
     }
 
-    public Date getDeadline() {
+    public int getNameAnonymity() {
+        return NameAnonymity;
+    }
+
+    public void setNameAnonymity(int nameAnonymity) {
+        NameAnonymity = nameAnonymity;
+    }
+
+    public int getLocationAnonymity() {
+        return LocationAnonymity;
+    }
+
+    public void setLocationAnonymity(int locationAnonymity) {
+        LocationAnonymity = locationAnonymity;
+    }
+
+    public int getPhoneAnonymity() {
+        return PhoneAnonymity;
+    }
+
+    public void setPhoneAnonymity(int phoneAnonymity) {
+        PhoneAnonymity = phoneAnonymity;
+    }
+
+    public String getDeadline() {
         return Deadline;
     }
 
-    public void setDeadline(Date deadline) {
+    public void setDeadline(String deadline) {
         Deadline = deadline;
+    }
+
+    public String getRequest() {
+        return request;
+    }
+
+    public void setRequest(String request) {
+        this.request = request;
     }
 
     public String getPaymentMethod() {
@@ -106,12 +143,36 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
         PaymentMethod = paymentMethod;
     }
 
-    public float getBounty() {
-        return Bounty;
+    public String getCreatedAt() {
+        return CreatedAt;
     }
 
-    public void setBounty(float bounty) {
-        Bounty = bounty;
+    public void setCreatedAt(String createdAt) {
+        CreatedAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return UpdatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        UpdatedAt = updatedAt;
+    }
+
+    public String getAcceptedAt() {
+        return AcceptedAt;
+    }
+
+    public void setAcceptedAt(String acceptedAt) {
+        AcceptedAt = acceptedAt;
+    }
+
+    public String getOrderStatus() {
+        return OrderStatus;
+    }
+
+    public void setOrderStatus(String orderStatus) {
+        OrderStatus = orderStatus;
     }
 
     public UserDetail getOrderer() {
@@ -129,6 +190,4 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
     public void setOrderee(UserDetail orderee) {
         Orderee = orderee;
     }
-
-
 }

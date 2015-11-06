@@ -1,8 +1,11 @@
 package appframe.appframe.activity;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,13 +16,19 @@ import com.alibaba.mobileim.IYWLoginService;
 import com.alibaba.mobileim.YWLoginParam;
 import com.alibaba.mobileim.channel.event.IWxCallback;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
 import appframe.appframe.app.App;
 import appframe.appframe.dto.AuthResult;
+import appframe.appframe.dto.UserContact;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.Utils;
 
@@ -31,6 +40,7 @@ public class LoginActivity extends BaseActivity {
     View ok;
     TextView tb_back,tb_action,tb_title;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +51,10 @@ public class LoginActivity extends BaseActivity {
 
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
+
+
+        //Cursor cursor = null;
+        //List<UserContact> contactsList = new ArrayList<UserContact>();
 
 
         ok = findViewById(R.id.ok);

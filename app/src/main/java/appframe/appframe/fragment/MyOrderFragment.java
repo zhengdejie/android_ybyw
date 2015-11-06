@@ -11,11 +11,13 @@ import android.widget.TextView;
 
 import com.github.snowdream.android.util.Log;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.OrderDetailsActivity;
 import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
@@ -44,6 +46,30 @@ public class MyOrderFragment extends BaseFragment {
         tb_title = (TextView) root.findViewById(R.id.tb_title);
         tb_title.setText("我的发单");
         tb_back.setVisibility(View.GONE);
+        proListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), OrderDetailsActivity.class);
+                OrderDetails orderDetails = (OrderDetails) parent.getAdapter().getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("OrderDetails", orderDetails);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+        closeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), OrderDetailsActivity.class);
+                OrderDetails orderDetails = (OrderDetails) parent.getAdapter().getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("OrderDetails", orderDetails);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -54,32 +80,26 @@ public class MyOrderFragment extends BaseFragment {
             public void onSuccess(List<OrderDetails> result) {
                 super.onSuccess(result);
 
-                proListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
-                proListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //Toast.makeText(getActivity(), "df", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getActivity(), OrderDetailsActivity.class));
+                List<OrderDetails> listPro = new ArrayList<OrderDetails>();
+                List<OrderDetails> listClose = new ArrayList<OrderDetails>();
+
+                for(OrderDetails od : result)
+                {
+                    if(od.getOrderStatus().equals("进行中"))
+                    {
+                        listPro.add(od);
                     }
-                });
+                    else
+                    {
+                        listClose.add(od);
+                    }
+                }
+                proListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), listPro, AppConfig.ORDERSTATUS_CLOSE));
+                closeListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), listClose, AppConfig.ORDERSTATUS_CLOSE));
+
 
             }
         });
-        Http.request(getActivity(), API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
-            @Override
-            public void onSuccess(List<OrderDetails> result) {
-                super.onSuccess(result);
 
-                closeListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
-                closeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //Toast.makeText(getActivity(), "df", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(getActivity(), OrderDetailsActivity.class));
-                    }
-                });
-
-            }
-        });
     }
 }

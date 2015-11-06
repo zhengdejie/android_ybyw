@@ -14,13 +14,18 @@ import com.viewpagerindicator.IconPagerAdapter;
 import com.viewpagerindicator.PageIndicator;
 
 import appframe.appframe.R;
+import appframe.appframe.app.API;
 import appframe.appframe.app.App;
+import appframe.appframe.dto.UserDetail;
 import appframe.appframe.fragment.BaseFragment;
 import appframe.appframe.fragment.DiscoveryFragment;
 import appframe.appframe.fragment.MyOrderFragment;
 import appframe.appframe.fragment.OrderFragment;
 import appframe.appframe.fragment.PersonFragment;
+import appframe.appframe.fragment.ProfileFragment;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.Http;
+import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.Utils;
 
 /**
@@ -79,6 +84,17 @@ public class HomeActivity extends BaseFrameActivity{
 
             PushManager.getInstance().initialize(this);
             Log.i("-----ClientID:------", String.format("%s", PushManager.getInstance().getClientid(this)));
+            Http.request(this, API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                    "GTClientID", PushManager.getInstance().getClientid(this)
+            ), new Http.RequestListener<UserDetail>() {
+                @Override
+                public void onSuccess(UserDetail result) {
+                    super.onSuccess(result);
+
+
+
+                }
+            });
         }
 
 
@@ -94,7 +110,7 @@ public class HomeActivity extends BaseFrameActivity{
                 new OrderFragment(),
                 new MyOrderFragment(),
                 new DiscoveryFragment(),
-                new PersonFragment(),
+                new PersonFragment()
         };
 
         pager = (ViewPager) findViewById(R.id.pager);

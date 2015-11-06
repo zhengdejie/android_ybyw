@@ -84,16 +84,10 @@ import appframe.appframe.widget.popupwindow.SelectPicPopupWindow;
  */
 public class OrderSendActivity extends BaseActivity{
     private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title;
-    private EditText edit_title;
-    private EditText edit_bounty;
-    private Spinner spinner_category;
-    private EditText edit_content;
-    private Spinner spinner_range;
-    private EditText edit_require;
-    private RadioButton radio_online;
-    private RadioButton radio_offline;
-    private CheckBox checkBox_anonymous;
-    private CheckBox checkBox_donotshowlocation;
+    private EditText edit_title,edit_bounty,edit_content,edit_require;
+    private Spinner spinner_category,spinner_range;
+    private RadioButton radio_online,radio_offline;
+    private CheckBox checkBox_anonymous,checkBox_donotshowphonenum,checkBox_donotshowlocation;
     private Button btn_send;
     private ImageButton img_addimg1,img_addimg2,img_addimg3;
     private SelectPicPopupWindow menuWindow;
@@ -113,6 +107,7 @@ public class OrderSendActivity extends BaseActivity{
     SimpleDateFormat fmtDate = new SimpleDateFormat("yy-MM-dd");
     SimpleDateFormat fmtTime = new SimpleDateFormat("hh:mm");
     private Calendar dateAndTime = Calendar.getInstance(Locale.CHINA);
+    BDLocation bdLocation = new BDLocation();
 
     private GridView mGridView;
     private ImagePublishAdapter mAdapter;
@@ -152,13 +147,20 @@ public class OrderSendActivity extends BaseActivity{
                 Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
                         "Id",String.valueOf(Auth.getCurrentUserId()),
                         "Title", edit_title.getText().toString(),
+                        "Address",txt_location.getText().toString(),
                         "Content", edit_content.getText().toString(),
-                        "Position", txt_location.getText().toString(),
+                        "latitude", String.valueOf(bdLocation.getLatitude()),
+                        "longitude", String.valueOf(bdLocation.getLongitude()),
                         "Category", spinner_category.getSelectedItem().toString(),
                         "Visibility", "0",
                         "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
-                        "PaymentMethod", radio_online.isChecked() ? "online" : "offline",
-                        "Bounty", edit_bounty.getText().toString()
+                        "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
+                        "Bounty", edit_bounty.getText().toString(),
+                        "NameAnonymity",checkBox_anonymous.isChecked() ? "1" : "0",
+                        "LocationAnonymity",checkBox_donotshowlocation.isChecked() ? "1" :"0",
+                        "PhoneAnonymity",checkBox_donotshowphonenum.isChecked() ? "1" : "0",
+                        "Photos","",
+                        "Request",edit_require.getText().toString()
                 ), new Http.RequestListener<UserDetail>() {
                     @Override
                     public void onSuccess(UserDetail result) {
@@ -633,6 +635,7 @@ public class OrderSendActivity extends BaseActivity{
         radio_offline = (RadioButton)findViewById(R.id.radio_offline);
         checkBox_anonymous = (CheckBox)findViewById(R.id.checkBox_anonymous);
         checkBox_donotshowlocation = (CheckBox)findViewById(R.id.checkBox_donotshowlocation);
+        checkBox_donotshowphonenum = (CheckBox)findViewById(R.id.checkBox_donotshowphonenum);
         btn_send = (Button)findViewById(R.id.btn_send);
 //        img_addimg1 = (ImageButton)findViewById(R.id.img_addimg1);
 //        img_addimg2 = (ImageButton)findViewById(R.id.img_addimg2);
