@@ -3,11 +3,14 @@ package appframe.appframe.widget.dropdownmenu;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,6 +23,8 @@ public class DropdownListView extends ScrollView {
     public LinearLayout linearLayout;
 
     public DropdownItemObject current;
+
+    public List<DropdownItemObject> currentMulti = new ArrayList<DropdownItemObject>();
 
     List<? extends DropdownItemObject> list;
 
@@ -62,10 +67,36 @@ public class DropdownListView extends ScrollView {
         }
     }
 
+    public void flushMulti() {
+        for (int i = 0, n = linearLayout.getChildCount(); i < n; i++) {
+            View view = linearLayout.getChildAt(i);
+            if (view instanceof DropdownListItemView) {
+                DropdownListItemView itemView = (DropdownListItemView) view;
+                DropdownItemObject data = (DropdownItemObject) itemView.getTag();
+                if (data == null) {
+                    return;
+                }
+                boolean checked = false;
+                for(DropdownItemObject ddio : currentMulti)
+                {
+                    if( data == ddio)
+                    {
+                        checked = true;
+                    }
+                }
+                //boolean checked = data == current;
+                String suffix = data.getSuffix();
+                itemView.bind(TextUtils.isEmpty(suffix) ? data.text : data.text + suffix, checked);
+                button.setText("筛选");
+            }
+
+        }
+    }
+
     public void bind(List<? extends DropdownItemObject> list,
                      DropdownButton button,
                      final Container container,
-                     int selectedId
+                     int selectedId, final int multiSelect
     ) {
         current = null;
         this.list = list;
@@ -104,12 +135,35 @@ public class DropdownListView extends ScrollView {
                 public void onClick(View v) {
                     DropdownItemObject data = (DropdownItemObject) v.getTag();
                     if (data == null) return;
-                    DropdownItemObject oldOne = current;
-                    current = data;
-                    flush();
-                    container.hide();
-                    if (oldOne != current) {
-                        container.onSelectionChanged(DropdownListView.this);
+                    if (multiSelect == 0) {
+                        DropdownItemObject oldOne = current;
+                        current = data;
+                        flush();
+                        container.hide();
+                        if (oldOne != current) {
+                            container.onSelectionChanged(DropdownListView.this);
+                        }
+                    } else {
+                        if (currentMulti.size() == 0) {
+                            currentMulti.add(data);
+                        } else {
+                            DropdownItemObject tempMulti = new DropdownItemObject();
+
+                            for (DropdownItemObject ddto : currentMulti) {
+                                if (ddto.id == data.id) {
+                                    tempMulti = ddto;
+                                }
+                            }
+                            if(tempMulti.id == 0)
+                            {
+                                currentMulti.add(data);
+                            }
+                            else
+                            {
+                                currentMulti.remove(tempMulti);
+                            }
+                        }
+                        flushMulti();
                     }
                 }
             });
@@ -117,8 +171,20 @@ public class DropdownListView extends ScrollView {
             if (item.id == selectedId && current == null) {
                 current = item;
             }
-        }
 
+        }
+        if (multiSelect == 1) {
+            Button btn_ok = new Button(getContext());
+            btn_ok.setText("确定");
+            btn_ok.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    container.hide();
+                    container.onSelectionChanged(DropdownListView.this);
+                }
+            });
+            linearLayout.addView(btn_ok);
+        }
         button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,7 +199,13 @@ public class DropdownListView extends ScrollView {
         if (current == null && list.size() > 0) {
             current = list.get(0);
         }
-        flush();
+        if (multiSelect == 0) {
+            flush();
+        }
+        else
+        {
+            flushMulti();
+        }
     }
 
 

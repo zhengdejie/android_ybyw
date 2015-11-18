@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,7 +78,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             Log.i("onTextChanged",et_search.getText().toString());
             if(!et_search.getText().toString().equals("")) {
                 Map<String, String> map = new HashMap<String, String>();
-                map.put("KeyWord", et_search.getText().toString());
+                map.put("KeyWord", URLEncoder.encode(et_search.getText().toString()));
                 Http.request(SearchActivity.this, API.SEARCH_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
                     @Override
                     public void onSuccess(final List<OrderDetails> result) {

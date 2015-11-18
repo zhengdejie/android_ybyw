@@ -3,9 +3,14 @@ package appframe.appframe.app;
 import java.util.List;
 
 import appframe.appframe.dto.AuthResult;
+import appframe.appframe.dto.ConfirmedOrderDetail;
+import appframe.appframe.dto.ContactDetail;
+import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderComment;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.OrderReviewDetail;
+import appframe.appframe.dto.PushMessage;
+import appframe.appframe.dto.Token;
 import appframe.appframe.dto.UserContact;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Http;
@@ -38,4 +43,13 @@ public final class API {
     public static final Http.API<List<OrderDetails>> GET_FAVORITEORDER = Http.API.getList("/favoriteorder.json", OrderDetails.class);
     public static final Http.API ADD_FAVORITEORDER = Http.API.postEmpty("/favoriteorder/add.json");
     public static final Http.API DELETE_FAVORITEORDER = Http.API.deleteEmpty("/favoriteorder/%s.json");
+    public static final Http.API<List<ConfirmedOrderDetail>> GET_CONFIRMEDORDER = Http.API.getList("/confirmedOrder/display.json", ConfirmedOrderDetail.class);
+    public static final Http.API CONFIRMORDER = Http.API.postEmpty("/order/%s/confirm.json");
+    public static final Http.API<List<UserDetail>> GET_CANDIDATE = Http.API.getList("/order/%s/getcandidate.json", UserDetail.class);
+    public static final Http.API<Token> GetQINIUUploadToken = Http.API.get("/photos/gettoken.json", Token.class);
+    public static final Http.API<List<PushMessage>> GET_PUSHMESSAGE = Http.API.getList("/pushmessage/get.json%s", PushMessage.class);
+    public static final Http.API<List<ContactDetail>> GET_CONTACT = Http.API.getList("/contact/mobile.json", ContactDetail.class);
+    public static final Http.API ADD_FDF = Http.API.postEmpty("/profile/%s/addFDF.json");
+    public static final Http.API ACCEPT_ADDFDF = Http.API.postEmpty("/profile/%s/acceptAddFDF.json");
+    public static final Http.API<List<Nearby>> GET_USERNEARBY = Http.API.getList("/usernearby/get.json%s", Nearby.class);
 }

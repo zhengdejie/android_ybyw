@@ -197,31 +197,5 @@ public final class Utils {
         return (int)(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, App.instance.getResources().getDisplayMetrics()) + 0.5f);
     }
 
-    public static void IMLogin(String userid,String password,final Context context)
-    {
 
-        IYWLoginService loginService = App.mIMKit.getLoginService();
-        YWLoginParam loginParam = YWLoginParam.createLoginParam(userid, password);
-        loginService.login(loginParam, new IWxCallback() {
-
-            @Override
-            public void onSuccess(Object... arg0) {
-
-            }
-
-            @Override
-            public void onProgress(int arg0) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void onError(int errCode, String description) {
-                Auth.login(null, null);
-
-                // 进首页
-                SplashActivity.startRootActivity((Activity)context);
-                Toast.makeText(context,"IM登入失败，请重新登入",Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 }

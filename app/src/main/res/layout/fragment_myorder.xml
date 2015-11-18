@@ -6,50 +6,129 @@
 
     <include
         android:id="@+id/title_bar"
-        layout="@layout/titlebar" />
+        layout="@layout/titlebar_order" />
 
-    <TextView
-    android:layout_width="match_parent"
-    android:layout_height="30dp"
-    android:text="正在进行"
-    android:textSize="17sp"
-    android:paddingLeft="10dp"
-    android:gravity="left|center"
-    android:textColor="@color/default_underline_indicator_selected_color"/>
+    <LinearLayout
+        android:id="@+id/tabtop"
+        android:layout_width="fill_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentBottom="true"
+        android:baselineAligned="false"
+        android:background="@color/white"
+
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_progess"
+                style="@style/tab_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="进行中订单"
+                android:textColor="@color/font_black_content" />
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="#dddddd"
+                android:layout_alignRight="@+id/tab_progess"/>
+            <View
+                android:id="@+id/bottomLine_progress"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/green"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                />
+            <!--<TextView-->
+                <!--android:id="@+id/unread"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_marginRight="20dp"-->
+                <!--android:background="@drawable/aliwx_unread_hint"-->
+                <!--android:gravity="center"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="@dimen/aliwx_unread_text_size"-->
+                <!--android:visibility="invisible" />-->
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_done"
+                style="@style/tab_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="成交订单"
+                android:textColor="@color/font_black_content" />
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="#dddddd"
+                android:layout_alignRight="@+id/tab_done"/>
+            <View
+                android:id="@+id/bottomLine_done"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/green"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_close"
+                style="@style/tab_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="关闭订单"
+                android:textColor="@color/font_black_content" />
+            <View
+                android:id="@+id/bottomLine_close"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/green"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
-    <ScrollView
+
+    <ListView
+        android:id="@+id/proListView"
         android:layout_width="match_parent"
-        android:layout_height="200dp">
-        <ListView
-            android:id="@+id/proListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </ListView>
-    </ScrollView>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:text="已经结束"
-        android:textSize="17sp"
-        android:paddingLeft="10dp"
-        android:gravity="left|center"
-        android:textColor="@color/default_underline_indicator_selected_color"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="200dp">
-        <ListView
-            android:id="@+id/closeListView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-        </ListView>
-    </ScrollView>
+        android:layout_height="match_parent"
+        >
+    </ListView>
+
+
 </LinearLayout>

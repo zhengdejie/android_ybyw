@@ -10,6 +10,10 @@ public class DropdownItemObject {
     public String value;
     public String suffix;
 
+    public DropdownItemObject() {
+
+    }
+
     public DropdownItemObject(String text,int id,  String value) {
         this.text = text;
         this.id = id;

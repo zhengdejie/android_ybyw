@@ -20,7 +20,7 @@ import appframe.appframe.fragment.BaseFragment;
 public class BaiduLocation {
     public LocationClient mLocationClient;
     public MyLocationListener mMyLocationListener;
-    public TextView txt_location;
+    public TextView txt_location,tv_latitude,tv_longitude;
     public Vibrator mVibrator;
 
     public BaiduLocation(Context context)
@@ -28,6 +28,14 @@ public class BaiduLocation {
         mLocationClient = new LocationClient(context.getApplicationContext());
         mMyLocationListener = new MyLocationListener();
         mLocationClient.registerLocationListener(mMyLocationListener);
+        mVibrator =(Vibrator)context.getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
+    }
+
+    public BaiduLocation(Context context,BDLocationListener bdLocationListener)
+    {
+        mLocationClient = new LocationClient(context.getApplicationContext());
+        mMyLocationListener = new MyLocationListener();
+        mLocationClient.registerLocationListener(bdLocationListener);
         mVibrator =(Vibrator)context.getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
     }
 
@@ -45,7 +53,16 @@ public class BaiduLocation {
         public void onReceiveLocation(BDLocation location) {
             StringBuffer sb = new StringBuffer(256);
             sb.append(location.getAddrStr());
-            txt_location.setText(sb.toString());
+            if(txt_location != null) {
+                txt_location.setText(sb.toString());
+            }
+            if(tv_latitude!=null)
+            {
+                tv_latitude.setText(String.valueOf(location.getLatitude()));
+            }
+            if(tv_longitude!=null) {
+                tv_longitude.setText(String.valueOf(location.getLongitude()));
+            }
         }
     }
 }

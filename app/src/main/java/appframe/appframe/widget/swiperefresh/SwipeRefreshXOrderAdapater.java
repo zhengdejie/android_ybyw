@@ -28,7 +28,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
     List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
-    TextView txt_title,txt_bounty,txt_type,txt_location;
+    TextView txt_title,txt_bounty,txt_type,txt_location,tv_time;
     Button btn_estimate;
     String from;
     LinearLayout ll_receiver,ll_button;
@@ -66,17 +66,19 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         txt_type = (TextView)convertView.findViewById(R.id.txt_type);
         txt_location = (TextView)convertView.findViewById(R.id.txt_location);
         btn_estimate = (Button)convertView.findViewById(R.id.btn_estimate);
-        ll_receiver = (LinearLayout)convertView.findViewById(R.id.ll_receiver);
-        ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
+        tv_time = (TextView)convertView.findViewById(R.id.tv_time);
+//        ll_receiver = (LinearLayout)convertView.findViewById(R.id.ll_receiver);
+//        ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
         txt_title.setText(orderDetails.get(position).getTitle());
         txt_bounty.setText("￥" + String.valueOf(orderDetails.get(position).getBounty()));
         txt_type.setText("类别：" + orderDetails.get(position).getCategory());
         txt_location.setText(orderDetails.get(position).getAddress());
+        tv_time.setText(orderDetails.get(position).getCreatedAt());
         if(from.equals(AppConfig.ORDERSTATUS_PROGRESS))
         {
-            //btn_estimate.setVisibility(View.GONE);
-            ll_receiver.setVisibility(View.GONE);
-            ll_button.setVisibility(View.GONE);
+            btn_estimate.setVisibility(View.GONE);
+//            ll_receiver.setVisibility(View.GONE);
+//            ll_button.setVisibility(View.GONE);
         }
         else {
             btn_estimate.setOnClickListener(new View.OnClickListener() {

@@ -21,6 +21,7 @@ import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.NoCache;
 import com.android.volley.toolbox.StringRequest;
 import com.github.mrengineer13.snackbar.SnackBar;
@@ -135,6 +136,10 @@ public final class Http {
         public Class<?> resultClass;
         public boolean resultIsList;
 
+        public static API<BaseDto> getEmpty(String url)
+        {
+            return get(url,BaseDto.class);
+        }
 
         public static <T extends BaseDto> API<T> get(String url, Class<T> resultClass){
             API<T> r = new API<>();
@@ -580,6 +585,12 @@ public final class Http {
 
             return headers;
         }
+
+//        @Override
+//        public String getBodyContentType() {
+//            return "application/json; charset=utf-8";
+//        }
+
         public String getBodyForDebug(){
             if(multipartContentLog != null){
                 return multipartContentLog.toString();
@@ -753,12 +764,14 @@ public final class Http {
             if(!TextUtils.isEmpty(authorizationToken)){
                 result.put("Authorization", "AppFrame "
                         + authorizationToken);
+
             }
             // 其他 headers
-        }
 
+        }
         return result;
     }
+
     public static <T> Response<T> request(
             Activity context,
             String tag,

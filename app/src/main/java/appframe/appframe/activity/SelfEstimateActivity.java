@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,6 +125,27 @@ public class SelfEstimateActivity extends BaseActivity implements View.OnClickLi
     {
         super.onResume();
         notifyDataChanged(); //当在ImageZoomActivity中删除图片时，返回这里需要刷新
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("onDestroy", "");
+        removeTempFromPref();
+        mDataList.clear();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        getTempFromPref();
+        List<ImageItem> incomingDataList = (List<ImageItem>) intent
+                .getSerializableExtra(IntentConstants.EXTRA_IMAGE_LIST);
+        Log.i("onNewIntent", "123");
+        if (incomingDataList != null)
+        {
+            mDataList.addAll(incomingDataList);
+        }
+        initView();
     }
 
     private void notifyDataChanged()

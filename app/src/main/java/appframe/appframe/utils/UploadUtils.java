@@ -26,11 +26,11 @@ public class UploadUtils {
     public interface Callback{
         void done(String id);
     }
-    public static void uploadFile(File f, final Callback cb){
+    public static void uploadFile(File f, final Callback cb, String QINIU_UPLOAD_TOKEN){
 
         UploadManager um = new UploadManager();
-        Toast.makeText(App.instance, "上传中...", Toast.LENGTH_SHORT).show();
-        um.put(f, String.format("%s.jpg", UUID.randomUUID().toString()), AppConfig.QINIU_UPLOAD_TOKEN, new UpCompletionHandler() {
+        //Toast.makeText(App.instance, "上传中...", Toast.LENGTH_SHORT).show();
+        um.put(f, String.format("%s_%s.jpg",String.valueOf(Auth.getCurrentUserId()), UUID.randomUUID().toString()), QINIU_UPLOAD_TOKEN, new UpCompletionHandler() {
 
             @Override
             public void complete(String s, ResponseInfo responseInfo, JSONObject jsonObject) {
@@ -38,7 +38,6 @@ public class UploadUtils {
                 if (responseInfo != null && responseInfo.isOK()) {
                     //Toast.makeText(activity, "上传成功", Toast.LENGTH_SHORT).show();
                     cb.done(s);
-
                     return;
                 }
                 Toast.makeText(App.instance, "上传失败", Toast.LENGTH_SHORT).show();
@@ -46,7 +45,7 @@ public class UploadUtils {
             }
         }, null);
     }
-    public static void uploadImage(File f, final Callback cb){
+    public static void uploadImage(File f, final Callback cb,String QINIU_UPLOAD_TOKEN){
 
         File resizedFile = f;
         File fileToUpload = f;
@@ -64,6 +63,6 @@ public class UploadUtils {
             Utils.saveBitmap(bm, resizedFile, 90);
             fileToUpload = resizedFile;
         }
-        uploadFile(fileToUpload, cb);
+        uploadFile(fileToUpload, cb, QINIU_UPLOAD_TOKEN);
     }
 }

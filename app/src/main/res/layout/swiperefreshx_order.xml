@@ -93,7 +93,7 @@
             android:layout_weight="2">
 
             <TextView
-                android:id="@+id/title2"
+                android:id="@+id/tv_time"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:layout_marginTop="10dp"
@@ -111,69 +111,69 @@
 
     </LinearLayout>
 
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ll_receiver"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_margin="5dp">-->
+        <!--<RadioButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="我是接单人"/>-->
+        <!--<RadioButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="选我,选我,选我"/>-->
+
+    <!--</LinearLayout>-->
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
 
-    <LinearLayout
-        android:id="@+id/ll_receiver"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="5dp">
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="我是接单人"/>
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="选我,选我,选我"/>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
-
-    <LinearLayout
-        android:id="@+id/ll_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="5dp">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_acceptandclose"
-            android:text="接受并关闭订单"
-            android:textSize="16dp"
-            android:layout_weight="1"
-            android:focusable="false"
-            />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_acceptandsave"
-            android:text="接受并保留订单"
-            android:textSize="16dp"
-            android:layout_weight="1"
-            android:focusable="false"
-            />
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ll_button"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_margin="5dp">-->
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/btn_acceptandclose"-->
+            <!--android:text="接受并关闭订单"-->
+            <!--android:textSize="16dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:focusable="false"-->
+            <!--/>-->
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/btn_acceptandsave"-->
+            <!--android:text="接受并保留订单"-->
+            <!--android:textSize="16dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:focusable="false"-->
+            <!--/>-->
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_estimate"
             android:text="评价"
             android:textSize="16dp"
-            android:layout_weight="1"
+            android:layout_gravity="right"
             android:focusable="false"
             />
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 
 

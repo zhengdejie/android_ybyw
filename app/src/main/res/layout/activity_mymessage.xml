@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/lv_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="34gfdfdf"/>
+    </LinearLayout>
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <TextView
+        android:id="@+id/tv_systemmessage"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="44dip"
+        android:drawableRight="@drawable/aliwx_arrow"
+        android:text="系统通知" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/divide"
+        />
+
+    <TextView
+        android:id="@+id/tv_ordermessage"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="44dip"
+        android:drawableRight="@drawable/aliwx_arrow"
+        android:text="订单通知" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/divide"
+        />
+
+    <TextView
+        android:id="@+id/tv_friendmessage"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="44dip"
+        android:drawableRight="@drawable/aliwx_arrow"
+        android:text="好友通知" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/divide"
+        android:text="最近联系人"
+        android:gravity="center|left"
+        android:paddingLeft="10dip"
+        />
+
+
+
+</LinearLayout>

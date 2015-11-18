@@ -21,6 +21,7 @@ import appframe.appframe.com.google.zxing.WriterException;
 import appframe.appframe.com.google.zxing.client.android.CaptureActivity;
 import appframe.appframe.com.google.zxing.common.BitMatrix;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.LoginSampleHelper;
 
 /**
  * Created by Administrator on 2015/8/24.
@@ -77,7 +78,8 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 startActivity(new Intent(this,NewMessageActivity.class));
                 break;
             case R.id.btn_exit:
-                IYWLoginService loginService = App.mIMKit.getLoginService();
+                LoginSampleHelper ls = LoginSampleHelper.getInstance();
+                IYWLoginService loginService = ls.getIMKit().getLoginService();
                 loginService.logout(new IWxCallback() {
                     @Override
                     public void onSuccess(Object... arg0) {

@@ -14,9 +14,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.alibaba.mobileim.YWIMKit;
+
+import java.util.Map;
 
 import appframe.appframe.R;
+import appframe.appframe.app.API;
 import appframe.appframe.app.App;
+import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.dto.UserDetail;
+import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.Http;
+import appframe.appframe.utils.LoginSampleHelper;
 
 /**
  * Created by Administrator on 2015/8/21.
@@ -24,7 +35,8 @@ import appframe.appframe.app.App;
 public class FriendsInfoActivity extends BaseActivity implements View.OnClickListener{
     private ImageView img_avatar;
     private Button btn_sendmessage,btn_friendsestimate;
-    private TextView tb_title,tb_back,tb_action;
+    private TextView tb_title,tb_back,tb_action,tv_name;
+    private OrderDetails orderDetails;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +46,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
     protected void init()
     {
         btn_sendmessage = (Button)findViewById(R.id.btn_sendmessage);
+        tv_name = (TextView)findViewById(R.id.tv_name);
         btn_sendmessage.setOnClickListener(this);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_title.setText("帮友资料");
@@ -47,6 +60,9 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         tb_action.setOnClickListener(this);
         btn_friendsestimate =(Button)findViewById(R.id.btn_friendsestimate);
         btn_friendsestimate.setOnClickListener(this);
+        Intent intent = this.getIntent();
+        orderDetails = (OrderDetails)intent.getSerializableExtra("OrderDetails");
+        tv_name.setText(orderDetails.getOrderer().getName());
     }
 
     @Override
@@ -54,9 +70,10 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         switch (v.getId())
         {
             case R.id.btn_sendmessage:
-                Log.i("IM state", String.format("%s",App.mIMKit.getIMCore().getLoginState()));
-                //String target = "102";// 消息接收者ID  testpro1  testpro2
-                Intent intent = App.mIMKit.getChattingActivityIntent("102");
+                //Log.i("IM state", String.format("%s", App.mIMKit.getIMCore().getLoginState()));
+                LoginSampleHelper ls = LoginSampleHelper.getInstance();
+                String target = String.valueOf(orderDetails.getOrderer().getId());// 消息接收者ID  testpro1  testpro2
+                Intent intent = ls.getIMKit().getChattingActivityIntent(target);
                 startActivity(intent);
                 break;
             case R.id.tb_back:
@@ -107,7 +124,15 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 public void onClick(View v)
                 {
-
+                    Http.request(FriendsInfoActivity.this, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
+                            Http.map("FriendId",String.valueOf(orderDetails.getOrderer().getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    Toast.makeText(FriendsInfoActivity.this, "已发送好友申请", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                     dismiss();
                 }
             });

@@ -50,6 +50,7 @@ import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
+import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 
@@ -59,12 +60,14 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 public class OrderDetailsActivity extends BaseActivity implements View.OnClickListener{
 
     private ImageView img_avatar;
-    private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment;
+    private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit;
     private ImageButton imgbtn_conversation,imgbtn_call;
     private Button btn_select,btn_estimate,btn_comment;
     private String OrderID,Tel, hasTopOrder, Entrance;
     private ListView lv_ordercomment;
     OrderDetails orderDetails;
+    Intent intent = new Intent();
+    Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +81,15 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         switch (v.getId())
         {
             case R.id.img_avatar:
-                startActivity(new Intent(this,FriendsInfoActivity.class));
+                intent.setClass(OrderDetailsActivity.this, FriendsInfoActivity.class);
+                bundle.putSerializable("OrderDetails", orderDetails);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
             case R.id.imgbtn_conversation:
-
-                Intent intent = App.mIMKit.getChattingActivityIntent("102");
+                LoginSampleHelper ls = LoginSampleHelper.getInstance();
+                String target = String.valueOf(orderDetails.getOrderer().getId());
+                intent = ls.getIMKit().getChattingActivityIntent(target);
                 startActivity(intent);
                 break;
             case R.id.imgbtn_call:
@@ -102,14 +109,44 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                 finish();
                 break;
             case R.id.btn_select:
-                Http.request(this, API.ORDER_ACCEPT, new Object[]{OrderID}, new Http.RequestListener<UserDetail>() {
-                    @Override
-                    public void onSuccess(UserDetail result) {
-                        super.onSuccess(result);
+                if(btn_select.getText().equals("候选接单人"))
+                {
+
+                    intent.setClass(OrderDetailsActivity.this, CandidateActivity.class);
+                    //Bundle bundle = new Bundle();
+                    bundle.putSerializable("OrderDetails", orderDetails);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage("确认接单吗?");
+                    builder.setTitle("提示");
+                    builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Http.request(OrderDetailsActivity.this, API.ORDER_ACCEPT, new Object[]{OrderID}, new Http.RequestListener<UserDetail>() {
+                                @Override
+                                public void onSuccess(UserDetail result) {
+                                    super.onSuccess(result);
 
 
-                    }
-                });
+                                }
+                            });
+                            dialog.dismiss();
+
+                        }
+                    });
+                     builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                         @Override
+                         public void onClick(DialogInterface dialog, int which) {
+                             dialog.dismiss();
+                         }
+                     });
+                     builder.create().show();
+
+
+                }
                 break;
             case R.id.btn_estimate:
                 startActivity(new Intent(this,OrderEstimateActivity.class));
@@ -188,6 +225,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         btn_comment = (Button)findViewById(R.id.btn_comment);
         lv_ordercomment = (ListView)findViewById(R.id.lv_ordercomment);
         tv_comment = (TextView)findViewById(R.id.tv_comment);
+        tv_moneyunit = (TextView)findViewById(R.id.tv_moneyunit);
 
         img_avatar.setOnClickListener(this);
         imgbtn_conversation.setOnClickListener(this);
@@ -198,6 +236,18 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 
         Intent intent = this.getIntent();
         orderDetails=(OrderDetails)intent.getSerializableExtra("OrderDetails");
+        if( orderDetails.getType() == 1 )
+        {
+            tv_moneyunit.setText("赏 ￥");
+        }
+        else
+        {
+            tv_moneyunit.setText("索 ￥");
+        }
+        if(intent.getStringExtra("From") != null && intent.getStringExtra("From").equals("MyOrder"))
+        {
+            btn_select.setText("候选接单人");
+        }
         hasTopOrder = intent.getStringExtra("hasTopOrder") == null ? null : intent.getStringExtra("hasTopOrder");
         Entrance = intent.getStringExtra("Entrance") == null ? null : intent.getStringExtra("Entrance");
         tv_title.setText(orderDetails.getTitle().toString());
@@ -317,7 +367,11 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
             {
                 public void onClick(View v)
                 {
-                    startActivity(new Intent(OrderDetailsActivity.this, FriendsInfoActivity.class));
+                    //startActivity(new Intent(OrderDetailsActivity.this, FriendsInfoActivity.class));
+                    intent.setClass(OrderDetailsActivity.this, FriendsInfoActivity.class);
+                    bundle.putSerializable("OrderDetails", orderDetails);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                     dismiss();
                 }
             });
@@ -347,7 +401,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                                 super.onSuccess(result);
 
                                 Toast.makeText(OrderDetailsActivity.this, "取消收藏成功", Toast.LENGTH_SHORT).show();
-
+                                finish();
                             }
                         });
                     }

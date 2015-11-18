@@ -2,6 +2,7 @@ package appframe.appframe.dto;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import appframe.appframe.utils.Http;
 
@@ -20,6 +21,7 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
     private int NameAnonymity;
     private int LocationAnonymity;
     private int PhoneAnonymity;
+    private int Type;
     private String Deadline;
     private String request;
     private String PaymentMethod;
@@ -29,6 +31,7 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
     private String OrderStatus;
     private UserDetail Orderer;
     private UserDetail Orderee;
+    private List<UserDetail> Candidate;
 
 
     public int getId() {
@@ -119,6 +122,14 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
         PhoneAnonymity = phoneAnonymity;
     }
 
+    public int getType() {
+        return Type;
+    }
+
+    public void setType(int type) {
+        Type = type;
+    }
+
     public String getDeadline() {
         return Deadline;
     }
@@ -189,5 +200,13 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
 
     public void setOrderee(UserDetail orderee) {
         Orderee = orderee;
+    }
+
+    public List<UserDetail> getCandidate() {
+        return Candidate;
+    }
+
+    public void setCandidate(List<UserDetail> candidate) {
+        Candidate = candidate;
     }
 }

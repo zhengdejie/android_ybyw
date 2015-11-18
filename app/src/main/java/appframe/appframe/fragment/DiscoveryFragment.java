@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,14 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appframe.appframe.R;
-import appframe.appframe.activity.FriendEstimateActivity;
-import appframe.appframe.activity.FriendShopsActivity;
+import appframe.appframe.activity.NearByActivity;
 import appframe.appframe.activity.FriendsInfoActivity;
-import appframe.appframe.activity.OrderEstimateActivity;
-import appframe.appframe.activity.SelfEstimateActivity;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
-import appframe.appframe.widget.swiperefresh.SwipeRefreshXFriendEstimateAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXFriendShopsAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXNearbyAdapater;
 
 /**
@@ -31,7 +27,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXNearbyAdapater;
  */
 public class DiscoveryFragment extends BaseFragment implements View.OnClickListener {
     View root;
-    TextView tb_title,tb_back,tv_topfs;
+    TextView tb_title,tb_back,tv_nearby;
     SwipeRefreshX swipeRefresh;
     ListView listView;
 
@@ -49,8 +45,8 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
     public void init()
     {
-        tv_topfs = (TextView) root.findViewById(R.id.tv_topfs);
-        tv_topfs.setOnClickListener(this);
+        tv_nearby = (TextView) root.findViewById(R.id.tv_nearby);
+        tv_nearby.setOnClickListener(this);
 
         tb_title = (TextView)root.findViewById(R.id.tb_title);
         tb_back = (TextView)root.findViewById(R.id.tb_back);
@@ -61,9 +57,10 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
-        listView = (ListView)root.findViewById(R.id.lv_nearby);
-        List<Nearby> list = new ArrayList<Nearby>();
-        listView.setAdapter(new SwipeRefreshXNearbyAdapater(getActivity(),list));
+        listView = (ListView)root.findViewById(R.id.lv_topfs);
+        List<String> list = new ArrayList<String>();
+        list.add("adb");
+        listView.setAdapter(new SwipeRefreshXFriendShopsAdapater(getActivity(),list));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -98,8 +95,8 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.tv_topfs:
-                startActivity(new Intent(getActivity(),FriendShopsActivity.class));
+            case R.id.tv_nearby:
+                startActivity(new Intent(getActivity(),NearByActivity.class));
                 break;
 
 

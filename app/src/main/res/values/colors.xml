@@ -29,4 +29,10 @@
     <color name="btn_gray">#d1d1d1</color>
     <color name="glass_gall">#c2ebef</color>
     <color name="light_blue">#87d0f2</color>
+
+    <color name="tab_pressed_color">#35a5e7</color>
+    <color name="tab_normal_color">#bcbfc1</color>
+    <color name="more_line_color">#cccccc</color>
+    <color name="more_bg_nor">#ffffff</color>
+    <color name="more_bg_p">#f5f5f5</color>
 </resources>

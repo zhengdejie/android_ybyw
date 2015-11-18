@@ -79,26 +79,26 @@ public class ProfileFragment extends BaseFragment {
 
                     File f = Utils.uriToFile(data.getData());
 
-                    UploadUtils.uploadImage(f, new UploadUtils.Callback() {
-                        @Override
-                        public void done(String id) {
-                            if (TextUtils.isEmpty(id)) {
-                                // 上传失败
-                                return;
-                            }
-                            Http.request(getActivity(), API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
-                                    "Avatar", id
-                            ), new Http.RequestListener<UserDetail>(){
-                                @Override
-                                public void onSuccess(UserDetail result) {
-                                    super.onSuccess(result);
-                                    // 上传成功
-
-                                    ImageUtils.setImageUrl(avatar, result.Avatar);
-                                }
-                            });
-                        }
-                    });
+//                    UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+//                        @Override
+//                        public void done(String id) {
+//                            if (TextUtils.isEmpty(id)) {
+//                                // 上传失败
+//                                return;
+//                            }
+//                            Http.request(getActivity(), API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
+//                                    "Avatar", id
+//                            ), new Http.RequestListener<UserDetail>(){
+//                                @Override
+//                                public void onSuccess(UserDetail result) {
+//                                    super.onSuccess(result);
+//                                    // 上传成功
+//
+//                                    ImageUtils.setImageUrl(avatar, result.Avatar);
+//                                }
+//                            });
+//                        }
+//                    });
                 }
         }
     }

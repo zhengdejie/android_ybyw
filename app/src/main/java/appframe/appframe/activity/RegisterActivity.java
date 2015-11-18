@@ -71,6 +71,7 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
+
                 Http.request(RegisterActivity.this, API.USER_REGISTER, Http.map(
                         "Email", email.getText().toString(),
                         "Password", password.getText().toString(),
@@ -171,18 +172,18 @@ public class RegisterActivity extends BaseActivity {
                     File f = Utils.uriToFile(imageReturnedIntent.getData());
                     Bitmap bm = Utils.getResizedBitmap(f, Utils.dpToPx(100), Utils.dpToPx(100));
                     avatar.setImageBitmap(bm);
-                    UploadUtils.uploadImage(f, new UploadUtils.Callback() {
-                        @Override
-                        public void done(String id) {
-                            if(TextUtils.isEmpty(id)){
-                                // 上传失败
-                                uploadedAvatarId = null;
-                                avatar.setImageResource(R.drawable.ic_launcher);
-                                return;
-                            }
-                            uploadedAvatarId = id;
-                        }
-                    });
+//                    UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+//                        @Override
+//                        public void done(String id) {
+//                            if(TextUtils.isEmpty(id)){
+//                                // 上传失败
+//                                uploadedAvatarId = null;
+//                                avatar.setImageResource(R.drawable.ic_launcher);
+//                                return;
+//                            }
+//                            uploadedAvatarId = id;
+//                        }
+//                    });
                 }
         }
     }

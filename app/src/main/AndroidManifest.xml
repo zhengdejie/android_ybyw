@@ -88,7 +88,7 @@
         <activity android:name=".activity.HomeActivity" android:launchMode="singleTop" android:screenOrientation="portrait" />
         <activity android:name=".activity.LoginActivity" android:label="登入" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
         <activity android:name=".activity.RegisterActivity" android:label="注册" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OrderSendActivity"   android:screenOrientation="portrait"/>
+        <activity android:name=".activity.OrderSendActivity" android:launchMode="singleTop"   android:screenOrientation="portrait"/>
         <activity android:name=".activity.OrderDetailsActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.MyInfoActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.PrivacyActivity"  android:screenOrientation="portrait"/>
@@ -98,24 +98,30 @@
         <activity android:name=".activity.SettingActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.WhoCanSeeActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.FriendsInfoActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.SelfEstimateActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SelfEstimateActivity" android:launchMode="singleTop"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.FriendEstimateActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.OrderEstimateActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.OrderCommentActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.RelativenetActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.WalletActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.FramedWebViewActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.FriendShopsActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.NearByActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.EstimateActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.MyCollectActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.SearchActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.FeedbackActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.CandidateActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.MyMessageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SystemMessageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.OrderMessageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.FriendMessageActivity" android:screenOrientation="portrait"/>
 
 
         <activity android:name=".widget.photopicker.view.ImageBucketChooseActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.photopicker.view.ImageChooseActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.photopicker.view.ImageZoomActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.sortlistview.SortListViewActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".widget.sortlistview.MyContact" android:screenOrientation="portrait"/>
 
 
         <!-- ...........................................个推................................................. -->

@@ -66,10 +66,13 @@ import java.util.Locale;
 import appframe.appframe.R;
 
 import appframe.appframe.app.API;
+import appframe.appframe.dto.Token;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.BaiduLocation;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.ImageUtils;
+import appframe.appframe.utils.UploadUtils;
 import appframe.appframe.utils.Utils;
 import appframe.appframe.widget.photopicker.adapter.ImagePublishAdapter;
 import appframe.appframe.widget.photopicker.model.ImageItem;
@@ -83,7 +86,7 @@ import appframe.appframe.widget.popupwindow.SelectPicPopupWindow;
  * Created by Administrator on 2015/8/12.
  */
 public class OrderSendActivity extends BaseActivity{
-    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title;
+    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_latitude,tv_longitude;
     private EditText edit_title,edit_bounty,edit_content,edit_require;
     private Spinner spinner_category,spinner_range;
     private RadioButton radio_online,radio_offline;
@@ -102,10 +105,11 @@ public class OrderSendActivity extends BaseActivity{
     private double latitude = 0.0;
     private double longitude = 0.0;
     public Vibrator mVibrator;
+    private boolean fileupload_success = false ;
     Gson gson = new Gson();
     //获取日期格式器对象
     SimpleDateFormat fmtDate = new SimpleDateFormat("yy-MM-dd");
-    SimpleDateFormat fmtTime = new SimpleDateFormat("hh:mm");
+    SimpleDateFormat fmtTime = new SimpleDateFormat("HH:mm");
     private Calendar dateAndTime = Calendar.getInstance(Locale.CHINA);
     BDLocation bdLocation = new BDLocation();
 
@@ -113,14 +117,63 @@ public class OrderSendActivity extends BaseActivity{
     private ImagePublishAdapter mAdapter;
     //private TextView sendTv;
     public static List<ImageItem> mDataList = new ArrayList<ImageItem>();
+    private String Type="0" ;
+    StringBuilder sb = new StringBuilder();
+    public int upload_iamge_num = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i("onCreate","savedInstanceState");
         setContentView(R.layout.activity_ordersend);
         init();
         initData();
         initView();
+        if(savedInstanceState != null)
+        {
+            edit_title.setText(savedInstanceState.getString("Title"));
+            edit_content.setText(savedInstanceState.getString("Content"));
+            spinner_category.setSelection(savedInstanceState.getInt("Category"));
+            String[] dataArr = savedInstanceState.getString("Deadline").split(" ");
+            txt_deadlinedate.setText(dataArr[0]);
+            txt_deadlinetime.setText(dataArr[1]);
+            if(savedInstanceState.getString("PaymentMethod").equals("线上支付"))
+            {
+                radio_online.setChecked(true);
+                radio_offline.setChecked(false);
+            }
+            else
+            {
+                radio_online.setChecked(false);
+                radio_offline.setChecked(true);
+            }
+            edit_bounty.setText(savedInstanceState.getString("Bounty"));
+            if(savedInstanceState.getString("NameAnonymity").equals("1"))
+            {
+                checkBox_anonymous.setChecked(true);
+            }
+            else
+            {
+                checkBox_anonymous.setChecked(false);
+            }
+            if(savedInstanceState.getString("LocationAnonymity").equals("1"))
+            {
+                checkBox_donotshowlocation.setChecked(true);
+            }
+            else
+            {
+                checkBox_donotshowlocation.setChecked(false);
+            }
+            if(savedInstanceState.getString("PhoneAnonymity").equals("1"))
+            {
+                checkBox_donotshowphonenum.setChecked(true);
+            }
+            else
+            {
+                checkBox_donotshowphonenum.setChecked(false);
+            }
+            edit_require.setText(savedInstanceState.getString("Request"));
+        }
         txt_deadlinedate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,30 +197,105 @@ public class OrderSendActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
 
-                Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
-                        "Id",String.valueOf(Auth.getCurrentUserId()),
-                        "Title", edit_title.getText().toString(),
-                        "Address",txt_location.getText().toString(),
-                        "Content", edit_content.getText().toString(),
-                        "latitude", String.valueOf(bdLocation.getLatitude()),
-                        "longitude", String.valueOf(bdLocation.getLongitude()),
-                        "Category", spinner_category.getSelectedItem().toString(),
-                        "Visibility", "0",
-                        "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
-                        "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
-                        "Bounty", edit_bounty.getText().toString(),
-                        "NameAnonymity",checkBox_anonymous.isChecked() ? "1" : "0",
-                        "LocationAnonymity",checkBox_donotshowlocation.isChecked() ? "1" :"0",
-                        "PhoneAnonymity",checkBox_donotshowphonenum.isChecked() ? "1" : "0",
-                        "Photos","",
-                        "Request",edit_require.getText().toString()
-                ), new Http.RequestListener<UserDetail>() {
-                    @Override
-                    public void onSuccess(UserDetail result) {
-                        super.onSuccess(result);
+                if(mDataList.size() == 0)
+                {
+                    Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
+                            "Id", String.valueOf(Auth.getCurrentUserId()),
+                            "Title", edit_title.getText().toString(),
+                            "Address", txt_location.getText().toString(),
+                            "Content", edit_content.getText().toString(),
+                            "latitude", tv_latitude.getText().toString(),
+                            "longitude", tv_longitude.getText().toString(),
+                            "Category", spinner_category.getSelectedItem().toString(),
+                            "Visibility", "0",
+                            "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
+                            "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
+                            "Bounty", edit_bounty.getText().toString(),
+                            "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
+                            "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
+                            "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
+                            "Photos", "",
+                            "Request", edit_require.getText().toString(),
+                            "Type", Type
+                    ), new Http.RequestListener<UserDetail>() {
+                        @Override
+                        public void onSuccess(UserDetail result) {
+                            super.onSuccess(result);
+                            Toast.makeText(OrderSendActivity.this,"发单成功",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    removeTempFromPref();
+                    mDataList.clear();
+                    finish();
+                }
+                else
+                {
+                    //boolean success = false ;
+                    Log.i("mDataList",String.valueOf(mDataList.size()));
 
-                    }
-                });
+                    for( ImageItem dl : mDataList)
+                    {
+
+
+                        final File f = new File(dl.sourcePath);
+                        Http.request(OrderSendActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
+                            @Override
+                            public void onSuccess(Token result) {
+                                super.onSuccess(result);
+
+                                UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+                                    @Override
+                                    public void done(String id) {
+                                        if (TextUtils.isEmpty(id)) {
+                                            // 上传失败
+                                            upload_iamge_num = 0;
+                                            return;
+                                        }
+                                        upload_iamge_num++;
+                                        sb.append(",").append(id);
+                                        if(upload_iamge_num == mDataList.size())
+                                        {
+                                            Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
+                                                    "Id", String.valueOf(Auth.getCurrentUserId()),
+                                                    "Title", edit_title.getText().toString(),
+                                                    "Address", txt_location.getText().toString(),
+                                                    "Content", edit_content.getText().toString(),
+                                                    "latitude", tv_latitude.getText().toString(),
+                                                    "longitude", tv_longitude.getText().toString(),
+                                                    "Category", spinner_category.getSelectedItem().toString(),
+                                                    "Visibility", "0",
+                                                    "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
+                                                    "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
+                                                    "Bounty", edit_bounty.getText().toString(),
+                                                    "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
+                                                    "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
+                                                    "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
+                                                    "Photos", sb.deleteCharAt(0).toString(),
+                                                    "Request", edit_require.getText().toString(),
+                                                    "Type", Type
+                                            ), new Http.RequestListener<UserDetail>() {
+                                                @Override
+                                                public void onSuccess(UserDetail result) {
+                                                    super.onSuccess(result);
+                                                    Toast.makeText(OrderSendActivity.this,"发单成功",Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                            upload_iamge_num = 0;
+                                            removeTempFromPref();
+                                            mDataList.clear();
+                                            finish();
+                                        }
+
+                                    }
+                                },result.getUpToken());
+                            }
+                        });
+
+                    }//for
+
+                }//else
+
+
             }
         });
 
@@ -175,6 +303,7 @@ public class OrderSendActivity extends BaseActivity{
 
     protected void onPause()
     {
+        Log.i("onPause","");
         super.onPause();
         saveTempToPref();
     }
@@ -182,9 +311,71 @@ public class OrderSendActivity extends BaseActivity{
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
+        Log.i("onSaveInstanceState",edit_title.getText().toString());
+        outState.putString("Title", edit_title.getText().toString());
+        outState.putString("Content", edit_content.getText().toString());
+        outState.putInt("Category", spinner_category.getSelectedItemPosition());
+        outState.putString("Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText());
+        outState.putString("PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付");
+        outState.putString("Bounty", edit_bounty.getText().toString());
+        outState.putString("NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0");
+        outState.putString("LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0");
+        outState.putString("PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0");
+        outState.putString("Request", edit_require.getText().toString());
         super.onSaveInstanceState(outState);
         saveTempToPref();
+
     }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i("onRestoreInstanceState", savedInstanceState.getString("Title"));
+        edit_title.setText(savedInstanceState.getString("Title"));
+        edit_content.setText(savedInstanceState.getString("Content"));
+        spinner_category.setSelection(savedInstanceState.getInt("Category"));
+        String[] dataArr = savedInstanceState.getString("Deadline").split(" ");
+        txt_deadlinedate.setText(dataArr[0]);
+        txt_deadlinetime.setText(dataArr[1]);
+        if(savedInstanceState.getString("PaymentMethod").equals("线上支付"))
+        {
+            radio_online.setChecked(true);
+            radio_offline.setChecked(false);
+        }
+        else
+        {
+            radio_online.setChecked(false);
+            radio_offline.setChecked(true);
+        }
+        edit_bounty.setText(savedInstanceState.getString("Bounty"));
+        if(savedInstanceState.getString("NameAnonymity").equals("1"))
+        {
+            checkBox_anonymous.setChecked(true);
+        }
+        else
+        {
+            checkBox_anonymous.setChecked(false);
+        }
+        if(savedInstanceState.getString("LocationAnonymity").equals("1"))
+        {
+            checkBox_donotshowlocation.setChecked(true);
+        }
+        else
+        {
+            checkBox_donotshowlocation.setChecked(false);
+        }
+        if(savedInstanceState.getString("PhoneAnonymity").equals("1"))
+        {
+            checkBox_donotshowphonenum.setChecked(true);
+        }
+        else
+        {
+            checkBox_donotshowphonenum.setChecked(false);
+        }
+        edit_require.setText(savedInstanceState.getString("Request"));
+
+    }
+
     private void saveTempToPref()
     {
         SharedPreferences sp = getSharedPreferences(
@@ -196,9 +387,17 @@ public class OrderSendActivity extends BaseActivity{
 
     @Override
     protected void onResume()
-    {
+    {Log.i("onResume","");
         super.onResume();
         notifyDataChanged(); //当在ImageZoomActivity中删除图片时，返回这里需要刷新
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("onDestroy","");
+        removeTempFromPref();
+        mDataList.clear();
     }
 
     private void notifyDataChanged()
@@ -260,6 +459,20 @@ public class OrderSendActivity extends BaseActivity{
         {
             mDataList.addAll(incomingDataList);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        getTempFromPref();
+        List<ImageItem> incomingDataList = (List<ImageItem>) intent
+                .getSerializableExtra(IntentConstants.EXTRA_IMAGE_LIST);
+        Log.i("onNewIntent","123");
+        if (incomingDataList != null)
+        {
+            mDataList.addAll(incomingDataList);
+        }
+        initView();
     }
 
     public void initView()
@@ -567,6 +780,8 @@ public class OrderSendActivity extends BaseActivity{
         txt_location = (TextView)findViewById(R.id.txt_location);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_title = (TextView)findViewById(R.id.tb_title);
+        tv_latitude = (TextView)findViewById(R.id.tv_latitude);
+        tv_longitude = (TextView)findViewById(R.id.tv_longitude);
         tb_back.setText("取消");
         tb_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -581,11 +796,13 @@ public class OrderSendActivity extends BaseActivity{
         {
             edit_bounty.setHint("索酬");
             tb_title.setText("自荐单");
+            Type = "2";
         }
         if(getIntent().getStringExtra("demand")!=null && getIntent().getStringExtra("demand").equals("demand"))
         {
             edit_bounty.setHint("赏金");
             tb_title.setText("需求单");
+            Type = "1";
         }
 
         final String category[]=new String[]{
@@ -644,6 +861,8 @@ public class OrderSendActivity extends BaseActivity{
         //百度地图定位
         BaiduLocation baiduLocation = new BaiduLocation(getApplicationContext());
         baiduLocation.txt_location = txt_location;
+        baiduLocation.tv_latitude = tv_latitude;
+        baiduLocation.tv_longitude = tv_longitude;
         baiduLocation.setOption();
         baiduLocation.mLocationClient.start();
 

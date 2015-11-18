@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.baidu.location.BDLocation;
 
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -117,7 +118,7 @@ public class OrderFragment extends BaseFragment  {
     private static final int ID_SELECT_BOTH = 153;
     private static final int ID_SELECT_OFFLINE = 154;
     private static final int ID_SELECT_ONLINE = 155;
-    private static final String SELECT_ALL = "筛选";
+//    private static final String SELECT_ALL = "筛选";
     private static final String SELECT_FIRST = "一度朋友";
     private static final String SELECT_SECOND = "二度朋友";
     private static final String SELECT_BOTH = "陌生人";
@@ -126,7 +127,7 @@ public class OrderFragment extends BaseFragment  {
 
     public static final int SCAN_CODE = 1;
     BDLocation bdLocation = new BDLocation();
-    String type;
+    int Type;  //1=老板单， 2=打工单
     ListView listView;
     View mask;
     DropdownButton chooseType, chooseMulti, chooseMoney, chooseSelect;
@@ -134,19 +135,19 @@ public class OrderFragment extends BaseFragment  {
     SwipeRefreshX swipeRefresh;
     Animation dropdown_in, dropdown_out, dropdown_mask_out;
     View root;
-    TextView tv_back,tv_require,tv_recommand,tv_action;
+    TextView tv_back,tv_require,tv_recommand,tv_action,tv_latitude,tv_longitude;
     public OrderDetails topOrderDetails;
 
     private List<TopicLabelObject> labels = new ArrayList<>();
 
     private DropdownButtonsController dropdownButtonsController = new DropdownButtonsController();
 
-    public static OrderFragment newInstance(String type) {
-
-        OrderFragment fragment = new OrderFragment();
-        fragment.type = type;
-        return fragment;
-    }
+//    public static OrderFragment newInstance(String type) {
+//
+//        OrderFragment fragment = new OrderFragment();
+//        fragment.type = type;
+//        return fragment;
+//    }
 
     protected int TransferOrderBy(String type)
     {
@@ -176,41 +177,58 @@ public class OrderFragment extends BaseFragment  {
     {
         if(type.equals(MONEY_ALL))
         {
-            return 2;
+            return 0;
         }
         else if(type.equals(MONEY_MONEY))
         {
-            return 2;
+            return 1;
         }
         else
         {
-            return 1;
+            return 2;
         }
     }
 
-    protected int TransferSelect(String type)
+    protected String TransferFriendsFilter(List<DropdownItemObject> DDIO)
     {
+        StringBuilder friendsFilter = new StringBuilder();
+        for(DropdownItemObject currentMulti : dropdownSelect.currentMulti)
+        {
+            if(currentMulti.id == ID_SELECT_FIRST) {
+                friendsFilter.append("," + currentMulti.text);
+            }
+            if(currentMulti.id == ID_SELECT_SECOND) {
+                friendsFilter.append("," + currentMulti.text);
+            }
+            if(currentMulti.id == ID_SELECT_BOTH) {
+                friendsFilter.append("," + currentMulti.text);
+            }
 
-        if(type.equals(SELECT_FIRST))
-        {
-            return 1;
         }
-        else if(type.equals(SELECT_SECOND))
-        {
-            return 2;
+        if(friendsFilter.length()!=0) {
+            friendsFilter.deleteCharAt(0);
         }
-        else if(type.equals(SELECT_BOTH))
+        return friendsFilter.toString();
+
+    }
+
+    protected String TransferPaymentFilter(List<DropdownItemObject> DDIO)
+    {
+        StringBuilder paymentMethodFilter = new StringBuilder();
+        for(DropdownItemObject currentMulti : dropdownSelect.currentMulti)
         {
-            return 4;
+            if(currentMulti.id == ID_SELECT_OFFLINE) {
+                paymentMethodFilter.append("," + currentMulti.text);
+            }
+            if(currentMulti.id == ID_SELECT_ONLINE) {
+                paymentMethodFilter.append("," + currentMulti.text);
+            }
         }
-        else if(type.equals(SELECT_ONLINE))
-        {
-            return 1;
+
+        if(paymentMethodFilter.length()!=0) {
+            paymentMethodFilter.deleteCharAt(0);
         }
-        else
-        {
-            return 2;
-        }
+        return paymentMethodFilter.toString();
     }
 
     //获取置顶单子
@@ -232,7 +250,15 @@ public class OrderFragment extends BaseFragment  {
         SharedPreferences sp = getActivity().getSharedPreferences("TOPORDER", Context.MODE_PRIVATE);
         String OrderDetails = sp.getString("OrderDetails", null);
         if (!TextUtils.isEmpty(OrderDetails)) {
-            return true;
+            OrderDetails orderDetails = new OrderDetails();
+            orderDetails = GsonHelper.getGson().fromJson(OrderDetails, OrderDetails.class);
+            if(orderDetails.getType() == Type)
+            {
+                return true;
+            }
+            else {
+                return false;
+            }
         }
         else {
             return false;
@@ -259,32 +285,7 @@ public class OrderFragment extends BaseFragment  {
     @Override
     protected void onLoadData() {
 
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("Page", "1");
-        map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-
-
-        Http.request(getActivity(), API.GET_ORDER,new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
-            @Override
-            public void onSuccess( List<OrderDetails> result) {
-                super.onSuccess(result);
-
-                if(hasTopOrder())
-                {
-                    OrderDetails topOrder = getTopOrder();
-                    List<OrderDetails> list_OD = getOrders(result,topOrder);
-                    listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD,AppConfig.ORDERSTATUS_PROGRESS, true));
-                }
-                else
-                {
-                    listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS, false));
-                }
-
-
-
-            }
-        });
-
+        tv_require.performClick();
 
     }
 
@@ -315,7 +316,14 @@ public class OrderFragment extends BaseFragment  {
         tv_require = (TextView)root.findViewById(R.id.tv_require);
         tv_recommand = (TextView)root.findViewById(R.id.tv_recommand);
         tv_action = (TextView)root.findViewById(R.id.tv_action);
+        tv_latitude = (TextView)root.findViewById(R.id.tv_latitude);
+        tv_longitude = (TextView)root.findViewById(R.id.tv_longitude);
 
+        BaiduLocation baiduLocation = new BaiduLocation(getActivity());
+        baiduLocation.tv_latitude = tv_latitude;
+        baiduLocation.tv_longitude = tv_longitude;
+        baiduLocation.setOption();
+        baiduLocation.mLocationClient.start();
 
         tv_action.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -326,29 +334,35 @@ public class OrderFragment extends BaseFragment  {
         tv_require.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Type = 1;
                 tv_require.setBackgroundColor(Color.GREEN);
                 tv_recommand.setBackgroundColor(Color.WHITE);
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Page", "1");
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("Type", String.valueOf(Type));
+                map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" : URLEncoder.encode(dropdownType.current.text.toString()));
+                map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
+                map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
+                map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
+                map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+                map.put("lantitude", tv_latitude.getText().toString());
+                map.put("longtitude", tv_longitude.getText().toString());
 
 
-                Http.request(getActivity(), API.GET_ORDER,new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
                     @Override
-                    public void onSuccess( List<OrderDetails> result) {
+                    public void onSuccess(List<OrderDetails> result) {
                         super.onSuccess(result);
 
-                        if(hasTopOrder())
-                        {
+                        if (hasTopOrder()) {
                             OrderDetails topOrder = getTopOrder();
-                            List<OrderDetails> list_OD = getOrders(result,topOrder);
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD,AppConfig.ORDERSTATUS_PROGRESS, true));
-                        }
-                        else
-                        {
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS, false));
-                        }
+                            List<OrderDetails> list_OD = getOrders(result, topOrder);
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_PROGRESS, true));
 
+                        } else {
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_PROGRESS, false));
+                        }
 
 
                     }
@@ -359,16 +373,39 @@ public class OrderFragment extends BaseFragment  {
         tv_recommand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Type = 2;
                 tv_require.setBackgroundColor(Color.WHITE);
                 tv_recommand.setBackgroundColor(Color.GREEN);
 
-                Http.request(getActivity(), API.GET_SELFORDER,new Http.RequestListener<List<OrderDetails>>() {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("Type", String.valueOf(Type));
+                map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
+                map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
+                map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
+                map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
+                map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+                map.put("lantitude", tv_latitude.getText().toString());
+                map.put("longtitude", tv_longitude.getText().toString());
+
+
+
+                Http.request(getActivity(), API.GET_ORDER,new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
                     @Override
-                    public void onSuccess(final List<OrderDetails> result) {
+                    public void onSuccess( List<OrderDetails> result) {
                         super.onSuccess(result);
 
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
-
+                        if(hasTopOrder())
+                        {
+                            OrderDetails topOrder = getTopOrder();
+                            List<OrderDetails> list_OD = getOrders(result, topOrder);
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_PROGRESS, true));
+                        }
+                        else
+                        {
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS, false));
+                        }
 
                     }
                 });
@@ -394,6 +431,7 @@ public class OrderFragment extends BaseFragment  {
                 {
                     bundle.putString("hasTopOrder","1");
                 }
+                bundle.putString("From","Order");
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -408,6 +446,14 @@ public class OrderFragment extends BaseFragment  {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Page", "1");
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("Type", String.valueOf(Type));
+                map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
+                map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
+                map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
+                map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
+                map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+                map.put("lantitude", tv_latitude.getText().toString());
+                map.put("longtitude", tv_longitude.getText().toString());
 
 
                 Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
@@ -426,6 +472,12 @@ public class OrderFragment extends BaseFragment  {
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS, false));
                         }
 
+                        swipeRefresh.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
                         swipeRefresh.setRefreshing(false);
                     }
                 });
@@ -549,12 +601,14 @@ public class OrderFragment extends BaseFragment  {
             map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
             map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
             map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
-            map.put("FriendsFilter", String.valueOf(TransferSelect(dropdownSelect.current.text)));
-            map.put("PaymentMethodFilter", String.valueOf(TransferSelect(dropdownSelect.current.text)));
-            map.put("lantitude", String.valueOf(bdLocation.getLatitude()));
-            map.put("longtitude", String.valueOf(bdLocation.getLongitude()));
+            map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
+            map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+            map.put("lantitude", tv_latitude.getText().toString());
+            map.put("longtitude", tv_longitude.getText().toString());
             map.put("Page", "1");
             map.put("Size", "10");
+            map.put("Type", String.valueOf(Type));
+
 
             if (view == dropdownType) {
 
@@ -653,7 +707,7 @@ public class OrderFragment extends BaseFragment  {
             datasetType.add(new DropdownItemObject(TYPE_COOP, ID_TYPE_COOP, "COOP"));
             datasetType.add(new DropdownItemObject(TYPE_ACTIVITY, ID_TYPE_ACTIVITY, "ACTIVITY"));
 
-            dropdownType.bind(datasetType, chooseType, this, ID_TYPE_ALL);
+            dropdownType.bind(datasetType, chooseType, this, ID_TYPE_ALL,0);
 
             //智能
             datasetMulti.add(new DropdownItemObject(MULTI_ALL, ID_MULTI_ALL,"ALL"));
@@ -662,7 +716,7 @@ public class OrderFragment extends BaseFragment  {
             datasetMulti.add(new DropdownItemObject(MULTI_TIME, ID_MULTI_TIME, "TIME"));
             datasetMulti.add(new DropdownItemObject(MULTI_Ass_TIME, ID_MULTI_Ass_TIME, "AssTIME"));
 
-            dropdownMulti.bind(datasetMulti, chooseMulti, this, ID_MULTI_ALL);
+            dropdownMulti.bind(datasetMulti, chooseMulti, this, ID_MULTI_ALL,0);
 
             //赏金
             datasetMoney.add(new DropdownItemObject(MONEY_ALL, ID_MONEY_ALL,"ALL"));
@@ -670,17 +724,17 @@ public class OrderFragment extends BaseFragment  {
             datasetMoney.add(new DropdownItemObject(MONEY_MONEY_LOW, ID_MONEY_MONEY_LOW,"MONEYLOW"));
             //datasetMoney.add(new DropdownItemObject(MONEY_TIME, ID_MONEY_TIME, "TIME"));
 
-            dropdownMoney.bind(datasetMoney, chooseMoney, this, ID_MONEY_ALL);
+            dropdownMoney.bind(datasetMoney, chooseMoney, this, ID_MONEY_ALL,0);
 
             //筛选
-            datasetSelect.add(new DropdownItemObject(SELECT_ALL, ID_SELECT_ALL,"SELECT"));
+            //datasetSelect.add(new DropdownItemObject(SELECT_ALL, ID_SELECT_ALL,"SELECT"));
             datasetSelect.add(new DropdownItemObject(SELECT_FIRST, ID_SELECT_FIRST,"DISTANCE"));
             datasetSelect.add(new DropdownItemObject(SELECT_SECOND, ID_SELECT_SECOND,"SECOND"));
             datasetSelect.add(new DropdownItemObject(SELECT_BOTH, ID_SELECT_BOTH, "BOTH"));
             datasetSelect.add(new DropdownItemObject(SELECT_OFFLINE, ID_SELECT_OFFLINE, "OFFLINE"));
             datasetSelect.add(new DropdownItemObject(SELECT_ONLINE, ID_SELECT_ONLINE, "ONLINE"));
 
-            dropdownSelect.bind(datasetSelect, chooseSelect, this, ID_SELECT_ALL);
+            dropdownSelect.bind(datasetSelect, chooseSelect, this, ID_SELECT_ALL,1);
 
 //            datasetAllLabel.add(new DropdownItemObject(LABEL_ALL, ID_LABEL_ALL, null) {
 //                @Override

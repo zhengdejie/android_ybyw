@@ -54,10 +54,10 @@ public class HomeFragment extends BaseFragment {
                 "自荐单"
         };
 
-        fragments = new BaseFragment[]{
-                OrderFragment.newInstance("需求"),
-                OrderFragment.newInstance("自荐")
-        };
+//        fragments = new BaseFragment[]{
+//                OrderFragment.newInstance("需求"),
+//                OrderFragment.newInstance("自荐")
+//        };
 
         pager = (ViewPager) root.findViewById(R.id.pager);
         pager.setAdapter(new TabsAdapter());

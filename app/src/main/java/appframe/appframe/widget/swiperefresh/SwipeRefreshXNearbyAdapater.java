@@ -21,8 +21,7 @@ import appframe.appframe.dto.OrderReviewDetail;
 public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
-    List<Nearby> nearby = new ArrayList<Nearby>();
-    TextView tv_content,tv_title,tv_name;
+    List<Nearby> nearby;
 
     public SwipeRefreshXNearbyAdapater(Context context,List<Nearby> nearby)
     {
@@ -41,14 +40,25 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = layoutInflater.inflate(R.layout.swiperefreshx_nearby, null);
-//        tv_title = (TextView)convertView.findViewById(R.id.tv_title);
-//        tv_content = (TextView)convertView.findViewById(R.id.tv_content);
-//        tv_name = (TextView)convertView.findViewById(R.id.tv_name);
-//        tv_title.setText(orderReviewDetails.get(position).getTitle());
-//        tv_content.setText(orderReviewDetails.get(position).getContent());
-//        tv_name.setText(orderReviewDetails.get(position).getCommontatorName());
+        final ViewHolder mHolder;
 
+        if (convertView == null)
+        {
+            convertView = layoutInflater
+                    .inflate(R.layout.swiperefreshx_nearby, null);
+            mHolder = new ViewHolder();
+            mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            mHolder.tv_distance = (TextView) convertView.findViewById(R.id.tv_distance);
+            convertView.setTag(mHolder);
+        }
+        else
+        {
+            mHolder = (ViewHolder) convertView.getTag();
+        }
+
+        final Nearby item = nearby.get(position);
+        mHolder.tv_name.setText(item.getName());
+        mHolder.tv_distance.setText(String.valueOf(item.getDistance()));
         return convertView;
     }
 
@@ -60,5 +70,11 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    static class ViewHolder
+    {
+        private TextView tv_name;
+        private TextView tv_distance;
     }
 }
