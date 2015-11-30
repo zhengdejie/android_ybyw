@@ -30,7 +30,7 @@
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:src="@drawable/ic_launcher"/>
+          />
     </RelativeLayout>
     <View
         android:layout_width="match_parent"

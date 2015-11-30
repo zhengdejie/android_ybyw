@@ -60,9 +60,10 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
  */
 public class OrderDetailsActivity extends BaseActivity implements View.OnClickListener{
 
-    private ImageView img_avatar;
+    //private ImageView img_avatar;
     private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit;
     private ImageButton imgbtn_conversation,imgbtn_call;
+    com.android.volley.toolbox.NetworkImageView iv_avatar;
     private Button btn_select,btn_estimate,btn_comment,btn_recommend;
     private String OrderID,Tel, hasTopOrder, Entrance;
     private ListView lv_ordercomment;
@@ -81,7 +82,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.img_avatar:
+            case R.id.iv_avatar:
                 intent.setClass(OrderDetailsActivity.this, FriendsInfoActivity.class);
                 bundle.putSerializable("OrderDetails", orderDetails);
                 intent.putExtras(bundle);
@@ -211,7 +212,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 
     public void init()
     {
-        img_avatar = (ImageView)findViewById(R.id.img_avatar);
+        //img_avatar = (ImageView)findViewById(R.id.img_avatar);
         imgbtn_conversation = (ImageButton)findViewById(R.id.imgbtn_conversation);
         imgbtn_call = (ImageButton)findViewById(R.id.imgbtn_call);
         tv_title =(TextView)findViewById(R.id.tv_title);
@@ -236,8 +237,9 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tv_moneyunit = (TextView)findViewById(R.id.tv_moneyunit);
         tv_range = (TextView)findViewById(R.id.tv_range);
         btn_recommend = (Button)findViewById(R.id.btn_recommend);
+        iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
 
-        img_avatar.setOnClickListener(this);
+        iv_avatar.setOnClickListener(this);
         imgbtn_conversation.setOnClickListener(this);
         imgbtn_call.setOnClickListener(this);
         btn_select.setOnClickListener(this);
@@ -272,6 +274,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tv_paymethod.setText(orderDetails.getPaymentMethod().toString());
         tv_deadline.setText(orderDetails.getDeadline().toString());
         tv_name.setText(orderDetails.getOrderer().getName().toString());
+        ImageUtils.setImageUrl(iv_avatar, orderDetails.getOrderer().getAvatar().toString());
         Tel = orderDetails.getOrderer().getMobile() == null ? "" : orderDetails.getOrderer().getMobile().toString();
         OrderID = String.valueOf(orderDetails.getId());
         tv_range.setText(setRange(orderDetails.getVisibility()));

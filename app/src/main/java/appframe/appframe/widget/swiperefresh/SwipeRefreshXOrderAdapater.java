@@ -23,6 +23,7 @@ import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/8/7.
@@ -33,6 +34,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
     LayoutInflater layoutInflater;
     List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
     TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name;
+    com.android.volley.toolbox.NetworkImageView iv_avatar;
     Button btn_estimate;
     String from;
     LinearLayout ll_receiver,ll_button;
@@ -72,6 +74,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         btn_estimate = (Button)convertView.findViewById(R.id.btn_estimate);
         tv_time = (TextView)convertView.findViewById(R.id.tv_time);
         tv_name = (TextView)convertView.findViewById(R.id.tv_name);
+        iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
 //        ll_receiver = (LinearLayout)convertView.findViewById(R.id.ll_receiver);
 //        ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
         txt_title.setText(orderDetails.get(position).getTitle());
@@ -80,6 +83,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         txt_location.setText(orderDetails.get(position).getAddress());
         tv_time.setText(orderDetails.get(position).getCreatedAt());
         tv_name.setText(orderDetails.get(position).getOrderer().getName());
+        ImageUtils.setImageUrl(iv_avatar, orderDetails.get(position).getOrderer().getAvatar());
 
         switch (from)
         {

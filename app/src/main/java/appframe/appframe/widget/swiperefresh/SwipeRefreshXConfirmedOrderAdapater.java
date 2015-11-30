@@ -25,6 +25,7 @@ import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.ConfirmedOrderDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/11/25.
@@ -72,6 +73,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
             mHolder.tv_name = (TextView)convertView.findViewById(R.id.tv_name);
             mHolder.tv_showserviceprovider = (TextView)convertView.findViewById(R.id.tv_showserviceprovider);
             mHolder.tv_showservicereceiver = (TextView)convertView.findViewById(R.id.tv_showservicereceiver);
+            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
 
             convertView.setTag(mHolder);
         }
@@ -88,6 +90,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
         mHolder.tv_name.setText(item.getOrder().getOrderer().getName());
         mHolder.tv_showserviceprovider.setText(item.getServiceProvider().getName());
         mHolder.tv_showservicereceiver.setText(item.getServiceReceiver().getName());
+        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrder().getOrderer().getAvatar());
 
         switch (from)
         {
@@ -250,6 +253,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
     {
         private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_showserviceprovider,tv_showservicereceiver;
         private Button btn_estimate,btn_finish;
+        com.android.volley.toolbox.NetworkImageView iv_avatar;
     }
 
 }

@@ -35,6 +35,7 @@ import appframe.appframe.dto.UserContact;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.utils.UploadUtils;
 import appframe.appframe.widget.sortlistview.MyContact;
@@ -46,7 +47,7 @@ import appframe.appframe.widget.sortlistview.SortListViewActivity;
 public class PersonFragment extends BaseFragment implements View.OnClickListener{
     TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel;
     public static TextView tv_unread;
-    ImageView iv_avater;
+    com.android.volley.toolbox.NetworkImageView iv_avater;
     View root;
     LinearLayout ll_person;
     List<UserContact> contactsList = new ArrayList<UserContact>();
@@ -190,7 +191,7 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_contact = (TextView)root.findViewById(R.id.tv_contact);
         tv_collect = (TextView)root.findViewById(R.id.tv_collect);
         tv_wallet = (TextView)root.findViewById(R.id.tv_wallet);
-        iv_avater = (ImageView)root.findViewById(R.id.iv_avater);
+        iv_avater = (com.android.volley.toolbox.NetworkImageView)root.findViewById(R.id.iv_avater);
         tv_mymessage = (TextView)root.findViewById(R.id.tv_mymessage);
         tv_updatecontact = (TextView)root.findViewById(R.id.tv_updatecontact);
         tv_expandhr = (TextView)root.findViewById(R.id.tv_expandhr);
@@ -215,6 +216,8 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tb_title.setText("个人中心");
         tv_name.setText(Auth.getCurrentUser().getName());
         tv_tel.setText(tv_tel.getText() + Auth.getCurrentUser().getMobile());
+        ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
+
         initConversationServiceAndListener();
     }
 

@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -78,7 +80,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         tv_selfestimate = (TextView)findViewById(R.id.tv_selfestimate);
         tv_showsex = (TextView)findViewById(R.id.tv_showsex);
         iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
-        iv_showavatar.setDefaultImageResId(R.drawable.ic_launcher);
+        //iv_showavatar.setDefaultImageResId(R.drawable.ic_launcher);
         tb_back.setText("个人中心");
         tb_title.setText("个人信息");
 
@@ -92,6 +94,10 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
 
         tv_shownickname.setText(Auth.getCurrentUser().getName());
         tv_showsex.setText(Auth.getCurrentUser().getGender());
+        if(Auth.getCurrentUser().getAvatar() != null && Auth.getCurrentUser().getAvatar() != "")
+        {
+            ImageUtils.setImageUrl(iv_showavatar, Auth.getCurrentUser().getAvatar());
+        }
     }
 
     @Override
@@ -212,6 +218,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
     }
     private static final int TAKE_PICTURE = 0x000300;
     private static final int SELECT_PHOTO = 0x000100;
+    private String path = "";
     public class PopupWindows_Picture extends PopupWindow
     {
 
@@ -253,8 +260,13 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
             {
                 public void onClick(View v)
                 {
-                    Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                    Intent photoPickerIntent = new Intent(Intent.CATEGORY_OPENABLE);
                     photoPickerIntent.setType("image/*");
+                    if (Build.VERSION.SDK_INT <19) {
+                        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+                    }else {
+                        photoPickerIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+                    }
                     startActivityForResult(photoPickerIntent, SELECT_PHOTO);
                     dismiss();
                 }
@@ -276,8 +288,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         File vFile = new File(Environment.getExternalStorageDirectory()
-                + "/myavater/", String.valueOf(System.currentTimeMillis())
-                + ".jpg");
+                + "tempAvatar.jpg");
         if (!vFile.exists())
         {
             File vDirPath = vFile.getParentFile();
@@ -290,7 +301,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
                 vFile.delete();
             }
         }
-        //path = vFile.getPath();
+        path = vFile.getPath();
         Uri cameraUri = Uri.fromFile(vFile);
         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
         startActivityForResult(openCameraIntent, TAKE_PICTURE);
@@ -301,8 +312,36 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         switch (requestCode) {
             case TAKE_PICTURE:
                 if (resultCode == RESULT_OK) {
-                    Bitmap bm = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    iv_showavatar.setImageBitmap(bm);//想图像显示在ImageView视图上，private ImageView img;
+                    //Bitmap bm = (Bitmap) imageReturnedIntent.getExtras().get("data");
+                    final File f = new File(Environment.getExternalStorageDirectory()
+                            + "tempAvatar.jpg");
+                    String pathString = Environment.getExternalStorageDirectory()
+                            + "tempAvatar.jpg";
+                    Bitmap b = BitmapFactory.decodeFile(pathString);
+                    Http.request(MyInfoActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
+                        @Override
+                        public void onSuccess(Token result) {
+                            super.onSuccess(result);
+
+                            UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+                                @Override
+                                public void done(String id) {
+                                    Http.request(MyInfoActivity.this, API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                                            "Avatar", id
+                                    ), new Http.RequestListener<UserDetail>() {
+                                        @Override
+                                        public void onSuccess(UserDetail result) {
+                                            super.onSuccess(result);
+                                            // 上传成功
+                                            Auth.updateCurrentUser(result);
+                                            ImageUtils.setImageUrl(iv_showavatar, result.Avatar);
+                                        }
+                                    });
+                                }
+                            }, result.getUpToken());
+                        }
+                    });
+                    //ImageUtils.setImageUrl(iv_showavatar, result.Avatar);//想图像显示在ImageView视图上，private ImageView img;
                 }
                 break;
             case SELECT_PHOTO:
@@ -325,7 +364,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
                                         public void onSuccess(UserDetail result) {
                                             super.onSuccess(result);
                                             // 上传成功
-
+                                            Auth.updateCurrentUser(result);
                                             ImageUtils.setImageUrl(iv_showavatar, result.Avatar);
                                         }
                                     });

@@ -31,12 +31,14 @@
         android:orientation="horizontal"
         android:background="@color/white"
         >
-        <ImageView
+        <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/iv_avater"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/ic_launcher"
+            android:layout_alignParentRight="true"
             android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
             />
         <LinearLayout
             android:layout_width="match_parent"
