@@ -15,7 +15,7 @@ public class UserBrief extends Http.BaseDto implements Serializable {
     public String Avatar;
     public String Mobile;
     public Date CreatedAt;
-
+    public String Gender;
     public Date UpdatedAt;
 
     public int getId() {
@@ -64,5 +64,13 @@ public class UserBrief extends Http.BaseDto implements Serializable {
 
     public void setUpdatedAt(Date updatedAt) {
         UpdatedAt = updatedAt;
+    }
+
+    public String getGender() {
+        return Gender;
+    }
+
+    public void setGender(String gender) {
+        Gender = gender;
     }
 }

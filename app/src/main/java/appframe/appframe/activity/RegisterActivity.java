@@ -45,7 +45,7 @@ import appframe.appframe.utils.Utils;
 public class RegisterActivity extends BaseActivity {
     private static final int SELECT_PHOTO = 100;
     TextView tb_back,tb_action,tb_title;
-    EditText email, password, name;
+    EditText email, password, name,et_mobile;
     View ok;
     ImageButton avatar;
     List<UserContact> contactsList = new ArrayList<UserContact>();
@@ -63,6 +63,7 @@ public class RegisterActivity extends BaseActivity {
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
         name = (EditText)findViewById(R.id.name);
+        et_mobile = (EditText)findViewById(R.id.et_mobile);
 
         ok = findViewById(R.id.ok);
         avatar = (ImageButton)findViewById(R.id.avatar);
@@ -76,55 +77,34 @@ public class RegisterActivity extends BaseActivity {
                         "Email", email.getText().toString(),
                         "Password", password.getText().toString(),
                         "Avatar", uploadedAvatarId,
-                        "Name", name.getText().toString()
+                        "Name", name.getText().toString(),
+                        "Mobile",et_mobile.getText().toString()
 
                 ), new Http.RequestListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult result) {
                         super.onSuccess(result);
                         try {
-                            //Get Contacts
-                            Cursor cursor = RegisterActivity.this.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-                            while (cursor.moveToNext()) {
-                                //At least one phone number
-                                if(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))>0)
-                                {
-                                    int ContactID = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                                    String ContactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                                    Cursor cursorPhone = RegisterActivity.this.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactID, null, null);
-                                    while(cursorPhone.moveToNext())
-                                    {
-                                        String ContactMobile = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                        Pattern pattern = Pattern.compile("^\\d{11}$");
-                                        Matcher matcher = pattern.matcher(ContactMobile);
-                                        if(matcher.matches()) {
-                                            UserContact userContact = new UserContact(ContactName, ContactMobile);
-                                            contactsList.add(userContact);
-                                        }
-                                    }
-                                    cursorPhone.close();
-                                }
 
-                            }
-                            cursor.close();
+                            contactsList = UploadUtils.uploadContact(RegisterActivity.this);
+                            Auth.login(result.Token, result.User);
+
+                            Http.request(RegisterActivity.this, API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
+                                    "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                }
+                            });
+
+                            // 进首页
+                            SplashActivity.startRootActivity(RegisterActivity.this);
                         }
                         catch (Exception e)
                         {
                             e.printStackTrace();
                         }
 
-
-                        Http.request(RegisterActivity.this, API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList)), new Http.RequestListener<String>() {
-                            @Override
-                            public void onSuccess(String result) {
-                                super.onSuccess(result);
-                            }
-                        });
-
-                        Auth.login(result.Token, result.User);
-
-                        // 进首页
-                        SplashActivity.startRootActivity(RegisterActivity.this);
                     }
                 });
             }

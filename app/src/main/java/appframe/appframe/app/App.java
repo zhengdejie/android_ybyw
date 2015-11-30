@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.alibaba.mobileim.YWAPI;
 import com.alibaba.mobileim.YWIMKit;
+import com.alibaba.wxlib.util.SysUtil;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -21,6 +22,7 @@ import appframe.appframe.R;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.ConfigCache;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.InitHelper;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.utils.MemoryCache;
 import appframe.appframe.utils.Utils;
@@ -52,7 +54,18 @@ public class App extends Application {
         sContext = getApplicationContext();
 //		YWEnvManager.prepare(sContext, YWEnvType.PRE);
         //SDK初始化
-        LoginSampleHelper.getInstance().initSDK_Sample(this);
+        //LoginSampleHelper.getInstance().initSDK_Sample(this);
+        //Application.onCreate中，首先执行这部分代码, 因为，如果在":TCMSSevice"进程中，无需进行openIM和app业务的初始化，以节省内存
+        //特别注意:这段代码不能封装到其他方法中，必须在onCreate顶层代码中!
+        //以下代码固定在此处，不要改动
+        SysUtil.setApplication(this);
+        if(SysUtil.isTCMSServiceProcess(this)){
+            return;  //特别注意：此处return是退出onCreate函数，因此不能封装到其他任何方法中!
+        }
+        //以上代码固定在这个位置，不要改动
+
+        //初始化云旺SDK
+        InitHelper.initYWSDK(this);
 
 //        //IM聊天配置
 //        YWAPI.init(this,APP_KEY);

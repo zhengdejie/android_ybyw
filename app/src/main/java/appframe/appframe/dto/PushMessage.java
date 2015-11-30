@@ -1,6 +1,6 @@
 package appframe.appframe.dto;
 
-import com.alibaba.sdk.android.session.model.User;
+
 
 import appframe.appframe.utils.Http;
 
@@ -8,6 +8,7 @@ import appframe.appframe.utils.Http;
  * Created by Administrator on 2015/11/12.
  */
 public class PushMessage extends Http.BaseDto {
+    private int Id;
     private String Title;
     private String Content ;
     private String CreatedAt ;
@@ -16,6 +17,15 @@ public class PushMessage extends Http.BaseDto {
     private int Type;
     private OrderDetails Order;
     private UserDetail Sender;
+    private int FriendRequestAccepted;
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
 
     public String getTitle() {
         return Title;
@@ -79,5 +89,13 @@ public class PushMessage extends Http.BaseDto {
 
     public void setSender(UserDetail sender) {
         Sender = sender;
+    }
+
+    public int getFriendRequestAccepted() {
+        return FriendRequestAccepted;
+    }
+
+    public void setFriendRequestAccepted(int friendRequestAccepted) {
+        FriendRequestAccepted = friendRequestAccepted;
     }
 }

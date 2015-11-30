@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/ly_main_tab_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="50dip"
+                android:layout_alignParentBottom="true"
+                 >
+    <LinearLayout
+        android:id="@+id/tabbottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/demo_tab_bg"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_ubang"
+                style="@style/tab_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawableTop="@drawable/demo_tab_icon_message_normal"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="友帮"
+                android:textColor="#bcbfc1" />
+
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_myorder"
+                style="@style/tab_text_style"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:drawableTop="@drawable/demo_tab_icon_contact_normal"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="我的发单"
+                android:textColor="#bcbfc1" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_discovery"
+                style="@style/tab_text_style"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:drawableTop="@drawable/demo_tab_icon_tribe_normal"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="发现"
+                android:textColor="#bcbfc1" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tv_setting"
+                style="@style/tab_text_style"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:drawableTop="@drawable/demo_tab_icon_setting_normal"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="个人中心"
+                android:textColor="#bcbfc1" />
+
+            <TextView
+                android:id="@+id/tv_unread"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/aliwx_unread_hint"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/aliwx_unread_text_size"
+                android:visibility="invisible"
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+    <!--<LinearLayout-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="55dp" >-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/id_tab_bottom_weixin"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:descendantFocusability="beforeDescendants"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical" >-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/btn_tab_bottom_weixin"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="#0000"-->
+                <!--android:clickable="false"-->
+                <!--android:src="@drawable/tab_weixin_pressed" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="友帮" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/id_tab_bottom_friend"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:descendantFocusability="beforeDescendants"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical" >-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/btn_tab_bottom_friend"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="#0000"-->
+                <!--android:clickable="false"-->
+                <!--android:src="@drawable/tab_find_frd_normal" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="我的发单" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/id_tab_bottom_contact"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:descendantFocusability="beforeDescendants"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical" >-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/btn_tab_bottom_contact"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="#0000"-->
+                <!--android:clickable="false"-->
+                <!--android:src="@drawable/tab_address_normal" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="发现" />-->
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:id="@+id/id_tab_bottom_setting"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:descendantFocusability="beforeDescendants"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical" >-->
+
+            <!--<ImageButton-->
+                <!--android:id="@+id/btn_tab_bottom_setting"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="#0000"-->
+                <!--android:clickable="false"-->
+                <!--android:src="@drawable/tab_settings_normal" />-->
+
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="个人中心" />-->
+        <!--</LinearLayout>-->
+    <!--</LinearLayout>-->
+
+</RelativeLayout>

@@ -51,6 +51,7 @@ import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
+import appframe.appframe.widget.sortlistview.FirstClassFriends;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 
@@ -62,7 +63,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     private ImageView img_avatar;
     private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit;
     private ImageButton imgbtn_conversation,imgbtn_call;
-    private Button btn_select,btn_estimate,btn_comment;
+    private Button btn_select,btn_estimate,btn_comment,btn_recommend;
     private String OrderID,Tel, hasTopOrder, Entrance;
     private ListView lv_ordercomment;
     OrderDetails orderDetails;
@@ -198,6 +199,13 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                     }
                 }).show();
                 break;
+            case R.id.btn_recommend:
+                intent.setClass(OrderDetailsActivity.this, FirstClassFriends.class);
+                //Bundle bundle = new Bundle();
+                bundle.putSerializable("OrderDetails", orderDetails);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            break;
         }
     }
 
@@ -226,6 +234,8 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         lv_ordercomment = (ListView)findViewById(R.id.lv_ordercomment);
         tv_comment = (TextView)findViewById(R.id.tv_comment);
         tv_moneyunit = (TextView)findViewById(R.id.tv_moneyunit);
+        tv_range = (TextView)findViewById(R.id.tv_range);
+        btn_recommend = (Button)findViewById(R.id.btn_recommend);
 
         img_avatar.setOnClickListener(this);
         imgbtn_conversation.setOnClickListener(this);
@@ -233,6 +243,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         btn_select.setOnClickListener(this);
         btn_estimate.setOnClickListener(this);
         btn_comment.setOnClickListener(this);
+        btn_recommend.setOnClickListener(this);
 
         Intent intent = this.getIntent();
         orderDetails=(OrderDetails)intent.getSerializableExtra("OrderDetails");
@@ -257,12 +268,13 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tv_content.setText(orderDetails.getContent().toString());
         tv_time.setText(orderDetails.getCreatedAt().toString());
         tv_status.setText(orderDetails.getOrderStatus().toString());
-        tv_require.setText(orderDetails.getRequest().toString());
+        tv_require.setText(orderDetails.getRequest() == null ? "" : orderDetails.getRequest().toString());
         tv_paymethod.setText(orderDetails.getPaymentMethod().toString());
         tv_deadline.setText(orderDetails.getDeadline().toString());
         tv_name.setText(orderDetails.getOrderer().getName().toString());
         Tel = orderDetails.getOrderer().getMobile() == null ? "" : orderDetails.getOrderer().getMobile().toString();
         OrderID = String.valueOf(orderDetails.getId());
+        tv_range.setText(setRange(orderDetails.getVisibility()));
         //Log.i("OrderDetailsID--",String.valueOf(orderDetails.getId()));
         tb_title.setText("需求单");
         tb_back.setText("友帮");
@@ -287,6 +299,26 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                     }
                 });
 
+    }
+
+    private String setRange(int range)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        if( (range & 1) == 1)
+        {
+            sb.append(",").append("一度");
+        }
+        if((range & 2) == 2)
+        {
+            sb.append(",").append("二度");
+        }
+        if((range & 4) == 4)
+        {
+            sb.append(",").append("陌生人");
+        }
+
+        return sb.deleteCharAt(0).toString();
     }
 
     public void setListViewHeightBasedOnChildren(ListView listView) {

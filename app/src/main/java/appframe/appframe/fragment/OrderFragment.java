@@ -334,7 +334,7 @@ public class OrderFragment extends BaseFragment  {
         tv_require.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Type = 1;
+                Type = 2;
                 tv_require.setBackgroundColor(Color.GREEN);
                 tv_recommand.setBackgroundColor(Color.WHITE);
                 Map<String, String> map = new HashMap<String, String>();
@@ -358,10 +358,10 @@ public class OrderFragment extends BaseFragment  {
                         if (hasTopOrder()) {
                             OrderDetails topOrder = getTopOrder();
                             List<OrderDetails> list_OD = getOrders(result, topOrder);
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_PROGRESS, true));
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true));
 
                         } else {
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_PROGRESS, false));
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_MAIN, false));
                         }
 
 
@@ -373,7 +373,7 @@ public class OrderFragment extends BaseFragment  {
         tv_recommand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Type = 2;
+                Type = 1;
                 tv_require.setBackgroundColor(Color.WHITE);
                 tv_recommand.setBackgroundColor(Color.GREEN);
 
@@ -400,11 +400,11 @@ public class OrderFragment extends BaseFragment  {
                         {
                             OrderDetails topOrder = getTopOrder();
                             List<OrderDetails> list_OD = getOrders(result, topOrder);
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_PROGRESS, true));
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true));
                         }
                         else
                         {
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS, false));
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN, false));
                         }
 
                     }
@@ -465,11 +465,11 @@ public class OrderFragment extends BaseFragment  {
                         {
                             OrderDetails topOrder = getTopOrder();
                             List<OrderDetails> list_OD = getOrders(result,topOrder);
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD,AppConfig.ORDERSTATUS_PROGRESS, true));
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD,AppConfig.ORDERSTATUS_MAIN, true));
                         }
                         else
                         {
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS, false));
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN, false));
                         }
 
                         swipeRefresh.setRefreshing(false);
@@ -617,7 +617,7 @@ public class OrderFragment extends BaseFragment  {
                     public void onSuccess(final List<OrderDetails> result) {
                         super.onSuccess(result);
 
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN));
 
 
                     }
@@ -630,7 +630,7 @@ public class OrderFragment extends BaseFragment  {
                     public void onSuccess(final List<OrderDetails> result) {
                         super.onSuccess(result);
 
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN));
 
 
                     }
@@ -644,7 +644,7 @@ public class OrderFragment extends BaseFragment  {
                     public void onSuccess(final List<OrderDetails> result) {
                         super.onSuccess(result);
 
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN));
 
 
                     }
@@ -657,7 +657,7 @@ public class OrderFragment extends BaseFragment  {
                     public void onSuccess(final List<OrderDetails> result) {
                         super.onSuccess(result);
 
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_PROGRESS));
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN));
 
 
                     }

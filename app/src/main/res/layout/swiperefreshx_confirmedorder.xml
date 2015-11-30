@@ -111,29 +111,67 @@
 
     </LinearLayout>
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@color/divide"-->
-        <!--/>-->
+    <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/divide"
+    />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="44dip"
+    android:orientation="horizontal">
+    <RelativeLayout
+    android:id="@+id/ll_receiver"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:layout_margin="5dp"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_serviceprovider"
+            android:text="服务方:"
+            android:layout_weight="1"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/tv_showserviceprovider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_alignTop="@+id/tv_serviceprovider"
+            android:layout_toRightOf="@+id/tv_serviceprovider"
+            android:layout_toEndOf="@+id/tv_serviceprovider"/>
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/ll_receiver"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_margin="5dp">-->
-        <!--<RadioButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="我是接单人"/>-->
-        <!--<RadioButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="选我,选我,选我"/>-->
 
-    <!--</LinearLayout>-->
-
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_servicereceiver"
+            android:text="被服务方:"
+            android:layout_weight="1"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/tv_showservicereceiver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_servicereceiver"
+            android:layout_toEndOf="@+id/tv_servicereceiver"/>
+    </RelativeLayout>
+</LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -141,39 +179,56 @@
         />
 
     <!--<LinearLayout-->
-        <!--android:id="@+id/ll_button"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_margin="5dp">-->
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/btn_acceptandclose"-->
-            <!--android:text="接受并关闭订单"-->
-            <!--android:textSize="16dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:focusable="false"-->
-            <!--/>-->
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/btn_acceptandsave"-->
-            <!--android:text="接受并保留订单"-->
-            <!--android:textSize="16dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:focusable="false"-->
-            <!--/>-->
+    <!--android:id="@+id/ll_button"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:layout_margin="5dp">-->
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/btn_acceptandclose"-->
+    <!--android:text="接受并关闭订单"-->
+    <!--android:textSize="16dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:focusable="false"-->
+    <!--/>-->
+    <!--<Button-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:id="@+id/btn_acceptandsave"-->
+    <!--android:text="接受并保留订单"-->
+    <!--android:textSize="16dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:focusable="false"-->
+    <!--/>-->
+    <RelativeLayout
+    android:id="@+id/ll_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="5dp">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_finish"
+            android:text="完成"
+            android:textSize="16dp"
+            android:layout_gravity="right"
+            android:focusable="false"
+            android:layout_toLeftOf="@+id/btn_estimate"
+            android:visibility="invisible"
+            />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_estimate"
             android:text="评价"
             android:textSize="16dp"
-            android:layout_gravity="right"
             android:focusable="false"
+            android:layout_alignParentRight="true"
             />
-    <!--</LinearLayout>-->
+    </RelativeLayout>
 
 
 

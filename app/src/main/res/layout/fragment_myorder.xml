@@ -24,13 +24,43 @@
             android:layout_weight="1">
 
             <TextView
+                android:id="@+id/tab_apply"
+                style="@style/tab_text_style"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:paddingTop="3dp"
+                android:text="申请中"
+                android:textColor="@color/font_black_content" />
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="match_parent"
+                android:background="#dddddd"
+                android:layout_alignRight="@+id/tab_apply"/>
+            <View
+                android:id="@+id/bottomLine_apply"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/green"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <TextView
                 android:id="@+id/tab_progess"
                 style="@style/tab_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingTop="3dp"
-                android:text="进行中订单"
+                android:text="进行中"
                 android:textColor="@color/font_black_content" />
             <View
                 android:layout_width="0.5dp"
@@ -72,7 +102,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingTop="3dp"
-                android:text="成交订单"
+                android:text="已成交"
                 android:textColor="@color/font_black_content" />
             <View
                 android:layout_width="0.5dp"
@@ -102,7 +132,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingTop="3dp"
-                android:text="关闭订单"
+                android:text="已关闭"
                 android:textColor="@color/font_black_content" />
             <View
                 android:id="@+id/bottomLine_close"

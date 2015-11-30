@@ -176,13 +176,30 @@ public final class Http {
             r.resultIsList = true;
             return r;
         }
-        public static <T extends BaseDto> API<T> deleteEmpty(String url){
+        public static <T extends BaseDto> API<T> delete(String url, Class<T> resultClass)
+        {
             API<T> r = new API<>();
             r.url = url;
             r.method = RequestMethod.DELETE;
-            r.resultClass = BaseDto.class;
+            r.resultClass = resultClass;
             r.resultIsList = false;
             return r;
+        }
+        public static  API<BaseDto> deleteEmpty(String url){
+            return delete(url, BaseDto.class);
+        }
+
+        public static <T extends BaseDto> API<T> put(String url, Class<T> resultClass)
+        {
+            API<T> r = new API<>();
+            r.url = url;
+            r.method = RequestMethod.PUT;
+            r.resultClass = resultClass;
+            r.resultIsList = false;
+            return r;
+        }
+        public static  API<BaseDto> putEmpty(String url){
+            return put(url, BaseDto.class);
         }
     }
     /*
@@ -225,37 +242,37 @@ public final class Http {
             if(!TextUtils.isEmpty(response.resultResponseStatus.Message)) {
                 Activity context = response.request.getContext();
                 if (context != null) {
-                    SnackBar.Style style;
-                    String message = response.resultResponseStatus.Message;
-
-                    int color;
-                    if(TextUtils.isEmpty(response.resultResponseStatus.ErrorCode))
-                        color = android.R.color.darker_gray;
-                    else
-                        color = android.R.color.holo_red_dark;
-                    if(message.contains("||")){
-                        String [] ps = message.split("\\|\\|");
-                        message = ps[1];
-                        if("info".equalsIgnoreCase(ps[0]))
-                            color = android.R.color.background_dark;
-                        else if("warning".equalsIgnoreCase(ps[0]))
-                            color = android.R.color.holo_orange_dark;
-                        else if("success".equalsIgnoreCase(ps[0]))
-                            color = android.R.color.holo_green_dark;
-                    }
-                    boolean error = !TextUtils.isEmpty(response.resultResponseStatus.ErrorCode);
-                    if(error)
-                        style = SnackBar.Style.ALERT;
-                    else
-                        style = SnackBar.Style.DEFAULT;
-
-                    // 给用户显示消息
-                    new SnackBar.Builder(context)
-                            .withMessage(message)
-                            .withStyle(style)
-                            .withDuration(SnackBar.SHORT_SNACK)
-                            .withBackgroundColorId(color)
-                            .show();
+//                    SnackBar.Style style;
+//                    String message = response.resultResponseStatus.Message;
+//
+//                    int color;
+//                    if(TextUtils.isEmpty(response.resultResponseStatus.ErrorCode))
+//                        color = android.R.color.darker_gray;
+//                    else
+//                        color = android.R.color.holo_red_dark;
+//                    if(message.contains("||")){
+//                        String [] ps = message.split("\\|\\|");
+//                        message = ps[1];
+//                        if("info".equalsIgnoreCase(ps[0]))
+//                            color = android.R.color.background_dark;
+//                        else if("warning".equalsIgnoreCase(ps[0]))
+//                            color = android.R.color.holo_orange_dark;
+//                        else if("success".equalsIgnoreCase(ps[0]))
+//                            color = android.R.color.holo_green_dark;
+//                    }
+//                    boolean error = !TextUtils.isEmpty(response.resultResponseStatus.ErrorCode);
+//                    if(error)
+//                        style = SnackBar.Style.ALERT;
+//                    else
+//                        style = SnackBar.Style.DEFAULT;
+//
+//                    // 给用户显示消息
+//                    new SnackBar.Builder(context)
+//                            .withMessage(message)
+//                            .withStyle(style)
+//                            .withDuration(SnackBar.SHORT_SNACK)
+//                            .withBackgroundColorId(color)
+//                            .show();
                 }
             }
         }

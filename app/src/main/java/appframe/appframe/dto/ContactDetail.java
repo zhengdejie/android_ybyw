@@ -10,6 +10,15 @@ public class ContactDetail extends Http.BaseDto {
     private UserDetail User;
     private int Type;
     private String sortLetters;
+    public String Check = "UnCheck";
+
+    public String getCheck() {
+        return Check;
+    }
+
+    public void setCheck(String check) {
+        Check = check;
+    }
 
     public ContactInfo getMobileContact() {
         return MobileContact;

@@ -73,7 +73,6 @@
         android:gravity="left|center"
         android:paddingLeft="10dp"
         android:background="@color/white"
-        android:drawableBottom="@color/default_underline_indicator_selected_color"
         android:clickable="true"
         />
     <View
@@ -93,7 +92,6 @@
             android:gravity="left|center"
             android:paddingLeft="10dp"
             android:background="@color/white"
-            android:drawableBottom="@color/default_underline_indicator_selected_color"
             android:clickable="true"
             />
 
@@ -119,7 +117,6 @@
         android:gravity="left|center"
         android:paddingLeft="10dp"
         android:background="@color/white"
-        android:drawableBottom="@color/default_underline_indicator_selected_color"
         android:clickable="true"
         android:id="@+id/btn_friendsestimate"
         />

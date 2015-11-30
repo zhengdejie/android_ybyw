@@ -16,6 +16,8 @@ public class ConfirmedOrderDetail extends Http.BaseDto implements Serializable {
     private String CompleteDate;
     private int Type;
     private int Status;
+    private UserDetail ServiceProvider;
+    private UserDetail ServiceReceiver;
 
     public int getId() {
         return Id;
@@ -79,5 +81,21 @@ public class ConfirmedOrderDetail extends Http.BaseDto implements Serializable {
 
     public void setStatus(int status) {
         Status = status;
+    }
+
+    public UserDetail getServiceProvider() {
+        return ServiceProvider;
+    }
+
+    public void setServiceProvider(UserDetail serviceProvider) {
+        ServiceProvider = serviceProvider;
+    }
+
+    public UserDetail getServiceReceiver() {
+        return ServiceReceiver;
+    }
+
+    public void setServiceReceiver(UserDetail serviceReceiver) {
+        ServiceReceiver = serviceReceiver;
     }
 }

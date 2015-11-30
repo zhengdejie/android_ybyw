@@ -14,17 +14,25 @@
         android:layout_height="0dp" />
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/divide"
+    />
 
-    <com.viewpagerindicator.TabPageIndicator
-        android:id="@+id/tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <include layout="@layout/bottombar" />
 
-        />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
+
+    <!--<com.viewpagerindicator.TabPageIndicator-->
+        <!--android:id="@+id/tabs"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+
+        <!--/>-->
 
 
 </LinearLayout>

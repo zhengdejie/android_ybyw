@@ -29,11 +29,12 @@ public final class Auth {
         if(ud == null) return 0;
         return ud.Id;
     }
-    public static String getCurrentUserMobile(){
-        if(!isLoggedIn()) return null;
-        UserDetail ud = getCurrentUser();
-        if(ud == null) return null;
-        return ud.Mobile;
+    public static void updateCurrentUser(UserDetail u){
+        user = u;
+        SharedPreferences.Editor e = app.getSharedPreferences("Auth", Context.MODE_PRIVATE).edit();
+        e.remove("user");
+        e.putString("user", GsonHelper.getGson().toJson(user));
+        e.commit();
     }
     public static void login(String t, UserDetail u){
         if(TextUtils.isEmpty(t) != (u == null)) throw new Error();

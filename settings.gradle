@@ -1,1 +1,1 @@
-include ':app', ':BaiduLBS_Android', ':OneSDK'
+include ':app', ':BaiduLBS_Android', ':wx'

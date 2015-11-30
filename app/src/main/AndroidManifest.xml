@@ -33,8 +33,12 @@
 
     <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
-
+    <!-- 支持个推3.0 电子围栏功能 -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <!-- 支持个推3.0 电子围栏功能 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 
     <!-- Don't require camera, as this requires a rear camera. This allows it to work on the Nexus 7 -->
@@ -104,7 +108,7 @@
         <activity android:name=".activity.OrderCommentActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.RelativenetActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.WalletActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.FramedWebViewActivity" android:screenOrientation="portrait"/>
+        <!--<activity android:name=".activity.FramedWebViewActivity" android:screenOrientation="portrait"/>-->
         <activity android:name=".activity.NearByActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.EstimateActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.MyCollectActivity" android:screenOrientation="portrait"/>
@@ -115,6 +119,8 @@
         <activity android:name=".activity.SystemMessageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.OrderMessageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.FriendMessageActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.EditNickNameActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.QRCodeActivity" android:screenOrientation="portrait"/>
 
 
         <activity android:name=".widget.photopicker.view.ImageBucketChooseActivity"  android:screenOrientation="portrait"/>
@@ -122,25 +128,23 @@
         <activity android:name=".widget.photopicker.view.ImageZoomActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.sortlistview.SortListViewActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.sortlistview.MyContact" android:screenOrientation="portrait"/>
+        <activity android:name=".widget.sortlistview.FirstClassFriends" android:screenOrientation="portrait"/>
+
 
 
         <!-- ...........................................个推................................................. -->
         <!-- ................................................................................................. -->
         <!-- ................................................................................................. -->
         <!-- 配置第三方Receiver -->
-        <!--<receiver-->
-            <!--android:name="com.getui.demo.PushDemoReceiver"-->
-            <!--android:exported="false">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="com.igexin.sdk.action.${GETUI_APP_ID}" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+        <receiver
+            android:name=".utils.PushDemoReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.igexin.sdk.action.UEoNhMDOwA8XSVe3YQPNW1" />
+            </intent-filter>
+        </receiver>
         <!-- ibeancon 需要蓝牙权限 -->
-        <uses-permission android:name="android.permission.BLUETOOTH"/>
-        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-        <!-- 支持个推3.0 电子围栏功能 -->
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
 
         <!-- ...........................................zxing................................................. -->
         <!-- ................................................................................................. -->

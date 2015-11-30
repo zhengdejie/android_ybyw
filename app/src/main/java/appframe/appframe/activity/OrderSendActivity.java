@@ -31,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -90,7 +91,7 @@ public class OrderSendActivity extends BaseActivity{
     private EditText edit_title,edit_bounty,edit_content,edit_require;
     private Spinner spinner_category,spinner_range;
     private RadioButton radio_online,radio_offline;
-    private CheckBox checkBox_anonymous,checkBox_donotshowphonenum,checkBox_donotshowlocation;
+    private CheckBox checkBox_anonymous,checkBox_donotshowphonenum,checkBox_donotshowlocation,checkBox_oneclass,checkBox_twoclass,checkBox_stranger;
     private Button btn_send;
     private ImageButton img_addimg1,img_addimg2,img_addimg3;
     private SelectPicPopupWindow menuWindow;
@@ -190,7 +191,8 @@ public class OrderSendActivity extends BaseActivity{
 
             }
         });
-        updateDeadlineDate();
+        dateAndTime.add(Calendar.DAY_OF_MONTH, 7);
+        txt_deadlinedate.setText(fmtDate.format(dateAndTime.getTime()));
         updateDeadlineTime();
 
         btn_send.setOnClickListener(new View.OnClickListener() {
@@ -207,7 +209,7 @@ public class OrderSendActivity extends BaseActivity{
                             "latitude", tv_latitude.getText().toString(),
                             "longitude", tv_longitude.getText().toString(),
                             "Category", spinner_category.getSelectedItem().toString(),
-                            "Visibility", "0",
+                            "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
                             "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
                             "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
                             "Bounty", edit_bounty.getText().toString(),
@@ -263,7 +265,7 @@ public class OrderSendActivity extends BaseActivity{
                                                     "latitude", tv_latitude.getText().toString(),
                                                     "longitude", tv_longitude.getText().toString(),
                                                     "Category", spinner_category.getSelectedItem().toString(),
-                                                    "Visibility", "0",
+                                                    "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
                                                     "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
                                                     "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
                                                     "Bounty", edit_bounty.getText().toString(),
@@ -782,6 +784,46 @@ public class OrderSendActivity extends BaseActivity{
         tb_title = (TextView)findViewById(R.id.tb_title);
         tv_latitude = (TextView)findViewById(R.id.tv_latitude);
         tv_longitude = (TextView)findViewById(R.id.tv_longitude);
+        checkBox_oneclass = (CheckBox)findViewById(R.id.checkBox_oneclass);
+        checkBox_twoclass = (CheckBox)findViewById(R.id.checkBox_twoclass);
+        checkBox_stranger = (CheckBox)findViewById(R.id.checkBox_stranger);
+
+        checkBox_oneclass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(!isChecked && !checkBox_twoclass.isChecked() && !checkBox_stranger.isChecked())
+                {
+                    checkBox_oneclass.setChecked(true);
+                    Toast.makeText(OrderSendActivity.this,"请至少勾选一项",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        checkBox_twoclass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(!isChecked && !checkBox_oneclass.isChecked() && !checkBox_stranger.isChecked())
+                {
+                    checkBox_twoclass.setChecked(true);
+                    Toast.makeText(OrderSendActivity.this,"请至少勾选一项",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        checkBox_stranger.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(!isChecked && !checkBox_twoclass.isChecked() && !checkBox_oneclass.isChecked())
+                {
+                    checkBox_stranger.setChecked(true);
+                    Toast.makeText(OrderSendActivity.this,"请至少勾选一项",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         tb_back.setText("取消");
         tb_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -796,13 +838,13 @@ public class OrderSendActivity extends BaseActivity{
         {
             edit_bounty.setHint("索酬");
             tb_title.setText("自荐单");
-            Type = "2";
+            Type = "1";
         }
         if(getIntent().getStringExtra("demand")!=null && getIntent().getStringExtra("demand").equals("demand"))
         {
             edit_bounty.setHint("赏金");
             tb_title.setText("需求单");
-            Type = "1";
+            Type = "2";
         }
 
         final String category[]=new String[]{
@@ -908,5 +950,27 @@ public class OrderSendActivity extends BaseActivity{
 
     private void updateDeadlineTime() {
         txt_deadlinetime.setText(fmtTime.format(dateAndTime.getTime()));
+    }
+
+    private String TransferVisibility(boolean oneIsChecked,boolean twoIsChecked,boolean strangerIsChecked)
+    {
+        int i = 0;
+        if(oneIsChecked)
+        {
+            i += 1;
+        }
+
+        if(twoIsChecked)
+        {
+            i += 2;
+        }
+
+        if(strangerIsChecked)
+        {
+            i += 4;
+        }
+
+
+        return String.valueOf(i);
     }
 }

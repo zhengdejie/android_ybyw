@@ -58,8 +58,56 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
 
         final Nearby item = nearby.get(position);
         mHolder.tv_name.setText(item.getName());
-        mHolder.tv_distance.setText(String.valueOf(item.getDistance()));
+        mHolder.tv_distance.setText(getDistance(item.getDistance()));
         return convertView;
+    }
+
+    public String getDistance(double distance)
+    {
+        if(distance * 1000 <= 100)
+        {
+            return "100米以内";
+        }
+        else if(100 < distance * 1000 && distance * 1000 <= 200)
+        {
+            return "200米以内";
+        }
+        else if(200 < distance * 1000 && distance * 1000 <= 300)
+        {
+            return "300米以内";
+        }
+        else if(300 < distance * 1000 && distance * 1000 <= 400)
+        {
+            return "400米以内";
+        }
+        else if(400 < distance * 1000 && distance * 1000 <= 500)
+        {
+            return "500米以内";
+        }
+        else if(500 < distance * 1000 && distance * 1000 <= 600)
+        {
+            return "600米以内";
+        }
+        else if(600 < distance * 1000 && distance * 1000 <= 700)
+        {
+            return "700米以内";
+        }
+        else if(700 < distance * 1000 && distance * 1000 <= 800)
+        {
+            return "800米以内";
+        }
+        else if(800 < distance * 1000 && distance * 1000 <= 900)
+        {
+            return "900米以内";
+        }
+        else if(900 < distance * 1000 && distance * 1000 <= 1000)
+        {
+            return "1000米以内";
+        }
+        else
+        {
+            return "2公里以内";
+        }
     }
 
     @Override

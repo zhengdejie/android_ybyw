@@ -1,5 +1,6 @@
 package appframe.appframe.widget.swiperefresh;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,8 +18,11 @@ import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.OrderCommentActivity;
+import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.Http;
 
 /**
  * Created by Administrator on 2015/8/7.
@@ -28,7 +32,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
     List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
-    TextView txt_title,txt_bounty,txt_type,txt_location,tv_time;
+    TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name;
     Button btn_estimate;
     String from;
     LinearLayout ll_receiver,ll_button;
@@ -67,6 +71,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         txt_location = (TextView)convertView.findViewById(R.id.txt_location);
         btn_estimate = (Button)convertView.findViewById(R.id.btn_estimate);
         tv_time = (TextView)convertView.findViewById(R.id.tv_time);
+        tv_name = (TextView)convertView.findViewById(R.id.tv_name);
 //        ll_receiver = (LinearLayout)convertView.findViewById(R.id.ll_receiver);
 //        ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
         txt_title.setText(orderDetails.get(position).getTitle());
@@ -74,20 +79,89 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         txt_type.setText("类别：" + orderDetails.get(position).getCategory());
         txt_location.setText(orderDetails.get(position).getAddress());
         tv_time.setText(orderDetails.get(position).getCreatedAt());
-        if(from.equals(AppConfig.ORDERSTATUS_PROGRESS))
+        tv_name.setText(orderDetails.get(position).getOrderer().getName());
+
+        switch (from)
         {
-            btn_estimate.setVisibility(View.GONE);
-//            ll_receiver.setVisibility(View.GONE);
-//            ll_button.setVisibility(View.GONE);
+            case AppConfig.ORDERSTATUS_APPLY:
+                btn_estimate.setText(context.getResources().getString(R.string.cancel_appley));
+                break;
+            case AppConfig.ORDERSTATUS_PROGRESS:
+                btn_estimate.setText(context.getResources().getString(R.string.cancel_appley));
+                break;
+            case AppConfig.ORDERSTATUS_DONE:
+                btn_estimate.setText(context.getResources().getString(R.string.estimate));
+                break;
+            case AppConfig.ORDERSTATUS_CLOSE:
+                btn_estimate.setText(context.getResources().getString(R.string.close));
+                break;
+            case AppConfig.ORDERSTATUS_DELETE:
+                btn_estimate.setText(context.getResources().getString(R.string.close));
+                break;
+            case AppConfig.ORDERSTATUS_MAIN:
+                btn_estimate.setVisibility(View.GONE);
+                break;
         }
-        else {
-            btn_estimate.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    context.startActivity(new Intent(context, OrderCommentActivity.class));
+
+        btn_estimate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (from)
+                {
+                    case AppConfig.ORDERSTATUS_APPLY:
+                        Http.request((Activity) context, API.ORDER_CANCEL,new Object[]{String.valueOf(orderDetails.get(position).getId())},
+                                Http.map("UserId",String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        super.onSuccess(result);
+                                        orderDetails.remove(position);
+                                        notifyDataSetChanged();
+                                    }
+                                });
+                        break;
+                    case AppConfig.ORDERSTATUS_PROGRESS:
+                        Http.request((Activity) context, API.ORDER_CANCEL, new Object[]{String.valueOf(orderDetails.get(position).getId())},
+                                Http.map("UserId", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        super.onSuccess(result);
+                                        orderDetails.remove(position);
+                                        notifyDataSetChanged();
+                                    }
+                                });
+                        break;
+                    case AppConfig.ORDERSTATUS_DONE:
+                        context.startActivity(new Intent(context, OrderCommentActivity.class));
+                        break;
+                    case AppConfig.ORDERSTATUS_CLOSE:
+                        Http.request((Activity) context, API.CHANGE_STATUS, new Object[]{String.valueOf(orderDetails.get(position).getId())},
+                                Http.map("Status", "0"), new Http.RequestListener<String>() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        super.onSuccess(result);
+                                        orderDetails.remove(position);
+                                        notifyDataSetChanged();
+                                    }
+                                });
+                        break;
+                    case AppConfig.ORDERSTATUS_DELETE:
+                        Http.request((Activity) context, API.CLOSE_ORDER, Http.map("Id", String.valueOf(orderDetails.get(position).getId())), new Http.RequestListener<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                super.onSuccess(result);
+                                orderDetails.remove(position);
+                                notifyDataSetChanged();
+                            }
+                        });
+                        break;
+                    case AppConfig.ORDERSTATUS_MAIN:
+                        //btn_estimate.setVisibility(View.GONE);
+                        break;
                 }
-            });
-        }
+
+            }
+        });
+
         if(hasTopOrder  && position == 0) {
             convertView.setBackgroundColor(Color.GREEN);
         }

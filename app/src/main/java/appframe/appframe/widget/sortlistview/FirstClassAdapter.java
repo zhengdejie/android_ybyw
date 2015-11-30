@@ -5,8 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -14,13 +17,13 @@ import appframe.appframe.R;
 import appframe.appframe.dto.ContactDetail;
 
 /**
- * Created by Administrator on 2015/11/17.
+ * Created by Administrator on 2015/11/25.
  */
-public class ContactAdapter extends BaseAdapter implements SectionIndexer {
+public class FirstClassAdapter extends BaseAdapter implements SectionIndexer {
     private List<ContactDetail> list = null;
     private Context mContext;
 
-    public ContactAdapter(Context mContext, List<ContactDetail> list) {
+    public FirstClassAdapter(Context mContext, List<ContactDetail> list) {
         this.mContext = mContext;
         this.list = list;
     }
@@ -51,10 +54,10 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
         final ContactDetail mContent = list.get(position);
         if (view == null) {
             viewHolder = new ViewHolder();
-            view = LayoutInflater.from(mContext).inflate(R.layout.mycontact_item, null);
+            view = LayoutInflater.from(mContext).inflate(R.layout.firstclassfriends_item, null);
             viewHolder.tv_name = (TextView) view.findViewById(R.id.tv_name);
-            viewHolder.tv_remark = (TextView) view.findViewById(R.id.tv_remark);
             viewHolder.tvLetter = (TextView) view.findViewById(R.id.catalog);
+            viewHolder.cb_firstclass = (CheckBox) view.findViewById(R.id.cb_firstclass);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -72,28 +75,27 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
         }
 
         StringBuilder sb = new StringBuilder();
-        if(list.get(position).getUser() != null)
+        if(mContent.getUser() != null)
         {
-            sb.append(list.get(position).getUser().getName());
+            sb.append(mContent.getUser().getName());
         }
         if(list.get(position).getMobileContact() != null)
         {
-            sb.append("(").append(list.get(position).getMobileContact().getName()).append(")");
+            sb.append("(").append(mContent.getMobileContact().getName()).append(")");
         }
 
         viewHolder.tv_name.setText(sb.toString());
-        if(this.list.get(position).getType() == 1)
-        {
-            viewHolder.tv_remark.setText("一度好友");
-        }
-        else if(this.list.get(position).getType() == 2)
-        {
-            viewHolder.tv_remark.setText("已加入友帮");
-        }
-        else
-        {
-            viewHolder.tv_remark.setText("未加入友帮");
-        }
+        viewHolder.cb_firstclass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mContent.setCheck("Checked");
+                } else {
+                    mContent.setCheck("UnCheck");
+                }
+
+            }
+        });
         return view;
 
     }
@@ -103,7 +105,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
     final static class ViewHolder {
         TextView tvLetter;
         TextView tv_name;
-        TextView tv_remark;
+        CheckBox cb_firstclass;
     }
 
 
@@ -150,3 +152,4 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
         return null;
     }
 }
+

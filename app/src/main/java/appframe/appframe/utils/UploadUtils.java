@@ -1,7 +1,10 @@
 package appframe.appframe.utils;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.widget.Toast;
 
 import com.github.snowdream.android.util.Log;
@@ -13,10 +16,15 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import appframe.appframe.app.App;
 import appframe.appframe.app.AppConfig;
+import appframe.appframe.dto.UserContact;
 
 /**
  * Created by dashi on 15/6/21.
@@ -64,5 +72,34 @@ public class UploadUtils {
             fileToUpload = resizedFile;
         }
         uploadFile(fileToUpload, cb, QINIU_UPLOAD_TOKEN);
+    }
+
+    public static List<UserContact> uploadContact(Context context)
+    {
+        List<UserContact> contactsList = new ArrayList<UserContact>();
+        Cursor cursor = context.getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        while (cursor.moveToNext()) {
+            //At least one phone number
+            if(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))>0)
+            {
+                int ContactID = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                String ContactName = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                Cursor cursorPhone = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactID, null, null);
+                while(cursorPhone.moveToNext())
+                {
+                    String ContactMobile = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    Pattern pattern = Pattern.compile("^\\d{11}$");
+                    Matcher matcher = pattern.matcher(ContactMobile);
+                    if(matcher.matches()) {
+                        UserContact userContact = new UserContact(ContactName, ContactMobile);
+                        contactsList.add(userContact);
+                    }
+                }
+                cursorPhone.close();
+            }
+
+        }
+        cursor.close();
+        return contactsList;
     }
 }

@@ -33,7 +33,7 @@ public class CandidateActivity extends BaseActivity implements View.OnClickListe
     private Button btn_receivedandclose,btn_receivedandsave;
     private List<UserDetail> list_candidate = new ArrayList<UserDetail>();
     OrderDetails orderDetails;
-    StringBuilder ReceivedID = new StringBuilder();
+
     //Intent intent = new Intent();
 
     @Override
@@ -93,6 +93,7 @@ public class CandidateActivity extends BaseActivity implements View.OnClickListe
 
     private String getReceiverId()
     {
+        StringBuilder ReceivedID = new StringBuilder();
         for(UserDetail userDetail : list_candidate)
         {
             if(userDetail.getCheck().equals("Checked"))

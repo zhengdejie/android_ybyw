@@ -13,74 +13,150 @@
         android:layout_height="20dp"
         android:background="@color/divide"
         />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="76dp">
+        <TextView
+            android:id="@+id/tv_avatar"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/avatar" />
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/iv_showavatar"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:src="@drawable/ic_launcher"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_nickname"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:text="@string/nickname" />
+        <TextView
+            android:id="@+id/tv_shownickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_sex"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:text="@string/sex" />
+        <TextView
+            android:id="@+id/tv_showsex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_qrcode"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:text="@string/qrcode" />
+        <TextView
+            android:id="@+id/tv_showqrcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"/>
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/avatar"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/nickname"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:drawableBottom="@color/default_underline_indicator_selected_color"
-        android:clickable="true"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/sex"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:drawableBottom="@color/default_underline_indicator_selected_color"
-        android:clickable="true"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/divide"
         />
-    <Button
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/district"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:drawableBottom="@color/default_underline_indicator_selected_color"
-        android:clickable="true"/>
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_district"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:text="@string/district" />
+        <TextView
+            android:id="@+id/tv_showdistrict"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"/>
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
-    <Button
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/selfestimate"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:drawableBottom="@color/default_underline_indicator_selected_color"
-        android:clickable="true"/>
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_selfestimate"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:text="@string/selfestimate" />
+        <TextView
+            android:id="@+id/tv_showselfestimate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"/>
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
+
 </LinearLayout>

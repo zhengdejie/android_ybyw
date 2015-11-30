@@ -36,7 +36,7 @@ import appframe.appframe.utils.Utils;
  * Created by dashi on 15/6/21.
  */
 public class LoginActivity extends BaseActivity {
-    EditText email, password;
+    EditText email, password,et_mobile;
     View ok;
     TextView tb_back,tb_action,tb_title;
 
@@ -51,6 +51,7 @@ public class LoginActivity extends BaseActivity {
 
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
+        et_mobile = (EditText)findViewById(R.id.et_mobile);
 
 
         //Cursor cursor = null;
@@ -65,7 +66,8 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View v) {
                 Http.request(LoginActivity.this, API.USER_LOGIN, Http.map(
                         "Email", email.getText().toString(),
-                        "Password", password.getText().toString()
+                        "Password", password.getText().toString(),
+                        "Mobile",et_mobile.getText().toString()
 
                 ), new Http.RequestListener<AuthResult>() {
                     @Override

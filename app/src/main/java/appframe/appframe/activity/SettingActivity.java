@@ -1,5 +1,7 @@
 package appframe.appframe.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,9 +11,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.mobileim.IYWLoginService;
+import com.alibaba.mobileim.YWIMKit;
 import com.alibaba.mobileim.channel.event.IWxCallback;
+import com.alibaba.mobileim.channel.util.YWLog;
+import com.alibaba.mobileim.fundamental.widget.YWAlertDialog;
+import com.alibaba.mobileim.login.YWLoginState;
 
 import appframe.appframe.R;
 import appframe.appframe.app.App;
@@ -29,11 +36,16 @@ import appframe.appframe.utils.LoginSampleHelper;
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
     Button btn_about,btn_account,btn_newmessage,btn_exit,btn_privacy;
     TextView tb_title,tb_back;
+    private YWIMKit mIMKit;
     //public static final int SCAN_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        mIMKit = LoginSampleHelper.getInstance().getIMKit();
+        if (mIMKit == null) {
+            return;
+        }
         init();
     }
     protected void init()
@@ -78,27 +90,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 startActivity(new Intent(this,NewMessageActivity.class));
                 break;
             case R.id.btn_exit:
-                LoginSampleHelper ls = LoginSampleHelper.getInstance();
-                IYWLoginService loginService = ls.getIMKit().getLoginService();
-                loginService.logout(new IWxCallback() {
-                    @Override
-                    public void onSuccess(Object... arg0) {
-                        Auth.login(null, null);
-
-                        // 进首页
-                        SplashActivity.startRootActivity(SettingActivity.this);
-                    }
-
-                    @Override
-                    public void onProgress(int arg0) {
-                        // TODO Auto-generated method stub
-                    }
-
-                    @Override
-                    public void onError(int errCode, String description) {
-                        //登出失败，errCode为错误码,description是错误的具体描述信息
-                    }
-                });
+                showAlertDialog();
 
                 break;
             case R.id.tb_back:
@@ -111,6 +103,56 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
     }
 
+    private void showAlertDialog(){
+        AlertDialog.Builder builder = new YWAlertDialog.Builder(SettingActivity.this);
+        builder.setMessage("退出后您将收不到新消息通知，是否确认退出？")
+                .setCancelable(false)
+                .setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                logout();
+                            }
+                        })
+                .setNegativeButton(R.string.cancel,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int id) {
+                                dialog.dismiss();
+                            }
+                        });
+        AlertDialog dialog = builder.create();
+        if (!dialog.isShowing()){
+            dialog.show();
+        }
+    }
+
+    public void logout() {
+        // openIM SDK提供的登录服务
+        IYWLoginService mLoginService = mIMKit.getLoginService();
+        mLoginService.logout(new IWxCallback() {
+            //此时logout已关闭所有基于IMBaseActivity的OpenIM相关Actiivity，s
+            @Override
+            public void onSuccess(Object... arg0) {
+                Toast.makeText(SettingActivity.this, "退出成功", Toast.LENGTH_SHORT).show();
+                LoginSampleHelper.getInstance().setAutoLoginState(YWLoginState.idle);
+                Auth.login(null, null);
+
+                // 进首页
+                SplashActivity.startRootActivity(SettingActivity.this);
+            }
+
+            @Override
+            public void onProgress(int arg0) {
+
+            }
+
+            @Override
+            public void onError(int arg0, String arg1) {
+                Toast.makeText(SettingActivity.this, "退出失败,请重新登录", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        switch (requestCode) {

@@ -2,6 +2,7 @@ package appframe.appframe.widget.swiperefresh;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,20 +59,27 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
 
         final PushMessage item = pushMessages.get(position);
         mHolder.tv_message.setText(item.getContent());
-        mHolder.tv_accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Http.request((Activity)context, API.ACCEPT_ADDFDF, new Object[]{Auth.getCurrentUserId()},
-                        Http.map("FriendId", String.valueOf(item.getSender().getId())),
-                        new Http.RequestListener<String>() {
-                            @Override
-                            public void onSuccess(String result) {
-                                super.onSuccess(result);
-                                Toast.makeText(context, "添加一度朋友成功", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            }
-        });
+        if(item.getFriendRequestAccepted() == 1)
+        {
+            mHolder.tv_accept.setBackgroundColor(Color.GRAY);
+        }
+        else {
+            mHolder.tv_accept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Http.request((Activity) context, API.ACCEPT_ADDFDF, new Object[]{Auth.getCurrentUserId()},
+                            Http.map("FriendId", String.valueOf(item.getSender().getId()),
+                                    "MessageId", String.valueOf(item.getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    Toast.makeText(context, "添加一度朋友成功", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            });
+        }
 
         return convertView;
     }
