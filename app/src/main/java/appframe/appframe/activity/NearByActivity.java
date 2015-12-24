@@ -1,8 +1,10 @@
 package appframe.appframe.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +39,8 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
     TextView tb_title,tb_back;
     String latitude,longitude;
     BDLocation bdLocation = new BDLocation();
+    SwipeRefreshXNearbyAdapater adapater;
+    int Page = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,19 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
         listView = (ListView)findViewById(R.id.lv_nearby);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Nearby nearby = (Nearby)parent.getAdapter().getItem(position);
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                intent.setClass(NearByActivity.this, FriendsInfoActivity.class);
+                bundle.putSerializable("NearBy", nearby);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
         BaiduLocation baiduLocation = new BaiduLocation(getApplicationContext(), new MyLocationListener());
         baiduLocation.setOption();
         baiduLocation.mLocationClient.start();
@@ -78,6 +95,7 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
 
     public void initdata()
     {
+        Page = 1;
         Map<String, String> map = new HashMap<String, String>();
         map.put("Page", "1");
         map.put("Limit", String.valueOf(AppConfig.ORDER_SIZE));
@@ -89,8 +107,8 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onSuccess(List<Nearby> result) {
                 super.onSuccess(result);
-
-                listView.setAdapter(new SwipeRefreshXNearbyAdapater(NearByActivity.this, result));
+                adapater = new SwipeRefreshXNearbyAdapater(NearByActivity.this, result);
+                listView.setAdapter(adapater);
 
             }
         });
@@ -102,8 +120,24 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onRefresh() {
+                Page = 1;
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", "1");
+                map.put("Limit", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("Latitude", latitude);
+                map.put("Longitude", longitude);
+                map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
 
-                Toast.makeText(NearByActivity.this, "refresh", Toast.LENGTH_SHORT).show();
+                Http.request(NearByActivity.this, API.GET_USERNEARBY, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<Nearby>>() {
+                    @Override
+                    public void onSuccess(List<Nearby> result) {
+                        super.onSuccess(result);
+                        adapater = new SwipeRefreshXNearbyAdapater(NearByActivity.this, result);
+                        listView.setAdapter(adapater);
+
+                    }
+                });
+                swipeRefresh.setRefreshing(false);
 
             }
         });
@@ -113,7 +147,26 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onLoad() {
 
-                Toast.makeText(NearByActivity.this, "load", Toast.LENGTH_SHORT).show();
+                Page++;
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", String.valueOf(Page));
+                map.put("Limit", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("Latitude", latitude);
+                map.put("Longitude", longitude);
+                map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
+
+                Http.request(NearByActivity.this, API.GET_USERNEARBY, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<Nearby>>() {
+                    @Override
+                    public void onSuccess(List<Nearby> result) {
+                        super.onSuccess(result);
+                        if (result != null) {
+                            adapater.addItems(result);
+                        }
+                        //listView.setAdapter(adapater);
+
+                    }
+                });
+                swipeRefresh.setLoading(false);
 
             }
         });
@@ -131,4 +184,6 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
         }
 
     }
+
+
 }

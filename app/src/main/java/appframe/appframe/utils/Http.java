@@ -9,6 +9,7 @@ import android.net.http.AndroidHttpClient;
 import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -243,16 +244,19 @@ public final class Http {
                 Activity context = response.request.getContext();
                 if (context != null) {
 //                    SnackBar.Style style;
-//                    String message = response.resultResponseStatus.Message;
+                    String message = response.resultResponseStatus.Message;
+
 //
 //                    int color;
 //                    if(TextUtils.isEmpty(response.resultResponseStatus.ErrorCode))
 //                        color = android.R.color.darker_gray;
 //                    else
 //                        color = android.R.color.holo_red_dark;
-//                    if(message.contains("||")){
-//                        String [] ps = message.split("\\|\\|");
-//                        message = ps[1];
+                    if(message.contains("||")) {
+                        String[] ps = message.split("\\|\\|");
+                        message = ps[1];
+                    }
+                    Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
 //                        if("info".equalsIgnoreCase(ps[0]))
 //                            color = android.R.color.background_dark;
 //                        else if("warning".equalsIgnoreCase(ps[0]))
@@ -286,7 +290,7 @@ public final class Http {
          * request 成功
          */
         public void onSuccess(T result){
-            showResponseMessage(response);
+            //showResponseMessage(response);
         }
         /*
          * request 失败
@@ -355,6 +359,7 @@ public final class Http {
             if(error.networkResponse != null){
                 responseString = new String(error.networkResponse.data);
             }
+            responseStatus.Message = parse(responseString).ResponseStatus.Message;
             Log.e(TAG, String.format("request error: %s %s %s\n%s",
                     response.requestUrl,
                     responseStatus.ErrorCode,

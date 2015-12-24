@@ -49,7 +49,7 @@ import appframe.appframe.widget.photopicker.view.ImageBucketChooseActivity;
  */
 public class MyInfoActivity extends BaseActivity implements View.OnClickListener{
 
-    private TextView tb_title,tb_back,tv_avatar,tv_nickname,tv_shownickname,tv_sex,tv_showsex,tv_qrcode,tv_district,tv_selfestimate;
+    private TextView tb_title,tb_back,tv_avatar,tv_nickname,tv_shownickname,tv_sex,tv_showsex,tv_qrcode,tv_district,tv_showdistrict,tv_selfestimate,tv_showselfestimate;
     com.android.volley.toolbox.NetworkImageView iv_showavatar;
     PopupWindows popupWindows;
 
@@ -65,6 +65,8 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         super.onResume();
         tv_shownickname.setText(Auth.getCurrentUser().getName());
         tv_showsex.setText(Auth.getCurrentUser().getGender());
+        tv_showdistrict.setText(Auth.getCurrentUser().getLocation());
+        tv_showselfestimate.setText(Auth.getCurrentUser().getSignature());
     }
 
     private  void init()
@@ -77,9 +79,11 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         tv_sex = (TextView)findViewById(R.id.tv_sex);
         tv_qrcode = (TextView)findViewById(R.id.tv_qrcode);
         tv_district = (TextView)findViewById(R.id.tv_district);
+        tv_showdistrict = (TextView)findViewById(R.id.tv_showdistrict);
         tv_selfestimate = (TextView)findViewById(R.id.tv_selfestimate);
         tv_showsex = (TextView)findViewById(R.id.tv_showsex);
         iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
+        tv_showselfestimate = (TextView)findViewById(R.id.tv_showselfestimate);
         //iv_showavatar.setDefaultImageResId(R.drawable.ic_launcher);
         tb_back.setText("个人中心");
         tb_title.setText("个人信息");
@@ -91,6 +95,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         tv_qrcode.setOnClickListener(this);
         tv_district.setOnClickListener(this);
         tv_selfestimate.setOnClickListener(this);
+        iv_showavatar.setOnClickListener(this);
 
         tv_shownickname.setText(Auth.getCurrentUser().getName());
         tv_showsex.setText(Auth.getCurrentUser().getGender());
@@ -98,6 +103,8 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         {
             ImageUtils.setImageUrl(iv_showavatar, Auth.getCurrentUser().getAvatar());
         }
+        tv_showdistrict.setText(Auth.getCurrentUser().getLocation());
+        tv_showselfestimate.setText(Auth.getCurrentUser().getSignature());
     }
 
     @Override
@@ -121,8 +128,16 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
                 startActivity(new Intent(this,QRCodeActivity.class));
                 break;
             case R.id.tv_district:
+                startActivity(new Intent(this,CitySelectActivity.class));
                 break;
             case R.id.tv_selfestimate:
+                startActivity(new Intent(this,EditSignatureActivity.class));
+                break;
+            case R.id.iv_showavatar:
+                Intent intent = new Intent();
+                intent.setClass(this,AvatarZoomActivity.class);
+                intent.putExtra("Avatar",Auth.getCurrentUser().getAvatar());
+                startActivity(intent);
                 break;
 
         }
@@ -288,7 +303,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         File vFile = new File(Environment.getExternalStorageDirectory()
-                + "tempAvatar.jpg");
+                , "tempAvatar.jpg");
         if (!vFile.exists())
         {
             File vDirPath = vFile.getParentFile();
@@ -314,10 +329,8 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
                 if (resultCode == RESULT_OK) {
                     //Bitmap bm = (Bitmap) imageReturnedIntent.getExtras().get("data");
                     final File f = new File(Environment.getExternalStorageDirectory()
-                            + "tempAvatar.jpg");
-                    String pathString = Environment.getExternalStorageDirectory()
-                            + "tempAvatar.jpg";
-                    Bitmap b = BitmapFactory.decodeFile(pathString);
+                            , "tempAvatar.jpg");
+
                     Http.request(MyInfoActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
                         @Override
                         public void onSuccess(Token result) {

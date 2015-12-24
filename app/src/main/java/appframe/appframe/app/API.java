@@ -5,12 +5,15 @@ import java.util.List;
 import appframe.appframe.dto.AuthResult;
 import appframe.appframe.dto.ConfirmedOrderDetail;
 import appframe.appframe.dto.ContactDetail;
+import appframe.appframe.dto.FriendEvaluationDetail;
 import appframe.appframe.dto.MessageTypeCount;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderComment;
+import appframe.appframe.dto.OrderDetailAndCount;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.OrderReviewDetail;
 import appframe.appframe.dto.PushMessage;
+import appframe.appframe.dto.SelfEvaluationDetail;
 import appframe.appframe.dto.Token;
 import appframe.appframe.dto.UserContact;
 import appframe.appframe.dto.UserDetail;
@@ -31,9 +34,10 @@ public final class API {
     public static final Http.API<UserDetail> ORDER_SEND = Http.API.post("/order/place.json", UserDetail.class);
     public static final Http.API<List<OrderDetails>> GET_SELFORDER = Http.API.getList("/order/self.json", OrderDetails.class);
     public static final Http.API<List<UserDetail>> GET_SECOND = Http.API.getList("/contact/%s/second.json", UserDetail.class);
-    public static final Http.API<List<OrderDetails>> GET_ORDER = Http.API.getList("/order/friends.json%s", OrderDetails.class);
+    public static final Http.API<OrderDetailAndCount> GET_ORDER = Http.API.get("/order/friends.json%s", OrderDetailAndCount.class);
     public static final Http.API<UserDetail> EVALUATION_ORDER = Http.API.post("/review/order/make.json", UserDetail.class);
     public static final Http.API<List<OrderReviewDetail>> GET_ORDEREVALUATION = Http.API.getList("/review/order/%s.json", OrderReviewDetail.class);
+    public static final Http.API<List<OrderReviewDetail>> GET_ORDEREVALUATIONBYUSER = Http.API.getList("/review/order/user/%s.json", OrderReviewDetail.class);
     public static final Http.API USER_CONTACT_UPLOAD = Http.API.postEmpty("/contact/upload.json");
     public static final Http.API<UserDetail> ORDER_ACCEPT = Http.API.post("/order/%s/accept.json", UserDetail.class);
     public static final Http.API<List<OrderDetails>> SEARCH_ORDER = Http.API.getList("/order/search.json%s", OrderDetails.class);
@@ -63,4 +67,20 @@ public final class API {
     public static final Http.API RECOMMEND_ORDER = Http.API.postEmpty("/order/%s/referto.json");
     public static final Http.API ORDER_COMPLETE = Http.API.postEmpty("/confirmedOrder/%s/complete.json");
     public static final Http.API ORDER_CONFIRMCOMPLETE = Http.API.postEmpty("/confirmedOrder/%s/confirmcomplete.json");
+    public static final Http.API<List<UserDetail>> GET_NOTSEEB = Http.API.getList("/userBlock/getnotseeb.json%s", UserDetail.class);
+    public static final Http.API<List<UserDetail>> GET_NOTLETBSEE = Http.API.getList("/userBlock/getnotletbsee.json%s", UserDetail.class);
+    public static final Http.API<List<UserDetail>> GET_BLACKLIST = Http.API.getList("/user/%s/getblacklist.json", UserDetail.class);
+    public static final Http.API POST_NOTSEEB = Http.API.postEmpty("/userBlock/notSeeB.json");
+    public static final Http.API POST_NOTLETBSEE = Http.API.postEmpty("/userBlock/notLetBSee.json");
+    public static final Http.API ADD_BLACKLIST = Http.API.postEmpty("/user/%s/addtoblacklist.json");
+    public static final Http.API POST_NOTSEEBCANCLE = Http.API.postEmpty("/userBlock/cancelNotSeeB.json");
+    public static final Http.API POST_NOTLETBSEECANCLE = Http.API.postEmpty("/userBlock/cancelNotLetBSee.json");
+    public static final Http.API REMOVE_BLACKLIST = Http.API.deleteEmpty("/user/%s/removefromblacklist.json%s");
+    public static final Http.API CHECK_OLDPASSWORD = Http.API.postEmpty("/user/checkoldpassword.json");
+    public static final Http.API FRIENDS_EVALUATION = Http.API.postEmpty("/profile/%s/friendEval.json");
+    public static final Http.API<List<FriendEvaluationDetail>> GET_FEVALUATION = Http.API.getList("/profile/%s/friendEval.json", FriendEvaluationDetail.class);
+    public static final Http.API<SelfEvaluationDetail> GET_SEVALUATION = Http.API.get("/profile/%s/selfeval.json", SelfEvaluationDetail.class);
+    public static final Http.API<UserDetail> POST_SELFEVALUATION = Http.API.post("/profile/%s/selfeval.json",UserDetail.class);
+
+
 }

@@ -57,16 +57,67 @@
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/border_gray" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            android:orientation="horizontal" >
+            android:orientation="vertical"
+            android:id="@+id/lly_whocannotsee"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/border_gray" />
+            <Button
+                android:id="@+id/item_popupwindows_whocannotsee"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/btn"
+                android:text="@string/whocannotsee"
+                android:textColor="@color/deep_gray"
+                android:textSize="18sp"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
+                />
 
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="vertical"
+            android:id="@+id/lly_cannotsee"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/border_gray" />
+            <Button
+                android:id="@+id/item_popupwindows_cannotsee"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/btn"
+                android:text="@string/cannotsee"
+                android:textColor="@color/deep_gray"
+                android:textSize="18sp"
+                android:drawableLeft="@drawable/ic_search_black_24dp"/>
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/lly_blacklist"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/border_gray" />
             <Button
                 android:id="@+id/item_popupwindows_addblacklist"
                 android:layout_width="match_parent"
@@ -76,6 +127,75 @@
                 android:textColor="@color/deep_gray"
                 android:textSize="18sp"
                 android:drawableLeft="@drawable/ic_search_black_24dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="vertical"
+            android:id="@+id/lly_cannotseecancle"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/border_gray" />
+            <Button
+                android:id="@+id/item_popupwindows_cannotseecancle"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/btn"
+                android:text="@string/cannotseecancle"
+                android:textColor="@color/deep_gray"
+                android:textSize="18sp"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="vertical"
+            android:id="@+id/lly_whocannotseecancle"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/border_gray" />
+            <Button
+                android:id="@+id/item_popupwindows_whocannotseecancle"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/btn"
+                android:text="@string/whocannotseecancle"
+                android:textColor="@color/deep_gray"
+                android:textSize="18sp"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="vertical"
+            android:id="@+id/lly_removeblacklist"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/border_gray" />
+            <Button
+                android:id="@+id/item_popupwindows_removeblacklist"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/btn"
+                android:text="@string/removeblacklist"
+                android:textColor="@color/deep_gray"
+                android:textSize="18sp"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
+                />
 
         </LinearLayout>
 

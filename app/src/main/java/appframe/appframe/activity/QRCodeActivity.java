@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -45,7 +46,7 @@ public class QRCodeActivity extends BaseActivity implements View.OnClickListener
         tb_title.setText("二维码名片");
 
         try {
-            ib_qrcode.setImageBitmap(Create2DCode("appframe_" + String.valueOf(Auth.getCurrentUserId())));
+            ib_qrcode.setImageBitmap(Create2DCode("appframe_" + String.valueOf(Auth.getCurrentUserId()),ib_qrcode));
         }
         catch (WriterException e)
         {}
@@ -54,11 +55,46 @@ public class QRCodeActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-        public Bitmap Create2DCode(String str) throws WriterException {
+        public Bitmap Create2DCode(String str, ImageButton ib_qrcode) throws WriterException {
+            DisplayMetrics displayMetrics = ib_qrcode.getContext().getResources()
+                    .getDisplayMetrics();
+
+            ViewGroup.LayoutParams lp = ib_qrcode.getLayoutParams();
+
+            int width = ib_qrcode.getWidth();// 获取niv的实际宽度
+            if (width <= 0)
+            {
+                width = lp.width;// 获取niv在layout中声明的宽度
+            }
+            if (width <= 0)
+            {
+                // width = imageView.getMaxWidth();// 检查最大值
+                //width = niv.getMaxWidth();
+                width = ib_qrcode.getMeasuredWidth();
+            }
+            if (width <= 0)
+            {
+                width = displayMetrics.widthPixels;
+            }
+            int height = ib_qrcode.getHeight();// 获取imageview的实际高度
+            if (height <= 0)
+            {
+                height = lp.height;// 获取imageview在layout中声明的宽度
+            }
+            if (height <= 0)
+            {
+                //height = getImageViewFieldValue(imageView, "mMaxHeight");// 检查最大值
+                //height = niv.getMaxHeight();
+                height = ib_qrcode.getMeasuredHeight();
+            }
+            if (height <= 0)
+            {
+                height = displayMetrics.heightPixels;
+            }
         //生成二维矩阵,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
-        BitMatrix matrix = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, 300, 300);
-        int width = matrix.getWidth();
-        int height = matrix.getHeight();
+        BitMatrix matrix = new MultiFormatWriter().encode(str, BarcodeFormat.QR_CODE, width, height);
+         width = matrix.getWidth();
+         height = matrix.getHeight();
         //二维矩阵转为一维像素数组,也就是一直横着排了
         int[] pixels = new int[width * height];
         for (int y = 0; y < height; y++) {

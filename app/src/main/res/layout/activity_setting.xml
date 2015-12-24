@@ -13,70 +13,69 @@
         android:background="@color/divide"
         />
 
-    <Button
+    <TextView
+        android:id="@+id/tv_account"
+        style="@style/more_item_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/account"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:id="@+id/btn_account"
-        />
+        android:layout_height="44dip"
+        android:drawableRight="@drawable/aliwx_arrow"
+        android:text="@string/account" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
-    <Button
+
+    <TextView
+        android:id="@+id/tv_newmessage"
+        style="@style/more_item_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/newmessage"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:id="@+id/btn_newmessage"
-        />
+        android:layout_height="44dip"
+        android:drawableRight="@drawable/aliwx_arrow"
+        android:text="@string/newmessage" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
-    <Button
+    <TextView
+        android:id="@+id/tv_privacy"
+        style="@style/more_item_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/privacy"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:id="@+id/btn_privacy"
-        />
+        android:layout_height="44dip"
+        android:drawableRight="@drawable/aliwx_arrow"
+        android:text="@string/privacy" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
-    <Button
+
+    <TextView
+        android:id="@+id/tv_about"
+        style="@style/more_item_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/about"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:id="@+id/btn_about"
-        />
+        android:layout_height="44dip"
+        android:drawableRight="@drawable/aliwx_arrow"
+        android:text="@string/about" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
-    <Button
+
+    <TextView
+        android:id="@+id/tv_security"
+        style="@style/more_item_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/security"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        />
+        android:layout_height="44dip"
+        android:drawableRight="@drawable/aliwx_arrow"
+        android:text="@string/security" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -87,15 +86,15 @@
         android:layout_height="20dp"
         android:background="@color/divide"
         />
-    <Button
+
+    <TextView
+        android:id="@+id/tv_exit"
+        style="@style/more_item_style"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/exit"
+        android:layout_height="44dip"
         android:gravity="center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:id="@+id/btn_exit"
-        />
+        android:text="@string/exit" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

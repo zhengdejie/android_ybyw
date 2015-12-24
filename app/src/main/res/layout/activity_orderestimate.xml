@@ -9,9 +9,9 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <!--<ScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -141,69 +141,69 @@
         android:background="@color/divide"
         />
 
-            <appframe.appframe.widget.tagview.TagView
-                android:id="@+id/tagview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:lineMargin="5dp"
-                app:tagMargin="3dp"
-                app:textPaddingBottom="3dp"
-                app:textPaddingLeft="10dp"
-                app:textPaddingRight="10dp"
-                app:textPaddingTop="3dp">
-            </appframe.appframe.widget.tagview.TagView>
+            <!--<appframe.appframe.widget.tagview.TagView-->
+                <!--android:id="@+id/tagview"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--app:lineMargin="5dp"-->
+                <!--app:tagMargin="3dp"-->
+                <!--app:textPaddingBottom="3dp"-->
+                <!--app:textPaddingLeft="10dp"-->
+                <!--app:textPaddingRight="10dp"-->
+                <!--app:textPaddingTop="3dp">-->
+            <!--</appframe.appframe.widget.tagview.TagView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="vertical">
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:orientation="vertical">-->
 
-                <EditText
-                    android:id="@+id/edit_tag"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="输入标签名"/>
+                <!--<EditText-->
+                    <!--android:id="@+id/edit_tag"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:hint="输入标签名"/>-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="5dp">-->
 
-                    <TextView
-                        android:id="@+id/tv_addtag"
-                        android:layout_marginRight="2dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/shape_tagview"
-                        android:ellipsize="marquee"
-                        android:gravity="center"
-                        android:singleLine="true"
-                        android:textColor="#FFFFFF"
-                        android:text="添加标签"/>
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_addtag"-->
+                        <!--android:layout_marginRight="2dp"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="30dp"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:background="@drawable/shape_tagview"-->
+                        <!--android:ellipsize="marquee"-->
+                        <!--android:gravity="center"-->
+                        <!--android:singleLine="true"-->
+                        <!--android:textColor="#FFFFFF"-->
+                        <!--android:text="添加标签"/>-->
 
 
-                </LinearLayout>
-            </LinearLayout>
+                <!--</LinearLayout>-->
+            <!--</LinearLayout>-->
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/divide"
-        />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/tv_totalnum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:text="他人点评(102)"
             android:layout_marginLeft="10dp"/>
         <View
             android:layout_width="match_parent"
@@ -211,6 +211,7 @@
             android:background="@color/divide"
             />
     </LinearLayout>
+
     <appframe.appframe.widget.swiperefresh.SwipeRefreshX
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
@@ -221,7 +222,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
         </ListView>
+
     </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
         </LinearLayout>
-    </ScrollView>
+    <!--</ScrollView>-->
 </LinearLayout>

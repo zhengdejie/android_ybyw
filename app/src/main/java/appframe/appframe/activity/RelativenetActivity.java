@@ -65,7 +65,7 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
                             mHandler.sendMessage(msg);
                         }
                         else {
-                            Thread.sleep(30);
+                            Thread.sleep(10);
                             Message msg = new Message();
                             msg.what = ONE_GOON;
                             mHandler.sendMessage(msg);
@@ -107,7 +107,7 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
                                         mHandler.sendMessage(msg);
                                     }
                                     else {
-                                        Thread.sleep(30);
+                                        Thread.sleep(10);
                                         Message msg = new Message();
                                         msg.what = TWO_GOON;
                                         mHandler.sendMessage(msg);

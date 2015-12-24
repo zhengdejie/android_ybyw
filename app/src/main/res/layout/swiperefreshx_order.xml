@@ -5,7 +5,10 @@
               android:layout_height="match_parent"
               android:background="@color/white"
               android:descendantFocusability="blocksDescendants">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,17 +19,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_weight="2">
 
             <com.android.volley.toolbox.NetworkImageView
                 android:id="@+id/iv_avatar"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
-                android:layout_alignParentRight="true"
-
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
+                android:gravity="center_vertical|right"
+                android:layout_gravity="right"
                 />
             <TextView
                 android:id="@+id/tv_name"
@@ -54,11 +54,13 @@
                 android:layout_marginTop="10dp"
                 android:text="标题"/>
 
-            <ImageView
-                android:id="@+id/star"
-                android:layout_width="80dp"
-                android:layout_height="30dp"
-                android:src="@drawable/star5"/>
+            <RatingBar
+                android:id="@+id/rb_totalvalue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:isIndicator="true"
+                style="?android:attr/ratingBarStyleSmall"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -112,30 +114,10 @@
 
         </LinearLayout>
 
+
     </LinearLayout>
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@color/divide"-->
-        <!--/>-->
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/ll_receiver"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_margin="5dp">-->
-        <!--<RadioButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="我是接单人"/>-->
-        <!--<RadioButton-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="选我,选我,选我"/>-->
-
-    <!--</LinearLayout>-->
 
     <View
         android:layout_width="match_parent"
@@ -143,30 +125,6 @@
         android:background="@color/divide"
         />
 
-    <!--<LinearLayout-->
-        <!--android:id="@+id/ll_button"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_margin="5dp">-->
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/btn_acceptandclose"-->
-            <!--android:text="接受并关闭订单"-->
-            <!--android:textSize="16dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:focusable="false"-->
-            <!--/>-->
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/btn_acceptandsave"-->
-            <!--android:text="接受并保留订单"-->
-            <!--android:textSize="16dp"-->
-            <!--android:layout_weight="1"-->
-            <!--android:focusable="false"-->
-            <!--/>-->
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -176,7 +134,7 @@
             android:layout_gravity="right"
             android:focusable="false"
             />
-    <!--</LinearLayout>-->
+    </LinearLayout>
 
 
 

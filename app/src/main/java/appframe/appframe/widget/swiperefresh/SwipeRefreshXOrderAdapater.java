@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -33,11 +34,11 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
     List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
-    TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name;
-    com.android.volley.toolbox.NetworkImageView iv_avatar;
-    Button btn_estimate;
+//    TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name;
+//    com.android.volley.toolbox.NetworkImageView iv_avatar;
+    //Button btn_estimate;
     String from;
-    LinearLayout ll_receiver,ll_button;
+//    LinearLayout ll_receiver,ll_button;
     boolean hasTopOrder;
 
     public SwipeRefreshXOrderAdapater(Context context, List<OrderDetails> orderDetails, String from)
@@ -65,71 +66,84 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        convertView = layoutInflater.inflate(R.layout.swiperefreshx_order, null);
-        txt_title = (TextView)convertView.findViewById(R.id.txt_title);
-        txt_bounty = (TextView)convertView.findViewById(R.id.txt_bounty);
-        txt_type = (TextView)convertView.findViewById(R.id.txt_type);
-        txt_location = (TextView)convertView.findViewById(R.id.txt_location);
-        btn_estimate = (Button)convertView.findViewById(R.id.btn_estimate);
-        tv_time = (TextView)convertView.findViewById(R.id.tv_time);
-        tv_name = (TextView)convertView.findViewById(R.id.tv_name);
-        iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
-//        ll_receiver = (LinearLayout)convertView.findViewById(R.id.ll_receiver);
-//        ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
-        txt_title.setText(orderDetails.get(position).getTitle());
-        txt_bounty.setText("￥" + String.valueOf(orderDetails.get(position).getBounty()));
-        txt_type.setText("类别：" + orderDetails.get(position).getCategory());
-        txt_location.setText(orderDetails.get(position).getAddress());
-        tv_time.setText(orderDetails.get(position).getCreatedAt());
-        tv_name.setText(orderDetails.get(position).getOrderer().getName());
-        ImageUtils.setImageUrl(iv_avatar, orderDetails.get(position).getOrderer().getAvatar());
+    public View getView(int position, View convertView, ViewGroup parent) {
+        final ViewHolder mHolder;
+
+        if (convertView == null)
+        {
+            convertView = layoutInflater.inflate(R.layout.swiperefreshx_order, null);
+            mHolder = new ViewHolder();
+            mHolder.txt_title = (TextView)convertView.findViewById(R.id.txt_title);
+            mHolder.txt_bounty = (TextView)convertView.findViewById(R.id.txt_bounty);
+            mHolder.txt_type = (TextView)convertView.findViewById(R.id.txt_type);
+            mHolder.txt_location = (TextView)convertView.findViewById(R.id.txt_location);
+            mHolder.btn_estimate = (Button)convertView.findViewById(R.id.btn_estimate);
+            mHolder.tv_time = (TextView)convertView.findViewById(R.id.tv_time);
+            mHolder.tv_name = (TextView)convertView.findViewById(R.id.tv_name);
+            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
+            mHolder.rb_totalvalue = (RatingBar)convertView.findViewById(R.id.rb_totalvalue);
+            convertView.setTag(mHolder);
+        }
+        else
+        {
+            mHolder = (ViewHolder) convertView.getTag();
+        }
+        final OrderDetails item = orderDetails.get(position);
+
+        mHolder.txt_title.setText(item.getTitle());
+        mHolder.txt_bounty.setText("￥" + String.valueOf(item.getBounty()));
+        mHolder.txt_type.setText("类别：" + item.getCategory());
+        mHolder.txt_location.setText(item.getAddress());
+        mHolder.tv_time.setText(item.getCreatedAt());
+        mHolder.tv_name.setText(item.getOrderer().getName());
+        mHolder.rb_totalvalue.setRating((float)item.getOrderer().getTotalPoint());
+        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrderer().getAvatar());
 
         switch (from)
         {
             case AppConfig.ORDERSTATUS_APPLY:
-                btn_estimate.setText(context.getResources().getString(R.string.cancel_appley));
+                mHolder.btn_estimate.setText(context.getResources().getString(R.string.cancel_appley));
                 break;
             case AppConfig.ORDERSTATUS_PROGRESS:
-                btn_estimate.setText(context.getResources().getString(R.string.cancel_appley));
+                mHolder.btn_estimate.setText(context.getResources().getString(R.string.cancel_appley));
                 break;
             case AppConfig.ORDERSTATUS_DONE:
-                btn_estimate.setText(context.getResources().getString(R.string.estimate));
+                mHolder.btn_estimate.setText(context.getResources().getString(R.string.estimate));
                 break;
             case AppConfig.ORDERSTATUS_CLOSE:
-                btn_estimate.setText(context.getResources().getString(R.string.close));
+                mHolder.btn_estimate.setText(context.getResources().getString(R.string.close));
                 break;
             case AppConfig.ORDERSTATUS_DELETE:
-                btn_estimate.setText(context.getResources().getString(R.string.close));
+                mHolder.btn_estimate.setText(context.getResources().getString(R.string.close));
                 break;
             case AppConfig.ORDERSTATUS_MAIN:
-                btn_estimate.setVisibility(View.GONE);
+                mHolder.btn_estimate.setVisibility(View.GONE);
                 break;
         }
 
-        btn_estimate.setOnClickListener(new View.OnClickListener() {
+        mHolder.btn_estimate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (from)
                 {
                     case AppConfig.ORDERSTATUS_APPLY:
-                        Http.request((Activity) context, API.ORDER_CANCEL,new Object[]{String.valueOf(orderDetails.get(position).getId())},
+                        Http.request((Activity) context, API.ORDER_CANCEL,new Object[]{String.valueOf(item.getId())},
                                 Http.map("UserId",String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
                                     @Override
                                     public void onSuccess(String result) {
                                         super.onSuccess(result);
-                                        orderDetails.remove(position);
+                                        orderDetails.remove(item);
                                         notifyDataSetChanged();
                                     }
                                 });
                         break;
                     case AppConfig.ORDERSTATUS_PROGRESS:
-                        Http.request((Activity) context, API.ORDER_CANCEL, new Object[]{String.valueOf(orderDetails.get(position).getId())},
+                        Http.request((Activity) context, API.ORDER_CANCEL, new Object[]{String.valueOf(item.getId())},
                                 Http.map("UserId", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
                                     @Override
                                     public void onSuccess(String result) {
                                         super.onSuccess(result);
-                                        orderDetails.remove(position);
+                                        orderDetails.remove(item);
                                         notifyDataSetChanged();
                                     }
                                 });
@@ -138,22 +152,22 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
                         context.startActivity(new Intent(context, OrderCommentActivity.class));
                         break;
                     case AppConfig.ORDERSTATUS_CLOSE:
-                        Http.request((Activity) context, API.CHANGE_STATUS, new Object[]{String.valueOf(orderDetails.get(position).getId())},
+                        Http.request((Activity) context, API.CHANGE_STATUS, new Object[]{String.valueOf(item.getId())},
                                 Http.map("Status", "0"), new Http.RequestListener<String>() {
                                     @Override
                                     public void onSuccess(String result) {
                                         super.onSuccess(result);
-                                        orderDetails.remove(position);
+                                        orderDetails.remove(item);
                                         notifyDataSetChanged();
                                     }
                                 });
                         break;
                     case AppConfig.ORDERSTATUS_DELETE:
-                        Http.request((Activity) context, API.CLOSE_ORDER, Http.map("Id", String.valueOf(orderDetails.get(position).getId())), new Http.RequestListener<String>() {
+                        Http.request((Activity) context, API.CLOSE_ORDER, Http.map("Id", String.valueOf(item.getId())), new Http.RequestListener<String>() {
                             @Override
                             public void onSuccess(String result) {
                                 super.onSuccess(result);
-                                orderDetails.remove(position);
+                                orderDetails.remove(item);
                                 notifyDataSetChanged();
                             }
                         });
@@ -166,8 +180,12 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
             }
         });
 
-        if(hasTopOrder  && position == 0) {
+        if(hasTopOrder  &&  position == 0) {
             convertView.setBackgroundColor(Color.GREEN);
+        }
+        else
+        {
+            convertView.setBackgroundColor(Color.WHITE);
         }
         return convertView;
     }
@@ -177,9 +195,26 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         return orderDetails.get(position);
     }
 
+    //此方法通过activity给view的item添加值。通过notifyDataSetChanged 刷新界面
+    public  void addItems(List<OrderDetails> items ){
+        for(OrderDetails order : items)
+        {
+            orderDetails.add(order);
+        }
+        notifyDataSetChanged();
+
+    }
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    static class ViewHolder
+    {
+        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name;
+        com.android.volley.toolbox.NetworkImageView iv_avatar;
+        Button btn_estimate;
+        RatingBar rb_totalvalue;
     }
 
 //    private View makeItemView() {

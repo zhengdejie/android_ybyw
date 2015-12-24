@@ -9,78 +9,86 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/divide"
-        />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp"
-        >
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:inputType="textMultiLine"
-            android:id="@+id/edit_content"
-            android:background="@drawable/ic_btn_retry_normal"
-            android:hint="写下你的心情"
-            android:gravity="top"
-            android:paddingLeft="10dp"
-            android:paddingTop="10dp"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/tv_selfestimate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:textSize="18sp"
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/credentials"
-            android:textSize="18sp"
-            android:gravity="left|center"
-            android:background="@color/white"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            />
+        android:layout_margin="10dp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divide"
-            />
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_margin="10dp"-->
+        <!-->-->
 
-        <GridView
-            android:id="@+id/gridview"
-            android:layout_width="wrap_content"
-            android:layout_height="145dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:horizontalSpacing="3dp"
-            android:numColumns="3"
-            android:scrollbars="none"
-            android:verticalSpacing="5dp" >
-        </GridView>
+        <!--<EditText-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="120dp"-->
+            <!--android:inputType="textMultiLine"-->
+            <!--android:id="@+id/edit_content"-->
+            <!--android:background="@drawable/ic_btn_retry_normal"-->
+            <!--android:hint="写下你的心情"-->
+            <!--android:gravity="top"-->
+            <!--android:paddingLeft="10dp"-->
+            <!--android:paddingTop="10dp"/>-->
+    <!--</LinearLayout>-->
 
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginRight="10dp">-->
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/credentials"-->
+            <!--android:textSize="18sp"-->
+            <!--android:gravity="left|center"-->
+            <!--android:background="@color/white"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_margin="10dp"-->
+            <!--/>-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/divide"-->
+            <!--/>-->
+
+        <!--<GridView-->
+            <!--android:id="@+id/gridview"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="145dp"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:horizontalSpacing="3dp"-->
+            <!--android:numColumns="3"-->
+            <!--android:scrollbars="none"-->
+            <!--android:verticalSpacing="5dp" >-->
+        <!--</GridView>-->
+
+    <!--</LinearLayout>-->
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
 </LinearLayout>

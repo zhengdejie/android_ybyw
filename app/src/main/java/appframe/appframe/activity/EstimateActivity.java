@@ -25,6 +25,8 @@ import appframe.appframe.activity.SettingActivity;
 public class EstimateActivity extends BaseActivity implements View.OnClickListener{
     Button btn_self,btn_friend,btn_order;
     TextView tb_title,tb_back;
+    String userID;
+    Intent myIntent = new Intent();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,21 +45,32 @@ public class EstimateActivity extends BaseActivity implements View.OnClickListen
         btn_order.setOnClickListener(this);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
-        tb_title.setText("我的口碑");
-        tb_back.setVisibility(View.GONE);
+        tb_title.setText("TA的口碑");
+        tb_back.setText("帮友资料");
+        tb_back.setOnClickListener(this);
+        userID = getIntent().getStringExtra("UserID");
     }
     @Override
     public void onClick(View v) {
         switch (v.getId())
         {
             case R.id.btn_self:
-                startActivity(new Intent(this,SelfEstimateActivity.class));
+                myIntent.setClass(EstimateActivity.this, SelfEstimateActivity.class);
+                myIntent.putExtra("UserID", userID);
+                startActivity(myIntent);
                 break;
             case R.id.btn_friend:
-                startActivity(new Intent(this, FriendEstimateActivity.class));
+                myIntent.setClass(EstimateActivity.this,FriendEstimateActivity.class);
+                myIntent.putExtra("UserID",userID);
+                startActivity(myIntent);
                 break;
             case R.id.btn_order:
-                startActivity(new Intent(this, OrderEstimateActivity.class));
+                myIntent.setClass(EstimateActivity.this,OrderEstimateActivity.class);
+                myIntent.putExtra("UserID",userID);
+                startActivity(myIntent);
+                break;
+            case R.id.tb_back:
+                finish();
                 break;
 
         }

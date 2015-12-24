@@ -17,6 +17,13 @@ public class UserBrief extends Http.BaseDto implements Serializable {
     public Date CreatedAt;
     public String Gender;
     public Date UpdatedAt;
+    public String Location;
+    public double TotalPoint;
+    public String Signature;
+    public double AvgServicePoint;
+    public double AvgAttitudePoint;
+    public double AvgCharacterPoint;
+    public int TotalNumberOfOrder;
 
     public int getId() {
         return Id;
@@ -72,5 +79,61 @@ public class UserBrief extends Http.BaseDto implements Serializable {
 
     public void setGender(String gender) {
         Gender = gender;
+    }
+
+    public String getLocation() {
+        return Location;
+    }
+
+    public void setLocation(String location) {
+        Location = location;
+    }
+
+    public double getTotalPoint() {
+        return TotalPoint;
+    }
+
+    public void setTotalPoint(double totalPoint) {
+        TotalPoint = totalPoint;
+    }
+
+    public String getSignature() {
+        return Signature;
+    }
+
+    public void setSignature(String signature) {
+        Signature = signature;
+    }
+
+    public double getAvgServicePoint() {
+        return AvgServicePoint;
+    }
+
+    public void setAvgServicePoint(double avgServicePoint) {
+        AvgServicePoint = avgServicePoint;
+    }
+
+    public double getAvgAttitudePoint() {
+        return AvgAttitudePoint;
+    }
+
+    public void setAvgAttitudePoint(double avgAttitudePoint) {
+        AvgAttitudePoint = avgAttitudePoint;
+    }
+
+    public double getAvgCharacterPoint() {
+        return AvgCharacterPoint;
+    }
+
+    public void setAvgCharacterPoint(double avgCharacterPoint) {
+        AvgCharacterPoint = avgCharacterPoint;
+    }
+
+    public int getTotalNumberOfOrder() {
+        return TotalNumberOfOrder;
+    }
+
+    public void setTotalNumberOfOrder(int totalNumberOfOrder) {
+        TotalNumberOfOrder = totalNumberOfOrder;
     }
 }

@@ -1,6 +1,7 @@
 package appframe.appframe.widget.sortlistview;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -20,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.FriendsInfoActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.dto.ContactDetail;
 import appframe.appframe.dto.OrderDetails;
@@ -131,9 +133,14 @@ public class MyContact extends Activity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view,
                                                     int position, long id) {
-                                //����Ҫ����adapter.getItem(position)����ȡ��ǰposition����Ӧ�Ķ���
-                                //ContactDetail orderDetails = (ContactDetail)parent.getAdapter().getItem(position);
-                                //Toast.makeText(MyContact.this,(((ContactDetail) parent.getAdapter().getItem(position)).getType()), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent();
+                                intent.setClass(MyContact.this, FriendsInfoActivity.class);
+                                ContactDetail contactDetail = (ContactDetail) parent.getAdapter().getItem(position);
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("UserDetail", contactDetail.getUser());
+                                bundle.putString("From", "FIRSTCLASS");
+                                intent.putExtras(bundle);
+                                startActivity(intent);
 
                             }
                         });

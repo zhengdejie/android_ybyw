@@ -66,8 +66,7 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
                     Tag tag = new Tag(tagTitle);
                     tag.isDeletable=true;
                     tagView.addTag(tag);
-                    float a = rb_service.getRating();
-                    String b = String.valueOf(a);
+
                 }
                 break;
             case R.id.btn_evaluate:
@@ -88,7 +87,7 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
 //                    }
 //                });
                 Http.request(this, API.EVALUATION_ORDER, Http.map(
-                        "OrderId", String.valueOf(11),
+                        "ConfirmedOrderId", getIntent().getStringExtra("ConfirmedOrderId"),
                         "Content", et_content.getText().toString(),
                         "Commentator", String.valueOf(Auth.getCurrentUserId()),
                         "ServicePoint", String.valueOf((int)(rb_service.getRating())),

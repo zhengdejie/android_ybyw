@@ -13,6 +13,7 @@ import com.igexin.sdk.PushManager;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.HomeActivity;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.fragment.PersonFragment;
 
 public class PushDemoReceiver extends BroadcastReceiver {
@@ -54,9 +55,11 @@ public class PushDemoReceiver extends BroadcastReceiver {
                     // 设置点击后启动的activity
                     intent = new Intent(context, HomeActivity.class);
                     //intent.putExtra("pushmessage","push");
-                    admain = new NotificationUtils(context,NOTIFICATION_ID);
-                    admain.normal_notification(intent, smallIcon, ticker, "普通的通知",
-                            data);
+                    if(AppConfig.RECEIVE_NOTIFICATION) {
+                        admain = new NotificationUtils(context, NOTIFICATION_ID);
+                        admain.normal_notification(intent, smallIcon, ticker, "普通的通知",
+                                data);
+                    }
                     payloadData.append(data);
                     payloadData.append("\n");
                     if(HomeActivity.tv_unread != null) {

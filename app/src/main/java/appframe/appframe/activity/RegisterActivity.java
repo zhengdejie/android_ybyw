@@ -106,6 +106,11 @@ public class RegisterActivity extends BaseActivity {
                         }
 
                     }
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+
+                    }
                 });
             }
         });

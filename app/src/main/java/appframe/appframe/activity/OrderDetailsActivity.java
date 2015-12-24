@@ -29,6 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,8 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     private Button btn_select,btn_estimate,btn_comment,btn_recommend;
     private String OrderID,Tel, hasTopOrder, Entrance;
     private ListView lv_ordercomment;
+    private LinearLayout lly_photos;
+    private RatingBar rb_totalvalue;
     OrderDetails orderDetails;
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
@@ -164,34 +167,38 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                         layout).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Http.request(OrderDetailsActivity.this, API.ORDER_MAKECOOMENT, new Object[]{OrderID},Http.map(
-                                        "Commentator",String.valueOf(Auth.getCurrentUserId()),
-                                        "Comment",comment.getText().toString(),
-                                        "Anonymity",String.valueOf(cb_anonymous.isChecked())),
-                                new Http.RequestListener<String>() {
-                            @Override
-                            public void onSuccess(String result) {
-                                super.onSuccess(result);
-                                Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID},
-                                        new Http.RequestListener<List<OrderComment>>() {
-                                            @Override
-                                            public void onSuccess(List<OrderComment> result) {
-                                                super.onSuccess(result);
-                                                if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
-                                                    lv_ordercomment.setAdapter(new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), true));
-                                                }
-                                                else
-                                                {
-                                                    lv_ordercomment.setAdapter(new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), false));
-                                                }
-                                                setListViewHeightBasedOnChildren(lv_ordercomment);
-                                                tv_comment.setText(String.format("留言（%d条）", result != null ? result.size() : 0));
-                                            }
-                                        });
+                        if(!comment.getText().toString().equals("")) {
+                            Http.request(OrderDetailsActivity.this, API.ORDER_MAKECOOMENT, new Object[]{OrderID}, Http.map(
+                                            "Commentator", String.valueOf(Auth.getCurrentUserId()),
+                                            "Comment", comment.getText().toString(),
+                                            "Anonymity", String.valueOf(cb_anonymous.isChecked())),
+                                    new Http.RequestListener<String>() {
+                                        @Override
+                                        public void onSuccess(String result) {
+                                            super.onSuccess(result);
+                                            Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID},
+                                                    new Http.RequestListener<List<OrderComment>>() {
+                                                        @Override
+                                                        public void onSuccess(List<OrderComment> result) {
+                                                            super.onSuccess(result);
+                                                            if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
+                                                                lv_ordercomment.setAdapter(new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), true));
+                                                            } else {
+                                                                lv_ordercomment.setAdapter(new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), false));
+                                                            }
+                                                            setListViewHeightBasedOnChildren(lv_ordercomment);
+                                                            tv_comment.setText(String.format("留言（%d条）", result != null ? result.size() : 0));
+                                                        }
+                                                    });
 
-                            }
-                        });
-                        dialog.dismiss();
+                                        }
+                                    });
+                            dialog.dismiss();
+                        }
+                        else
+                        {
+                            Toast.makeText(OrderDetailsActivity.this,"评论不能为空",Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
@@ -213,6 +220,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     public void init()
     {
         //img_avatar = (ImageView)findViewById(R.id.img_avatar);
+        lly_photos = (LinearLayout)findViewById(R.id.lly_photos);
         imgbtn_conversation = (ImageButton)findViewById(R.id.imgbtn_conversation);
         imgbtn_call = (ImageButton)findViewById(R.id.imgbtn_call);
         tv_title =(TextView)findViewById(R.id.tv_title);
@@ -238,6 +246,8 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tv_range = (TextView)findViewById(R.id.tv_range);
         btn_recommend = (Button)findViewById(R.id.btn_recommend);
         iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
+        rb_totalvalue = (RatingBar)findViewById(R.id.rb_totalvalue);
+
 
         iv_avatar.setOnClickListener(this);
         imgbtn_conversation.setOnClickListener(this);
@@ -274,7 +284,22 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tv_paymethod.setText(orderDetails.getPaymentMethod().toString());
         tv_deadline.setText(orderDetails.getDeadline().toString());
         tv_name.setText(orderDetails.getOrderer().getName().toString());
-        ImageUtils.setImageUrl(iv_avatar, orderDetails.getOrderer().getAvatar().toString());
+        rb_totalvalue.setRating((float)orderDetails.getOrderer().getTotalPoint());
+        if(orderDetails.getOrderer().getAvatar() != null) {
+            ImageUtils.setImageUrl(iv_avatar, orderDetails.getOrderer().getAvatar().toString());
+        }
+
+        if(orderDetails.getPhotos() != null && orderDetails.getPhotos() != "") {
+            for (String photsCount : orderDetails.getPhotos().toString().split(",")) {
+                com.android.volley.toolbox.NetworkImageView img = new com.android.volley.toolbox.NetworkImageView(this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        400, 400);
+                params.weight = 1.0f;
+                img.setLayoutParams(params);
+                ImageUtils.setImageUrl(img, photsCount);
+                lly_photos.addView(img);
+            }
+        }
         Tel = orderDetails.getOrderer().getMobile() == null ? "" : orderDetails.getOrderer().getMobile().toString();
         OrderID = String.valueOf(orderDetails.getId());
         tv_range.setText(setRange(orderDetails.getVisibility()));

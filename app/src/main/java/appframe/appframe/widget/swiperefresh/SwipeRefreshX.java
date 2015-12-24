@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
 
 import appframe.appframe.R;
@@ -16,7 +17,7 @@ import appframe.appframe.R;
 /**
  * Created by Administrator on 2015/8/21.
  */
-public class SwipeRefreshX extends SwipeRefreshLayout implements AbsListView.OnScrollListener {
+public class SwipeRefreshX extends SwipeRefreshLayout implements OnScrollListener {
     /**
      * 滑动到最下面时的上拉操作
      */
@@ -62,12 +63,13 @@ public class SwipeRefreshX extends SwipeRefreshLayout implements AbsListView.OnS
 
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
-        mListViewFooter = LayoutInflater.from(context).inflate(R.layout.listview_footer, null,
-                false);
+        mListViewFooter = LayoutInflater.from(context).inflate(
+                R.layout.listview_footer, null, false);
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right,
+                            int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
         // 初始化ListView对象
@@ -94,6 +96,7 @@ public class SwipeRefreshX extends SwipeRefreshLayout implements AbsListView.OnS
 
     /*
      * (non-Javadoc)
+     *
      * @see android.view.ViewGroup#dispatchTouchEvent(android.view.MotionEvent)
      */
     @Override
@@ -139,7 +142,8 @@ public class SwipeRefreshX extends SwipeRefreshLayout implements AbsListView.OnS
     private boolean isBottom() {
 
         if (mListView != null && mListView.getAdapter() != null) {
-            return mListView.getLastVisiblePosition() == (mListView.getAdapter().getCount() - 1);
+            return mListView.getLastVisiblePosition() == (mListView
+                    .getAdapter().getCount() - 1);
         }
         return false;
     }
@@ -150,7 +154,7 @@ public class SwipeRefreshX extends SwipeRefreshLayout implements AbsListView.OnS
      * @return
      */
     private boolean isPullUp() {
-        return (mLastY != 0) ? ((mYDown - mLastY) >= mTouchSlop) : false;
+        return mLastY == 0 ? false : (mYDown - mLastY) >= mTouchSlop;
     }
 
     /**
@@ -192,8 +196,8 @@ public class SwipeRefreshX extends SwipeRefreshLayout implements AbsListView.OnS
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-                         int totalItemCount) {
+    public void onScroll(AbsListView view, int firstVisibleItem,
+                         int visibleItemCount, int totalItemCount) {
         // 滚动时到了最底部也可以加载更多
         if (canLoad()) {
             loadData();

@@ -34,8 +34,8 @@ import appframe.appframe.utils.LoginSampleHelper;
  * Created by Administrator on 2015/8/24.
  */
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
-    Button btn_about,btn_account,btn_newmessage,btn_exit,btn_privacy;
-    TextView tb_title,tb_back;
+
+    TextView tb_title,tb_back,tv_account,tv_newmessage,tv_privacy,tv_about,tv_security,tv_exit;
     private YWIMKit mIMKit;
     //public static final int SCAN_CODE = 1;
     @Override
@@ -50,16 +50,16 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     }
     protected void init()
     {
-        btn_about = (Button)findViewById(R.id.btn_about);
-        btn_account = (Button)findViewById(R.id.btn_account);
-        btn_newmessage = (Button)findViewById(R.id.btn_newmessage);
-        btn_exit =(Button)findViewById(R.id.btn_exit);
-        btn_privacy = (Button)findViewById(R.id.btn_privacy);
-        btn_about.setOnClickListener(this);
-        btn_account.setOnClickListener(this);
-        btn_newmessage.setOnClickListener(this);
-        btn_exit.setOnClickListener(this);
-        btn_privacy.setOnClickListener(this);
+        tv_about = (TextView)findViewById(R.id.tv_about);
+        tv_account = (TextView)findViewById(R.id.tv_account);
+        tv_newmessage = (TextView)findViewById(R.id.tv_newmessage);
+        tv_exit =(TextView)findViewById(R.id.tv_exit);
+        tv_privacy = (TextView)findViewById(R.id.tv_privacy);
+        tv_about.setOnClickListener(this);
+        tv_account.setOnClickListener(this);
+        tv_newmessage.setOnClickListener(this);
+        tv_exit.setOnClickListener(this);
+        tv_privacy.setOnClickListener(this);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_back.setText("个人中心");
@@ -72,15 +72,15 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.btn_about:
+            case R.id.tv_about:
                 startActivity(new Intent(this,AboutActivity.class));
 //                Intent intent = new Intent(this, CaptureActivity.class);
 //                startActivityForResult(intent, SCAN_CODE);
                 break;
-            case R.id.btn_account:
+            case R.id.tv_account:
                 startActivity(new Intent(this,AccountActivity.class));
                 break;
-            case R.id.btn_newmessage:
+            case R.id.tv_newmessage:
 //                ImageView imageView = (ImageView)findViewById(R.id.img_QR);
 //                try {
 //                    imageView.setImageBitmap(Create2DCode("12"));
@@ -89,14 +89,14 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 //                {}
                 startActivity(new Intent(this,NewMessageActivity.class));
                 break;
-            case R.id.btn_exit:
+            case R.id.tv_exit:
                 showAlertDialog();
 
                 break;
             case R.id.tb_back:
                 finish();
                 break;
-            case R.id.btn_privacy:
+            case R.id.tv_privacy:
                 startActivity(new Intent(this, PrivacyActivity.class));
                 break;
         }

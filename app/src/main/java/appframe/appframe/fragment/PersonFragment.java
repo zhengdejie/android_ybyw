@@ -92,7 +92,9 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
+        tv_unread.setVisibility(View.INVISIBLE);
         tv_name.setText(Auth.getCurrentUser().getName());
+        ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
         LoginSampleHelper loginHelper = LoginSampleHelper.getInstance();
         final YWIMKit imKit = loginHelper.getIMKit();
         mConversationService = imKit.getConversationService();
@@ -217,7 +219,7 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_name.setText(Auth.getCurrentUser().getName());
         tv_tel.setText(tv_tel.getText() + Auth.getCurrentUser().getMobile());
         ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
-
+        tv_unread.setVisibility(View.INVISIBLE);
         initConversationServiceAndListener();
     }
 

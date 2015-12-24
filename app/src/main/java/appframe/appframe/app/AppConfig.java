@@ -11,6 +11,9 @@ public class AppConfig {
     public static final int MAX_BITMAP_WIDTH = 1280;
     public static final int MAX_BITMAP_HEIGHT = 1280;
 
+    public static final int AVATAR_BITMAP_WIDTH = 70;
+    public static final int AVATAR_BITMAP_HEIGHT = 70;
+
     public static final int ORDER_SIZE = 10;
     public static final String ORDERSTATUS_MAIN = "主页";
     public static final String ORDERSTATUS_PROGRESS = "进行中";
@@ -18,4 +21,6 @@ public class AppConfig {
     public static final String ORDERSTATUS_DONE = "已完成";
     public static final String ORDERSTATUS_APPLY = "已申请";
     public static final String ORDERSTATUS_DELETE = "delete";
+
+    public static boolean RECEIVE_NOTIFICATION = true;
 }

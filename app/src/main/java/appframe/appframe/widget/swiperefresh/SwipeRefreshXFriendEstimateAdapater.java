@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appframe.appframe.R;
+import appframe.appframe.dto.FriendEvaluationDetail;
+import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/9/8.
@@ -19,36 +22,54 @@ import appframe.appframe.dto.OrderDetails;
 public class SwipeRefreshXFriendEstimateAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
-    //List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
+    List<FriendEvaluationDetail> friendEvaluationDetails;
 
-    public SwipeRefreshXFriendEstimateAdapater(Context context)
+    public SwipeRefreshXFriendEstimateAdapater(Context context, List<FriendEvaluationDetail> friendEvaluationDetails)
     {
         this.context =context;
         this.layoutInflater = LayoutInflater.from(context);
-        //this.orderDetails = orderDetails;
+        this.friendEvaluationDetails = friendEvaluationDetails;
     }
     @Override
     public int getCount() {
-        return 1;
+        if(friendEvaluationDetails == null)
+        {
+            return 0;
+        }
+        return friendEvaluationDetails.size();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = layoutInflater.inflate(R.layout.swiperefreshx_friendestimate, null);
-//        txt_title = (TextView)convertView.findViewById(R.id.txt_title);
-//        txt_bounty = (TextView)convertView.findViewById(R.id.txt_bounty);
-//        txt_type = (TextView)convertView.findViewById(R.id.txt_type);
-//        txt_location = (TextView)convertView.findViewById(R.id.txt_location);
-//        txt_title.setText(orderDetails.get(position).getTitle());
-//        txt_bounty.setText("￥" + String.valueOf(orderDetails.get(position).getBounty()));
-//        txt_type.setText("类别：" + orderDetails.get(position).getCategory());
-//        txt_location.setText(orderDetails.get(position).getPosition());
+        final ViewHolder mHolder;
+
+        if (convertView == null)
+        {
+            convertView = layoutInflater.inflate(R.layout.swiperefreshx_friendestimate, null);
+            mHolder = new ViewHolder();
+            mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            mHolder.tv_evaluation = (TextView) convertView.findViewById(R.id.tv_evaluation);
+            mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
+            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            convertView.setTag(mHolder);
+        }
+        else
+        {
+            mHolder = (ViewHolder) convertView.getTag();
+        }
+
+        final FriendEvaluationDetail item = friendEvaluationDetails.get(position);
+        mHolder.tv_name.setText(item.getPraiser().getName());
+        mHolder.tv_time.setText(item.getCreatedAt());
+        mHolder.tv_evaluation.setText(item.getPraise());
+        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getPraiser().getAvatar());
+
         return convertView;
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return friendEvaluationDetails.get(position);
     }
 
     @Override
@@ -56,4 +77,9 @@ public class SwipeRefreshXFriendEstimateAdapater extends BaseAdapter {
         return position;
     }
 
+    static class ViewHolder
+    {
+        private TextView tv_name,tv_evaluation,tv_time;
+        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+    }
 }

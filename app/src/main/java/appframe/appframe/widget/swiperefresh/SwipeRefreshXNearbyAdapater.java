@@ -14,6 +14,7 @@ import appframe.appframe.R;
 import appframe.appframe.activity.BaseActivity;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderReviewDetail;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/10/22.
@@ -49,6 +50,7 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
             mHolder = new ViewHolder();
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
             mHolder.tv_distance = (TextView) convertView.findViewById(R.id.tv_distance);
+            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -59,6 +61,7 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
         final Nearby item = nearby.get(position);
         mHolder.tv_name.setText(item.getName());
         mHolder.tv_distance.setText(getDistance(item.getDistance()));
+        ImageUtils.setImageUrl(mHolder.iv_avatar,item.getAvatar());
         return convertView;
     }
 
@@ -104,15 +107,28 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
         {
             return "1000米以内";
         }
-        else
+        else if(1000 < distance * 1000 && distance * 1000 <= 2000)
         {
             return "2公里以内";
+        }
+        else
+        {
+            return "2公里以外";
         }
     }
 
     @Override
     public Object getItem(int position) {
         return nearby.get(position);
+    }
+
+    public  void addItems(List<Nearby> items ){
+        for(Nearby item : items)
+        {
+            nearby.add(item);
+        }
+        notifyDataSetChanged();
+
     }
 
     @Override
@@ -124,5 +140,6 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
     {
         private TextView tv_name;
         private TextView tv_distance;
+        private com.android.volley.toolbox.NetworkImageView iv_avatar;
     }
 }

@@ -100,7 +100,9 @@
         <activity android:name=".activity.AccountActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.NewMessageActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.SettingActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.WhoCanSeeActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.WhoCannotSeeActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.CannotSeeActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".activity.BlackListActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.FriendsInfoActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.SelfEstimateActivity" android:launchMode="singleTop"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.FriendEstimateActivity"  android:screenOrientation="portrait"/>
@@ -121,6 +123,11 @@
         <activity android:name=".activity.FriendMessageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.EditNickNameActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.QRCodeActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.CitySelectActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.CitySelectBaseActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.EditSignatureActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AvatarZoomActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ModifyPasswordActivity" android:screenOrientation="portrait"/>
 
 
         <activity android:name=".widget.photopicker.view.ImageBucketChooseActivity"  android:screenOrientation="portrait"/>

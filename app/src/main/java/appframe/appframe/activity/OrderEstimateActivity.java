@@ -42,32 +42,39 @@ import appframe.appframe.widget.tagview.TagView;
 public class OrderEstimateActivity extends BaseActivity implements View.OnClickListener {
     SwipeRefreshX swipeRefresh;
     ListView listView;
-    TextView tb_title,tb_back,tv_addtag;
-    TagView tagView;
-    EditText edit_tag;
+    TextView tb_title,tb_back,tv_addtag,tv_totalnum;
+    private double AvgServicePoint;
+    private double AvgAttitudePoint;
+    private double AvgCharacterPoint;
+    private int TotalNumberOfOrder;
     RadarChart radarchart;
+    String userID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orderestimate);
         init();
-        initRadarChart();
+
 
     }
 
     public void init()
     {
-        edit_tag = (EditText)findViewById(R.id.edit_tag);
-        tagView = (TagView)findViewById(R.id.tagview);
-        tv_addtag = (TextView)findViewById(R.id.tv_addtag);
+        //edit_tag = (EditText)findViewById(R.id.edit_tag);
+        //tagView = (TagView)findViewById(R.id.tagview);
+        //tv_addtag = (TextView)findViewById(R.id.tv_addtag);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
         radarchart = (RadarChart)findViewById(R.id.Radarchart);
+        tv_totalnum = (TextView)findViewById(R.id.tv_totalnum);
         tb_back.setText("我的口碑");
         tb_title.setText("交易评价");
+
         tb_back.setOnClickListener(this);
-        tv_addtag.setOnClickListener(this);
+        //tv_addtag.setOnClickListener(this);
+        userID = getIntent().getStringExtra("UserID");
 
         swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
 
@@ -75,42 +82,24 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
         listView = (ListView)findViewById(R.id.lv_orderestimate);
 
-        Http.request(this, API.GET_ORDEREVALUATION,new Object[]{"11"}, new Http.RequestListener<List<OrderReviewDetail>>() {
+        Http.request(this, API.GET_ORDEREVALUATIONBYUSER,new Object[]{userID}, new Http.RequestListener<List<OrderReviewDetail>>() {
             @Override
             public void onSuccess(List<OrderReviewDetail> result) {
                 super.onSuccess(result);
 
-                listView.setAdapter(new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result));
-//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        //Toast.makeText(getActivity(), "df", Toast.LENGTH_SHORT).show();
-//                        startActivity(new Intent(getActivity(), OrderDetailsActivity.class));
-//                    }
-//                });
-
+                if(result != null) {
+                    listView.setAdapter(new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result));
+                    AvgServicePoint = result.get(0).getUser().getAvgServicePoint();
+                    AvgAttitudePoint = result.get(0).getUser().getAvgAttitudePoint();
+                    AvgCharacterPoint = result.get(0).getUser().getAvgCharacterPoint();
+                    TotalNumberOfOrder = result.get(0).getUser().getTotalNumberOfOrder();
+                    tv_totalnum.setText(String.format("交易评论（%d）", TotalNumberOfOrder));
+                    initRadarChart();
+                }
             }
         });
 
 
-        //listView.setAdapter(new SwipeRefreshXOrderEstimateAdapater(this));
-
-//        Http.request(this, API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
-//            @Override
-//            public void onSuccess(List<OrderDetails> result) {
-//                super.onSuccess(result);
-//
-//                listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result));
-//                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                        //Toast.makeText(getActivity(), "df", Toast.LENGTH_SHORT).show();
-//                        startActivity(new Intent(getActivity(), OrderDetailsActivity.class));
-//                    }
-//                });
-//
-//            }
-//        });
 
         // 设置下拉刷新监听器
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -184,7 +173,7 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
     }
 
     private String[] mParties = new String[] {
-            "专业熟练度", "诚信值", "服务态度"
+            "专业熟练度", "服务态度", "诚信值"
     };
 
     public void setData() {
@@ -198,9 +187,12 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
         // IMPORTANT: In a PieChart, no values (Entry) should have the same
         // xIndex (even if from different DataSets), since no values can be
         // drawn above each other.
-        for (int i = 0; i < cnt; i++) {
-            yVals1.add(new Entry((float) 28, i));
-        }
+//        for (int i = 0; i < cnt; i++) {
+//            yVals1.add(new Entry((float) 28, i));
+//        }
+        yVals1.add(new Entry((float) AvgServicePoint, 0));
+        yVals1.add(new Entry((float) AvgAttitudePoint, 1));
+        yVals1.add(new Entry((float) AvgCharacterPoint, 2));
 
 //        for (int i = 0; i < cnt; i++) {
 //            yVals2.add(new Entry((float) (Math.random() * mult) + mult / 2, i));
@@ -235,7 +227,9 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
         // 数据字体大小
         data.setValueTextSize(8f);
         // 是否绘制Y值到图表
-        data.setDrawValues(false);
+        data.setDrawValues(true);
+
+        radarchart.getYAxis().setEnabled(false);
 
         radarchart.setData(data);
 
@@ -253,14 +247,14 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
             case R.id.tb_back:
                 finish();
                 break;
-            case R.id.tv_addtag:
-                if (edit_tag.getText().toString()!=null&&!edit_tag.getText().toString().equals("")) {
-                    String tagTitle= edit_tag.getText().toString();
-                    Tag tag = new Tag(tagTitle);
-                    tag.isDeletable=true;
-                    tagView.addTag(tag);
-                }
-                break;
+//            case R.id.tv_addtag:
+//                if (edit_tag.getText().toString()!=null&&!edit_tag.getText().toString().equals("")) {
+//                    String tagTitle= edit_tag.getText().toString();
+//                    Tag tag = new Tag(tagTitle);
+//                    tag.isDeletable=true;
+//                    tagView.addTag(tag);
+//                }
+//                break;
         }
 
     }

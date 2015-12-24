@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 
 import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -44,6 +45,7 @@ import appframe.appframe.activity.SearchActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.com.google.zxing.client.android.CaptureActivity;
+import appframe.appframe.dto.OrderDetailAndCount;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
@@ -65,6 +67,9 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 public class OrderFragment extends BaseFragment  {
 
     View test_button,UploadContact_button;
+    String locationCity;
+    double latitude =0.0, longitude = 0.0;
+    int OrderCount = 0;
     //类别
     private static final int ID_TYPE_ALL = 0;
     private static final int ID_TYPE_CLOSE = 1;
@@ -127,15 +132,16 @@ public class OrderFragment extends BaseFragment  {
 
     public static final int SCAN_CODE = 1;
     BDLocation bdLocation = new BDLocation();
-    int Type;  //1=老板单， 2=打工单
+    int Type, Page =1;  //1=老板单， 2=打工单
     ListView listView;
     View mask;
     DropdownButton chooseType, chooseMulti, chooseMoney, chooseSelect;
     DropdownListView dropdownType, dropdownMulti, dropdownMoney, dropdownSelect;
     SwipeRefreshX swipeRefresh;
+    SwipeRefreshXOrderAdapater hasTopAdapater,hasnotTopAdapater;
     Animation dropdown_in, dropdown_out, dropdown_mask_out;
     View root;
-    TextView tv_back,tv_require,tv_recommand,tv_action,tv_latitude,tv_longitude;
+    TextView tv_back,tv_require,tv_recommand,tv_action;
     public OrderDetails topOrderDetails;
 
     private List<TopicLabelObject> labels = new ArrayList<>();
@@ -265,6 +271,7 @@ public class OrderFragment extends BaseFragment  {
         }
     }
 
+
     protected  List<OrderDetails> getOrders(List<OrderDetails> result,OrderDetails topOrder)
     {
         OrderDetails tempOrder = new OrderDetails();
@@ -281,6 +288,23 @@ public class OrderFragment extends BaseFragment  {
         return result;
     }
 
+    protected  List<OrderDetails> getOrdersRemoveTopOrder(List<OrderDetails> result,OrderDetails topOrder)
+    {
+        OrderDetails tempOrder = new OrderDetails();
+        for(OrderDetails od : result)
+        {
+            if(od.getId() == topOrder.getId())
+            {
+                tempOrder = od;
+            }
+        }
+        Log.i("tempOrder.getId()",String.valueOf(tempOrder.getId()));
+        if(tempOrder.getId() != 0) {
+            result.remove(tempOrder);
+        }
+
+        return result;
+    }
 
     @Override
     protected void onLoadData() {
@@ -316,12 +340,8 @@ public class OrderFragment extends BaseFragment  {
         tv_require = (TextView)root.findViewById(R.id.tv_require);
         tv_recommand = (TextView)root.findViewById(R.id.tv_recommand);
         tv_action = (TextView)root.findViewById(R.id.tv_action);
-        tv_latitude = (TextView)root.findViewById(R.id.tv_latitude);
-        tv_longitude = (TextView)root.findViewById(R.id.tv_longitude);
 
-        BaiduLocation baiduLocation = new BaiduLocation(getActivity());
-        baiduLocation.tv_latitude = tv_latitude;
-        baiduLocation.tv_longitude = tv_longitude;
+        BaiduLocation baiduLocation = new BaiduLocation(getActivity(),new MyLocationListener());
         baiduLocation.setOption();
         baiduLocation.mLocationClient.start();
 
@@ -335,6 +355,7 @@ public class OrderFragment extends BaseFragment  {
             @Override
             public void onClick(View v) {
                 Type = 2;
+                Page = 1;
                 tv_require.setBackgroundColor(Color.GREEN);
                 tv_recommand.setBackgroundColor(Color.WHITE);
                 Map<String, String> map = new HashMap<String, String>();
@@ -346,24 +367,40 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                 map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
                 map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
-                map.put("lantitude", tv_latitude.getText().toString());
-                map.put("longtitude", tv_longitude.getText().toString());
+                map.put("lantitude", String.valueOf(latitude));
+                map.put("longtitude", String.valueOf(longitude));
 
 
-                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
                     @Override
-                    public void onSuccess(List<OrderDetails> result) {
+                    public void onSuccess(OrderDetailAndCount result) {
                         super.onSuccess(result);
+                        if(result != null) {
+                            OrderCount = result.getCount();
+                            if (hasTopOrder()) {
+                                OrderDetails topOrder = getTopOrder();
+                                List<OrderDetails> list_OD = getOrders(result.getOrderList(), topOrder);
+                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true);
+                                listView.setAdapter(hasTopAdapater);
 
-                        if (hasTopOrder()) {
-                            OrderDetails topOrder = getTopOrder();
-                            List<OrderDetails> list_OD = getOrders(result, topOrder);
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true));
-
-                        } else {
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_MAIN, false));
+                            } else {
+                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false);
+                                listView.setAdapter(hasnotTopAdapater);
+                            }
                         }
+                        else {
+                            if (hasTopOrder()) {
+                                OrderDetails topOrder = getTopOrder();
+                                List<OrderDetails> od = new ArrayList<OrderDetails>();
+                                od.add(topOrder);
+                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), od, AppConfig.ORDERSTATUS_MAIN, true);
+                                listView.setAdapter(hasTopAdapater);
 
+                            } else {
+                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN, false);
+                                listView.setAdapter(hasnotTopAdapater);
+                            }
+                        }
 
                     }
                 });
@@ -374,6 +411,7 @@ public class OrderFragment extends BaseFragment  {
             @Override
             public void onClick(View v) {
                 Type = 1;
+                Page = 1;
                 tv_require.setBackgroundColor(Color.WHITE);
                 tv_recommand.setBackgroundColor(Color.GREEN);
 
@@ -386,25 +424,41 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                 map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
                 map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
-                map.put("lantitude", tv_latitude.getText().toString());
-                map.put("longtitude", tv_longitude.getText().toString());
+                map.put("lantitude", String.valueOf(latitude));
+                map.put("longtitude", String.valueOf(longitude));
 
 
 
-                Http.request(getActivity(), API.GET_ORDER,new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                Http.request(getActivity(), API.GET_ORDER,new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
                     @Override
-                    public void onSuccess( List<OrderDetails> result) {
+                    public void onSuccess( OrderDetailAndCount result) {
                         super.onSuccess(result);
+                        if(result != null) {
+                            OrderCount = result.getCount();
 
-                        if(hasTopOrder())
-                        {
-                            OrderDetails topOrder = getTopOrder();
-                            List<OrderDetails> list_OD = getOrders(result, topOrder);
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true));
+                            if (hasTopOrder()) {
+                                OrderDetails topOrder = getTopOrder();
+                                List<OrderDetails> list_OD = getOrders(result.getOrderList(), topOrder);
+                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true);
+                                listView.setAdapter(hasTopAdapater);
+
+                            } else {
+                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false);
+                                listView.setAdapter(hasnotTopAdapater);
+                            }
                         }
-                        else
-                        {
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN, false));
+                        else {
+                            if (hasTopOrder()) {
+                                OrderDetails topOrder = getTopOrder();
+                                List<OrderDetails> od = new ArrayList<OrderDetails>();
+                                od.add(topOrder);
+                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), od, AppConfig.ORDERSTATUS_MAIN, true);
+                                listView.setAdapter(hasTopAdapater);
+
+                            } else {
+                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN, false);
+                                listView.setAdapter(hasnotTopAdapater);
+                            }
                         }
 
                     }
@@ -452,26 +506,41 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                 map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
                 map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
-                map.put("lantitude", tv_latitude.getText().toString());
-                map.put("longtitude", tv_longitude.getText().toString());
+                map.put("lantitude", String.valueOf(latitude));
+                map.put("longtitude", String.valueOf(longitude));
 
 
-                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
                     @Override
-                    public void onSuccess(final List<OrderDetails> result) {
+                    public void onSuccess(final OrderDetailAndCount result) {
                         super.onSuccess(result);
+                        if(result != null) {
+                            OrderCount = result.getCount();
+                            if (hasTopOrder()) {
+                                OrderDetails topOrder = getTopOrder();
+                                List<OrderDetails> list_OD = getOrders(result.getOrderList(), topOrder);
+                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true);
+                                listView.setAdapter(hasTopAdapater);
 
-                        if(hasTopOrder())
-                        {
-                            OrderDetails topOrder = getTopOrder();
-                            List<OrderDetails> list_OD = getOrders(result,topOrder);
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), list_OD,AppConfig.ORDERSTATUS_MAIN, true));
+                            } else {
+                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false);
+                                listView.setAdapter(hasnotTopAdapater);
+                            }
                         }
-                        else
-                        {
-                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN, false));
-                        }
+                        else {
+                            if (hasTopOrder()) {
+                                OrderDetails topOrder = getTopOrder();
+                                List<OrderDetails> od = new ArrayList<OrderDetails>();
+                                od.add(topOrder);
+                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), od, AppConfig.ORDERSTATUS_MAIN, true);
+                                listView.setAdapter(hasTopAdapater);
 
+                            } else {
+                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN, false);
+                                listView.setAdapter(hasnotTopAdapater);
+                            }
+                        }
+                        Page = 1;
                         swipeRefresh.setRefreshing(false);
                     }
 
@@ -488,9 +557,53 @@ public class OrderFragment extends BaseFragment  {
 
             @Override
             public void onLoad() {
+                Page++;
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", String.valueOf(Page));
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("Type", String.valueOf(Type));
+                map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
+                map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
+                map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
+                map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
+                map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+                map.put("lantitude", String.valueOf(latitude));
+                map.put("longtitude", String.valueOf(longitude));
+                map.put("orderCount", String.valueOf(OrderCount));
 
-                Toast.makeText(getActivity(), "load", Toast.LENGTH_SHORT).show();
 
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
+                    @Override
+                    public void onSuccess(final OrderDetailAndCount result) {
+                        super.onSuccess(result);
+
+                        if(result != null) {
+
+                            if (hasTopOrder()) {
+                                OrderDetails topOrder = getTopOrder();
+                                List<OrderDetails> list_OD = getOrdersRemoveTopOrder(result.getOrderList(), topOrder);
+                                loadMore(hasTopAdapater, list_OD);
+
+
+                            } else {
+                                loadMore(hasnotTopAdapater, result.getOrderList());
+
+                            }
+                        }
+                        else
+                        {
+                            Toast.makeText(getActivity(),"没有更多信息",Toast.LENGTH_SHORT).show();
+                        }
+
+                        swipeRefresh.setLoading(false);
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setLoading(false);
+                    }
+                });
             }
         });
 
@@ -541,6 +654,9 @@ public class OrderFragment extends BaseFragment  {
         return root;
     }
 
+    private void loadMore(SwipeRefreshXOrderAdapater adapater, List<OrderDetails> orderDetailses) {
+        adapater.addItems(orderDetailses);
+    }
 
 //    public void onClick(View view)
 //    {
@@ -603,8 +719,8 @@ public class OrderFragment extends BaseFragment  {
             map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
             map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
             map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
-            map.put("lantitude", tv_latitude.getText().toString());
-            map.put("longtitude", tv_longitude.getText().toString());
+            map.put("lantitude", String.valueOf(latitude));
+            map.put("longtitude", String.valueOf(longitude));
             map.put("Page", "1");
             map.put("Size", "10");
             map.put("Type", String.valueOf(Type));
@@ -612,53 +728,72 @@ public class OrderFragment extends BaseFragment  {
 
             if (view == dropdownType) {
 
-                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
                     @Override
-                    public void onSuccess(final List<OrderDetails> result) {
+                    public void onSuccess(final OrderDetailAndCount result) {
                         super.onSuccess(result);
-
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN));
-
+                        if(result != null) {
+                            OrderCount = result.getCount();
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
+                        }
+                        else
+                        {
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
+                        }
 
                     }
                 });
             }
             else if ( view == dropdownMulti)
             {
-                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
                     @Override
-                    public void onSuccess(final List<OrderDetails> result) {
+                    public void onSuccess(final OrderDetailAndCount result) {
                         super.onSuccess(result);
-
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN));
-
-
+                        if(result != null) {
+                            OrderCount = result.getCount();
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
+                        }
+                        else
+                        {
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
+                        }
                     }
                 });
 
             }
             else if(view == dropdownMoney)
             {
-                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
                     @Override
-                    public void onSuccess(final List<OrderDetails> result) {
+                    public void onSuccess(final OrderDetailAndCount result) {
                         super.onSuccess(result);
-
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN));
-
+                        if(result != null) {
+                            OrderCount = result.getCount();
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
+                        }
+                        else
+                        {
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
+                        }
 
                     }
                 });
             }
             else
             {
-                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
                     @Override
-                    public void onSuccess(final List<OrderDetails> result) {
+                    public void onSuccess(final OrderDetailAndCount result) {
                         super.onSuccess(result);
-
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result,AppConfig.ORDERSTATUS_MAIN));
-
+                        if(result != null) {
+                            OrderCount = result.getCount();
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
+                        }
+                        else
+                        {
+                            listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
+                        }
 
                     }
                 });
@@ -905,6 +1040,26 @@ public class OrderFragment extends BaseFragment  {
                     dismiss();
                 }
             });
+        }
+    }
+    class MyLocationListener implements BDLocationListener {
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+
+            locationCity = location.getAddrStr();
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(hasTopAdapater!=null) {
+            hasTopAdapater.notifyDataSetChanged();
+        }
+        if(hasnotTopAdapater!=null) {
+            hasnotTopAdapater.notifyDataSetChanged();
         }
     }
 }

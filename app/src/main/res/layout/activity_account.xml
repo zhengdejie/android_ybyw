@@ -15,76 +15,43 @@
         android:background="@color/divide"
         />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
-
-        <Button
+        android:layout_height="44dip">
+        <TextView
+            style="@style/more_item_style"
             android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:text="@string/mobile" />
+        <TextView
+            android:id="@+id/tv_mobile"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ybnum"
-            android:gravity="left|center"
-            android:background="@color/white"
-            android:layout_weight="1"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
             />
+    </RelativeLayout>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right|center"
-            android:text="dfdfdf"
-            android:layout_weight="1"
-            android:background="@color/white"
-            />
-    </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
-
-        <Button
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_modifypassword"
+            style="@style/more_item_style"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/telnum"
-            android:gravity="left|center"
-            android:background="@color/white"
-            android:layout_weight="1"
-            />
+            android:layout_height="44dip"
+            android:gravity="center"
+            android:text="@string/modifypassword" />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="right|center"
-            android:text="15283920329"
-            android:layout_weight="1"
-            android:background="@color/white"
-            />
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/divide"
-        />
+    </RelativeLayout>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/modifypassword"
-        android:gravity="center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

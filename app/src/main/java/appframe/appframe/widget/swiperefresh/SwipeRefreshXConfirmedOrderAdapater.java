@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,6 +76,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
             mHolder.tv_showserviceprovider = (TextView)convertView.findViewById(R.id.tv_showserviceprovider);
             mHolder.tv_showservicereceiver = (TextView)convertView.findViewById(R.id.tv_showservicereceiver);
             mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
+            mHolder.rb_totalvalue = (RatingBar)convertView.findViewById(R.id.rb_totalvalue);
 
             convertView.setTag(mHolder);
         }
@@ -91,6 +94,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
         mHolder.tv_showserviceprovider.setText(item.getServiceProvider().getName());
         mHolder.tv_showservicereceiver.setText(item.getServiceReceiver().getName());
         ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrder().getOrderer().getAvatar());
+        mHolder.rb_totalvalue.setRating((float)item.getOrder().getOrderer().getTotalPoint());
 
         switch (from)
         {
@@ -117,8 +121,16 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                 mHolder.btn_estimate.setText(context.getResources().getString(R.string.cancel_appley));
                 break;
             case AppConfig.ORDERSTATUS_DONE:
-                mHolder.btn_finish.setVisibility(View.INVISIBLE);
-                mHolder.btn_estimate.setText(context.getResources().getString(R.string.estimate));
+                if(item.getServiceReceiver().getId() == Auth.getCurrentUserId()) {
+                    mHolder.btn_finish.setVisibility(View.INVISIBLE);
+                    mHolder.btn_estimate.setVisibility(View.VISIBLE);
+                    mHolder.btn_estimate.setText(context.getResources().getString(R.string.estimate));
+                }
+                else
+                {
+                    mHolder.btn_finish.setVisibility(View.INVISIBLE);
+                    mHolder.btn_estimate.setVisibility(View.INVISIBLE);
+                }
                 break;
             case AppConfig.ORDERSTATUS_CLOSE:
                 mHolder.btn_finish.setVisibility(View.INVISIBLE);
@@ -167,7 +179,12 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                                 });
                         break;
                     case AppConfig.ORDERSTATUS_DONE:
-                        context.startActivity(new Intent(context, OrderCommentActivity.class));
+                        Intent intent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("ConfirmedOrderId",String.valueOf(item.getId()));
+                        intent.setClass(context, OrderCommentActivity.class);
+                        intent.putExtras(bundle);
+                        context.startActivity(intent);
                         break;
                     case AppConfig.ORDERSTATUS_CLOSE:
                         Http.request((Activity) context, API.CHANGE_STATUS, new Object[]{String.valueOf(orderDetails.get(position).getId())},
@@ -254,6 +271,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
         private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_showserviceprovider,tv_showservicereceiver;
         private Button btn_estimate,btn_finish;
         com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private RatingBar rb_totalvalue;
     }
 
 }

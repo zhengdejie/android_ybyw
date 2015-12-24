@@ -8,7 +8,9 @@ import appframe.appframe.utils.Http;
 public class OrderReviewDetail extends Http.BaseDto{
     private String Title;
     private String Content;
-    private String CommontatorName;
+    private String CreatedAt;
+    private UserDetail User;
+    private OrderDetails Order;
 
     public String getTitle() {
         return Title;
@@ -26,11 +28,27 @@ public class OrderReviewDetail extends Http.BaseDto{
         Content = content;
     }
 
-    public String getCommontatorName() {
-        return CommontatorName;
+    public String getCreatedAt() {
+        return CreatedAt;
     }
 
-    public void setCommontatorName(String commontatorName) {
-        CommontatorName = commontatorName;
+    public void setCreatedAt(String createdAt) {
+        CreatedAt = createdAt;
+    }
+
+    public UserDetail getUser() {
+        return User;
+    }
+
+    public void setUser(UserDetail user) {
+        User = user;
+    }
+
+    public OrderDetails getOrder() {
+        return Order;
+    }
+
+    public void setOrder(OrderDetails order) {
+        Order = order;
     }
 }

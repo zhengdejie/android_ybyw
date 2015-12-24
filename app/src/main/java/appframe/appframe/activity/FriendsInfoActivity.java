@@ -18,25 +18,33 @@ import android.widget.Toast;
 
 import com.alibaba.mobileim.YWIMKit;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
 import appframe.appframe.app.App;
+import appframe.appframe.app.AppConfig;
+import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
 
 /**
  * Created by Administrator on 2015/8/21.
  */
 public class FriendsInfoActivity extends BaseActivity implements View.OnClickListener{
-    private ImageView img_avatar;
-    private Button btn_sendmessage,btn_friendsestimate;
-    private TextView tb_title,tb_back,tb_action,tv_name;
+    //private ImageView img_avatar;
+    private com.android.volley.toolbox.NetworkImageView iv_showavatar;
+    private Button btn_sendmessage;
+    private TextView tb_title,tb_back,tb_action,tv_name,tv_showdistrict,tv_friendsestimate;
     private OrderDetails orderDetails;
+    private UserDetail userDetail;
+    private Nearby nearby;
+    private String from, UserID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,15 +62,54 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         tb_back.setText("需求单");
         tb_back.setOnClickListener(this);
         tb_action = (TextView)findViewById(R.id.tb_action);
+        iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
+        iv_showavatar.setOnClickListener(this);
+        tv_showdistrict = (TextView)findViewById(R.id.tv_showdistrict);
         Drawable drawable= getResources().getDrawable(R.drawable.ic_menu_moreoverflow_normal_holo_light);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         tb_action.setCompoundDrawables(drawable, null, null, null);
         tb_action.setOnClickListener(this);
-        btn_friendsestimate =(Button)findViewById(R.id.btn_friendsestimate);
-        btn_friendsestimate.setOnClickListener(this);
+        tv_friendsestimate =(TextView)findViewById(R.id.tv_friendsestimate);
+        tv_friendsestimate.setOnClickListener(this);
         Intent intent = this.getIntent();
         orderDetails = (OrderDetails)intent.getSerializableExtra("OrderDetails");
-        tv_name.setText(orderDetails.getOrderer().getName());
+        if(orderDetails != null) {
+            tv_name.setText(orderDetails.getOrderer().getName());
+            ImageUtils.setImageUrl(iv_showavatar, orderDetails.getOrderer().getAvatar());
+            tv_showdistrict.setText(orderDetails.getOrderer().getLocation());
+            UserID = String.valueOf(orderDetails.getOrderer().getId());
+        }
+        userDetail =  (UserDetail)intent.getSerializableExtra("UserDetail");
+        if(userDetail != null) {
+            tv_name.setText(userDetail.getName());
+            ImageUtils.setImageUrl(iv_showavatar, userDetail.getAvatar());
+            tv_showdistrict.setText(userDetail.getLocation());
+            UserID = String.valueOf(userDetail.getId());
+        }
+        nearby =  (Nearby)intent.getSerializableExtra("NearBy");
+        if(nearby != null) {
+            tv_name.setText(nearby.getName());
+            ImageUtils.setImageUrl(iv_showavatar, nearby.getAvatar());
+            tv_showdistrict.setText(nearby.getLocation());
+            UserID = String.valueOf(nearby.getId());
+        }
+        if(intent.getStringExtra("From") != null) {
+            from = intent.getStringExtra("From").toString();
+        }
+        if(intent.getStringExtra("UserID") != null) {
+            String myUserID = intent.getStringExtra("UserID").toString();
+            Http.request(FriendsInfoActivity.this, API.USER_PROFILE, new Object[]{myUserID}, new Http.RequestListener<UserDetail>(){
+                @Override
+                public void onSuccess(UserDetail result) {
+                    super.onSuccess(result);
+
+                    tv_name.setText(result.getName());
+                    ImageUtils.setImageUrl(iv_showavatar, result.getAvatar());
+                    tv_showdistrict.setText(result.getLocation());
+                    UserID = String.valueOf(result.getId());
+                }
+            });
+        }
     }
 
     @Override
@@ -70,9 +117,9 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         switch (v.getId())
         {
             case R.id.btn_sendmessage:
-                //Log.i("IM state", String.format("%s", App.mIMKit.getIMCore().getLoginState()));
+
                 LoginSampleHelper ls = LoginSampleHelper.getInstance();
-                String target = String.valueOf(orderDetails.getOrderer().getId());// 消息接收者ID  testpro1  testpro2
+                String target = UserID;// 消息接收者ID
                 Intent intent = ls.getIMKit().getChattingActivityIntent(target);
                 startActivity(intent);
                 break;
@@ -82,8 +129,18 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             case R.id.tb_action:
                 new PopupWindows(FriendsInfoActivity.this,tb_action);
                 break;
-            case R.id.btn_friendsestimate:
-                startActivity(new Intent(this, EstimateActivity.class));
+            case R.id.tv_friendsestimate:
+                Intent myIntent = new Intent();
+                myIntent.setClass(FriendsInfoActivity.this,EstimateActivity.class);
+                myIntent.putExtra("UserID",UserID);
+                startActivity(myIntent);
+                break;
+            case R.id.iv_showavatar:
+                Intent mIntent = new Intent();
+                mIntent.setClass(this, AvatarZoomActivity.class);
+                String[] ImageURL = iv_showavatar.getImageURL().substring(AppConfig.QINIU_HOST.length()).split("\\?");
+                mIntent.putExtra("Avatar", ImageURL[0]);
+                startActivity(mIntent);
                 break;
         }
     }
@@ -109,9 +166,57 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             setBackgroundDrawable(new BitmapDrawable());
             setOutsideTouchable(true);
             setContentView(view);
-            showAsDropDown(parent, 0,0);
+            showAsDropDown(parent, 0, 0);
             update();
 
+
+            LinearLayout lly_whocannotsee = (LinearLayout) view.findViewById(R.id.lly_whocannotsee);
+            LinearLayout lly_cannotsee = (LinearLayout) view.findViewById(R.id.lly_cannotsee);
+            LinearLayout lly_blacklist = (LinearLayout) view.findViewById(R.id.lly_blacklist);
+            LinearLayout lly_whocannotseecancle = (LinearLayout) view.findViewById(R.id.lly_whocannotseecancle);
+            LinearLayout lly_cannotseecancle = (LinearLayout) view.findViewById(R.id.lly_cannotseecancle);
+            LinearLayout lly_removeblacklist = (LinearLayout) view.findViewById(R.id.lly_removeblacklist);
+
+            if(from != null && !from.equals("") && from.equals("FIRSTCLASS"))
+            {
+                lly_whocannotsee.setVisibility(View.VISIBLE);
+                lly_cannotsee.setVisibility(View.VISIBLE);
+                lly_blacklist.setVisibility(View.VISIBLE);
+                lly_whocannotseecancle.setVisibility(View.GONE);
+                lly_cannotseecancle.setVisibility(View.GONE);
+                lly_removeblacklist.setVisibility(View.GONE);
+            }
+            else if(from != null && !from.equals("") &&from.equals("WHOCANNOTSEE"))
+            {
+                lly_whocannotseecancle.setVisibility(View.VISIBLE);
+                lly_whocannotsee.setVisibility(View.GONE);
+                lly_cannotsee.setVisibility(View.GONE);
+                lly_blacklist.setVisibility(View.GONE);
+                lly_cannotseecancle.setVisibility(View.GONE);
+                lly_removeblacklist.setVisibility(View.GONE);
+            }
+            else if(from != null && !from.equals("") &&from.equals("CANNOTSEE"))
+            {
+                lly_whocannotseecancle.setVisibility(View.GONE);
+                lly_whocannotsee.setVisibility(View.GONE);
+                lly_cannotsee.setVisibility(View.GONE);
+                lly_blacklist.setVisibility(View.GONE);
+                lly_cannotseecancle.setVisibility(View.VISIBLE);
+                lly_removeblacklist.setVisibility(View.GONE);
+            }
+            else if(from != null && !from.equals("") &&from.equals("BLACKLIST"))
+            {
+                lly_whocannotseecancle.setVisibility(View.GONE);
+                lly_whocannotsee.setVisibility(View.GONE);
+                lly_cannotsee.setVisibility(View.GONE);
+                lly_blacklist.setVisibility(View.GONE);
+                lly_cannotseecancle.setVisibility(View.GONE);
+                lly_removeblacklist.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+
+            }
             Button addoneclassfriend = (Button) view
                     .findViewById(R.id.item_popupwindows_addoneclassfriend);
             Button viewrelationnet = (Button) view
@@ -119,7 +224,17 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             Button addblacklist = (Button) view
                     .findViewById(R.id.item_popupwindows_addblacklist);
             Button btn_report = (Button) view
-                    .findViewById(R.id.item_popupwindows_report);
+                .findViewById(R.id.item_popupwindows_report);
+            Button btn_whocannotsee = (Button) view
+                    .findViewById(R.id.item_popupwindows_whocannotsee);
+            Button btn_cannotsee = (Button) view
+                    .findViewById(R.id.item_popupwindows_cannotsee);
+            Button btn_whocannotseecancle = (Button) view
+                    .findViewById(R.id.item_popupwindows_whocannotseecancle);
+            Button btn_cannotseecancle = (Button) view
+                    .findViewById(R.id.item_popupwindows_cannotseecancle);
+            Button btn_removeblacklist = (Button) view
+                    .findViewById(R.id.item_popupwindows_removeblacklist);
             addoneclassfriend.setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
@@ -148,7 +263,15 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 public void onClick(View v)
                 {
-
+                    Http.request(FriendsInfoActivity.this, API.ADD_BLACKLIST, new Object[]{Auth.getCurrentUserId()},
+                            Http.map("BlockIds", String.valueOf(userDetail.getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                     dismiss();
                 }
             });
@@ -158,6 +281,86 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                 public void onClick(View v)
                 {
 
+                    dismiss();
+                }
+            });
+            btn_cannotsee.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    Http.request(FriendsInfoActivity.this, API.POST_NOTSEEB,
+                            Http.map("userBId",String.valueOf(userDetail.getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    dismiss();
+                }
+            });
+            btn_whocannotsee.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    Http.request(FriendsInfoActivity.this, API.POST_NOTLETBSEE,
+                            Http.map("userBId",String.valueOf(userDetail.getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    dismiss();
+                }
+            });
+            btn_whocannotseecancle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Http.request(FriendsInfoActivity.this, API.POST_NOTLETBSEECANCLE,
+                            Http.map("userBId",String.valueOf(userDetail.getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    dismiss();
+                }
+            });
+            btn_cannotseecancle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Http.request(FriendsInfoActivity.this, API.POST_NOTSEEBCANCLE,
+                            Http.map("userBId",String.valueOf(userDetail.getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                    dismiss();
+                }
+            });
+            btn_removeblacklist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put("BlockIds", String.valueOf(userDetail.getId()));
+                    Http.request(FriendsInfoActivity.this, API.REMOVE_BLACKLIST, new Object[]{Auth.getCurrentUserId(),Http.getURL(map)},
+
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                     dismiss();
                 }
             });

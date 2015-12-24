@@ -87,22 +87,19 @@ import appframe.appframe.widget.popupwindow.SelectPicPopupWindow;
  * Created by Administrator on 2015/8/12.
  */
 public class OrderSendActivity extends BaseActivity{
-    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_latitude,tv_longitude;
+    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title;
     private EditText edit_title,edit_bounty,edit_content,edit_require;
     private Spinner spinner_category,spinner_range;
     private RadioButton radio_online,radio_offline;
     private CheckBox checkBox_anonymous,checkBox_donotshowphonenum,checkBox_donotshowlocation,checkBox_oneclass,checkBox_twoclass,checkBox_stranger;
     private Button btn_send;
-    private ImageButton img_addimg1,img_addimg2,img_addimg3;
     private SelectPicPopupWindow menuWindow;
-    private static final int img1_SELECT_PHOTO = 101;
-    private static final int img2_SELECT_PHOTO = 102;
-    private static final int img3_SELECT_PHOTO = 103;
     private static final int PHOTO_GRAPH = 10;
     private static final int PHOTO_RESOULT = 301;
     private static final String IMAGE_UNSPECIFIED = "image/*";
     private LocationClient mLocationClient;
     //public MyLocationListener mMyLocationListener;
+    String locationCity;
     private double latitude = 0.0;
     private double longitude = 0.0;
     public Vibrator mVibrator;
@@ -204,10 +201,10 @@ public class OrderSendActivity extends BaseActivity{
                     Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
                             "Id", String.valueOf(Auth.getCurrentUserId()),
                             "Title", edit_title.getText().toString(),
-                            "Address", txt_location.getText().toString(),
+                            "Address", locationCity,
                             "Content", edit_content.getText().toString(),
-                            "latitude", tv_latitude.getText().toString(),
-                            "longitude", tv_longitude.getText().toString(),
+                            "latitude", String.valueOf(latitude),
+                            "longitude", String.valueOf(longitude),
                             "Category", spinner_category.getSelectedItem().toString(),
                             "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
                             "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
@@ -260,10 +257,10 @@ public class OrderSendActivity extends BaseActivity{
                                             Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
                                                     "Id", String.valueOf(Auth.getCurrentUserId()),
                                                     "Title", edit_title.getText().toString(),
-                                                    "Address", txt_location.getText().toString(),
+                                                    "Address", locationCity,
                                                     "Content", edit_content.getText().toString(),
-                                                    "latitude", tv_latitude.getText().toString(),
-                                                    "longitude", tv_longitude.getText().toString(),
+                                                    "latitude", String.valueOf(latitude),
+                                                    "longitude", String.valueOf(longitude),
                                                     "Category", spinner_category.getSelectedItem().toString(),
                                                     "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
                                                     "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
@@ -782,8 +779,7 @@ public class OrderSendActivity extends BaseActivity{
         txt_location = (TextView)findViewById(R.id.txt_location);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_title = (TextView)findViewById(R.id.tb_title);
-        tv_latitude = (TextView)findViewById(R.id.tv_latitude);
-        tv_longitude = (TextView)findViewById(R.id.tv_longitude);
+
         checkBox_oneclass = (CheckBox)findViewById(R.id.checkBox_oneclass);
         checkBox_twoclass = (CheckBox)findViewById(R.id.checkBox_twoclass);
         checkBox_stranger = (CheckBox)findViewById(R.id.checkBox_stranger);
@@ -896,15 +892,10 @@ public class OrderSendActivity extends BaseActivity{
         checkBox_donotshowlocation = (CheckBox)findViewById(R.id.checkBox_donotshowlocation);
         checkBox_donotshowphonenum = (CheckBox)findViewById(R.id.checkBox_donotshowphonenum);
         btn_send = (Button)findViewById(R.id.btn_send);
-//        img_addimg1 = (ImageButton)findViewById(R.id.img_addimg1);
-//        img_addimg2 = (ImageButton)findViewById(R.id.img_addimg2);
-//        img_addimg3 = (ImageButton)findViewById(R.id.img_addimg3);
+
 
         //百度地图定位
-        BaiduLocation baiduLocation = new BaiduLocation(getApplicationContext());
-        baiduLocation.txt_location = txt_location;
-        baiduLocation.tv_latitude = tv_latitude;
-        baiduLocation.tv_longitude = tv_longitude;
+        BaiduLocation baiduLocation = new BaiduLocation(getApplicationContext(),new MyLocationListener());
         baiduLocation.setOption();
         baiduLocation.mLocationClient.start();
 
@@ -972,5 +963,14 @@ public class OrderSendActivity extends BaseActivity{
 
 
         return String.valueOf(i);
+    }
+    class MyLocationListener implements BDLocationListener {
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+
+            locationCity = location.getAddrStr();
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
     }
 }

@@ -15,7 +15,8 @@
         />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="76dp">
+        android:layout_height="80dp"
+        >
         <TextView
             android:id="@+id/tv_avatar"
             style="@style/more_item_style"
@@ -24,10 +25,10 @@
             android:text="@string/avatar" />
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/iv_showavatar"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_alignParentRight="true"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
           />
@@ -142,7 +143,7 @@
             android:id="@+id/tv_selfestimate"
             style="@style/more_item_style"
             android:layout_width="match_parent"
-            android:layout_height="44dip"
+            android:layout_height="44dp"
             android:text="@string/selfestimate" />
         <TextView
             android:id="@+id/tv_showselfestimate"
@@ -151,7 +152,9 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:ellipsize="end"
+            android:singleLine="true"/>
     </RelativeLayout>
     <View
         android:layout_width="match_parent"

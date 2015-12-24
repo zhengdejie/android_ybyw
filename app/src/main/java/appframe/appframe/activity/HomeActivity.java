@@ -211,6 +211,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
+
         //在Tab栏删除会话未读消息变化的全局监听器
         mConversationService.removeTotalUnreadChangeListener(mConversationUnreadChangeListener);
         //mIMKit.getTribeService().removeTribeListener(mTribeChangedListener);
@@ -220,7 +221,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-
+        tv_unread.setVisibility(View.INVISIBLE);
         LoginSampleHelper loginHelper = LoginSampleHelper.getInstance();
         final YWIMKit imKit = loginHelper.getIMKit();
         mConversationService = imKit.getConversationService();
@@ -444,15 +445,20 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                 //TextView scanResult = (TextView) root.findViewById(R.id.txt_scanresult);
                 if (resultCode == RESULT_OK) {
                     String result = data.getStringExtra("scan_result");
-                    Http.request(HomeActivity.this, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
-                            Http.map("FriendId",result.substring(9).toString()),
-                            new Http.RequestListener<String>() {
-                                @Override
-                                public void onSuccess(String result) {
-                                    super.onSuccess(result);
-                                    Toast.makeText(HomeActivity.this, "已发送好友申请", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                    Intent intent = new Intent();
+                    intent.setClass(HomeActivity.this,FriendsInfoActivity.class);
+                    intent.putExtra("UserID",result.substring(9).toString());
+                    startActivity(intent);
+//                    Http.request(HomeActivity.this, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
+//                            Http.map("FriendId",result.substring(9).toString()),
+//                            new Http.RequestListener<String>() {
+//                                @Override
+//                                public void onSuccess(String result) {
+//                                    super.onSuccess(result);
+//                                    Toast.makeText(HomeActivity.this, "已发送好友申请", Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+
                     //scanResult.setText(result);
                 } else if (resultCode == RESULT_CANCELED) {
                     //scanResult.setText("扫描出错");

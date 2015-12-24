@@ -21,10 +21,11 @@
         android:background="@color/white"
         android:layout_margin="10dp"
         >
-        <ImageView
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:src="@drawable/ic_launcher"
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/iv_showavatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,30 +35,30 @@
             <TextView
                 android:id="@+id/tv_name"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="30dp"
                 android:text="帅哥"
                 android:textSize="17sp"
                 android:gravity="left|center"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
-                    android:text="友帮号:"
-                    android:clickable="true"
-                    android:textSize="17sp"
-                    android:gravity="left|center"
-                    android:layout_weight="1"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:text="2438972387"
-                    android:layout_weight="9"/>
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal">-->
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="30dp"-->
+                    <!--android:text="友帮号:"-->
+                    <!--android:clickable="true"-->
+                    <!--android:textSize="17sp"-->
+                    <!--android:gravity="left|center"-->
+                    <!--android:layout_weight="1"/>-->
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:textSize="17sp"-->
+                    <!--android:text="2438972387"-->
+                    <!--android:layout_weight="9"/>-->
 
-            </LinearLayout>
+            <!--</LinearLayout>-->
         </LinearLayout>
     </LinearLayout>
 
@@ -66,60 +67,64 @@
         android:layout_height="20dp"
         android:background="@color/divide"
         />
-    <Button
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/comment"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:clickable="true"
-        />
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_comment"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="@string/comment" />
+
+    </RelativeLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/divide"
         />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <Button
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_district"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center_vertical"
+            android:textColor="#ff333333"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:text="@string/district"/>
+        <TextView
+            android:id="@+id/tv_showdistrict"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/district"
-            android:gravity="left|center"
-            android:paddingLeft="10dp"
-            android:background="@color/white"
-            android:clickable="true"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:textSize="17dp"
-            android:text="杭州西湖区"
-            android:gravity="center"
-            android:background="@color/white"/>
-
-    </LinearLayout>
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_district"
+            android:layout_toEndOf="@+id/tv_district"/>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
         />
-    <Button
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/effect"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        android:clickable="true"
-        android:id="@+id/btn_friendsestimate"
-        />
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_friendsestimate"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="@string/effect" />
+
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
