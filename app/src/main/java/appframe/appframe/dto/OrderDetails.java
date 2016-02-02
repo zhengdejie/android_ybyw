@@ -34,6 +34,7 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
     private List<UserDetail> Candidate;
 
 
+
     public int getId() {
         return Id;
     }
@@ -209,4 +210,6 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
     public void setCandidate(List<UserDetail> candidate) {
         Candidate = candidate;
     }
+
+
 }

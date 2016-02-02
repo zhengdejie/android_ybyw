@@ -5,24 +5,35 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import appframe.appframe.R;
+import appframe.appframe.app.API;
+import appframe.appframe.dto.UserDetail;
+import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.Http;
+import appframe.appframe.utils.ImageUtils;
+import appframe.appframe.widget.swiperefresh.RelativenetGridViewAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXFriendShopsAdapater;
 
 /**
  * Created by Administrator on 2015/10/14.
  */
 public class RelativenetActivity extends BaseActivity implements View.OnClickListener {
-    private TextView tv_myself,tv_oneclass,tv_twoclass,tb_title,tb_back;
-    private ProgressBar pb_oneclass,pb_twoclass;
-    private int iCount = 0;
-    protected static final int ONE_GOON = 0x10000;
-    protected static final int ONE_END = 0x10001;
-    protected static final int TWO_GOON = 0x10002;
-    protected static final int TWO_END = 0x10003;
+    private TextView tv_myname,tv_yourname,tb_title,tb_back;
+    private com.android.volley.toolbox.NetworkImageView iv_myavatar,iv_youravatar;
+    private GridView gridview;
+
 
 
     @Override
@@ -30,110 +41,48 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_relativenet);
         init();
+        initdata();
     }
 
-    protected void init()
-    {
-        tv_myself = (TextView)findViewById(R.id.tv_myself);
-        tv_oneclass = (TextView)findViewById(R.id.tv_oneclass);
-        tv_twoclass = (TextView)findViewById(R.id.tv_twoclass);
-        pb_oneclass =(ProgressBar)findViewById(R.id.pb_oneclass);
-        pb_twoclass =(ProgressBar)findViewById(R.id.pb_twoclass);
-        tb_title = (TextView)findViewById(R.id.tb_title);
-        tb_back = (TextView)findViewById(R.id.tb_back);
+    protected void init() {
+        tv_myname = (TextView) findViewById(R.id.tv_myname);
+        tv_yourname = (TextView) findViewById(R.id.tv_yourname);
+        gridview =(GridView)findViewById(R.id.gridview);
+        iv_myavatar = (com.android.volley.toolbox.NetworkImageView) findViewById(R.id.iv_myavatar);
+        iv_youravatar = (com.android.volley.toolbox.NetworkImageView) findViewById(R.id.iv_youravatar);
+        tb_title = (TextView) findViewById(R.id.tb_title);
+        tb_back = (TextView) findViewById(R.id.tb_back);
         tb_title.setText("我和TA的关系网");
         tb_back.setText("需求单");
         tb_back.setOnClickListener(this);
-        pb_oneclass.setVisibility(View.VISIBLE);
-        pb_oneclass.setProgress(0);
-        pb_twoclass.setProgress(0);
 
-
-
-        //创建一个线程,每秒步长为5增加,到100%时停止
-        Thread mThread = new Thread(new Runnable() {
-
-            public void run() {
-
-                for(int i = 0 ; i < 100; i++){
-                    try{
-                        iCount = i + 1;
-                        if(i == 99)
-                        {
-                            Message msg = new Message();
-                            msg.what = ONE_END;
-                            mHandler.sendMessage(msg);
-                        }
-                        else {
-                            Thread.sleep(10);
-                            Message msg = new Message();
-                            msg.what = ONE_GOON;
-                            mHandler.sendMessage(msg);
-                        }
-
-
-
-                    }catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        });
-        mThread.start();
     }
 
-    //定义一个Handler
-    private Handler mHandler = new Handler(){
-        public void handleMessage(Message msg){
-            switch (msg.what) {
-
-                case ONE_GOON:
-                    pb_oneclass.setProgress(iCount);
-                    break;
-                case ONE_END:
-                    tv_oneclass.setVisibility(View.VISIBLE);
-                    Thread mThread = new Thread(new Runnable() {
-
-                        public void run() {
-
-                            for(int i = 0 ; i < 100; i++){
-                                try{
-                                    iCount = i + 1;
-                                    if(i == 99)
-                                    {
-                                        Message msg = new Message();
-                                        msg.what = TWO_END;
-                                        mHandler.sendMessage(msg);
-                                    }
-                                    else {
-                                        Thread.sleep(10);
-                                        Message msg = new Message();
-                                        msg.what = TWO_GOON;
-                                        mHandler.sendMessage(msg);
-                                    }
-
-
-
-                                }catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                        }
-                    });
-                    mThread.start();
-                    break;
-                case TWO_GOON:
-                    pb_twoclass.setVisibility(View.VISIBLE);
-                    pb_twoclass.setProgress(iCount);
-                    break;
-                case TWO_END:
-                    tv_twoclass.setVisibility(View.VISIBLE);
-                    break;
-            }
+    protected void initdata()
+    {
+        tv_myname.setText(Auth.getCurrentUser().getName());
+        if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
+            ImageUtils.setImageUrl(iv_myavatar, Auth.getCurrentUser().getAvatar());
         }
-    };
+        tv_yourname.setText(getIntent().getStringExtra("Name"));
+        if(getIntent().getStringExtra("Avatar") !=null && !getIntent().getStringExtra("Avatar").equals("")) {
+            ImageUtils.setImageUrl(iv_youravatar, getIntent().getStringExtra("Avatar"));
+        }
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("FriendId", getIntent().getStringExtra("UserID"));
+        Http.request(RelativenetActivity.this, API.GET_MIDDLEMAN, new Object[]{Auth.getCurrentUserId(), Http.getURL(map)},
+
+                new Http.RequestListener<List<UserDetail>>() {
+                    @Override
+                    public void onSuccess(List<UserDetail> result) {
+                        super.onSuccess(result);
+
+                        gridview.setAdapter(new RelativenetGridViewAdapater(RelativenetActivity.this, result));
+                    }
+                });
+
+
+    }
 
     @Override
     public void onClick(View v) {

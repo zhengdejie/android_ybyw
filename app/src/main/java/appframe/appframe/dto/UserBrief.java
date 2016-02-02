@@ -24,6 +24,9 @@ public class UserBrief extends Http.BaseDto implements Serializable {
     public double AvgAttitudePoint;
     public double AvgCharacterPoint;
     public int TotalNumberOfOrder;
+    public String FNickName;
+    public int Member;
+    public int CompletedNumberOfOrder;
 
     public int getId() {
         return Id;
@@ -135,5 +138,29 @@ public class UserBrief extends Http.BaseDto implements Serializable {
 
     public void setTotalNumberOfOrder(int totalNumberOfOrder) {
         TotalNumberOfOrder = totalNumberOfOrder;
+    }
+
+    public String getFNickName() {
+        return FNickName;
+    }
+
+    public void setFNickName(String FNickName) {
+        this.FNickName = FNickName;
+    }
+
+    public int getMember() {
+        return Member;
+    }
+
+    public void setMember(int member) {
+        Member = member;
+    }
+
+    public int getCompletedNumberOfOrder() {
+        return CompletedNumberOfOrder;
+    }
+
+    public void setCompletedNumberOfOrder(int completedNumberOfOrder) {
+        CompletedNumberOfOrder = completedNumberOfOrder;
     }
 }

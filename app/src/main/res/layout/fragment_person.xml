@@ -26,7 +26,7 @@
 
             <LinearLayout
                 android:id="@+id/ll_person"
-                android:background="@color/white"
+                android:background="@drawable/demo_setting_single_bg"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
                 android:orientation="horizontal">
@@ -47,17 +47,26 @@
                 </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:orientation="vertical"
                 android:layout_gravity="center">
-                <TextView
-                    android:id="@+id/tv_name"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:text="帅哥"
-                    android:textSize="17sp"
-                    android:gravity="left|center"
-                    android:layout_marginLeft="10dp"/>
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:text="帅哥"
+                        android:textSize="17sp"
+                        android:gravity="left|center"
+                        android:layout_marginLeft="10dp"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:src="@drawable/ic_clock"/>
+                </LinearLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
@@ -80,6 +89,19 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="20dp"
+            android:background="@color/divide"
+            />
+
+        <TextView
+            android:id="@+id/tv_mission"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:drawableRight="@drawable/aliwx_arrow"
+            android:text="我的任务" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
             android:background="@color/divide"
             />
 

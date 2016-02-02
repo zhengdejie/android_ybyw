@@ -20,9 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,6 +55,7 @@ import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.widget.sortlistview.FirstClassFriends;
+import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 
@@ -65,10 +68,11 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit;
     private ImageButton imgbtn_conversation,imgbtn_call;
     com.android.volley.toolbox.NetworkImageView iv_avatar;
-    private Button btn_select,btn_estimate,btn_comment,btn_recommend;
+    private Button btn_select,btn_comment,btn_recommend;
     private String OrderID,Tel, hasTopOrder, Entrance;
     private ListView lv_ordercomment;
-    private LinearLayout lly_photos;
+//    private LinearLayout lly_photos;
+    private GridView gridView;
     private RatingBar rb_totalvalue;
     OrderDetails orderDetails;
     Intent intent = new Intent();
@@ -220,7 +224,8 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     public void init()
     {
         //img_avatar = (ImageView)findViewById(R.id.img_avatar);
-        lly_photos = (LinearLayout)findViewById(R.id.lly_photos);
+        //lly_photos = (LinearLayout)findViewById(R.id.lly_photos);
+        gridView =(GridView)findViewById(R.id.gridview);
         imgbtn_conversation = (ImageButton)findViewById(R.id.imgbtn_conversation);
         imgbtn_call = (ImageButton)findViewById(R.id.imgbtn_call);
         tv_title =(TextView)findViewById(R.id.tv_title);
@@ -238,7 +243,6 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tv_paymethod = (TextView)findViewById(R.id.tv_paymethod);
         tv_deadline = (TextView)findViewById(R.id.tv_deadline);
         tv_name = (TextView)findViewById(R.id.tv_name);
-        btn_estimate = (Button)findViewById(R.id.btn_estimate);
         btn_comment = (Button)findViewById(R.id.btn_comment);
         lv_ordercomment = (ListView)findViewById(R.id.lv_ordercomment);
         tv_comment = (TextView)findViewById(R.id.tv_comment);
@@ -253,7 +257,6 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         imgbtn_conversation.setOnClickListener(this);
         imgbtn_call.setOnClickListener(this);
         btn_select.setOnClickListener(this);
-        btn_estimate.setOnClickListener(this);
         btn_comment.setOnClickListener(this);
         btn_recommend.setOnClickListener(this);
 
@@ -261,13 +264,13 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         orderDetails=(OrderDetails)intent.getSerializableExtra("OrderDetails");
         if( orderDetails.getType() == 1 )
         {
-            tv_moneyunit.setText("赏 ￥");
+            tv_moneyunit.setText("索 ￥");
         }
         else
         {
-            tv_moneyunit.setText("索 ￥");
+            tv_moneyunit.setText("赏 ￥");
         }
-        if(intent.getStringExtra("From") != null && intent.getStringExtra("From").equals("MyOrder"))
+        if((intent.getStringExtra("From") != null && intent.getStringExtra("From").equals("MyOrder")) || orderDetails.getOrderer().getId() == Auth.getCurrentUserId())
         {
             btn_select.setText("候选接单人");
         }
@@ -283,22 +286,34 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tv_require.setText(orderDetails.getRequest() == null ? "" : orderDetails.getRequest().toString());
         tv_paymethod.setText(orderDetails.getPaymentMethod().toString());
         tv_deadline.setText(orderDetails.getDeadline().toString());
-        tv_name.setText(orderDetails.getOrderer().getName().toString());
+        if(orderDetails.getOrderer().getFNickName() != null && !orderDetails.getOrderer().getFNickName().equals(""))
+        {
+            tv_name.setText(orderDetails.getOrderer().getFNickName());
+        }
+        else {
+            tv_name.setText(orderDetails.getOrderer().getName().toString());
+        }
         rb_totalvalue.setRating((float)orderDetails.getOrderer().getTotalPoint());
         if(orderDetails.getOrderer().getAvatar() != null) {
             ImageUtils.setImageUrl(iv_avatar, orderDetails.getOrderer().getAvatar().toString());
         }
 
         if(orderDetails.getPhotos() != null && orderDetails.getPhotos() != "") {
+            List<String> photoPath = new ArrayList<String>();
             for (String photsCount : orderDetails.getPhotos().toString().split(",")) {
-                com.android.volley.toolbox.NetworkImageView img = new com.android.volley.toolbox.NetworkImageView(this);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        400, 400);
-                params.weight = 1.0f;
-                img.setLayoutParams(params);
-                ImageUtils.setImageUrl(img, photsCount);
-                lly_photos.addView(img);
+                photoPath.add(photsCount);
             }
+            gridView.setAdapter(new OrderDetailsGridViewAdapater(OrderDetailsActivity.this,photoPath));
+            gridView.setVisibility(View.VISIBLE);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent();
+                    intent.setClass(OrderDetailsActivity.this, AvatarZoomActivity.class);
+                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+                    startActivity(intent);
+                }
+            });
         }
         Tel = orderDetails.getOrderer().getMobile() == null ? "" : orderDetails.getOrderer().getMobile().toString();
         OrderID = String.valueOf(orderDetails.getId());

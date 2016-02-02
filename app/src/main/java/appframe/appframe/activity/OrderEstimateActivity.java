@@ -21,12 +21,17 @@ import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.OrderReviewDetail;
+import appframe.appframe.dto.OrderReviewDetailAndCount;
+import appframe.appframe.dto.UserBrief;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
 import appframe.appframe.widget.chart.MyMarkerView;
@@ -42,13 +47,17 @@ import appframe.appframe.widget.tagview.TagView;
 public class OrderEstimateActivity extends BaseActivity implements View.OnClickListener {
     SwipeRefreshX swipeRefresh;
     ListView listView;
-    TextView tb_title,tb_back,tv_addtag,tv_totalnum;
-    private double AvgServicePoint;
-    private double AvgAttitudePoint;
-    private double AvgCharacterPoint;
-    private int TotalNumberOfOrder;
+    TextView tb_title,tb_back,tv_addtag,tv_totalnum,tv_all,tv_good,tv_medium,tv_bad;;
+    private double AvgServicePoint = 0.0;
+    private double AvgAttitudePoint = 0.0;
+    private double AvgCharacterPoint = 0.0;
+//    private int TotalNumberOfOrder = 0;
     RadarChart radarchart;
     String userID;
+    private int maxOrderReviewID = 0,Type = 0, Page =1;
+    Map<String, String> map = new HashMap<String, String>();
+    UserBrief userBrief;
+    SwipeRefreshXOrderEstimateAdapater swipeRefreshXOrderEstimateAdapater;
 
 
     @Override
@@ -69,12 +78,26 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
         tb_back = (TextView)findViewById(R.id.tb_back);
         radarchart = (RadarChart)findViewById(R.id.Radarchart);
         tv_totalnum = (TextView)findViewById(R.id.tv_totalnum);
+        tv_all = (TextView)findViewById(R.id.tv_all);
+        tv_good = (TextView)findViewById(R.id.tv_good);
+        tv_medium = (TextView)findViewById(R.id.tv_medium);
+        tv_bad = (TextView)findViewById(R.id.tv_bad);
         tb_back.setText("我的口碑");
         tb_title.setText("交易评价");
-
         tb_back.setOnClickListener(this);
+        tv_all.setOnClickListener(this);
+        tv_good.setOnClickListener(this);
+        tv_medium.setOnClickListener(this);
+        tv_bad.setOnClickListener(this);
         //tv_addtag.setOnClickListener(this);
-        userID = getIntent().getStringExtra("UserID");
+
+
+        //userID = getIntent().getStringExtra("UserID");
+        userBrief = (UserBrief)getIntent().getSerializableExtra("userBrief");
+        AvgServicePoint = userBrief.getAvgServicePoint();
+        AvgAttitudePoint = userBrief.getAvgAttitudePoint();
+        AvgCharacterPoint = userBrief.getAvgCharacterPoint();
+
 
         swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
 
@@ -82,32 +105,38 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
         listView = (ListView)findViewById(R.id.lv_orderestimate);
 
-        Http.request(this, API.GET_ORDEREVALUATIONBYUSER,new Object[]{userID}, new Http.RequestListener<List<OrderReviewDetail>>() {
-            @Override
-            public void onSuccess(List<OrderReviewDetail> result) {
-                super.onSuccess(result);
+        tv_all.performClick();
 
-                if(result != null) {
-                    listView.setAdapter(new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result));
-                    AvgServicePoint = result.get(0).getUser().getAvgServicePoint();
-                    AvgAttitudePoint = result.get(0).getUser().getAvgAttitudePoint();
-                    AvgCharacterPoint = result.get(0).getUser().getAvgCharacterPoint();
-                    TotalNumberOfOrder = result.get(0).getUser().getTotalNumberOfOrder();
-                    tv_totalnum.setText(String.format("交易评论（%d）", TotalNumberOfOrder));
-                    initRadarChart();
-                }
-            }
-        });
-
-
+        initRadarChart();
 
         // 设置下拉刷新监听器
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
             public void onRefresh() {
+                Page = 1;
+                map.put("Type", String.valueOf(Type));
+                Http.request(OrderEstimateActivity.this, API.GET_ORDEREVALUATIONBYUSER, new Object[]{String.valueOf(userBrief.getId()), Http.getURL(map)}, new Http.RequestListener<OrderReviewDetailAndCount>() {
+                    @Override
+                    public void onSuccess(OrderReviewDetailAndCount result) {
+                        super.onSuccess(result);
+                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                        maxOrderReviewID = result.getCount();
+                        swipeRefresh.setRefreshing(false);
+                    }
 
-                Toast.makeText(OrderEstimateActivity.this, "refresh", Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
+                map.clear();
 
             }
         });
@@ -116,8 +145,28 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onLoad() {
+                Page++;
+                map.put("Page", String.valueOf(Page));
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("Type", String.valueOf(Type));
+                map.put("OrderReviewCount", String.valueOf(maxOrderReviewID));
+                Http.request(OrderEstimateActivity.this, API.GET_ORDEREVALUATIONBYUSER, new Object[]{String.valueOf(userBrief.getId()), Http.getURL(map)}, new Http.RequestListener<OrderReviewDetailAndCount>() {
+                    @Override
+                    public void onSuccess(OrderReviewDetailAndCount result) {
+                        super.onSuccess(result);
 
-                Toast.makeText(OrderEstimateActivity.this, "load", Toast.LENGTH_SHORT).show();
+                        loadMore(swipeRefreshXOrderEstimateAdapater, result.getOrderReviewDetails());
+
+                        swipeRefresh.setLoading(false);
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setLoading(false);
+                    }
+                });
+                map.clear();
 
             }
         });
@@ -190,9 +239,7 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
 //        for (int i = 0; i < cnt; i++) {
 //            yVals1.add(new Entry((float) 28, i));
 //        }
-        yVals1.add(new Entry((float) AvgServicePoint, 0));
-        yVals1.add(new Entry((float) AvgAttitudePoint, 1));
-        yVals1.add(new Entry((float) AvgCharacterPoint, 2));
+
 
 //        for (int i = 0; i < cnt; i++) {
 //            yVals2.add(new Entry((float) (Math.random() * mult) + mult / 2, i));
@@ -204,7 +251,21 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
         for (int i = 0; i < cnt; i++)
             xVals.add(mParties[i % mParties.length]);
 
-        RadarDataSet set1 = new RadarDataSet(yVals1, "你的分数");
+        String content = "";
+        if(AvgServicePoint == 0.0 && AvgAttitudePoint == 0.0 && AvgCharacterPoint == 0.0) {
+            yVals1.add(new Entry((float) 5, 0));
+            yVals1.add(new Entry((float) 5, 1));
+            yVals1.add(new Entry((float) 5, 2));
+            content = "默认分数，暂时没交易分数";
+        }
+        else
+        {
+            yVals1.add(new Entry((float) AvgServicePoint, 0));
+            yVals1.add(new Entry((float) AvgAttitudePoint, 1));
+            yVals1.add(new Entry((float) AvgCharacterPoint, 2));
+            content = "你的分数";
+        }
+        RadarDataSet set1 = new RadarDataSet(yVals1, content);
         // Y数据颜色设置
         set1.setColor(ColorTemplate.VORDIPLOM_COLORS[0]);
         // 是否实心填充区域
@@ -247,6 +308,98 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
             case R.id.tb_back:
                 finish();
                 break;
+            case R.id.tv_all:
+                setTv_all(true);
+                setTv_good(false);
+                setTv_medium(false);
+                setTv_bad(false);
+                Type = 0;
+                Page = 1;
+                map.put("Type", String.valueOf(Type));
+                Http.request(this, API.GET_ORDEREVALUATIONBYUSER, new Object[]{String.valueOf(userBrief.getId()), Http.getURL(map)}, new Http.RequestListener<OrderReviewDetailAndCount>() {
+                    @Override
+                    public void onSuccess(OrderReviewDetailAndCount result) {
+                        super.onSuccess(result);
+                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                        maxOrderReviewID = result.getCount();
+                    }
+                });
+                map.clear();
+                break;
+            case R.id.tv_good:
+                setTv_all(false);
+                setTv_good(true);
+                setTv_medium(false);
+                setTv_bad(false);
+                Type = 1;
+                Page = 1;
+                map.put("Type", String.valueOf(Type));
+                Http.request(this, API.GET_ORDEREVALUATIONBYUSER, new Object[]{String.valueOf(userBrief.getId()), Http.getURL(map)}, new Http.RequestListener<OrderReviewDetailAndCount>() {
+                    @Override
+                    public void onSuccess(OrderReviewDetailAndCount result) {
+                        super.onSuccess(result);
+                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                        maxOrderReviewID = result.getCount();
+                    }
+                });
+                map.clear();
+                break;
+            case R.id.tv_medium:
+                setTv_all(false);
+                setTv_good(false);
+                setTv_medium(true);
+                setTv_bad(false);
+                Type = 2;
+                Page = 1;
+                map.put("Type", String.valueOf(Type));
+                Http.request(this, API.GET_ORDEREVALUATIONBYUSER, new Object[]{String.valueOf(userBrief.getId()), Http.getURL(map)}, new Http.RequestListener<OrderReviewDetailAndCount>() {
+                    @Override
+                    public void onSuccess(OrderReviewDetailAndCount result) {
+                        super.onSuccess(result);
+                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                        maxOrderReviewID = result.getCount();
+                    }
+                });
+                map.clear();
+                break;
+            case R.id.tv_bad:
+                setTv_all(false);
+                setTv_good(false);
+                setTv_medium(false);
+                setTv_bad(true);
+                Type = 3;
+                Page = 1;
+                map.put("Type", String.valueOf(Type));
+                Http.request(this, API.GET_ORDEREVALUATIONBYUSER, new Object[]{String.valueOf(userBrief.getId()), Http.getURL(map)}, new Http.RequestListener<OrderReviewDetailAndCount>() {
+                    @Override
+                    public void onSuccess(OrderReviewDetailAndCount result) {
+                        super.onSuccess(result);
+                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                        maxOrderReviewID = result.getCount();
+                    }
+                });
+                map.clear();
+                break;
 //            case R.id.tv_addtag:
 //                if (edit_tag.getText().toString()!=null&&!edit_tag.getText().toString().equals("")) {
 //                    String tagTitle= edit_tag.getText().toString();
@@ -257,6 +410,51 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
 //                break;
         }
 
+    }
+
+    public void setTv_all(boolean flag)
+    {
+        if(flag) {
+            tv_all.setBackgroundResource(R.drawable.textview_clicked);
+        }
+        else
+        {
+            tv_all.setBackgroundResource(R.drawable.textview_unclicked);
+        }
+    }
+    public void setTv_good(boolean flag)
+    {
+        if(flag) {
+            tv_good.setBackgroundResource(R.drawable.textview_clicked);
+        }
+        else
+        {
+            tv_good.setBackgroundResource(R.drawable.textview_unclicked);
+        }
+    }
+    public void setTv_medium(boolean flag)
+    {
+        if(flag) {
+            tv_medium.setBackgroundResource(R.drawable.textview_clicked);
+        }
+        else
+        {
+            tv_medium.setBackgroundResource(R.drawable.textview_unclicked);
+        }
+    }
+    public void setTv_bad(boolean flag)
+    {
+        if(flag) {
+            tv_bad.setBackgroundResource(R.drawable.textview_clicked);
+        }
+        else
+        {
+            tv_bad.setBackgroundResource(R.drawable.textview_unclicked);
+        }
+    }
+
+    private void loadMore(SwipeRefreshXOrderEstimateAdapater adapater, List<OrderReviewDetail> orderReviewDetails) {
+        adapater.addItems(orderReviewDetails);
     }
 
 }

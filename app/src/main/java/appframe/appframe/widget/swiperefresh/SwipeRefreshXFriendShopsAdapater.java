@@ -12,6 +12,8 @@ import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.dto.Nearby;
+import appframe.appframe.dto.UserDetail;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/10/22.
@@ -19,10 +21,9 @@ import appframe.appframe.dto.Nearby;
 public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
-    List<String> friendshops = new ArrayList<String>();
-    TextView tv_content,tv_title,tv_name;
+    List<UserDetail> friendshops;
 
-    public SwipeRefreshXFriendShopsAdapater(Context context, List<String> friendshops)
+    public SwipeRefreshXFriendShopsAdapater(Context context, List<UserDetail> friendshops)
     {
         this.context =context;
         this.layoutInflater = LayoutInflater.from(context);
@@ -39,15 +40,29 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = layoutInflater.inflate(R.layout.swiperefreshx_friendshops, null);
-//        tv_title = (TextView)convertView.findViewById(R.id.tv_title);
-//        tv_content = (TextView)convertView.findViewById(R.id.tv_content);
-//        tv_name = (TextView)convertView.findViewById(R.id.tv_name);
-//        tv_title.setText(orderReviewDetails.get(position).getTitle());
-//        tv_content.setText(orderReviewDetails.get(position).getContent());
-//        tv_name.setText(orderReviewDetails.get(position).getCommontatorName());
 
+        final ViewHolder mHolder;
+
+        if (convertView == null)
+        {
+            convertView = layoutInflater.inflate(R.layout.swiperefreshx_friendshops, null);
+            mHolder = new ViewHolder();
+            mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            convertView.setTag(mHolder);
+        }
+        else
+        {
+            mHolder = (ViewHolder) convertView.getTag();
+        }
+
+        final UserDetail item = friendshops.get(position);
+        mHolder.tv_name.setText(item.getName());
+        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
+        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
         return convertView;
+
     }
 
     @Override
@@ -58,5 +73,11 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    static class ViewHolder
+    {
+        private TextView tv_name;
+        private com.android.volley.toolbox.NetworkImageView iv_avatar;
     }
 }

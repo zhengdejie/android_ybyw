@@ -1,141 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/white"
-              android:descendantFocusability="blocksDescendants">
-    <LinearLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/listview_item_pressed"
+    android:descendantFocusability="blocksDescendants">
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop= "5dp"
+        android:layout_marginLeft= "5dp"
+        android:layout_marginRight= "5dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_name"
         android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textSize="14sp"
+        android:lines="2"
+        android:ellipsize="end"
+        android:text="昵称昵称昵称昵称昵称昵称昵称"
+        android:layout_below="@+id/iv_avatar"
+        android:layout_alignLeft="@+id/iv_avatar"
+        android:layout_alignRight="@+id/iv_avatar"
+        />
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:textSize="14sp"
+        android:text="标题标题标题标"
+        android:lines="2"
+        android:ellipsize="end"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_time"
+        android:layout_alignTop="@+id/iv_avatar"
+        />
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textColor="@color/font_gray"
+        android:text="2015-2-8 18:30:25"
+        android:textSize="14sp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_alignTop="@+id/iv_avatar"
+        android:layout_alignParentRight="true"
+        />
+
+    <RatingBar
+        android:id="@+id/rb_totalvalue"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:gravity="center_vertical"
+        android:numStars="5"
+        android:isIndicator="true"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_below="@+id/txt_title"
+        android:layout_alignLeft="@+id/txt_title"
+
+        />
+
+    <TextView
+        android:id="@+id/tv_numofconforder"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:text="友帮了1次"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_alignRight="@+id/txt_title"
+        android:layout_toRightOf="@+id/rb_totalvalue"
+        android:layout_below="@+id/txt_title"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_weight="2">
-
-            <com.android.volley.toolbox.NetworkImageView
-                android:id="@+id/iv_avatar"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:gravity="center_vertical|right"
-                android:layout_gravity="right"
-                />
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:textSize="17sp"
-                android:text="昵称" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/txt_title"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:textSize="17sp"
-                android:layout_marginTop="10dp"
-                android:text="标题"/>
-
-            <RatingBar
-                android:id="@+id/rb_totalvalue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:isIndicator="true"
-                style="?android:attr/ratingBarStyleSmall"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="3dp"
-                >
-
-                <TextView
-                    android:id="@+id/txt_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="17sp"
-                    android:layout_weight="1"
-                    android:text="类别"/>
+    <TextView
+        android:id="@+id/txt_type"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textSize="14sp"
+        android:gravity="center_vertical"
+        android:text="类别类别类别类别类别类别类别类别"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_toLeftOf="@+id/txt_bounty"
+        android:layout_below="@+id/rb_totalvalue"
+        android:layout_alignLeft="@+id/txt_title" />
 
 
-                <TextView
-                    android:id="@+id/txt_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="17sp"
-                    android:text="地址" />
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="5dp"
-            android:layout_weight="2">
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/font_gray"
-                android:text="08-04 8:30"/>
-
-            <TextView
-                android:id="@+id/txt_bounty"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:textSize="20dp"
-                android:gravity="center"/>
-
-        </LinearLayout>
+    <TextView
+        android:id="@+id/txt_location"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textSize="14sp"
+        android:lines="1"
+        android:ellipsize="end"
+        android:text="地址地址地址地址地址地址地地址地址地"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/txt_type"
+        android:layout_toLeftOf="@+id/tv_pay"
+        android:layout_alignLeft="@+id/txt_title" />
 
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/txt_bounty"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:textSize="20sp"
+        android:text="$4000"
+        android:lines="1"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/txt_title"
+        android:layout_alignLeft="@+id/tv_time"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/tv_time"/>
 
-
+    <TextView
+        android:id="@+id/tv_pay"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:text="未支付"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@+id/tv_time"
+        android:layout_marginRight="5dp"
+        android:layout_below="@+id/txt_bounty"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
-        />
+        android:layout_below="@+id/txt_location"
+        android:id="@+id/view" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_estimate"
-            android:text="评价"
-            android:textSize="16dp"
-            android:layout_gravity="right"
-            android:focusable="false"
-            />
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/btn_estimate"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:text="评价"-->
+        <!--android:textSize="14sp"-->
+        <!--android:focusable="false"-->
+        <!--android:layout_below="@+id/view"-->
+        <!--/>-->
+    <LinearLayout
+        android:id="@+id/ll_button"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/view"
+        >
+
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <!--<Button-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:id="@+id/btn_finish"-->
+                <!--android:text="完成"-->
+                <!--android:textSize="14sp"-->
+                <!--android:focusable="false"-->
+                <!--android:visibility="invisible"-->
+                <!--/>-->
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/btn_estimate"
+                android:text="评价"
+                android:textSize="14sp"
+                android:focusable="false"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+
     </LinearLayout>
 
 
-
-</LinearLayout>
+</RelativeLayout>

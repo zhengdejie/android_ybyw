@@ -7,6 +7,7 @@ public class AppConfig {
     //public static final String QINIU_UPLOAD_TOKEN = "LZqbvXYHI_JuwUXDkaj0aGRYvdIXhFNg1EIpY7Hf:TbPvUXzQTExyHoXF4KBRNHMrzu4=:eyJzY29wZSI6ImRldi10ZXN0IiwiZGVhZGxpbmUiOjE1MTQ3NjQ4MDB9";
 
     public static final String QINIU_HOST = "http://7xo9lr.com1.z0.glb.clouddn.com/";
+    public static final String QINIU_APKVERSION = "APK_Version.txt";
 
     public static final int MAX_BITMAP_WIDTH = 1280;
     public static final int MAX_BITMAP_HEIGHT = 1280;

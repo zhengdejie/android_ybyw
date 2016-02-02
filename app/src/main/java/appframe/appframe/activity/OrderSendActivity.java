@@ -40,6 +40,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RadioButton;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -87,7 +89,7 @@ import appframe.appframe.widget.popupwindow.SelectPicPopupWindow;
  * Created by Administrator on 2015/8/12.
  */
 public class OrderSendActivity extends BaseActivity{
-    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title;
+    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_name,tv_progress_content;
     private EditText edit_title,edit_bounty,edit_content,edit_require;
     private Spinner spinner_category,spinner_range;
     private RadioButton radio_online,radio_offline;
@@ -98,6 +100,9 @@ public class OrderSendActivity extends BaseActivity{
     private static final int PHOTO_RESOULT = 301;
     private static final String IMAGE_UNSPECIFIED = "image/*";
     private LocationClient mLocationClient;
+    private com.android.volley.toolbox.NetworkImageView iv_avatar;
+    private RatingBar rb_totalvalue;
+    private LinearLayout progress_bar;
     //public MyLocationListener mMyLocationListener;
     String locationCity;
     private double latitude = 0.0;
@@ -196,103 +201,141 @@ public class OrderSendActivity extends BaseActivity{
             @Override
             public void onClick(View v) {
 
-                if(mDataList.size() == 0)
+                if(edit_title.getText().toString().equals(""))
                 {
-                    Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
-                            "Id", String.valueOf(Auth.getCurrentUserId()),
-                            "Title", edit_title.getText().toString(),
-                            "Address", locationCity,
-                            "Content", edit_content.getText().toString(),
-                            "latitude", String.valueOf(latitude),
-                            "longitude", String.valueOf(longitude),
-                            "Category", spinner_category.getSelectedItem().toString(),
-                            "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
-                            "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
-                            "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
-                            "Bounty", edit_bounty.getText().toString(),
-                            "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
-                            "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
-                            "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
-                            "Photos", "",
-                            "Request", edit_require.getText().toString(),
-                            "Type", Type
-                    ), new Http.RequestListener<UserDetail>() {
-                        @Override
-                        public void onSuccess(UserDetail result) {
-                            super.onSuccess(result);
-                            Toast.makeText(OrderSendActivity.this,"发单成功",Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    removeTempFromPref();
-                    mDataList.clear();
-                    finish();
+                    Toast.makeText(OrderSendActivity.this,"标题不能为空",Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                    //boolean success = false ;
-                    Log.i("mDataList",String.valueOf(mDataList.size()));
-
-                    for( ImageItem dl : mDataList)
+                    if(edit_bounty.getText().toString().equals(""))
                     {
-
-
-                        final File f = new File(dl.sourcePath);
-                        Http.request(OrderSendActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
-                            @Override
-                            public void onSuccess(Token result) {
-                                super.onSuccess(result);
-
-                                UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+                        Toast.makeText(OrderSendActivity.this,"金额不能为空",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        if(edit_content.getText().toString().equals(""))
+                        {
+                            Toast.makeText(OrderSendActivity.this,"内容不能为空",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            progress_bar.setVisibility(View.VISIBLE);
+                            if(mDataList.size() == 0)
+                            {
+                                Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
+                                        "Id", String.valueOf(Auth.getCurrentUserId()),
+                                        "Title", edit_title.getText().toString(),
+                                        "Address", locationCity,
+                                        "Content", edit_content.getText().toString(),
+                                        "latitude", String.valueOf(latitude),
+                                        "longitude", String.valueOf(longitude),
+                                        "Category", spinner_category.getSelectedItem().toString(),
+                                        "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
+                                        "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
+                                        "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
+                                        "Bounty", edit_bounty.getText().toString(),
+                                        "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
+                                        "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
+                                        "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
+                                        "Photos", "",
+                                        "Request", edit_require.getText().toString(),
+                                        "Type", Type
+                                ), new Http.RequestListener<UserDetail>() {
                                     @Override
-                                    public void done(String id) {
-                                        if (TextUtils.isEmpty(id)) {
-                                            // 上传失败
-                                            upload_iamge_num = 0;
-                                            return;
-                                        }
-                                        upload_iamge_num++;
-                                        sb.append(",").append(id);
-                                        if(upload_iamge_num == mDataList.size())
-                                        {
-                                            Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
-                                                    "Id", String.valueOf(Auth.getCurrentUserId()),
-                                                    "Title", edit_title.getText().toString(),
-                                                    "Address", locationCity,
-                                                    "Content", edit_content.getText().toString(),
-                                                    "latitude", String.valueOf(latitude),
-                                                    "longitude", String.valueOf(longitude),
-                                                    "Category", spinner_category.getSelectedItem().toString(),
-                                                    "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
-                                                    "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
-                                                    "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
-                                                    "Bounty", edit_bounty.getText().toString(),
-                                                    "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
-                                                    "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
-                                                    "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
-                                                    "Photos", sb.deleteCharAt(0).toString(),
-                                                    "Request", edit_require.getText().toString(),
-                                                    "Type", Type
-                                            ), new Http.RequestListener<UserDetail>() {
-                                                @Override
-                                                public void onSuccess(UserDetail result) {
-                                                    super.onSuccess(result);
-                                                    Toast.makeText(OrderSendActivity.this,"发单成功",Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                            upload_iamge_num = 0;
-                                            removeTempFromPref();
-                                            mDataList.clear();
-                                            finish();
-                                        }
-
+                                    public void onSuccess(UserDetail result) {
+                                        super.onSuccess(result);
+                                        Toast.makeText(OrderSendActivity.this,"发单成功",Toast.LENGTH_SHORT).show();
+                                        progress_bar.setVisibility(View.GONE);
                                     }
-                                },result.getUpToken());
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                        progress_bar.setVisibility(View.GONE);
+                                    }
+                                });
+                                removeTempFromPref();
+                                mDataList.clear();
+                                finish();
                             }
-                        });
+                            else
+                            {
+                                //boolean success = false ;
+                                Log.i("mDataList",String.valueOf(mDataList.size()));
 
-                    }//for
+                                for( ImageItem dl : mDataList)
+                                {
 
-                }//else
+
+                                    final File f = new File(dl.sourcePath);
+                                    Http.request(OrderSendActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
+                                        @Override
+                                        public void onSuccess(Token result) {
+                                            super.onSuccess(result);
+
+                                            UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+                                                @Override
+                                                public void done(String id) {
+                                                    if (TextUtils.isEmpty(id)) {
+                                                        // 上传失败
+                                                        upload_iamge_num = 0;
+                                                        return;
+                                                    }
+                                                    upload_iamge_num++;
+                                                    sb.append(",").append(id);
+                                                    if(upload_iamge_num == mDataList.size())
+                                                    {
+                                                        Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
+                                                                "Id", String.valueOf(Auth.getCurrentUserId()),
+                                                                "Title", edit_title.getText().toString(),
+                                                                "Address", locationCity,
+                                                                "Content", edit_content.getText().toString(),
+                                                                "latitude", String.valueOf(latitude),
+                                                                "longitude", String.valueOf(longitude),
+                                                                "Category", spinner_category.getSelectedItem().toString(),
+                                                                "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
+                                                                "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
+                                                                "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
+                                                                "Bounty", edit_bounty.getText().toString(),
+                                                                "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
+                                                                "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
+                                                                "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
+                                                                "Photos", sb.deleteCharAt(0).toString(),
+                                                                "Request", edit_require.getText().toString(),
+                                                                "Type", Type
+                                                        ), new Http.RequestListener<UserDetail>() {
+                                                            @Override
+                                                            public void onSuccess(UserDetail result) {
+                                                                super.onSuccess(result);
+                                                                progress_bar.setVisibility(View.GONE);
+                                                                Toast.makeText(OrderSendActivity.this,"发单成功",Toast.LENGTH_SHORT).show();
+                                                            }
+
+                                                            @Override
+                                                            public void onFail(String code) {
+                                                                super.onFail(code);
+                                                                progress_bar.setVisibility(View.GONE);
+                                                            }
+                                                        });
+                                                        upload_iamge_num = 0;
+                                                        removeTempFromPref();
+                                                        mDataList.clear();
+                                                        finish();
+                                                    }
+
+                                                }
+                                            },result.getUpToken());
+                                        }
+                                    });
+
+                                }//for
+
+                            }//else
+                        }
+                    }
+                }
+
+
 
 
             }
@@ -779,10 +822,23 @@ public class OrderSendActivity extends BaseActivity{
         txt_location = (TextView)findViewById(R.id.txt_location);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_title = (TextView)findViewById(R.id.tb_title);
+        iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
+        tv_name = (TextView)findViewById(R.id.tv_name);
+        rb_totalvalue = (RatingBar)findViewById(R.id.rb_totalvalue);
+        progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
+        tv_progress_content = (TextView)findViewById(R.id.tv_progress_content);
+        tv_progress_content.setText("正在发单");
+        if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
+            ImageUtils.setImageUrl(iv_avatar, Auth.getCurrentUser().getAvatar());
+        }
+
+        tv_name.setText(Auth.getCurrentUser().getName());
+        rb_totalvalue.setTag(Auth.getCurrentUser().getTotalPoint());
 
         checkBox_oneclass = (CheckBox)findViewById(R.id.checkBox_oneclass);
         checkBox_twoclass = (CheckBox)findViewById(R.id.checkBox_twoclass);
         checkBox_stranger = (CheckBox)findViewById(R.id.checkBox_stranger);
+
 
         checkBox_oneclass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -904,6 +960,7 @@ public class OrderSendActivity extends BaseActivity{
 
     private ArrayAdapter<String> getAdapter(String arr[]){
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arr);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;
     }
     //当点击DatePickerDialog控件的设置按钮时，调用该方法

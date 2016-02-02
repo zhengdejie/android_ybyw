@@ -17,6 +17,7 @@ public class PushMessage extends Http.BaseDto {
     private int Type;
     private OrderDetails Order;
     private UserDetail Sender;
+    private ConfirmedOrderDetail ConfirmedOrder;
     private int FriendRequestAccepted;
 
     public int getId() {
@@ -89,6 +90,14 @@ public class PushMessage extends Http.BaseDto {
 
     public void setSender(UserDetail sender) {
         Sender = sender;
+    }
+
+    public ConfirmedOrderDetail getConfirmedOrder() {
+        return ConfirmedOrder;
+    }
+
+    public void setConfirmedOrder(ConfirmedOrderDetail confirmedOrder) {
+        ConfirmedOrder = confirmedOrder;
     }
 
     public int getFriendRequestAccepted() {

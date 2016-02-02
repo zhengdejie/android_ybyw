@@ -62,7 +62,9 @@ public class SwipeRefreshXFriendEstimateAdapater extends BaseAdapter {
         mHolder.tv_name.setText(item.getPraiser().getName());
         mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_evaluation.setText(item.getPraise());
-        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getPraiser().getAvatar());
+        if(item.getPraiser().getAvatar()!=null) {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getPraiser().getAvatar());
+        }
 
         return convertView;
     }

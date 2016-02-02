@@ -27,6 +27,7 @@ import appframe.appframe.app.App;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.dto.UserBrief;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
@@ -40,11 +41,14 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
     //private ImageView img_avatar;
     private com.android.volley.toolbox.NetworkImageView iv_showavatar;
     private Button btn_sendmessage;
-    private TextView tb_title,tb_back,tb_action,tv_name,tv_showdistrict,tv_friendsestimate;
+    private TextView tb_title,tb_back,tb_action,tv_name,tv_showdistrict,tv_friendsestimate,tv_comment,tv_nickname;
     private OrderDetails orderDetails;
-    private UserDetail userDetail;
+    private UserDetail userDetail,candidate;
+    private UserBrief userBrief;
     private Nearby nearby;
-    private String from, UserID;
+    private String from;
+    private Intent intent = new Intent();
+    private final  int RESULT_CODE =1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +59,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
     {
         btn_sendmessage = (Button)findViewById(R.id.btn_sendmessage);
         tv_name = (TextView)findViewById(R.id.tv_name);
+        tv_nickname = (TextView)findViewById(R.id.tv_nickname);
         btn_sendmessage.setOnClickListener(this);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_title.setText("帮友资料");
@@ -71,27 +76,81 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         tb_action.setOnClickListener(this);
         tv_friendsestimate =(TextView)findViewById(R.id.tv_friendsestimate);
         tv_friendsestimate.setOnClickListener(this);
+        tv_comment = (TextView)findViewById(R.id.tv_comment);
+        tv_comment.setOnClickListener(this);
         Intent intent = this.getIntent();
         orderDetails = (OrderDetails)intent.getSerializableExtra("OrderDetails");
         if(orderDetails != null) {
-            tv_name.setText(orderDetails.getOrderer().getName());
-            ImageUtils.setImageUrl(iv_showavatar, orderDetails.getOrderer().getAvatar());
+            if(orderDetails.getOrderer().getFNickName() != null && !orderDetails.getOrderer().getFNickName().equals(""))
+            {
+                tv_name.setText(orderDetails.getOrderer().getFNickName());
+                tv_nickname.setText("昵称:"+orderDetails.getOrderer().getName());
+                tv_nickname.setVisibility(View.VISIBLE);
+            }
+            else {
+                tv_name.setText(orderDetails.getOrderer().getName());
+            }
+            if(orderDetails.getOrderer().getAvatar() != null) {
+                ImageUtils.setImageUrl(iv_showavatar, orderDetails.getOrderer().getAvatar());
+            }
             tv_showdistrict.setText(orderDetails.getOrderer().getLocation());
-            UserID = String.valueOf(orderDetails.getOrderer().getId());
+            userBrief = orderDetails.getOrderer();
+//            UserID = String.valueOf(orderDetails.getOrderer().getId());
+//            AvgServicePoint = String.valueOf(orderDetails.getOrderer().getAvgServicePoint());
+//            AvgAttitudePoint = String.valueOf(orderDetails.getOrderer().getAvgAttitudePoint());
+//            AvgCharacterPoint = String.valueOf(orderDetails.getOrderer().getAvgCharacterPoint());
+//            TotalNumberOfOrder = String.valueOf(orderDetails.getOrderer().getTotalNumberOfOrder());
         }
         userDetail =  (UserDetail)intent.getSerializableExtra("UserDetail");
         if(userDetail != null) {
-            tv_name.setText(userDetail.getName());
-            ImageUtils.setImageUrl(iv_showavatar, userDetail.getAvatar());
+
+            if(userDetail.getFNickName() != null && !userDetail.getFNickName().equals(""))
+            {
+                tv_name.setText(userDetail.getFNickName());
+                tv_nickname.setText("昵称:"+userDetail.getName());
+                tv_nickname.setVisibility(View.VISIBLE);
+            }
+            else {
+                tv_name.setText(userDetail.getName());
+            }
+
+            if(userDetail.getAvatar()!=null) {
+                ImageUtils.setImageUrl(iv_showavatar, userDetail.getAvatar());
+            }
             tv_showdistrict.setText(userDetail.getLocation());
-            UserID = String.valueOf(userDetail.getId());
+//            UserID = String.valueOf(userDetail.getId());
+            userBrief = userDetail;
         }
         nearby =  (Nearby)intent.getSerializableExtra("NearBy");
         if(nearby != null) {
             tv_name.setText(nearby.getName());
-            ImageUtils.setImageUrl(iv_showavatar, nearby.getAvatar());
+            if(nearby.getAvatar()!=null) {
+                ImageUtils.setImageUrl(iv_showavatar, nearby.getAvatar());
+            }
             tv_showdistrict.setText(nearby.getLocation());
-            UserID = String.valueOf(nearby.getId());
+//            UserID = String.valueOf(nearby.getId());
+            userBrief = nearby;
+        }
+        candidate = (UserDetail)intent.getSerializableExtra("Candidate");
+        {
+            if(candidate != null) {
+
+                if(candidate.getFNickName() != null && !candidate.getFNickName().equals(""))
+                {
+                    tv_name.setText(candidate.getFNickName());
+                    tv_nickname.setText("昵称:"+candidate.getName());
+                    tv_nickname.setVisibility(View.VISIBLE);
+                }
+                else {
+                    tv_name.setText(candidate.getName());
+                }
+
+                if(candidate.getAvatar()!=null) {
+                    ImageUtils.setImageUrl(iv_showavatar, candidate.getAvatar());
+                }
+                tv_showdistrict.setText(candidate.getLocation());
+                userBrief = candidate;
+            }
         }
         if(intent.getStringExtra("From") != null) {
             from = intent.getStringExtra("From").toString();
@@ -104,9 +163,12 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     super.onSuccess(result);
 
                     tv_name.setText(result.getName());
-                    ImageUtils.setImageUrl(iv_showavatar, result.getAvatar());
+                    if(result.getAvatar()!=null) {
+                        ImageUtils.setImageUrl(iv_showavatar, result.getAvatar());
+                    }
                     tv_showdistrict.setText(result.getLocation());
-                    UserID = String.valueOf(result.getId());
+//                    UserID = String.valueOf(result.getId());
+                    userBrief = result;
                 }
             });
         }
@@ -119,8 +181,8 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             case R.id.btn_sendmessage:
 
                 LoginSampleHelper ls = LoginSampleHelper.getInstance();
-                String target = UserID;// 消息接收者ID
-                Intent intent = ls.getIMKit().getChattingActivityIntent(target);
+                String target = String.valueOf(userBrief.getId());// 消息接收者ID
+                intent = ls.getIMKit().getChattingActivityIntent(target);
                 startActivity(intent);
                 break;
             case R.id.tb_back:
@@ -130,21 +192,73 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                 new PopupWindows(FriendsInfoActivity.this,tb_action);
                 break;
             case R.id.tv_friendsestimate:
-                Intent myIntent = new Intent();
-                myIntent.setClass(FriendsInfoActivity.this,EstimateActivity.class);
-                myIntent.putExtra("UserID",UserID);
-                startActivity(myIntent);
+
+                intent.setClass(FriendsInfoActivity.this, EstimateActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("userBrief", userBrief);
+                intent.putExtras(bundle);
+//                intent.putExtra("UserID",UserID);
+                startActivity(intent);
                 break;
             case R.id.iv_showavatar:
-                Intent mIntent = new Intent();
-                mIntent.setClass(this, AvatarZoomActivity.class);
-                String[] ImageURL = iv_showavatar.getImageURL().substring(AppConfig.QINIU_HOST.length()).split("\\?");
-                mIntent.putExtra("Avatar", ImageURL[0]);
-                startActivity(mIntent);
+
+                intent.setClass(this, AvatarZoomActivity.class);
+                if(iv_showavatar.getImageURL() != null && !iv_showavatar.getImageURL().equals("")) {
+                    String[] ImageURL = iv_showavatar.getImageURL().substring(AppConfig.QINIU_HOST.length()).split("\\?");
+                    intent.putExtra("Avatar", ImageURL[0]);
+                    startActivity(intent);
+                }
+//                else
+//                {
+//                    intent.putExtra("Avatar", "");
+//                }
+
+                break;
+            case R.id.tv_comment:
+                intent.setClass(this,EditFriendsNickNameActivity.class);
+                intent.putExtra("UserID",String.valueOf(userBrief.getId()));
+                if(tv_nickname.getVisibility() == View.VISIBLE) {
+                    String[] Name = tv_nickname.getText().toString().split(":");
+                    intent.putExtra("Name",Name[1]);
+                    intent.putExtra("FNickName", tv_name.getText().toString());
+                }
+                else
+                {
+                    intent.putExtra("Name", tv_name.getText().toString());
+
+                }
+                startActivityForResult(intent, RESULT_CODE);
+
                 break;
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            case RESULT_CODE:
+                switch (resultCode)
+                {
+                    case RESULT_OK:
+                        if(data.getStringExtra("NickName").equals(""))
+                        {
+                            tv_name.setText(data.getStringExtra("Name"));
+                            tv_nickname.setVisibility(View.INVISIBLE);
+                        }
+                        else
+                        {
+                            tv_name.setText(data.getStringExtra("NickName"));
+                            tv_nickname.setText("昵称:" + data.getStringExtra("Name"));
+                            tv_nickname.setVisibility(View.VISIBLE);
+                        }
+
+                    break;
+                }
+                break;
+        }
+    }
 
     public class PopupWindows extends PopupWindow
     {
@@ -255,7 +369,12 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 public void onClick(View v)
                 {
-                    startActivity(new Intent(FriendsInfoActivity.this, RelativenetActivity.class));
+                    Intent intent = new Intent();
+                    intent.setClass(FriendsInfoActivity.this,RelativenetActivity.class);
+                    intent.putExtra("UserID", String.valueOf(userBrief.getId()));
+                    intent.putExtra("Avatar", iv_showavatar.getImageURL());
+                    intent.putExtra("Name", tv_name.getText());
+                    startActivity(intent);
                     dismiss();
                 }
             });

@@ -38,6 +38,7 @@ public class NotificationUtils {
         cBuilder = new NotificationCompat.Builder(mContext);
     }
 
+
     /**
      * 设置在顶部通知栏中的各种信息
      *
@@ -82,7 +83,7 @@ public class NotificationUtils {
          * Notification.DEFAULT_LIGHTS：系统默认闪光。
          * notifyBuilder.setDefaults(Notification.DEFAULT_ALL);
          */
-        cBuilder.setDefaults(Notification.DEFAULT_ALL);
+        cBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
     }
 
     /**

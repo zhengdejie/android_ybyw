@@ -23,11 +23,12 @@ public class AvatarZoomActivity extends BaseActivity implements View.OnClickList
         setContentView(R.layout.activity_avatarzoom);
         init();
     }
-    protected  void init()
-    {
-        rl_avatarzoom = (RelativeLayout)findViewById(R.id.rl_avatarzoom);
-        iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
-        ImageUtils.setImageUrl(iv_showavatar,getIntent().getStringExtra("Avatar").toString(),"0");
+    protected  void init() {
+        rl_avatarzoom = (RelativeLayout) findViewById(R.id.rl_avatarzoom);
+        iv_showavatar = (com.android.volley.toolbox.NetworkImageView) findViewById(R.id.iv_showavatar);
+        if (!getIntent().getStringExtra("Avatar").toString().equals("")) {
+            ImageUtils.setImageUrl(iv_showavatar, getIntent().getStringExtra("Avatar").toString(), "0");
+        }
         rl_avatarzoom.setOnClickListener(this);
     }
 

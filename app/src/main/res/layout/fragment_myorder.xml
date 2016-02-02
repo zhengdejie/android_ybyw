@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <!--<include-->
+        <!--android:id="@+id/title_bar"-->
+        <!--layout="@layout/titlebar_order" />-->
     <include
         android:id="@+id/title_bar"
-        layout="@layout/titlebar_order" />
+        layout="@layout/titlebar" />
 
     <LinearLayout
         android:id="@+id/tabtop"
-        android:layout_width="fill_parent"
-        android:layout_height="50dip"
-        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:baselineAligned="false"
         android:background="@color/white"
-
+        android:layout_below="@+id/title_bar"
         android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="0dip"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
@@ -28,10 +30,22 @@
                 style="@style/tab_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingTop="3dp"
+                android:gravity="center_vertical"
                 android:text="申请中"
+                android:layout_marginLeft="10dp"
                 android:textColor="@color/font_black_content" />
+            <TextView
+                android:id="@+id/tv_apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/aliwx_unread_hint"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/aliwx_unread_text_size"
+                android:visibility="visible"
+                android:gravity="center"/>
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
@@ -50,7 +64,7 @@
 
         <RelativeLayout
             android:layout_width="0dip"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
@@ -58,10 +72,22 @@
                 style="@style/tab_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingTop="3dp"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp"
                 android:text="进行中"
                 android:textColor="@color/font_black_content" />
+            <TextView
+                android:id="@+id/tv_progess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/aliwx_unread_hint"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/aliwx_unread_text_size"
+                android:visibility="visible"
+                android:gravity="center"/>
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
@@ -92,7 +118,7 @@
 
         <RelativeLayout
             android:layout_width="0dip"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
@@ -100,10 +126,22 @@
                 style="@style/tab_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:paddingTop="3dp"
-                android:text="已成交"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:text="待评价"
                 android:textColor="@color/font_black_content" />
+            <TextView
+                android:id="@+id/tv_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/aliwx_unread_hint"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/aliwx_unread_text_size"
+                android:visibility="visible"
+                android:gravity="center"/>
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="match_parent"
@@ -122,7 +160,7 @@
 
         <RelativeLayout
             android:layout_width="0dip"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:layout_weight="1">
 
             <TextView
@@ -148,17 +186,24 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
+        android:layout_below="@+id/tabtop"
         />
 
     <ListView
         android:id="@+id/proListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/divider"
         >
     </ListView>
 
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading" />
 
-</LinearLayout>
+
+</RelativeLayout>

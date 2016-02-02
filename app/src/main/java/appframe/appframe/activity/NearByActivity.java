@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
     SwipeRefreshX swipeRefresh;
     ListView listView;
     TextView tb_title,tb_back;
+    LinearLayout progress_bar;
     String latitude,longitude;
     BDLocation bdLocation = new BDLocation();
     SwipeRefreshXNearbyAdapater adapater;
@@ -53,6 +56,9 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
+        progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
+        progress_bar.setVisibility(View.VISIBLE);
+
         tb_back.setText("发现");
         tb_title.setText("附近的人");
         tb_back.setOnClickListener(this);
@@ -107,9 +113,16 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onSuccess(List<Nearby> result) {
                 super.onSuccess(result);
+                progress_bar.setVisibility(View.GONE);
                 adapater = new SwipeRefreshXNearbyAdapater(NearByActivity.this, result);
                 listView.setAdapter(adapater);
 
+            }
+
+            @Override
+            public void onFail(String code) {
+                super.onFail(code);
+                progress_bar.setVisibility(View.GONE);
             }
         });
 
@@ -120,6 +133,7 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
 
             @Override
             public void onRefresh() {
+
                 Page = 1;
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Page", "1");
@@ -132,6 +146,7 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
                     @Override
                     public void onSuccess(List<Nearby> result) {
                         super.onSuccess(result);
+
                         adapater = new SwipeRefreshXNearbyAdapater(NearByActivity.this, result);
                         listView.setAdapter(adapater);
 
@@ -160,6 +175,7 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
                     public void onSuccess(List<Nearby> result) {
                         super.onSuccess(result);
                         if (result != null) {
+
                             adapater.addItems(result);
                         }
                         //listView.setAdapter(adapater);

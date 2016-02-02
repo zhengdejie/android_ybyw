@@ -8,32 +8,12 @@
 
     <LinearLayout
         android:id="@+id/ll_popup"
-        android:layout_width="125dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#ffffff"
         android:orientation="vertical" >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/bg_gray" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/item_popupwindows_scan"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:text="@string/scan"
-                android:drawableLeft="@drawable/ic_search_black_24dp"
-                />
-        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -78,6 +58,29 @@
                 android:drawableLeft="@drawable/ic_search_black_24dp"/>
 
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/border_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/item_popupwindows_addfriends"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:background="@drawable/btn"
+                android:textColor="@color/deep_gray"
+                android:textSize="18sp"
+                android:text="@string/addfriends"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
+                />
+        </LinearLayout>
+
 
         <TextView
             android:layout_width="match_parent"

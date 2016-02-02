@@ -12,12 +12,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.NearByActivity;
 import appframe.appframe.activity.FriendsInfoActivity;
+import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.Nearby;
+import appframe.appframe.dto.UserDetail;
+import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.Http;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXFriendShopsAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXNearbyAdapater;
@@ -58,9 +65,26 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
         listView = (ListView)root.findViewById(R.id.lv_topfs);
-        List<String> list = new ArrayList<String>();
-        list.add("adb");
-        listView.setAdapter(new SwipeRefreshXFriendShopsAdapater(getActivity(),list));
+
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
+
+        Http.request(getActivity(), API.GET_HOTSELLER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<UserDetail>>() {
+            @Override
+            public void onSuccess(List<UserDetail> result) {
+                super.onSuccess(result);
+
+                listView.setAdapter(new SwipeRefreshXFriendShopsAdapater(getActivity(), result));
+
+            }
+
+            @Override
+            public void onFail(String code) {
+                super.onFail(code);
+
+            }
+        });
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

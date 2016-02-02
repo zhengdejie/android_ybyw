@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -23,10 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.ConfirmOrderDetailsActivity;
 import appframe.appframe.activity.OrderDetailsActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.ConfirmedOrderDetail;
+import appframe.appframe.dto.ConfirmedOrderUndoCount;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
@@ -38,9 +41,12 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
  */
 public class MyOrderFragment extends BaseFragment implements View.OnClickListener{
     ListView proListView;
-    TextView tv_require,tv_recommand,tv_back,tv_action,tab_progess,tab_done,tab_close,tab_apply;
+    TextView tb_title,tb_back,tv_apply,tv_progess,tv_done;
+    public static TextView tab_progess,tab_done,tab_close,tab_apply;
     View root,bottomLine_progress,bottomLine_done,bottomLine_close,bottomLine_apply;
     LinearLayout tabtop;
+    LinearLayout progress_bar;
+//    boolean require_selected =true;
 
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -57,50 +63,44 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
         tab_done = (TextView) root.findViewById(R.id.tab_done);
         tab_close = (TextView) root.findViewById(R.id.tab_close);
         tab_apply = (TextView) root.findViewById(R.id.tab_apply);
-        tv_back = (TextView) root.findViewById(R.id.tv_back);
-        tv_require = (TextView) root.findViewById(R.id.tv_require);
-        tv_recommand = (TextView) root.findViewById(R.id.tv_recommand);
-        tv_action = (TextView) root.findViewById(R.id.tv_action);
+        tb_back = (TextView) root.findViewById(R.id.tb_back);
+        tb_title = (TextView) root.findViewById(R.id.tb_title);
+        tv_apply = (TextView) root.findViewById(R.id.tv_apply);
+        tv_progess = (TextView) root.findViewById(R.id.tv_progess);
+        tv_done = (TextView) root.findViewById(R.id.tv_done);
+//        tv_recommand = (TextView) root.findViewById(R.id.tv_recommand);
+//        tv_action = (TextView) root.findViewById(R.id.tv_action);
         bottomLine_progress = (View) root.findViewById(R.id.bottomLine_progress);
         bottomLine_done = (View) root.findViewById(R.id.bottomLine_done);
         bottomLine_close = (View) root.findViewById(R.id.bottomLine_close);
         bottomLine_apply = (View) root.findViewById(R.id.bottomLine_apply);
         tabtop = (LinearLayout) root.findViewById(R.id.tabtop);
+        progress_bar = (LinearLayout)root.findViewById(R.id.progress_bar);
 
-        tv_require.setText("订单");
-        tv_recommand.setText("任务");
-        tv_back.setVisibility(View.GONE);
-        tv_action.setVisibility(View.GONE);
+        tb_title.setText("订单");
+//        tv_recommand.setText("任务");
+        tb_back.setVisibility(View.GONE);
+//        tv_action.setVisibility(View.GONE);
+
+//        tv_require.setBackgroundResource(R.drawable.titlebar_order_left_selected);
+//        tv_recommand.setBackgroundResource(R.drawable.titlebar_order_right_unselected);
 
         tab_apply.setOnClickListener(this);
         tab_progess.setOnClickListener(this);
         tab_done.setOnClickListener(this);
         tab_close.setOnClickListener(this);
-        tv_require.setOnClickListener(this);
-        tab_apply.performClick();
-        tv_recommand.setOnClickListener(this);
+//        tv_require.setOnClickListener(this);
+//
+//        tv_recommand.setOnClickListener(this);
         proListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
-                intent.setClass(getActivity(), OrderDetailsActivity.class);
-                ColorDrawable colorDrawable= (ColorDrawable) tv_require.getBackground();//获取背景颜色
-                if(colorDrawable.getColor() == Color.WHITE) {
-                    OrderDetails orderDetails = (OrderDetails) parent.getAdapter().getItem(position);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("OrderDetails", orderDetails);
-                    bundle.putString("From", "MyOrder");
-                    intent.putExtras(bundle);
-
-                }
-                else
-                {
-                    ConfirmedOrderDetail orderDetails = (ConfirmedOrderDetail) parent.getAdapter().getItem(position);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("OrderDetails", orderDetails.getOrder());
-                    bundle.putString("From", "MyOrder");
-                    intent.putExtras(bundle);
-                }
+                intent.setClass(getActivity(), ConfirmOrderDetailsActivity.class);
+                ConfirmedOrderDetail orderDetails = (ConfirmedOrderDetail) parent.getAdapter().getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("ConfirmOrderDetails", orderDetails);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -121,32 +121,20 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected void onLoadData() {
+        Http.request(getActivity(), API.GET_ORDER_NUM, new Http.RequestListener<ConfirmedOrderUndoCount>() {
+            @Override
+            public void onSuccess(ConfirmedOrderUndoCount result) {
+                super.onSuccess(result);
 
-//        Http.request(getActivity(), API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
-//            @Override
-//            public void onSuccess(List<OrderDetails> result) {
-//                super.onSuccess(result);
-//
-//                List<OrderDetails> listPro = new ArrayList<OrderDetails>();
-//                List<OrderDetails> listClose = new ArrayList<OrderDetails>();
-//
-//                for(OrderDetails od : result)
-//                {
-//                    if(od.getOrderStatus().equals("进行中"))
-//                    {
-//                        listPro.add(od);
-//                    }
-//                    else
-//                    {
-//                        listClose.add(od);
-//                    }
-//                }
-//                proListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), listPro, AppConfig.ORDERSTATUS_CLOSE));
-//                closeListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), listClose, AppConfig.ORDERSTATUS_CLOSE));
-//
-//
-//            }
-//        });
+                tv_apply.setText(String.valueOf(result.getPendingCount()));
+                tv_progess.setText(String.valueOf(result.getOngoingCount()));
+                tv_done.setText(String.valueOf(result.getUnReviewedCount()));
+
+            }
+        });
+
+        tab_apply.performClick();
+
 
     }
 
@@ -154,103 +142,117 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.tv_require:
-                tv_require.setBackgroundColor(getResources().getColor(R.color.green));
-                tv_recommand.setBackgroundColor(Color.WHITE);
-                tabtop.setVisibility(View.VISIBLE);
-                tab_apply.performClick();
-//                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
+//            case R.id.tv_require:
+//                tv_require.setBackgroundResource(R.drawable.titlebar_order_left_selected);
+//                tv_recommand.setBackgroundResource(R.drawable.titlebar_order_right_unselected);
+//                tabtop.setVisibility(View.VISIBLE);
+//                require_selected = true;
+//                tab_apply.performClick();
+//
+//                break;
+//            case R.id.tv_recommand:
+//                tv_require.setBackgroundResource(R.drawable.titlebar_order_left_unselected);
+//                tv_recommand.setBackgroundResource(R.drawable.titlebar_order_right_selected);
+//                tabtop.setVisibility(View.GONE);
+//                proListView.setAdapter(null);
+//                progress_bar.setVisibility(View.VISIBLE);
+//                require_selected =false;
+//
+//                Http.request(getActivity(), API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
 //                    @Override
-//                    public void onSuccess(List<ConfirmedOrderDetail> result) {
+//                    public void onSuccess(List<OrderDetails> result) {
 //                        super.onSuccess(result);
-//                        List<OrderDetails> listPro = new ArrayList<OrderDetails>();
-//                        List<OrderDetails> listClose = new ArrayList<OrderDetails>();
-//                        if( result != null ) {
-//                            for (ConfirmedOrderDetail od : result) {
-//                                if (od.getOrder().getOrderStatus().equals("进行中")) {
-//                                    listPro.add(od.getOrder());
-//                                } else {
-//                                    listClose.add(od.getOrder());
-//                                }
-//                            }
-//                        }
-//                        proListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), listPro, AppConfig.ORDERSTATUS_CLOSE));
-//                        //closeListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), listClose, AppConfig.ORDERSTATUS_CLOSE));
+//                        progress_bar.setVisibility(View.GONE);
+//                        proListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_DELETE));
 //
 //
 //                    }
+//
+//                    @Override
+//                    public void onFail(String code) {
+//                        super.onFail(code);
+//                        progress_bar.setVisibility(View.GONE);
+//                    }
 //                });
-                break;
-            case R.id.tv_recommand:
-                tv_require.setBackgroundColor(Color.WHITE);
-                tv_recommand.setBackgroundColor(getResources().getColor(R.color.green));
-                tabtop.setVisibility(View.GONE);
-
-
-                Http.request(getActivity(), API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
-                    @Override
-                    public void onSuccess(List<OrderDetails> result) {
-                        super.onSuccess(result);
-
-                        proListView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_DELETE));
-
-
-                    }
-                });
-                break;
+//
+//                break;
             case R.id.tab_apply:
                 setTabApply(true);
                 setTabPrgess(false);
                 setTabDone(false);
                 setTabClose(false);
+                proListView.setAdapter(null);
+                progress_bar.setVisibility(View.VISIBLE);
                 Map<String, String> map_apply = new HashMap<String, String>();
                 map_apply.put("Status", "3");
                 Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map_apply)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
                     @Override
                     public void onSuccess(List<ConfirmedOrderDetail> result) {
                         super.onSuccess(result);
-
+                        progress_bar.setVisibility(View.GONE);
                         proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_APPLY));
 
 
                     }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
+                    }
                 });
+
                 break;
             case R.id.tab_progess:
                 setTabApply(false);
                 setTabPrgess(true);
                 setTabDone(false);
                 setTabClose(false);
+                proListView.setAdapter(null);
+                progress_bar.setVisibility(View.VISIBLE);
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Status", "1");
-                Http.request(getActivity(), API.GET_CONFIRMEDORDER,new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
+                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
                     @Override
                     public void onSuccess(List<ConfirmedOrderDetail> result) {
                         super.onSuccess(result);
-
+                        progress_bar.setVisibility(View.GONE);
                         proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_PROGRESS));
 
 
+                    }
 
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
                     }
                 });
+
                 break;
             case R.id.tab_done:
                 setTabApply(false);
                 setTabPrgess(false);
                 setTabDone(true);
                 setTabClose(false);
+                proListView.setAdapter(null);
+                progress_bar.setVisibility(View.VISIBLE);
                 Map<String, String> map_done = new HashMap<String, String>();
                 map_done.put("Status", "2");
                 Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map_done)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
                     @Override
                     public void onSuccess(List<ConfirmedOrderDetail> result) {
                         super.onSuccess(result);
-
-
+                        progress_bar.setVisibility(View.GONE);
                         proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_DONE));
 
 
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
                     }
                 });
 
@@ -260,18 +262,27 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 setTabPrgess(false);
                 setTabDone(false);
                 setTabClose(true);
+                proListView.setAdapter(null);
+                progress_bar.setVisibility(View.VISIBLE);
                 Map<String, String> map_close = new HashMap<String, String>();
                 map_close.put("Status", "0");
                 Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map_close)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
                     @Override
                     public void onSuccess(List<ConfirmedOrderDetail> result) {
                         super.onSuccess(result);
-
+                        progress_bar.setVisibility(View.GONE);
                         proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_CLOSE));
 
 
                     }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
+                    }
                 });
+
                 break;
         }
 

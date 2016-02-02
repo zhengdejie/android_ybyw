@@ -161,5 +161,19 @@
         android:layout_height="1dp"
         android:background="@color/divide"
         />
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dip">
+        <TextView
+            android:id="@+id/tv_author"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:text="@string/name_author" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        />
 </LinearLayout>

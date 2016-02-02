@@ -72,28 +72,40 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
         }
 
         StringBuilder sb = new StringBuilder();
-        if(list.get(position).getUser() != null)
-        {
-            sb.append(list.get(position).getUser().getName());
-        }
-        if(list.get(position).getMobileContact() != null)
-        {
-            sb.append("(").append(list.get(position).getMobileContact().getName()).append(")");
-        }
 
-        viewHolder.tv_name.setText(sb.toString());
-        if(this.list.get(position).getType() == 1)
+
+        if(mContent.getType() == 1)
         {
+            if(mContent.getUser().getFNickName() !=null && !mContent.getUser().getFNickName().equals(""))
+            {
+                //sb.append(mContent.getUser().getFNickName()).append("(").append(mContent.getUser().getName()).append(")");
+                viewHolder.tv_name.setText(mContent.getUser().getFNickName());
+            }
+            else
+            {
+                viewHolder.tv_name.setText(mContent.getUser().getName());
+            }
             viewHolder.tv_remark.setText("一度好友");
         }
-        else if(this.list.get(position).getType() == 2)
+        else if(mContent.getType() == 2)
         {
+            if(mContent.getUser().getFNickName() !=null)
+            {
+                //sb.append(mContent.getUser().getFNickName()).append("(").append(mContent.getUser().getName()).append(")");
+                viewHolder.tv_name.setText(mContent.getUser().getFNickName());
+            }
+            else
+            {
+                viewHolder.tv_name.setText(mContent.getUser().getName());
+            }
             viewHolder.tv_remark.setText("已加入友帮");
         }
         else
         {
+            viewHolder.tv_name.setText(mContent.getMobileContact().getName());
             viewHolder.tv_remark.setText("未加入友帮");
         }
+
         return view;
 
     }

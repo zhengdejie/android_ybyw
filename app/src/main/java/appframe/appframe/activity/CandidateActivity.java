@@ -55,21 +55,21 @@ public class CandidateActivity extends BaseActivity implements View.OnClickListe
         tb_back.setOnClickListener(this);
         btn_receivedandclose.setOnClickListener(this);
         btn_receivedandsave.setOnClickListener(this);
+        Intent intent = this.getIntent();
+        orderDetails=(OrderDetails)intent.getSerializableExtra("OrderDetails");
         lv_candidate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
                 intent.setClass(CandidateActivity.this, FriendsInfoActivity.class);
-//                OrderDetails orderDetails = (OrderDetails)parent.getAdapter().getItem(position);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("OrderDetails", orderDetails);
-//                bundle.putString("Entrance", "mycollect");
-//                intent.putExtras(bundle);
+                UserDetail userDetail = (UserDetail)parent.getAdapter().getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("Candidate", userDetail);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
-        Intent intent = this.getIntent();
-        orderDetails=(OrderDetails)intent.getSerializableExtra("OrderDetails");
+
     }
     private  void initData()
     {

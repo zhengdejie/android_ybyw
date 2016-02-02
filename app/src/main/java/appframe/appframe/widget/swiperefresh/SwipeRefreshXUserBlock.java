@@ -13,6 +13,7 @@ import java.util.List;
 import appframe.appframe.R;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.UserDetail;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/12/10.
@@ -47,6 +48,7 @@ public class SwipeRefreshXUserBlock extends BaseAdapter {
                     .inflate(R.layout.swiperefreshx_userblock, null);
             mHolder = new ViewHolder();
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -55,7 +57,9 @@ public class SwipeRefreshXUserBlock extends BaseAdapter {
         }
         final UserDetail item = userDetails.get(position);
         mHolder.tv_name.setText(item.getName());
-
+        if(item.getAvatar()!=null) {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+        }
         return convertView;
     }
 
@@ -74,6 +78,7 @@ public class SwipeRefreshXUserBlock extends BaseAdapter {
     static class ViewHolder
     {
         private TextView tv_name;
+        private com.android.volley.toolbox.NetworkImageView iv_avatar;
     }
 }
 

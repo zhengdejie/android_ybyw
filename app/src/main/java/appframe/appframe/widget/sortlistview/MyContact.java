@@ -38,6 +38,7 @@ public class MyContact extends Activity {
     private TextView dialog,tv_back,tv_action,tv_require,tv_recommand;
     private ContactAdapter adapter;
     private ClearEditText mClearEditText;
+    private boolean isRegister = true;
 
     /**
      * ����ת����ƴ������
@@ -65,6 +66,7 @@ public class MyContact extends Activity {
         tv_action = (TextView)findViewById(R.id.tv_action);
         tv_require = (TextView)findViewById(R.id.tv_require);
         tv_recommand  = (TextView)findViewById(R.id.tv_recommand);
+        mClearEditText = (ClearEditText) findViewById(R.id.filter_edit);
         tv_require.setText("已注册");
         tv_recommand.setText("未注册");
         tv_back.setText("个人中心");
@@ -116,9 +118,10 @@ public class MyContact extends Activity {
         tv_require.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tv_require.setBackgroundColor(getResources().getColor(R.color.green));
-                tv_recommand.setBackgroundColor(Color.WHITE);
-
+                mClearEditText.setText("");
+                isRegister = true;
+                tv_require.setBackgroundResource(R.drawable.titlebar_order_left_selected);
+                tv_recommand.setBackgroundResource(R.drawable.titlebar_order_right_unselected);
                 Http.request(MyContact.this, API.GET_YBFRIEND, new Http.RequestListener<List<ContactDetail>>() {
                     @Override
                     public void onSuccess(final List<ContactDetail> result) {
@@ -154,8 +157,10 @@ public class MyContact extends Activity {
         tv_recommand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tv_require.setBackgroundColor(Color.WHITE);
-                tv_recommand.setBackgroundColor(getResources().getColor(R.color.green));
+                mClearEditText.setText("");
+                isRegister = false;
+                tv_require.setBackgroundResource(R.drawable.titlebar_order_left_unselected);
+                tv_recommand.setBackgroundResource(R.drawable.titlebar_order_right_selected);
                 Http.request(MyContact.this, API.GET_MOBILEFRIEND, new Http.RequestListener<List<ContactDetail>>() {
                     @Override
                     public void onSuccess(final List<ContactDetail> result) {
@@ -193,7 +198,7 @@ public class MyContact extends Activity {
 //		sortListView.setAdapter(adapter);
 
 
-        mClearEditText = (ClearEditText) findViewById(R.id.filter_edit);
+
 
         //�������������ֵ�ĸı�����������
         mClearEditText.addTextChangedListener(new TextWatcher() {
@@ -201,8 +206,8 @@ public class MyContact extends Activity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //������������ֵΪ�գ�����Ϊԭ�����б�����Ϊ���������б�
-                ColorDrawable colorDrawable= (ColorDrawable) tv_require.getBackground();//获取背景颜色
-                if(colorDrawable.getColor() == Color.WHITE)
+//                ColorDrawable colorDrawable= (ColorDrawable) tv_require.getBackground();//获取背景颜色
+                if(!isRegister)
                 {
                     filterData(s.toString(),"noregis");
 
@@ -241,7 +246,7 @@ public class MyContact extends Activity {
             sortModel.setUser(date.get(i).getUser());
             sortModel.setType(date.get(i).getType());
             //����ת����ƴ��
-            String pinyin = characterParser.getSelling(date.get(i).getUser() != null ? date.get(i).getUser().getName().toString() : "#");
+            String pinyin = characterParser.getSelling((date.get(i).getUser().getFNickName() != null && !date.get(i).getUser().getFNickName().equals(""))? date.get(i).getUser().getFNickName().toString() : date.get(i).getUser().getName().toString());
             String sortString = pinyin.substring(0, 1).toUpperCase();
 
             // ������ʽ���ж�����ĸ�Ƿ���Ӣ����ĸ
@@ -310,7 +315,7 @@ public class MyContact extends Activity {
             } else {
                 filterDateList.clear();
                 for (ContactDetail sortModel : SourceDateList) {
-                    String name = sortModel.getUser().getName();
+                    String name = sortModel.getUser().getFNickName() != null ? sortModel.getUser().getFNickName() : sortModel.getUser().getName();
                     if (name.indexOf(filterStr.toString()) != -1 || characterParser.getSelling(name).startsWith(filterStr.toString())) {
                         filterDateList.add(sortModel);
                     }

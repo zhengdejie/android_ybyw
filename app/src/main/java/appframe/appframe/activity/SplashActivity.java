@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 
 import appframe.appframe.R;
 import appframe.appframe.utils.Auth;
@@ -23,6 +24,7 @@ public class SplashActivity extends BaseActivity {
         Runnable r = new Runnable() {
             @Override
             public void run() {
+
                 if(Auth.isLoggedIn()){
                     Intent i = new Intent(SplashActivity.this, HomeActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

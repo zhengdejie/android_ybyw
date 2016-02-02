@@ -121,6 +121,9 @@
             <!--</ListView>-->
 
         <!--</appframe.appframe.widget.swiperefresh.SwipeRefreshListView>-->
+        <include
+            android:id="@+id/progress_bar"
+            layout="@layout/progressbar_loading" />
 
         <appframe.appframe.widget.swiperefresh.SwipeRefreshX
             android:id="@+id/swipeRefresh"
@@ -130,7 +133,10 @@
             <ListView
                 android:id="@+id/lv_order"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent"
+                android:listSelector="@drawable/listview_item_pressed"
+                android:cacheColorHint="@android:color/transparent"
+                >
             </ListView>
         </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
         <!--<ListView-->

@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,13 +46,14 @@ import appframe.appframe.utils.Utils;
  */
 public class RegisterActivity extends BaseActivity {
     private static final int SELECT_PHOTO = 100;
-    TextView tb_back,tb_action,tb_title;
+    TextView tb_back,tb_action,tb_title,tv_progress_content;
     EditText email, password, name,et_mobile;
     View ok;
     ImageButton avatar;
     List<UserContact> contactsList = new ArrayList<UserContact>();
-
+    LinearLayout progress_bar;
     String uploadedAvatarId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,9 @@ public class RegisterActivity extends BaseActivity {
         password = (EditText)findViewById(R.id.password);
         name = (EditText)findViewById(R.id.name);
         et_mobile = (EditText)findViewById(R.id.et_mobile);
+        progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
+        tv_progress_content = (TextView)findViewById(R.id.tv_progress_content);
+        tv_progress_content.setText("正在注册");
 
         ok = findViewById(R.id.ok);
         avatar = (ImageButton)findViewById(R.id.avatar);
@@ -72,7 +78,7 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-
+                progress_bar.setVisibility(View.VISIBLE);
                 Http.request(RegisterActivity.this, API.USER_REGISTER, Http.map(
                         "Email", email.getText().toString(),
                         "Password", password.getText().toString(),
@@ -94,11 +100,19 @@ public class RegisterActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess(String result) {
                                     super.onSuccess(result);
+                                    SplashActivity.startRootActivity(RegisterActivity.this);
+                                    progress_bar.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onFail(String code) {
+                                    super.onFail(code);
+
+                                    SplashActivity.startRootActivity(RegisterActivity.this);
+                                    progress_bar.setVisibility(View.GONE);
                                 }
                             });
 
-                            // 进首页
-                            SplashActivity.startRootActivity(RegisterActivity.this);
                         }
                         catch (Exception e)
                         {
@@ -109,7 +123,7 @@ public class RegisterActivity extends BaseActivity {
                     @Override
                     public void onFail(String code) {
                         super.onFail(code);
-
+                        progress_bar.setVisibility(View.GONE);
                     }
                 });
             }
@@ -173,25 +187,25 @@ public class RegisterActivity extends BaseActivity {
         }
     }
 
-    static final int MENU_LOGIN = 1;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        createMenuItem(menu, MENU_LOGIN, "登录");
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id){
-            case MENU_LOGIN:
-                finish();
-                startActivity(new Intent(this, LoginActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    static final int MENU_LOGIN = 1;
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        createMenuItem(menu, MENU_LOGIN, "登录");
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        switch (id){
+//            case MENU_LOGIN:
+//                finish();
+//                startActivity(new Intent(this, LoginActivity.class));
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 }

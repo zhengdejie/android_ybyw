@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading" />
 
     <include
         android:id="@+id/title_bar"
@@ -12,14 +16,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/email"
         android:layout_gravity="center_horizontal"
-        android:hint="Email" />
+        android:hint="Email"
+        android:layout_below="@+id/title_bar"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/et_mobile"
         android:layout_gravity="center_horizontal"
-        android:hint="Mobile" />
+        android:hint="Mobile"
+        android:layout_below="@+id/email" />
 
     <EditText
         android:layout_width="match_parent"
@@ -28,24 +34,30 @@
         android:ems="10"
         android:id="@+id/password"
         android:layout_gravity="center_horizontal"
-        android:hint="密码" />
+        android:hint="密码"
+        android:layout_below="@+id/et_mobile"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="登录"
-            android:id="@+id/ok"
-            android:layout_weight="1"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="忘记密码？"
-            android:id="@+id/btn_forgetpassword"
-            android:layout_weight="1"/>
-    </LinearLayout>
+        android:orientation="horizontal"
+        android:layout_below="@+id/password">
 
-</LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="忘记密码？"
+        android:id="@+id/btn_forgetpassword"
+        android:layout_weight="1"
+        android:layout_below="@+id/title_bar"
+         />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="登录"
+        android:id="@+id/ok"
+        android:layout_weight="1"
+         />
+    </LinearLayout>
+</RelativeLayout>

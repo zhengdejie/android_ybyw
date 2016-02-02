@@ -227,14 +227,18 @@
                     android:textSize="20sp"
                     android:text="晚上6点前给我送鸭脖过来"/>
 
-                <LinearLayout
-                    android:id="@+id/lly_photos"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    >
+                <GridView
+                    android:id="@+id/gridview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="70dp"
+                    android:layout_marginTop="10dp"
+                    android:horizontalSpacing="3dp"
+                    android:numColumns="3"
+                    android:scrollbars="none"
+                    android:verticalSpacing="5dp"
+                    android:visibility="gone">
+                </GridView>
 
-                </LinearLayout>
 
             </LinearLayout>
 
@@ -431,18 +435,18 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="评价（13）"
-                    android:gravity="left|center"
-                    android:background="@color/white"
-                    android:id="@+id/btn_estimate"
-                    />
-            </LinearLayout>
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
+                <!--<Button-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="评价（13）"-->
+                    <!--android:gravity="left|center"-->
+                    <!--android:background="@color/white"-->
+                    <!--android:id="@+id/btn_estimate"-->
+                    <!--/>-->
+            <!--</LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -68,8 +68,10 @@ public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
         mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_content.setText(item.getContent());
         mHolder.tv_title.setText(item.getOrder().getTitle());
-        mHolder.ratingBar.setRating((float)item.getUser().getTotalPoint());
-        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getUser().getAvatar());
+        mHolder.ratingBar.setRating((float) (item.getAttitudePoint()+item.getCharacterPoint()+item.getServicePoint())/3);
+        if(item.getUser().getAvatar()!=null) {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getUser().getAvatar());
+        }
 
         return convertView;
 
@@ -78,6 +80,16 @@ public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
     @Override
     public Object getItem(int position) {
         return orderReviewDetails.get(position);
+    }
+
+    //此方法通过activity给view的item添加值。通过notifyDataSetChanged 刷新界面
+    public  void addItems(List<OrderReviewDetail> items ){
+        for(OrderReviewDetail order : items)
+        {
+            orderReviewDetails.add(order);
+        }
+        notifyDataSetChanged();
+
     }
 
     @Override

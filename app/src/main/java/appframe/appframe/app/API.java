@@ -2,8 +2,10 @@ package appframe.appframe.app;
 
 import java.util.List;
 
+import appframe.appframe.dto.APKVersion;
 import appframe.appframe.dto.AuthResult;
 import appframe.appframe.dto.ConfirmedOrderDetail;
+import appframe.appframe.dto.ConfirmedOrderUndoCount;
 import appframe.appframe.dto.ContactDetail;
 import appframe.appframe.dto.FriendEvaluationDetail;
 import appframe.appframe.dto.MessageTypeCount;
@@ -12,6 +14,7 @@ import appframe.appframe.dto.OrderComment;
 import appframe.appframe.dto.OrderDetailAndCount;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.OrderReviewDetail;
+import appframe.appframe.dto.OrderReviewDetailAndCount;
 import appframe.appframe.dto.PushMessage;
 import appframe.appframe.dto.SelfEvaluationDetail;
 import appframe.appframe.dto.Token;
@@ -37,10 +40,11 @@ public final class API {
     public static final Http.API<OrderDetailAndCount> GET_ORDER = Http.API.get("/order/friends.json%s", OrderDetailAndCount.class);
     public static final Http.API<UserDetail> EVALUATION_ORDER = Http.API.post("/review/order/make.json", UserDetail.class);
     public static final Http.API<List<OrderReviewDetail>> GET_ORDEREVALUATION = Http.API.getList("/review/order/%s.json", OrderReviewDetail.class);
-    public static final Http.API<List<OrderReviewDetail>> GET_ORDEREVALUATIONBYUSER = Http.API.getList("/review/order/user/%s.json", OrderReviewDetail.class);
+    public static final Http.API<OrderReviewDetailAndCount> GET_ORDEREVALUATIONBYUSER = Http.API.get("/review/order/user/%s.json%s", OrderReviewDetailAndCount.class);
     public static final Http.API USER_CONTACT_UPLOAD = Http.API.postEmpty("/contact/upload.json");
     public static final Http.API<UserDetail> ORDER_ACCEPT = Http.API.post("/order/%s/accept.json", UserDetail.class);
     public static final Http.API<List<OrderDetails>> SEARCH_ORDER = Http.API.getList("/order/search.json%s", OrderDetails.class);
+    public static final Http.API<List<UserDetail>> SEARCH_USER = Http.API.getList("/profile/search.json%s", UserDetail.class);
     public static final Http.API USER_FEEDBACK = Http.API.postEmpty("/%s/feedback.json");
     public static final Http.API ORDER_MAKECOOMENT = Http.API.postEmpty("/Order/%s/makecomment.json");
     public static final Http.API<List<OrderComment>> ORDER_GETCOOMENT = Http.API.getList("/Order/%s/getComment.json", OrderComment.class);
@@ -62,11 +66,14 @@ public final class API {
     public static final Http.API<List<MessageTypeCount>> GET_UNREAD = Http.API.getList("/pushmessage/getunread.json%s", MessageTypeCount.class);
     public static final Http.API MARK_ALLREAD = Http.API.putEmpty("/pushmessage/markallread.json");
     public static final Http.API<MessageTypeCount> HAS_UNREAD = Http.API.get("/pushmessage/hasunread.json", MessageTypeCount.class);
-    public static final Http.API CHANGE_STATUS = Http.API.putEmpty("/confirmedOrder/%s/changestatus.json");
+    public static final Http.API CHANGE_STATUS = Http.API.put("/confirmedOrder/%s/changestatus.json", ConfirmedOrderDetail.class);
+    public static final Http.API REJECT_PAYMENT = Http.API.post("/confirmedOrder/%s/rejectpayment.json", ConfirmedOrderDetail.class);
+    public static final Http.API REFUND_AGREE = Http.API.post("/confirmedOrder/%s/agreerefund.json", ConfirmedOrderDetail.class);
+    public static final Http.API REFUND_DISAGREE = Http.API.post("/confirmedOrder/%s/rejectrefund.json", ConfirmedOrderDetail.class);
     public static final Http.API ORDER_CANCEL = Http.API.deleteEmpty("/confirmedOrder/%s/cancelpending.json%s");
     public static final Http.API RECOMMEND_ORDER = Http.API.postEmpty("/order/%s/referto.json");
-    public static final Http.API ORDER_COMPLETE = Http.API.postEmpty("/confirmedOrder/%s/complete.json");
-    public static final Http.API ORDER_CONFIRMCOMPLETE = Http.API.postEmpty("/confirmedOrder/%s/confirmcomplete.json");
+    public static final Http.API ORDER_COMPLETE = Http.API.post("/confirmedOrder/%s/complete.json", ConfirmedOrderDetail.class);
+    public static final Http.API ORDER_CONFIRMCOMPLETE = Http.API.post("/confirmedOrder/%s/confirmcomplete.json", ConfirmedOrderDetail.class);
     public static final Http.API<List<UserDetail>> GET_NOTSEEB = Http.API.getList("/userBlock/getnotseeb.json%s", UserDetail.class);
     public static final Http.API<List<UserDetail>> GET_NOTLETBSEE = Http.API.getList("/userBlock/getnotletbsee.json%s", UserDetail.class);
     public static final Http.API<List<UserDetail>> GET_BLACKLIST = Http.API.getList("/user/%s/getblacklist.json", UserDetail.class);
@@ -80,7 +87,12 @@ public final class API {
     public static final Http.API FRIENDS_EVALUATION = Http.API.postEmpty("/profile/%s/friendEval.json");
     public static final Http.API<List<FriendEvaluationDetail>> GET_FEVALUATION = Http.API.getList("/profile/%s/friendEval.json", FriendEvaluationDetail.class);
     public static final Http.API<SelfEvaluationDetail> GET_SEVALUATION = Http.API.get("/profile/%s/selfeval.json", SelfEvaluationDetail.class);
-    public static final Http.API<UserDetail> POST_SELFEVALUATION = Http.API.post("/profile/%s/selfeval.json",UserDetail.class);
-
-
+    public static final Http.API<UserDetail> POST_SELFEVALUATION = Http.API.post("/profile/%s/selfeval.json", UserDetail.class);
+    public static final Http.API<APKVersion> GET_APKVERSION = Http.API.get(AppConfig.QINIU_HOST + AppConfig.QINIU_APKVERSION, APKVersion.class);
+    public static final Http.API<List<UserDetail>> GET_MIDDLEMAN = Http.API.getList("/contact/%s/middleman.json%s", UserDetail.class);
+    public static final Http.API UPDATE_FRIENDNICK = Http.API.postEmpty("/friendnick/%s.json");
+    public static final Http.API<List<UserDetail>> GET_HOTSELLER = Http.API.getList("/topseller/get.json%s", UserDetail.class);
+    public static final Http.API ORDER_HURRYUP = Http.API.getEmpty("/confirmedOrder/%s/hurryup.json");
+    public static final Http.API ORDER_DISPUTE = Http.API.postEmpty("/confirmedOrder/%s/dispute.json");
+    public static final Http.API<ConfirmedOrderUndoCount> GET_ORDER_NUM = Http.API.get("/confirmedOrder/undo.json",ConfirmedOrderUndoCount.class);
 }

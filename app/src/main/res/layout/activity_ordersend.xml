@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:id="@+id/ordersend">
+              android:layout_height="match_parent">
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading"
+        />
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/ordersend">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,29 +42,41 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                >
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_marginRight="5dp">
 
-                    <ImageView
-                        android:id="@+id/avatar"
+                    <com.android.volley.toolbox.NetworkImageView
+                        android:id="@+id/iv_avatar"
                         android:layout_width="70dp"
                         android:layout_height="70dp"
-                        android:src="@drawable/ic_launcher"
-                        android:layout_gravity="center_horizontal"/>
+                        android:layout_gravity="center"
+                        />
                     <TextView
-                        android:id="@+id/name"
+                        android:id="@+id/tv_name"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:gravity="center"
-                        android:textSize="17sp"
+                        android:textSize="14sp"
+                        android:lines="2"
+                        android:ellipsize="end"
                         android:text="帅哥" />
-                    <ImageView
+                    <RatingBar
+                        android:id="@+id/rb_totalvalue"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
-                        android:src="@drawable/star5"/>
+                        android:gravity="center_vertical"
+                        android:numStars="5"
+                        android:isIndicator="true"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_below="@+id/txt_title"
+                        android:layout_alignLeft="@+id/txt_title"
+
+                        />
 
                 </LinearLayout>
 
@@ -65,31 +86,39 @@
                     android:orientation="vertical">
                     <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:orientation="horizontal">
 
                     <EditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="60dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:inputType="textMultiLine"
                         android:id="@+id/edit_title"
-                        android:background="@drawable/ic_btn_retry_normal"
-                        android:layout_weight="1"
+                        android:background="@drawable/shape_edittext"
+                        android:paddingLeft="5dp"
+                        android:layout_weight="2"
                         android:hint="标题（不超过20个字）"
                         android:textSize="15sp"
-                        android:layout_marginRight="10dp"/>
+                        android:maxLength="20"
+                        android:layout_marginRight="10dp"
+                        />
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="￥"/>
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="￥"
+                        android:gravity="center_vertical"
+                        android:layout_weight="6"/>
                     <EditText
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:ems="10"
                         android:id="@+id/edit_bounty"
-                        android:background="@drawable/button_retry"
-                        android:layout_weight="3"
+                        android:background="@drawable/shape_edittext"
+                        android:layout_weight="5"
+                        android:paddingLeft="5dp"
+                        android:inputType="numberDecimal"
                         android:hint="赏金"/>
+
 
                     </LinearLayout>
 
@@ -165,8 +194,9 @@
                     android:layout_height="60dp"
                     android:inputType="textMultiLine"
                     android:id="@+id/edit_content"
-                    android:background="@drawable/ic_btn_retry_normal"
+                    android:background="@drawable/shape_edittext"
                     android:layout_weight="1"
+                    android:paddingLeft="5dp"
                     android:hint="内容"/>
 
                 <View
@@ -187,7 +217,7 @@
                     <GridView
                         android:id="@+id/gridview"
                         android:layout_width="wrap_content"
-                        android:layout_height="145dp"
+                        android:layout_height="70dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
@@ -199,23 +229,23 @@
 
                 </LinearLayout>
 
-                <!--<LinearLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:orientation="horizontal">-->
-                    <!--<ImageView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--/>-->
-                    <!--<ImageView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--/>-->
-                    <!--<ImageView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--/>-->
-                <!--</LinearLayout>-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -314,18 +344,19 @@
                     android:orientation="horizontal">
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:text="接单人要求:"
                         android:textSize="17sp"
                         android:layout_gravity="start"
                         android:layout_weight="2"/>
                     <EditText
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:inputType="textMultiLine"
                         android:id="@+id/edit_require"
-                        android:background="@drawable/ic_btn_retry_normal"
+                        android:background="@drawable/shape_edittext"
                         android:layout_weight="1"
+                        android:paddingLeft="5dp"
                         android:hint=""/>
                 </LinearLayout>
 
@@ -431,15 +462,5 @@
             android:layout_gravity="bottom"
             />
     </LinearLayout>
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_latitude"-->
-        <!--android:visibility="gone"/>-->
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/tv_longitude"-->
-        <!--android:visibility="gone"/>-->
-
 </RelativeLayout>
+</LinearLayout>

@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,8 +50,8 @@ import appframe.appframe.widget.photopicker.view.ImageBucketChooseActivity;
  */
 public class MyInfoActivity extends BaseActivity implements View.OnClickListener{
 
-    private TextView tb_title,tb_back,tv_avatar,tv_nickname,tv_shownickname,tv_sex,tv_showsex,tv_qrcode,tv_district,tv_showdistrict,tv_selfestimate,tv_showselfestimate;
-    com.android.volley.toolbox.NetworkImageView iv_showavatar;
+    private TextView tb_title,tb_back,tv_avatar,tv_nickname,tv_shownickname,tv_sex,tv_showsex,tv_qrcode,tv_district,tv_showdistrict,tv_selfestimate,tv_showselfestimate,tv_author;
+    private com.android.volley.toolbox.NetworkImageView iv_showavatar;
     PopupWindows popupWindows;
 
     @Override
@@ -84,6 +85,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         tv_showsex = (TextView)findViewById(R.id.tv_showsex);
         iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
         tv_showselfestimate = (TextView)findViewById(R.id.tv_showselfestimate);
+        tv_author = (TextView)findViewById(R.id.tv_author);
         //iv_showavatar.setDefaultImageResId(R.drawable.ic_launcher);
         tb_back.setText("个人中心");
         tb_title.setText("个人信息");
@@ -96,10 +98,11 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         tv_district.setOnClickListener(this);
         tv_selfestimate.setOnClickListener(this);
         iv_showavatar.setOnClickListener(this);
+        tv_author.setOnClickListener(this);
 
         tv_shownickname.setText(Auth.getCurrentUser().getName());
         tv_showsex.setText(Auth.getCurrentUser().getGender());
-        if(Auth.getCurrentUser().getAvatar() != null && Auth.getCurrentUser().getAvatar() != "")
+        if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals(""))
         {
             ImageUtils.setImageUrl(iv_showavatar, Auth.getCurrentUser().getAvatar());
         }
@@ -134,10 +137,18 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
                 startActivity(new Intent(this,EditSignatureActivity.class));
                 break;
             case R.id.iv_showavatar:
-                Intent intent = new Intent();
-                intent.setClass(this,AvatarZoomActivity.class);
-                intent.putExtra("Avatar",Auth.getCurrentUser().getAvatar());
-                startActivity(intent);
+                if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
+                    Intent intent = new Intent();
+                    intent.setClass(this, AvatarZoomActivity.class);
+                    intent.putExtra("Avatar", Auth.getCurrentUser().getAvatar());
+                    startActivity(intent);
+                }
+                else
+                {
+                    new PopupWindows_Picture(this, tv_avatar);
+                }
+                break;
+            case R.id.tv_author:
                 break;
 
         }
@@ -247,6 +258,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
                     .findViewById(R.id.ll_popup);
             ll_popup.startAnimation(AnimationUtils.loadAnimation(mContext,
                     R.anim.push_bottom_in_2));
+            RelativeLayout rl_photopopup = (RelativeLayout)view.findViewById(R.id.rl_photopopup);
 
             setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
             setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -257,6 +269,12 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
             showAtLocation(parent, Gravity.BOTTOM, 0, 0);
             update();
 
+            rl_photopopup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
             Button btn_camera = (Button) view
                     .findViewById(R.id.item_popupwindows_camera);
             Button btn_photo = (Button) view

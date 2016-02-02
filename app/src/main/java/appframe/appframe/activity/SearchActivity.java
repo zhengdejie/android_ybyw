@@ -70,12 +70,12 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
     private TextWatcher textWatcher = new TextWatcher(){
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            Log.i("beforeTextChanged",et_search.getText().toString());
+
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            Log.i("onTextChanged",et_search.getText().toString());
+
             if(!et_search.getText().toString().equals("")) {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("KeyWord", URLEncoder.encode(et_search.getText().toString()));
@@ -99,7 +99,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
 
         @Override
         public void afterTextChanged(Editable s) {
-            Log.i("afterTextChanged", et_search.getText().toString());
+
         }
     };
     @Override

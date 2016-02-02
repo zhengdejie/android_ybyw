@@ -61,7 +61,10 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
         final Nearby item = nearby.get(position);
         mHolder.tv_name.setText(item.getName());
         mHolder.tv_distance.setText(getDistance(item.getDistance()));
-        ImageUtils.setImageUrl(mHolder.iv_avatar,item.getAvatar());
+
+        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
+        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
         return convertView;
     }
 

@@ -1,10 +1,14 @@
 package appframe.appframe.activity;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -32,12 +36,15 @@ import com.alibaba.mobileim.conversation.IYWConversationUnreadChangeListener;
 import com.alibaba.mobileim.login.YWLoginCode;
 import com.alibaba.mobileim.login.YWLoginState;
 import com.alibaba.mobileim.tribe.IYWTribeService;
+import com.github.mrengineer13.snackbar.SnackBar;
+
 import com.igexin.sdk.PushManager;
 
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
 import appframe.appframe.app.App;
+import appframe.appframe.dto.APKVersion;
 import appframe.appframe.dto.MessageTypeCount;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.fragment.BaseFragment;
@@ -46,11 +53,14 @@ import appframe.appframe.fragment.MyOrderFragment;
 import appframe.appframe.fragment.OrderFragment;
 import appframe.appframe.fragment.PersonFragment;
 import appframe.appframe.fragment.ProfileFragment;
+import appframe.appframe.service.UpdateAPKService;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
+import appframe.appframe.utils.NetworkUtils;
 import appframe.appframe.utils.NotificationInitSampleHelper;
+import appframe.appframe.utils.PackageUtils;
 import appframe.appframe.utils.Utils;
 
 /**
@@ -73,6 +83,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     private IYWConversationUnreadChangeListener mConversationUnreadChangeListener;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private IYWConversationService mConversationService;
+    ConnectionChangeReceiver connectionChangeReceiver=new ConnectionChangeReceiver();
     /**
      * 底部四个按钮
      */
@@ -123,7 +134,6 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         tv_discovery.setOnClickListener(this);
         tv_myorder.setOnClickListener(this);
         tv_setting.setOnClickListener(this);
-        initConversationServiceAndListener();
         setUbangText(true);
         setMyorderText(false);
         setDiscoveryText(false);
@@ -200,7 +210,10 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
             }
         });
         //initdata();
+        checkUpdate();
         IMLogin();
+        initConversationServiceAndListener();
+
         //initConversationServiceAndListener();
 //        if(getIntent().getStringExtra("pushmessage") != null && getIntent().getStringExtra("pushmessage").equals("push"))
 //        {
@@ -209,13 +222,11 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        //在Tab栏删除会话未读消息变化的全局监听器
-        mConversationService.removeTotalUnreadChangeListener(mConversationUnreadChangeListener);
-        //mIMKit.getTribeService().removeTribeListener(mTribeChangedListener);
-
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter =new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");//要接收的广播
+        registerReceiver(connectionChangeReceiver, intentFilter);//注册接收者
     }
 
     @Override
@@ -233,28 +244,86 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         mConversationService.addTotalUnreadChangeListener(mConversationUnreadChangeListener);
 
 
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //在Tab栏删除会话未读消息变化的全局监听器
+        mConversationService.removeTotalUnreadChangeListener(mConversationUnreadChangeListener);
+        //mIMKit.getTribeService().removeTribeListener(mTribeChangedListener);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(connectionChangeReceiver);
     }
 
     private void initdata(final boolean hasmessage)
     {
-        Http.request(HomeActivity.this, API.HAS_UNREAD,  new Http.RequestListener<MessageTypeCount>() {
+        Http.request(HomeActivity.this, API.HAS_UNREAD, new Http.RequestListener<MessageTypeCount>() {
             @Override
             public void onSuccess(MessageTypeCount result) {
                 super.onSuccess(result);
                 Log.i("HAS_UNREAD", String.valueOf(result.getCount()));
-                if(result.getCount() > 0 && hasmessage || result.getCount() > 0 || hasmessage)
-                {
+                if (result.getCount() > 0 && hasmessage || result.getCount() > 0 || hasmessage) {
 
                     tv_unread.setVisibility(View.VISIBLE);
-                }
-                else
-                {
+                } else {
                     //initConversationServiceAndListener(false);
                     tv_unread.setVisibility(View.INVISIBLE);
                 }
             }
         });
+    }
+
+    private void checkUpdate()
+    {
+        final PackageUtils packageUtils = new PackageUtils(this);
+        Http.request(HomeActivity.this, API.GET_APKVERSION, new Http.RequestListener<APKVersion>(){
+            @Override
+            public void onSuccess(APKVersion result) {
+                super.onSuccess(result);
+
+                if (packageUtils.isUpgradeVersion(packageUtils.getVersion(),result.getVersionCode()) ) {
+
+                    // 发现新版本，提示用户更新
+                    AlertDialog.Builder alert = new AlertDialog.Builder(HomeActivity.this);
+                    alert.setTitle("软件升级")
+                            .setMessage("发现新版本,建议立即更新使用.")
+                            .setPositiveButton("更新",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,
+                                                            int which) {
+                                            // 开启更新服务UpdateService
+                                            // 这里为了把update更好模块化，可以传一些updateService依赖的值
+                                            // 如布局ID，资源ID，动态获取的标题,这里以app_name为例
+                                            Intent updateIntent = new Intent(
+                                                    HomeActivity.this,
+                                                    UpdateAPKService.class);
+//                                            updateIntent.putExtra(
+//                                                    "app_name",
+//                                                    getResources().getString(
+//                                                            R.string.app_name));
+                                            startService(updateIntent);
+                                        }
+                                    })
+                            .setNegativeButton("取消",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,
+                                                            int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                    alert.create().show();
+
+                }//if
+            }
+        });
+
     }
 
     private void initConversationServiceAndListener() {
@@ -438,41 +507,40 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case SCAN_CODE:
-                //TextView scanResult = (TextView) root.findViewById(R.id.txt_scanresult);
-                if (resultCode == RESULT_OK) {
-                    String result = data.getStringExtra("scan_result");
-                    Intent intent = new Intent();
-                    intent.setClass(HomeActivity.this,FriendsInfoActivity.class);
-                    intent.putExtra("UserID",result.substring(9).toString());
-                    startActivity(intent);
-//                    Http.request(HomeActivity.this, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
-//                            Http.map("FriendId",result.substring(9).toString()),
-//                            new Http.RequestListener<String>() {
-//                                @Override
-//                                public void onSuccess(String result) {
-//                                    super.onSuccess(result);
-//                                    Toast.makeText(HomeActivity.this, "已发送好友申请", Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
-
-                    //scanResult.setText(result);
-                } else if (resultCode == RESULT_CANCELED) {
-                    //scanResult.setText("扫描出错");
-                }
-                break;
-            default:
-                break;
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        switch (requestCode) {
+//            case SCAN_CODE:
+//                //TextView scanResult = (TextView) root.findViewById(R.id.txt_scanresult);
+//                if (resultCode == RESULT_OK) {
+//                    String result = data.getStringExtra("scan_result");
+//                    Intent intent = new Intent();
+//                    intent.setClass(HomeActivity.this,FriendsInfoActivity.class);
+//                    intent.putExtra("UserID",result.substring(9).toString());
+//                    startActivity(intent);
+////                    Http.request(HomeActivity.this, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
+////                            Http.map("FriendId",result.substring(9).toString()),
+////                            new Http.RequestListener<String>() {
+////                                @Override
+////                                public void onSuccess(String result) {
+////                                    super.onSuccess(result);
+////                                    Toast.makeText(HomeActivity.this, "已发送好友申请", Toast.LENGTH_SHORT).show();
+////                                }
+////                            });
+//
+//                    //scanResult.setText(result);
+//                } else if (resultCode == RESULT_CANCELED) {
+//                    //scanResult.setText("扫描出错");
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //myUnregisterReceiver();
     }
 
     private void IMLogin()
@@ -486,7 +554,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         //通知栏相关的初始化
         NotificationInitSampleHelper.init();
         if (YWChannel.getInstance().getNetWorkState().isNetWorkNull()) {
-            Toast.makeText(HomeActivity.this, "网络已断开，请稍后再试哦~", Toast.LENGTH_SHORT).show();
+//            IMLogin();
             return;
         }
         Log.i("-----ClientID:------", String.format("%s", loginHelper.getIMKit().getIMCore().getLoginState()));
@@ -526,8 +594,44 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     } else {
                         Log.e("IM ERROR", "登录失败 错误码：" + errorCode + "  错误信息：" + errorMessage);
                     }
+                    IMLogin();
                 }
             });
+        }
+    }
+
+    class ConnectionChangeReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(
+                        Context.CONNECTIVITY_SERVICE);
+
+                //Wifi
+                NetworkInfo wifiState = connManager.getNetworkInfo(
+                        ConnectivityManager.TYPE_WIFI);
+                //3G
+                NetworkInfo mobState = connManager.getNetworkInfo(
+                        ConnectivityManager.TYPE_MOBILE);
+
+
+                if (!mobState.isConnected() && !wifiState.isConnected()) {
+                    // unconnect network
+                    new SnackBar.Builder(HomeActivity.this)
+                            .withMessage("网络连接不可用")
+                            .withStyle(SnackBar.Style.ALERT)
+                            .withDuration(SnackBar.PERMANENT_SNACK)
+                            .withBackgroundColorId(android.R.color.holo_red_dark).show();
+                } else {
+                    // connect network
+                    SnackBar snackBar = new SnackBar(HomeActivity.this);
+                    snackBar.hide();
+                    IMLogin();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

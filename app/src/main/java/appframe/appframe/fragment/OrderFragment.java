@@ -1,5 +1,6 @@
 package appframe.appframe.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.AddFriendsActivity;
 import appframe.appframe.activity.FeedbackActivity;
 import appframe.appframe.activity.OrderDetailsActivity;
 import appframe.appframe.activity.OrderSendActivity;
@@ -67,6 +70,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 public class OrderFragment extends BaseFragment  {
 
     View test_button,UploadContact_button;
+    LinearLayout progress_bar;
     String locationCity;
     double latitude =0.0, longitude = 0.0;
     int OrderCount = 0;
@@ -141,7 +145,8 @@ public class OrderFragment extends BaseFragment  {
     SwipeRefreshXOrderAdapater hasTopAdapater,hasnotTopAdapater;
     Animation dropdown_in, dropdown_out, dropdown_mask_out;
     View root;
-    TextView tv_back,tv_require,tv_recommand,tv_action;
+    TextView tv_back,tv_action,tv_require,tv_recommand;
+//    Button tv_require,tv_recommand;
     public OrderDetails topOrderDetails;
 
     private List<TopicLabelObject> labels = new ArrayList<>();
@@ -235,6 +240,11 @@ public class OrderFragment extends BaseFragment  {
             paymentMethodFilter.deleteCharAt(0);
         }
         return paymentMethodFilter.toString();
+    }
+
+    public Activity getActivityFromFragment()
+    {
+        return getActivity();
     }
 
     //获取置顶单子
@@ -340,6 +350,8 @@ public class OrderFragment extends BaseFragment  {
         tv_require = (TextView)root.findViewById(R.id.tv_require);
         tv_recommand = (TextView)root.findViewById(R.id.tv_recommand);
         tv_action = (TextView)root.findViewById(R.id.tv_action);
+        progress_bar = (LinearLayout)root.findViewById(R.id.progress_bar);
+
 
         BaiduLocation baiduLocation = new BaiduLocation(getActivity(),new MyLocationListener());
         baiduLocation.setOption();
@@ -354,10 +366,12 @@ public class OrderFragment extends BaseFragment  {
         tv_require.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progress_bar.setVisibility(View.VISIBLE);
+                listView.setAdapter(null);
                 Type = 2;
                 Page = 1;
-                tv_require.setBackgroundColor(Color.GREEN);
-                tv_recommand.setBackgroundColor(Color.WHITE);
+                tv_require.setBackgroundResource(R.drawable.titlebar_order_left_selected);
+                tv_recommand.setBackgroundResource(R.drawable.titlebar_order_right_unselected);
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Page", "1");
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
@@ -375,7 +389,8 @@ public class OrderFragment extends BaseFragment  {
                     @Override
                     public void onSuccess(OrderDetailAndCount result) {
                         super.onSuccess(result);
-                        if(result != null) {
+                        progress_bar.setVisibility(View.GONE);
+                        if (result != null) {
                             OrderCount = result.getCount();
                             if (hasTopOrder()) {
                                 OrderDetails topOrder = getTopOrder();
@@ -387,8 +402,7 @@ public class OrderFragment extends BaseFragment  {
                                 hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false);
                                 listView.setAdapter(hasnotTopAdapater);
                             }
-                        }
-                        else {
+                        } else {
                             if (hasTopOrder()) {
                                 OrderDetails topOrder = getTopOrder();
                                 List<OrderDetails> od = new ArrayList<OrderDetails>();
@@ -403,17 +417,26 @@ public class OrderFragment extends BaseFragment  {
                         }
 
                     }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
+                    }
                 });
+
             }
         });
 
         tv_recommand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progress_bar.setVisibility(View.VISIBLE);
+                listView.setAdapter(null);
                 Type = 1;
                 Page = 1;
-                tv_require.setBackgroundColor(Color.WHITE);
-                tv_recommand.setBackgroundColor(Color.GREEN);
+                tv_require.setBackgroundResource(R.drawable.titlebar_order_left_unselected);
+                tv_recommand.setBackgroundResource(R.drawable.titlebar_order_right_selected);
 
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Page", "1");
@@ -429,11 +452,12 @@ public class OrderFragment extends BaseFragment  {
 
 
 
-                Http.request(getActivity(), API.GET_ORDER,new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
+                Http.request(getActivity(), API.GET_ORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<OrderDetailAndCount>() {
                     @Override
-                    public void onSuccess( OrderDetailAndCount result) {
+                    public void onSuccess(OrderDetailAndCount result) {
                         super.onSuccess(result);
-                        if(result != null) {
+                        progress_bar.setVisibility(View.GONE);
+                        if (result != null) {
                             OrderCount = result.getCount();
 
                             if (hasTopOrder()) {
@@ -446,8 +470,7 @@ public class OrderFragment extends BaseFragment  {
                                 hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false);
                                 listView.setAdapter(hasnotTopAdapater);
                             }
-                        }
-                        else {
+                        } else {
                             if (hasTopOrder()) {
                                 OrderDetails topOrder = getTopOrder();
                                 List<OrderDetails> od = new ArrayList<OrderDetails>();
@@ -462,7 +485,14 @@ public class OrderFragment extends BaseFragment  {
                         }
 
                     }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
+                    }
                 });
+
             }
         });
 
@@ -712,7 +742,8 @@ public class OrderFragment extends BaseFragment  {
 
         @Override
         public void onSelectionChanged(DropdownListView view) {
-
+            listView.setAdapter(null);
+            progress_bar.setVisibility(View.VISIBLE);
             Map<String, String> map = new HashMap<String, String>();
             map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
             map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
@@ -732,6 +763,7 @@ public class OrderFragment extends BaseFragment  {
                     @Override
                     public void onSuccess(final OrderDetailAndCount result) {
                         super.onSuccess(result);
+                        progress_bar.setVisibility(View.GONE);
                         if(result != null) {
                             OrderCount = result.getCount();
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
@@ -742,6 +774,12 @@ public class OrderFragment extends BaseFragment  {
                         }
 
                     }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
+                    }
                 });
             }
             else if ( view == dropdownMulti)
@@ -750,6 +788,7 @@ public class OrderFragment extends BaseFragment  {
                     @Override
                     public void onSuccess(final OrderDetailAndCount result) {
                         super.onSuccess(result);
+                        progress_bar.setVisibility(View.GONE);
                         if(result != null) {
                             OrderCount = result.getCount();
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
@@ -758,6 +797,12 @@ public class OrderFragment extends BaseFragment  {
                         {
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
                         }
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
                     }
                 });
 
@@ -768,6 +813,7 @@ public class OrderFragment extends BaseFragment  {
                     @Override
                     public void onSuccess(final OrderDetailAndCount result) {
                         super.onSuccess(result);
+                        progress_bar.setVisibility(View.GONE);
                         if(result != null) {
                             OrderCount = result.getCount();
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
@@ -778,6 +824,12 @@ public class OrderFragment extends BaseFragment  {
                         }
 
                     }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
+                    }
                 });
             }
             else
@@ -786,6 +838,7 @@ public class OrderFragment extends BaseFragment  {
                     @Override
                     public void onSuccess(final OrderDetailAndCount result) {
                         super.onSuccess(result);
+                        progress_bar.setVisibility(View.GONE);
                         if(result != null) {
                             OrderCount = result.getCount();
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
@@ -795,6 +848,12 @@ public class OrderFragment extends BaseFragment  {
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
                         }
 
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
                     }
                 });
             }
@@ -982,8 +1041,8 @@ public class OrderFragment extends BaseFragment  {
             showAsDropDown(parent, 0,0);
             update();
 
-            Button btn_scan = (Button) view
-                    .findViewById(R.id.item_popupwindows_scan);
+            Button btn_addfriends = (Button) view
+                    .findViewById(R.id.item_popupwindows_addfriends);
             Button btn_require = (Button) view
                     .findViewById(R.id.item_popupwindows_send_require_order);
             Button btn_recommand = (Button) view
@@ -992,12 +1051,12 @@ public class OrderFragment extends BaseFragment  {
                     .findViewById(R.id.item_popupwindows_search);
             Button btn_feedback = (Button) view
                     .findViewById(R.id.item_popupwindows_feedback);
-            btn_scan.setOnClickListener(new View.OnClickListener()
+            btn_addfriends.setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {
-                    Intent intent = new Intent(getActivity(), CaptureActivity.class);
-                    ((FragmentActivity)getActivity()).startActivityForResult(intent, SCAN_CODE);
+                    Intent intent = new Intent(getActivity(), AddFriendsActivity.class);
+                    getActivity().startActivity(intent);
                     dismiss();
                 }
             });

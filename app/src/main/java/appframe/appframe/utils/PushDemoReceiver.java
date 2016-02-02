@@ -21,12 +21,12 @@ public class PushDemoReceiver extends BroadcastReceiver {
     /**
      * 应用未启动, 个推 service已经被唤醒,保存在该时间段内离线消息(此时 GetuiSdkDemoActivity.tLogView == null)
      */
-    public static StringBuilder payloadData = new StringBuilder();
+//    public static StringBuilder payloadData = new StringBuilder();
 
     NotificationUtils admain;
     static int NOTIFICATION_ID = 13565400;
     Intent intent;
-    String ticker = "新的通知";
+    String ticker = "您有新消息";
     int smallIcon = R.drawable.ic_launcher;
 
     @Override
@@ -45,23 +45,24 @@ public class PushDemoReceiver extends BroadcastReceiver {
 
                 // smartPush第三方回执调用接口，actionid范围为90000-90999，可根据业务场景执行
                 boolean result = PushManager.getInstance().sendFeedbackMessage(context, taskid, messageid, 90001);
-                System.out.println("第三方回执接口调用" + (result ? "成功" : "失败"));
+//                System.out.println("第三方回执接口调用" + (result ? "成功" : "失败"));
 
                 if (payload != null) {
                     String data = new String(payload);
 
-                    Log.d("GetuiSdkDemo", "receiver payload : " + data);
+//                    Log.d("GetuiSdkDemo", "receiver payload : " + data);
                     //Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
                     // 设置点击后启动的activity
                     intent = new Intent(context, HomeActivity.class);
                     //intent.putExtra("pushmessage","push");
                     if(AppConfig.RECEIVE_NOTIFICATION) {
                         admain = new NotificationUtils(context, NOTIFICATION_ID);
-                        admain.normal_notification(intent, smallIcon, ticker, "普通的通知",
-                                data);
+                        String[] message = data.split("/");
+                        admain.normal_notification(intent, smallIcon, ticker, message[0],
+                                message[1]);
                     }
-                    payloadData.append(data);
-                    payloadData.append("\n");
+//                    payloadData.append(data);
+//                    payloadData.append("\n");
                     if(HomeActivity.tv_unread != null) {
                         HomeActivity.tv_unread.setVisibility(View.VISIBLE);
                     }

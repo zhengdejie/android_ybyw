@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.FriendsInfoActivity;
 import appframe.appframe.activity.OrderCommentActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
@@ -82,23 +87,57 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
             mHolder.tv_name = (TextView)convertView.findViewById(R.id.tv_name);
             mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
             mHolder.rb_totalvalue = (RatingBar)convertView.findViewById(R.id.rb_totalvalue);
+            mHolder.tv_pay = (TextView)convertView.findViewById(R.id.tv_pay);
+            mHolder.ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
+            mHolder.tv_numofconforder = (TextView)convertView.findViewById(R.id.tv_numofconforder);
             convertView.setTag(mHolder);
         }
         else
         {
             mHolder = (ViewHolder) convertView.getTag();
         }
+        convertView.setBackgroundResource(R.drawable.listview_item_pressed);
         final OrderDetails item = orderDetails.get(position);
 
         mHolder.txt_title.setText(item.getTitle());
-        mHolder.txt_bounty.setText("￥" + String.valueOf(item.getBounty()));
-        mHolder.txt_type.setText("类别：" + item.getCategory());
-        mHolder.txt_location.setText(item.getAddress());
+        if(item.getType() == 1)
+        {
+            mHolder.txt_bounty.setTextColor(context.getResources().getColor(R.color.green));
+        }
+        else
+        {
+            mHolder.txt_bounty.setTextColor(Color.RED);
+        }
+        SpannableString ss = new SpannableString( "￥" + String.valueOf(item.getBounty()));
+        ss.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        mHolder.txt_bounty.setText(ss);
+        mHolder.txt_type.setText("类别:" + item.getCategory());
+        mHolder.txt_location.setText("地址:" + item.getAddress());
         mHolder.tv_time.setText(item.getCreatedAt());
-        mHolder.tv_name.setText(item.getOrderer().getName());
-        mHolder.rb_totalvalue.setRating((float)item.getOrderer().getTotalPoint());
-        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrderer().getAvatar());
+        if(item.getOrderer().getFNickName() != null && !item.getOrderer().getFNickName().equals(""))
+        {
+            mHolder.tv_name.setText(item.getOrderer().getFNickName());
+        }
+        else {
+            mHolder.tv_name.setText(item.getOrderer().getName());
+        }
+        mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalPoint());
 
+        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
+        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrderer().getAvatar());
+//        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrderer().getAvatar());
+//        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+//        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
+        if(item.getPaymentMethod().equals("线上支付"))
+        {
+            mHolder.tv_pay.setText("已支付");
+        }
+        else
+        {
+            mHolder.tv_pay.setText("未支付");
+        }
+        mHolder.tv_numofconforder.setText(String.format("友帮了%d次",item.getOrderer().getCompletedNumberOfOrder()));
         switch (from)
         {
             case AppConfig.ORDERSTATUS_APPLY:
@@ -114,12 +153,25 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
                 mHolder.btn_estimate.setText(context.getResources().getString(R.string.close));
                 break;
             case AppConfig.ORDERSTATUS_DELETE:
-                mHolder.btn_estimate.setText(context.getResources().getString(R.string.close));
+                mHolder.btn_estimate.setText(context.getResources().getString(R.string.delete));
                 break;
             case AppConfig.ORDERSTATUS_MAIN:
                 mHolder.btn_estimate.setVisibility(View.GONE);
+                mHolder.ll_button.setVisibility(View.GONE);
                 break;
         }
+
+        mHolder.iv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                intent.setClass(context, FriendsInfoActivity.class);
+                bundle.putSerializable("OrderDetails", item);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
 
         mHolder.btn_estimate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,10 +263,11 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
 
     static class ViewHolder
     {
-        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name;
-        com.android.volley.toolbox.NetworkImageView iv_avatar;
-        Button btn_estimate;
-        RatingBar rb_totalvalue;
+        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_pay,tv_numofconforder;
+        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private Button btn_estimate;
+        private RatingBar rb_totalvalue;
+        private LinearLayout ll_button;
     }
 
 //    private View makeItemView() {

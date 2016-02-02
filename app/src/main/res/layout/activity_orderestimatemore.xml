@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <TextView
+        android:id="@+id/tv_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="全部(1011)"
+        android:background="@drawable/textview_clicked"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/title_bar"/>
+
+    <TextView
+        android:id="@+id/tv_good"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="好评(1011)"
+        android:background="@drawable/textview_unclicked"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_alignTop="@+id/tv_all"
+        android:layout_below="@+id/title_bar"
+        android:layout_toRightOf="@+id/tv_all"/>
+
+    <TextView
+        android:id="@+id/tv_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="中评(1011)"
+        android:background="@drawable/textview_unclicked"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/title_bar"
+        android:layout_toRightOf="@+id/tv_good"/>
+
+    <TextView
+        android:id="@+id/tv_bad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="差评(1011)"
+        android:background="@drawable/textview_unclicked"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_below="@+id/title_bar"
+        android:layout_toRightOf="@+id/tv_medium"
+        android:layout_alignTop="@+id/tv_all"/>
+
+    <View
+        android:id="@+id/view_divide"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/tv_bad"
+        android:layout_marginTop="10dp"
+        />
+
+    <appframe.appframe.widget.swiperefresh.SwipeRefreshX
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view_divide">
+
+        <ListView
+            android:id="@+id/lv_orderestimate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+        </ListView>
+
+    </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
+
+</RelativeLayout>

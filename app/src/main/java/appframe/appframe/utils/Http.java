@@ -2,8 +2,10 @@ package appframe.appframe.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.Build;
@@ -51,6 +53,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import appframe.appframe.activity.LoginActivity;
 
 /**
  * Created by dashi on 15/6/10.
@@ -256,6 +260,11 @@ public final class Http {
                         String[] ps = message.split("\\|\\|");
                         message = ps[1];
                     }
+
+                    if (message.equals("AppFrame authorization failed")) {
+                        message = "你的账号在其他地方登入过，请重新登入";
+                        context.startActivity(new Intent(context, LoginActivity.class));
+                    }
                     Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
 //                        if("info".equalsIgnoreCase(ps[0]))
 //                            color = android.R.color.background_dark;
@@ -296,7 +305,11 @@ public final class Http {
          * request 失败
          */
         public void onFail(String code){
-            showResponseMessage(response);
+            if(code.equals("网络错误"))
+            {}
+            else {
+                showResponseMessage(response);
+            }
         }
 
 
@@ -359,7 +372,10 @@ public final class Http {
             if(error.networkResponse != null){
                 responseString = new String(error.networkResponse.data);
             }
-            responseStatus.Message = parse(responseString).ResponseStatus.Message;
+            if(responseStatus.Message.equals("服务器错误")) {
+                responseStatus.Message = parse(responseString).ResponseStatus.Message;
+            }
+
             Log.e(TAG, String.format("request error: %s %s %s\n%s",
                     response.requestUrl,
                     responseStatus.ErrorCode,
@@ -368,8 +384,24 @@ public final class Http {
                     ));
 
             if(response.canceled) return;
-            onFail(responseStatus.ErrorCode);
-            onDone();
+            if(responseStatus.Message.equals("网络错误"))
+            {
+                onFail("网络错误");
+//                Activity context = response.request.getContext();
+//                if (context != null) {
+//                    // 给用户显示消息
+//                    new SnackBar.Builder(context)
+//                            .withMessage(responseStatus.Message)
+//                            .withStyle(SnackBar.Style.ALERT)
+//                            .withDuration(SnackBar.PERMANENT_SNACK)
+//                            .withBackgroundColorId(android.R.color.holo_red_dark)
+//                            .show();
+//                }
+            }
+            else {
+                onFail(responseStatus.ErrorCode);
+                onDone();
+            }
         }
 
         @Override

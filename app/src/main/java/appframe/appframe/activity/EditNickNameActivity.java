@@ -55,7 +55,7 @@ public class EditNickNameActivity extends BaseActivity implements View.OnClickLi
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            tb_action.setBackgroundColor(Color.GREEN);
+            tb_action.setBackgroundColor(getResources().getColor(R.color.green));
             tb_action.setEnabled(true);
         }
 

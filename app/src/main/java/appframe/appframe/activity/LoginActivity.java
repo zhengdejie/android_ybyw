@@ -10,6 +10,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.mobileim.IYWLoginService;
@@ -38,7 +40,9 @@ import appframe.appframe.utils.Utils;
 public class LoginActivity extends BaseActivity {
     EditText email, password,et_mobile;
     View ok;
-    TextView tb_back,tb_action,tb_title;
+    TextView tb_back,tb_action,tb_title,tv_progress_content;
+    LinearLayout progress_bar;
+
 
 
     @Override
@@ -52,8 +56,9 @@ public class LoginActivity extends BaseActivity {
         email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
         et_mobile = (EditText)findViewById(R.id.et_mobile);
-
-
+        progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
+        tv_progress_content = (TextView)findViewById(R.id.tv_progress_content);
+        tv_progress_content.setText("正在登入");
         //Cursor cursor = null;
         //List<UserContact> contactsList = new ArrayList<UserContact>();
 
@@ -64,6 +69,7 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
+                progress_bar.setVisibility(View.VISIBLE);
                 Http.request(LoginActivity.this, API.USER_LOGIN, Http.map(
                         "Email", email.getText().toString(),
                         "Password", password.getText().toString(),
@@ -101,6 +107,13 @@ public class LoginActivity extends BaseActivity {
 
 //                        // 进首页
                         SplashActivity.startRootActivity(LoginActivity.this);
+                        progress_bar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
                     }
                 });
             }
@@ -119,26 +132,26 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    static final int MENU_REGISTER = 1;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        createMenuItem(menu, MENU_REGISTER, "注册");
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (id){
-            case MENU_REGISTER:
-                finish();
-                startActivity(new Intent(this, RegisterActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//    static final int MENU_REGISTER = 1;
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        createMenuItem(menu, MENU_REGISTER, "注册");
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        switch (id){
+//            case MENU_REGISTER:
+//                finish();
+//                startActivity(new Intent(this, RegisterActivity.class));
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
 
 

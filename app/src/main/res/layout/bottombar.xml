@@ -47,7 +47,7 @@
                 android:drawableTop="@drawable/demo_tab_icon_contact_normal"
                 android:gravity="center"
                 android:paddingTop="3dp"
-                android:text="我的发单"
+                android:text="订单"
                 android:textColor="#bcbfc1" />
 
 
@@ -83,18 +83,17 @@
                 android:drawableTop="@drawable/demo_tab_icon_setting_normal"
                 android:gravity="center"
                 android:paddingTop="3dp"
-                android:text="个人中心"
+                android:text="我的"
                 android:textColor="#bcbfc1" />
 
             <TextView
                 android:id="@+id/tv_unread"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/aliwx_unread_hint"
-                android:gravity="center"
+                android:layout_marginRight="25dp"
+                android:background="@drawable/aliwx_topbar_icon_new"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/aliwx_unread_text_size"
                 android:visibility="invisible"

@@ -1,7 +1,9 @@
 package appframe.appframe.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -11,7 +13,11 @@ import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.dto.ConfirmedOrderDetail;
+import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.PushMessage;
+import appframe.appframe.dto.UserDetail;
+import appframe.appframe.fragment.MyOrderFragment;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXSystemMessageAdapater;
@@ -29,8 +35,14 @@ public class OrderMessageActivity extends BaseActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ordermessage);
         init();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initdata();
     }
+
     private  void init()
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
@@ -39,7 +51,30 @@ public class OrderMessageActivity extends BaseActivity implements View.OnClickLi
         tb_back.setText("我的消息");
         tb_title.setText("订单通知");
         tb_back.setOnClickListener(this);
+        lv_ordermessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PushMessage pushMessage = (PushMessage) parent.getAdapter().getItem(position);
+                Intent intent = new Intent();
+                if(pushMessage.getType() == 4)
+                {
+                    intent.setClass(OrderMessageActivity.this, OrderDetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("OrderDetails", pushMessage.getOrder());
+                    intent.putExtras(bundle);
+                }
+                else
+                {
+                    intent.setClass(OrderMessageActivity.this, ConfirmOrderDetailsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("ConfirmOrderDetails", pushMessage.getConfirmedOrder());
+                    intent.putExtras(bundle);
+                }
 
+                startActivity(intent);
+
+            }
+        });
     }
 
     private void initdata()

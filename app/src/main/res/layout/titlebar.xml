@@ -31,13 +31,12 @@
 
     <TextView
         android:id="@+id/tb_action"
-        android:layout_width="wrap_content"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
         android:gravity="center"
-
         />
 
     <View

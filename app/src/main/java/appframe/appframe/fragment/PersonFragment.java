@@ -26,10 +26,12 @@ import appframe.appframe.activity.FriendsInfoActivity;
 import appframe.appframe.activity.MyCollectActivity;
 import appframe.appframe.activity.MyInfoActivity;
 import appframe.appframe.activity.MyMessageActivity;
+import appframe.appframe.activity.MyMissionActivity;
 import appframe.appframe.activity.PrivacyActivity;
 import appframe.appframe.activity.SettingActivity;
 import appframe.appframe.activity.WalletActivity;
 import appframe.appframe.app.API;
+import appframe.appframe.com.google.zxing.client.result.BizcardResultParser;
 import appframe.appframe.dto.MessageTypeCount;
 import appframe.appframe.dto.UserContact;
 import appframe.appframe.utils.Auth;
@@ -45,7 +47,7 @@ import appframe.appframe.widget.sortlistview.SortListViewActivity;
  * Created by Administrator on 2015/8/8.
  */
 public class PersonFragment extends BaseFragment implements View.OnClickListener{
-    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel;
+    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission;
     public static TextView tv_unread;
     com.android.volley.toolbox.NetworkImageView iv_avater;
     View root;
@@ -74,14 +76,11 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
             @Override
             public void onSuccess(MessageTypeCount result) {
                 super.onSuccess(result);
-                android.util.Log.i("HAS_UNREAD", String.valueOf(result.getCount()));
-                if(result.getCount() > 0 && hasmessage || result.getCount() > 0 || hasmessage)
-                {
+
+                if (result.getCount() > 0 && hasmessage || result.getCount() > 0 || hasmessage) {
 
                     tv_unread.setVisibility(View.VISIBLE);
-                }
-                else
-                {
+                } else {
                     //initConversationServiceAndListener(false);
                     tv_unread.setVisibility(View.INVISIBLE);
                 }
@@ -94,16 +93,20 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         super.onResume();
         tv_unread.setVisibility(View.INVISIBLE);
         tv_name.setText(Auth.getCurrentUser().getName());
-        ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
+        if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
+            ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
+        }
         LoginSampleHelper loginHelper = LoginSampleHelper.getInstance();
         final YWIMKit imKit = loginHelper.getIMKit();
         mConversationService = imKit.getConversationService();
 
         //resume时需要检查全局未读消息数并做处理，因为离开此界面时删除了全局消息监听器
-        mConversationUnreadChangeListener.onUnreadChange();
+        if(mConversationUnreadChangeListener != null) {
+            mConversationUnreadChangeListener.onUnreadChange();
 
-        //在Tab栏增加会话未读消息变化的全局监听器
-        mConversationService.addTotalUnreadChangeListener(mConversationUnreadChangeListener);
+            //在Tab栏增加会话未读消息变化的全局监听器
+            mConversationService.addTotalUnreadChangeListener(mConversationUnreadChangeListener);
+        }
     }
 
     @Override
@@ -185,6 +188,9 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
                     }
                 });
                 break;
+            case R.id.tv_mission:
+                startActivity(new Intent(getActivity(), MyMissionActivity.class));
+                break;
         }
     }
     private  void init()
@@ -200,6 +206,7 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_setting = (TextView)root.findViewById(R.id.tv_setting);
         tv_unread = (TextView)root.findViewById(R.id.tv_unread);
         tv_tel = (TextView)root.findViewById(R.id.tv_tel);
+        tv_mission = (TextView)root.findViewById(R.id.tv_mission);
         ll_person = (LinearLayout)root.findViewById(R.id.ll_person);
 
         tv_contact.setOnClickListener(this);
@@ -210,17 +217,21 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_updatecontact.setOnClickListener(this);
         tv_expandhr.setOnClickListener(this);
         tv_setting.setOnClickListener(this);
+        tv_mission.setOnClickListener(this);
         ll_person.setOnClickListener(this);
 
         tb_title = (TextView)root.findViewById(R.id.tb_title);
         tb_back = (TextView)root.findViewById(R.id.tb_back);
         tb_back.setVisibility(View.GONE);
-        tb_title.setText("个人中心");
+        tb_title.setText("我的");
         tv_name.setText(Auth.getCurrentUser().getName());
         tv_tel.setText(tv_tel.getText() + Auth.getCurrentUser().getMobile());
-        ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
+        if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
+            ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
+        }
         tv_unread.setVisibility(View.INVISIBLE);
         initConversationServiceAndListener();
+
     }
 
 }

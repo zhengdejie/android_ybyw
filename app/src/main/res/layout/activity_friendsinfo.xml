@@ -1,139 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/white">
+
     <include
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
     <View
+        android:id="@+id/view_divide"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/divide"
-        />
+        android:layout_below="@+id/title_bar"
+    />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/white"
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/iv_showavatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/view_divide"
         android:layout_margin="10dp"
-        >
-        <com.android.volley.toolbox.NetworkImageView
-            android:id="@+id/iv_showavatar"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_centerVertical="true"
-            />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="10dp">
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:text="帅哥"
-                android:textSize="17sp"
-                android:gravity="left|center"/>
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal">-->
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="30dp"-->
-                    <!--android:text="友帮号:"-->
-                    <!--android:clickable="true"-->
-                    <!--android:textSize="17sp"-->
-                    <!--android:gravity="left|center"-->
-                    <!--android:layout_weight="1"/>-->
-                <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:textSize="17sp"-->
-                    <!--android:text="2438972387"-->
-                    <!--android:layout_weight="9"/>-->
+    />
 
-            <!--</LinearLayout>-->
-        </LinearLayout>
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="name"
+        android:textSize="14sp"
+        android:layout_toRightOf="@+id/iv_showavatar"
+        android:layout_alignTop="@+id/iv_showavatar"
+        />
+    <TextView
+        android:id="@+id/tv_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:text="昵称:nickname"
+        android:textSize="14sp"
+        android:layout_toRightOf="@+id/iv_showavatar"
+        android:layout_alignBottom="@+id/iv_showavatar"
+        android:visibility="invisible"
+        />
 
     <View
+        android:id="@+id/view_divide2"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/divide"
+        android:layout_below="@+id/iv_showavatar"
         />
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/tv_comment"
+        style="@style/more_item_style"
         android:layout_width="match_parent"
-        android:layout_height="44dip">
-        <TextView
-            android:id="@+id/tv_comment"
-            style="@style/more_item_style"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:text="@string/comment" />
-
-    </RelativeLayout>
+        android:layout_height="44dp"
+        android:text="@string/comment"
+        android:layout_below="@+id/view_divide2"/>
 
     <View
+        android:id="@+id/view_divide3"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/divide"
+        android:layout_below="@+id/tv_comment"
         />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="44dip">
-        <TextView
-            android:id="@+id/tv_district"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:gravity="center_vertical"
-            android:textColor="#ff333333"
-            android:textSize="15sp"
-            android:layout_width="wrap_content"
-            android:layout_height="44dp"
-            android:text="@string/district"/>
-        <TextView
-            android:id="@+id/tv_showdistrict"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/tv_district"
-            android:layout_toEndOf="@+id/tv_district"/>
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_district"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:gravity="center_vertical"
+        android:textColor="#ff333333"
+        android:textSize="14sp"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:text="@string/district"
+        android:layout_below="@+id/view_divide3"/>
+    <TextView
+        android:id="@+id/tv_showdistrict"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/tv_district"
+        android:layout_alignTop="@+id/tv_district"
+        android:gravity="center"
+        android:textSize="14sp"
+        />
 
     <View
+        android:id="@+id/view_divide4"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
-        />
+        android:layout_below="@+id/tv_district"
+    />
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/tv_friendsestimate"
+        style="@style/more_item_style"
         android:layout_width="match_parent"
-        android:layout_height="44dip">
-        <TextView
-            android:id="@+id/tv_friendsestimate"
-            style="@style/more_item_style"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:text="@string/effect" />
+        android:layout_height="44dp"
+        android:text="@string/effect"
+        android:layout_below="@+id/view_divide4"/>
 
-    </RelativeLayout>
     <View
+        android:id="@+id/view_divide5"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
+        android:layout_below="@+id/tv_friendsestimate"
         />
+
     <Button
         android:id="@+id/btn_sendmessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sendmessage"/>
+        android:text="@string/sendmessage"
+        android:layout_below="@+id/view_divide5"/>
 
-</LinearLayout>
+</RelativeLayout>

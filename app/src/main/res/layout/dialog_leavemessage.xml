@@ -10,7 +10,10 @@
         android:id="@+id/et_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:background="@drawable/shape_edittext"
+        android:inputType="textMultiLine"
+        />
     <CheckBox
         android:id="@+id/cb_anonymous"
         android:layout_width="wrap_content"

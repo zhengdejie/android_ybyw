@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">友帮</string>
-    <string name="comment">设计备注与标签</string>
+    <string name="comment">设计备注</string>
     <string name="district">地区</string>
     <string name="effect">TA的口碑</string>
     <string name="sendmessage">发消息</string>
@@ -41,6 +41,7 @@
     <string name="ok">确定</string>
     <string name="select_from_local">从相册中选取</string>
     <string name="scan">扫一扫</string>
+    <string name="addfriends">添加好友</string>
     <string name="search">搜索</string>
     <string name="send_require_order">老板模式</string>
     <string name="send_recommand_order">打工模式</string>
@@ -56,12 +57,21 @@
     <string name="nearby">附近的人</string>
     <string name="feedback">帮助与反馈</string>
     <string name="cancel_appley">取消申请</string>
+    <string name="refund_apply">申请退款</string>
+    <string name="agree">同意</string>
+    <string name="disagree">不同意</string>
     <string name="estimate">评价</string>
+    <string name="dispute">申诉</string>
     <string name="close">关闭</string>
     <string name="qrcode">二维码名片</string>
     <string name="male">男</string>
     <string name="female">女</string>
     <string name="mobile">手机号</string>
+    <string name="loading">加载中</string>
+    <string name="delete">删除</string>
+    <string name="name_author">实名认证</string>
+    <string name="service_stop">终止服务</string>
+    <string name="service_done">服务已完成</string>
 
 
 
