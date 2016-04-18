@@ -18,6 +18,8 @@ public class ConfirmedOrderDetail extends Http.BaseDto implements Serializable {
     private int Status;
     private UserDetail ServiceProvider;
     private UserDetail ServiceReceiver;
+    private double Bid;
+    private String ConfirmedOrderNumber;
 
     public int getId() {
         return Id;
@@ -97,5 +99,21 @@ public class ConfirmedOrderDetail extends Http.BaseDto implements Serializable {
 
     public void setServiceReceiver(UserDetail serviceReceiver) {
         ServiceReceiver = serviceReceiver;
+    }
+
+    public double getBid() {
+        return Bid;
+    }
+
+    public void setBid(double bid) {
+        Bid = bid;
+    }
+
+    public String getConfirmedOrderNumber() {
+        return ConfirmedOrderNumber;
+    }
+
+    public void setConfirmedOrderNumber(String confirmedOrderNumber) {
+        ConfirmedOrderNumber = confirmedOrderNumber;
     }
 }

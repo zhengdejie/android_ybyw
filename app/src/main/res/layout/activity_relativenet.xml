@@ -20,7 +20,7 @@
         android:layout_below="@+id/title_bar"
         android:layout_toLeftOf="@+id/tv_hcenter"
         android:layout_marginTop="10dp"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/default_avatar"
         />
     <TextView
         android:id="@+id/tv_myname"
@@ -42,7 +42,7 @@
         android:layout_below="@+id/title_bar"
         android:layout_toRightOf="@+id/tv_hcenter"
         android:layout_marginTop="10dp"
-        android:src="@drawable/ic_launcher"
+        android:src="@drawable/default_avatar"
         />
 
     <TextView
@@ -64,7 +64,15 @@
         android:background="@color/green"
         android:layout_alignBottom="@+id/iv_myavatar"
         android:layout_marginBottom="30dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:id="@+id/view9" />
+
+    <TextView
+        android:id="@+id/tv_relation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view9"
+        android:layout_centerHorizontal="true"/>
 
     <View
         android:id="@+id/view_divide"

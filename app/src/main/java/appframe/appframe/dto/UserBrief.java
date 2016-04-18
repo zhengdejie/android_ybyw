@@ -18,7 +18,8 @@ public class UserBrief extends Http.BaseDto implements Serializable {
     public String Gender;
     public Date UpdatedAt;
     public String Location;
-    public double TotalPoint;
+    public double TotalWorkerPoint;
+    public double TotalBossPoint;
     public String Signature;
     public double AvgServicePoint;
     public double AvgAttitudePoint;
@@ -27,6 +28,11 @@ public class UserBrief extends Http.BaseDto implements Serializable {
     public String FNickName;
     public int Member;
     public int CompletedNumberOfOrder;
+    public double WalletTotal;
+    public String YBAccount;
+    public double TotalRevenue;
+    public double TotalExpense;
+    public boolean ShowRevenueAndExpense;
 
     public int getId() {
         return Id;
@@ -92,13 +98,6 @@ public class UserBrief extends Http.BaseDto implements Serializable {
         Location = location;
     }
 
-    public double getTotalPoint() {
-        return TotalPoint;
-    }
-
-    public void setTotalPoint(double totalPoint) {
-        TotalPoint = totalPoint;
-    }
 
     public String getSignature() {
         return Signature;
@@ -162,5 +161,61 @@ public class UserBrief extends Http.BaseDto implements Serializable {
 
     public void setCompletedNumberOfOrder(int completedNumberOfOrder) {
         CompletedNumberOfOrder = completedNumberOfOrder;
+    }
+
+    public double getTotalWorkerPoint() {
+        return TotalWorkerPoint;
+    }
+
+    public void setTotalWorkerPoint(double totalWorkerPoint) {
+        TotalWorkerPoint = totalWorkerPoint;
+    }
+
+    public double getTotalBossPoint() {
+        return TotalBossPoint;
+    }
+
+    public void setTotalBossPoint(double totalBossPoint) {
+        TotalBossPoint = totalBossPoint;
+    }
+
+    public double getWalletTotal() {
+        return WalletTotal;
+    }
+
+    public void setWalletTotal(double walletTotal) {
+        WalletTotal = walletTotal;
+    }
+
+    public String getYBAccount() {
+        return YBAccount;
+    }
+
+    public void setYBAccount(String YBAccount) {
+        this.YBAccount = YBAccount;
+    }
+
+    public double getTotalRevenue() {
+        return TotalRevenue;
+    }
+
+    public void setTotalRevenue(double totalRevenue) {
+        TotalRevenue = totalRevenue;
+    }
+
+    public double getTotalExpense() {
+        return TotalExpense;
+    }
+
+    public void setTotalExpense(double totalExpense) {
+        TotalExpense = totalExpense;
+    }
+
+    public boolean isShowRevenueAndExpense() {
+        return ShowRevenueAndExpense;
+    }
+
+    public void setShowRevenueAndExpense(boolean showRevenueAndExpense) {
+        ShowRevenueAndExpense = showRevenueAndExpense;
     }
 }

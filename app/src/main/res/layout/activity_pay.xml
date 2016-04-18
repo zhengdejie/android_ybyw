@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <View
+        android:id="@+id/view_1"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/title_bar"
+        />
+
+    <RelativeLayout
+        android:id="@+id/rltotal"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_below="@+id/view_1">
+        <TextView
+            android:id="@+id/tv_total"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="@string/total" />
+        <TextView
+            android:id="@+id/tv_showtotal"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center"/>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/payway"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/rltotal"
+        android:text="@string/payway"
+        style="@style/more_item_style"
+        />
+
+    <TextView
+        android:id="@+id/tv_paybyali"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="@string/paybyali"
+        android:layout_below="@+id/payway"/>
+
+    <View
+        android:id="@+id/view_2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/tv_paybyali"
+        />
+
+    <TextView
+        android:id="@+id/tv_paybyweixing"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="@string/paybyweixing"
+        android:layout_below="@+id/view_2"/>
+
+    <View
+        android:id="@+id/view_3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/tv_paybyweixing"
+        />
+
+    <TextView
+        android:id="@+id/tv_paybyyb"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="@string/paybyyb"
+        android:layout_below="@+id/view_3"/>
+
+    <View
+        android:id="@+id/view_4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/tv_paybyyb"
+        />
+
+    <TextView
+        android:id="@+id/tv_payremainder"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="@string/payremainder"
+        android:layout_below="@+id/view_4"
+        />
+
+    <Button
+        android:id="@+id/tv_pay"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="@string/pay"
+        />
+
+</RelativeLayout>

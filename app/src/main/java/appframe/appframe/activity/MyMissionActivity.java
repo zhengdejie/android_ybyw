@@ -110,58 +110,54 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onRefresh() {
 
-//                Page = 1;
-//                Map<String, String> map = new HashMap<String, String>();
-//                map.put("Page", "1");
-//                map.put("Limit", String.valueOf(AppConfig.ORDER_SIZE));
-//                map.put("Latitude", latitude);
-//                map.put("Longitude", longitude);
-//                map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
-//
-//                Http.request(NearByActivity.this, API.GET_USERNEARBY, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<Nearby>>() {
-//                    @Override
-//                    public void onSuccess(List<Nearby> result) {
-//                        super.onSuccess(result);
-//
-//                        adapater = new SwipeRefreshXNearbyAdapater(NearByActivity.this, result);
-//                        listView.setAdapter(adapater);
-//
-//                    }
-//                });
-                swipeRefresh.setRefreshing(false);
+                Http.request(MyMissionActivity.this, API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
+                    @Override
+                    public void onSuccess(List<OrderDetails> result) {
+                        super.onSuccess(result);
+                        swipeRefresh.setRefreshing(false);
+                        listView.setAdapter(new SwipeRefreshXOrderAdapater(MyMissionActivity.this, result, AppConfig.ORDERSTATUS_DELETE));
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
+
 
             }
         });
         // 加载监听器
-        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
-
-            @Override
-            public void onLoad() {
-
-//                Page++;
-//                Map<String, String> map = new HashMap<String, String>();
-//                map.put("Page", String.valueOf(Page));
-//                map.put("Limit", String.valueOf(AppConfig.ORDER_SIZE));
-//                map.put("Latitude", latitude);
-//                map.put("Longitude", longitude);
-//                map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
+//        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
 //
-//                Http.request(NearByActivity.this, API.GET_USERNEARBY, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<Nearby>>() {
-//                    @Override
-//                    public void onSuccess(List<Nearby> result) {
-//                        super.onSuccess(result);
-//                        if (result != null) {
+//            @Override
+//            public void onLoad() {
 //
-//                            adapater.addItems(result);
-//                        }
-//                        //listView.setAdapter(adapater);
+////                Page++;
+////                Map<String, String> map = new HashMap<String, String>();
+////                map.put("Page", String.valueOf(Page));
+////                map.put("Limit", String.valueOf(AppConfig.ORDER_SIZE));
+////                map.put("Latitude", latitude);
+////                map.put("Longitude", longitude);
+////                map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
+////
+////                Http.request(NearByActivity.this, API.GET_USERNEARBY, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<Nearby>>() {
+////                    @Override
+////                    public void onSuccess(List<Nearby> result) {
+////                        super.onSuccess(result);
+////                        if (result != null) {
+////
+////                            adapater.addItems(result);
+////                        }
+////                        //listView.setAdapter(adapater);
+////
+////                    }
+////                });
+//                swipeRefresh.setLoading(false);
 //
-//                    }
-//                });
-                swipeRefresh.setLoading(false);
-
-            }
-        });
+//            }
+//        });
     }
 
     @Override

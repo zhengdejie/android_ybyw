@@ -25,6 +25,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textSize="20sp"
+        android:maxLength="20"
         android:layout_centerVertical="true"
         android:background="@drawable/shape_edittext"
         android:drawableLeft="@drawable/ic_search_black_24dp"

@@ -229,6 +229,10 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
             ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
         }
+        else
+        {
+            iv_avater.setDefaultImageResId(R.drawable.default_avatar);
+        }
         tv_unread.setVisibility(View.INVISIBLE);
         initConversationServiceAndListener();
 

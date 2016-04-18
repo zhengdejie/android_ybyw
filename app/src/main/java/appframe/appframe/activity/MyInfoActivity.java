@@ -102,9 +102,14 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
 
         tv_shownickname.setText(Auth.getCurrentUser().getName());
         tv_showsex.setText(Auth.getCurrentUser().getGender());
+
         if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals(""))
         {
             ImageUtils.setImageUrl(iv_showavatar, Auth.getCurrentUser().getAvatar());
+        }
+        else
+        {
+            iv_showavatar.setDefaultImageResId(R.drawable.default_avatar);
         }
         tv_showdistrict.setText(Auth.getCurrentUser().getLocation());
         tv_showselfestimate.setText(Auth.getCurrentUser().getSignature());
@@ -149,6 +154,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
                 }
                 break;
             case R.id.tv_author:
+                startActivity(new Intent(this,CertificateActivity.class));
                 break;
 
         }

@@ -1,46 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/listview_item_pressed">
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <TextView
+        android:id="@+id/tv_hcenter"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:layout_centerHorizontal="true"/>
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/iv_myavatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/default_avatar"
+        />
+    <TextView
+        android:id="@+id/tv_myname"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp">
-        <com.android.volley.toolbox.NetworkImageView
-            android:id="@+id/iv_avatar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:src="@drawable/default_avatar"
-            />
+        android:layout_below="@+id/iv_myavatar"
+        android:text="mynamesdfsdfsdfdsdsdsssssssssssssss"
+        android:layout_alignRight="@+id/iv_myavatar"
+        android:textSize="14sp"
+        android:lines="1"
+        android:gravity="center"
+        android:ellipsize="end"
+        />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/iv_youravatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/title_bar"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/default_avatar"
+        />
 
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="夜黑风高"
-                android:textSize="18sp"
-                />
+    <TextView
+        android:id="@+id/tv_yourname"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_youravatar"
+        android:text="youname"
+        android:layout_alignRight="@+id/iv_youravatar"
+        android:textSize="14sp"
+        android:lines="1"
+        android:gravity="center"
+        android:ellipsize="end"
+        />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="您的好友ammle,leidn 分享了 *** 的服务"
-                android:textColor="@color/font_gray"
-                android:textSize="18sp"
-                />
-        </LinearLayout>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/green"
+        android:layout_toRightOf="@+id/iv_myavatar"
+        android:layout_toLeftOf="@+id/iv_youravatar"
+        android:layout_alignBottom="@+id/iv_myavatar"
+        android:layout_marginBottom="30dp"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/view9" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_relation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view9"
+        android:layout_centerHorizontal="true"/>
 
-</LinearLayout>
+    <!--<View-->
+        <!--android:id="@+id/view_divide"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/bg_gray"-->
+        <!--android:layout_below="@+id/tv_myname"-->
+        <!--android:layout_marginTop="10dp"/>-->
+
+</RelativeLayout>

@@ -1,33 +1,29 @@
 package appframe.appframe.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.alipay.sdk.app.PayTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,16 +32,15 @@ import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.ConfirmedOrderDetail;
 import appframe.appframe.dto.OrderComment;
-import appframe.appframe.dto.OrderDetails;
-import appframe.appframe.dto.UserDetail;
+import appframe.appframe.dto.PayResult;
+import appframe.appframe.dto.OnlinePay;
 import appframe.appframe.utils.Auth;
-import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
-import appframe.appframe.widget.sortlistview.FirstClassFriends;
 import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 
@@ -55,7 +50,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 public class ConfirmOrderDetailsActivity extends BaseActivity implements View.OnClickListener{
 
     //private ImageView img_avatar;
-    private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit;
+    private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit,tv_confirmorderid;
     private ImageButton imgbtn_conversation,imgbtn_call;
     com.android.volley.toolbox.NetworkImageView iv_avatar;
     private Button btn_finish,btn_estimate;
@@ -68,6 +63,47 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
     private LinearLayout ll_button;
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
+    String From;
+    private static final int SDK_PAY_FLAG = 1;
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SDK_PAY_FLAG: {
+                    PayResult payResult = new PayResult((String) msg.obj);
+                    /**
+                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
+                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
+                     * docType=1) 建议商户依赖异步通知
+                     */
+                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+
+                    String resultStatus = payResult.getResultStatus();
+                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
+                    if (TextUtils.equals(resultStatus, "9000")) {
+                        Toast.makeText(ConfirmOrderDetailsActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // 判断resultStatus 为非"9000"则代表可能支付失败
+                        // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
+                        if (TextUtils.equals(resultStatus, "8000")) {
+                            Toast.makeText(ConfirmOrderDetailsActivity.this, "支付结果确认中", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
+                            Toast.makeText(ConfirmOrderDetailsActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                    break;
+                }
+//                case SDK_CHECK_FLAG: {
+//                    Toast.makeText(PayDemoActivity.this, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
+//                    break;
+//                }
+                default:
+                    break;
+            }
+        };
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +177,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                         @Override
                         public void onSuccess(ConfirmedOrderDetail result) {
                             super.onSuccess(result);
-                            updateOrderStatus(result);
+                            updateOrderStatus(result,null);
                             Toast.makeText(ConfirmOrderDetailsActivity.this, "申请退款提交成功", Toast.LENGTH_SHORT).show();
 
                         }
@@ -163,7 +199,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                                                 @Override
                                                 public void onSuccess(ConfirmedOrderDetail result) {
                                                     super.onSuccess(result);
-                                                    updateOrderStatus(result);
+                                                    updateOrderStatus(result,null);
                                                     Toast.makeText(ConfirmOrderDetailsActivity.this, "不同意退款提交成功", Toast.LENGTH_SHORT).show();
 
                                                 }
@@ -191,7 +227,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                                 @Override
                                 public void onSuccess(ConfirmedOrderDetail result) {
                                     super.onSuccess(result);
-                                    updateOrderStatus(result);
+                                    updateOrderStatus(result,null);
                                 }
                             });
                 }
@@ -242,6 +278,50 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                 break;
 
             case R.id.btn_finish:
+                if(btn_finish.getText() == "支付")
+                {
+                    Http.request(ConfirmOrderDetailsActivity.this, API.CONFIRMEDORDERPAY, Http.map(
+                                    "PlatformType", "1",
+                                    "Amount", String.valueOf(confirmedOrderDetail.getBid()),
+                                    "ConfirmedOrderId",String.valueOf(confirmedOrderDetail.getId()),
+                                    "orderId",String.valueOf(confirmedOrderDetail.getOrder().getId())),
+                            new Http.RequestListener<OnlinePay>() {
+                                @Override
+                                public void onSuccess(final OnlinePay result) {
+                                    super.onSuccess(result);
+                                    /**
+                                     * 完整的符合支付宝参数规范的订单信息
+                                     */
+//                        final String payInfo = AliPay.getOrderInfo("测试的商品", "该测试商品的详细描述", "0.01", "1") + "&sign=\"" + result.getSign() + "\"&" + AliPay.getSignType();
+
+
+                                    Runnable payRunnable = new Runnable() {
+
+                                        @Override
+                                        public void run() {
+                                            // 构造PayTask 对象
+                                            PayTask alipay = new PayTask(ConfirmOrderDetailsActivity.this);
+                                            // 调用支付接口，获取支付结果
+                                            String resultInfo = alipay.pay(result.getSign(), true);
+
+                                            Message msg = new Message();
+                                            msg.what = SDK_PAY_FLAG;
+                                            msg.obj = resultInfo;
+                                            mHandler.sendMessage(msg);
+                                        }
+                                    };
+
+                                    // 必须异步调用
+                                    Thread payThread = new Thread(payRunnable);
+                                    payThread.start();
+                                }
+
+                                @Override
+                                public void onFail(String code) {
+                                    super.onFail(code);
+                                }
+                            });
+                }
                 if(btn_finish.getText() == getResources().getString(R.string.service_done))
                 {
                     Http.request(ConfirmOrderDetailsActivity.this, API.ORDER_COMPLETE,new Object[]{String.valueOf(confirmedOrderDetail.getId())}, Http.map(
@@ -250,7 +330,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                         @Override
                         public void onSuccess(ConfirmedOrderDetail result) {
                             super.onSuccess(result);
-                            updateOrderStatus(result);
+                            updateOrderStatus(result,null);
                             Toast.makeText(ConfirmOrderDetailsActivity.this, "完成提交成功", Toast.LENGTH_SHORT).show();
 
                         }
@@ -277,7 +357,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                         @Override
                         public void onSuccess(ConfirmedOrderDetail result) {
                             super.onSuccess(result);
-                            updateOrderStatus(result);
+                            updateOrderStatus(result,null);
                             Toast.makeText(ConfirmOrderDetailsActivity.this, "确认完成", Toast.LENGTH_SHORT).show();
 
                         }
@@ -291,7 +371,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                         @Override
                         public void onSuccess(ConfirmedOrderDetail result) {
                             super.onSuccess(result);
-                            updateOrderStatus(result);
+                            updateOrderStatus(result,null);
                             Toast.makeText(ConfirmOrderDetailsActivity.this, "您已同意退款", Toast.LENGTH_SHORT).show();
 
                         }
@@ -332,6 +412,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         btn_finish = (Button)findViewById(R.id.btn_finish);
         btn_estimate = (Button)findViewById(R.id.btn_estimate);
         ll_button = (LinearLayout)findViewById(R.id.ll_button);
+        tv_confirmorderid = (TextView)findViewById(R.id.tv_confirmorderid);
 
 
         iv_avatar.setOnClickListener(this);
@@ -342,7 +423,8 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 
         Intent intent = this.getIntent();
         confirmedOrderDetail=(ConfirmedOrderDetail)intent.getSerializableExtra("ConfirmOrderDetails");
-        updateOrderStatus(confirmedOrderDetail);
+        From = intent.getStringExtra("From");
+        updateOrderStatus(confirmedOrderDetail, From);
 
 
         if( confirmedOrderDetail.getOrder().getType() == 1 )
@@ -361,6 +443,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         tv_content.setText(confirmedOrderDetail.getOrder().getContent().toString());
         tv_time.setText(confirmedOrderDetail.getOrder().getCreatedAt().toString());
         tv_status.setText(confirmedOrderDetail.getOrder().getOrderStatus().toString());
+        tv_confirmorderid.setText(confirmedOrderDetail.getConfirmedOrderNumber());
         tv_require.setText(confirmedOrderDetail.getOrder().getRequest() == null ? "" : confirmedOrderDetail.getOrder().getRequest().toString());
         tv_paymethod.setText(confirmedOrderDetail.getOrder().getPaymentMethod().toString());
         tv_deadline.setText(confirmedOrderDetail.getOrder().getDeadline().toString());
@@ -371,7 +454,12 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         else {
             tv_name.setText(confirmedOrderDetail.getOrder().getOrderer().getName().toString());
         }
-        rb_totalvalue.setRating((float)confirmedOrderDetail.getOrder().getOrderer().getTotalPoint());
+        if(confirmedOrderDetail.getOrder().getType() == 1) {
+            rb_totalvalue.setRating((float) confirmedOrderDetail.getOrder().getOrderer().getTotalWorkerPoint());
+        }
+        if(confirmedOrderDetail.getOrder().getType() == 2) {
+            rb_totalvalue.setRating((float) confirmedOrderDetail.getOrder().getOrderer().getTotalBossPoint());
+        }
         if(confirmedOrderDetail.getOrder().getOrderer().getAvatar() != null) {
             ImageUtils.setImageUrl(iv_avatar, confirmedOrderDetail.getOrder().getOrderer().getAvatar().toString());
         }
@@ -467,103 +555,106 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         listView.setLayoutParams(params);
     }
 
-    private void updateOrderStatus(ConfirmedOrderDetail confirmedOrderDetail)
+    private void updateOrderStatus(ConfirmedOrderDetail confirmedOrderDetail,String from)
     {
-        if (confirmedOrderDetail.getServiceProvider().getId() == Auth.getCurrentUserId())
+        if(from.equals(AppConfig.ORDERSTATUS_APPLY))
         {
-            if(confirmedOrderDetail.getStatus() == 0)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.GONE);
-                ll_button.setVisibility(View.GONE);
-            }
-            if(confirmedOrderDetail.getStatus() == 1)
-            {
-                btn_finish.setVisibility(View.VISIBLE);
-                btn_finish.setText(getResources().getString(R.string.service_done));
-                btn_estimate.setText(getResources().getString(R.string.service_stop));
-            }
-            if(confirmedOrderDetail.getStatus() == 2)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.GONE);
-                ll_button.setVisibility(View.GONE);
-            }
-            if(confirmedOrderDetail.getStatus() == 5)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.GONE);
-                ll_button.setVisibility(View.GONE);
+            btn_finish.setVisibility(View.VISIBLE);
+            btn_finish.setText("支付");
+            btn_estimate.setText(getResources().getString(R.string.cancel_appley));
+        }
+        else {
+            if (confirmedOrderDetail.getServiceProvider().getId() == Auth.getCurrentUserId()) {
+                if (confirmedOrderDetail.getStatus() == 0) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.GONE);
+                    ll_button.setVisibility(View.GONE);
+                }
+
+                if (confirmedOrderDetail.getStatus() == 2) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.VISIBLE);
+                    btn_estimate.setText(getResources().getString(R.string.estimate));
+//                btn_finish.setVisibility(View.GONE);
+//                btn_estimate.setVisibility(View.GONE);
+//                ll_button.setVisibility(View.GONE);
+                }
+//            if(confirmedOrderDetail.getStatus() == 3)
+//            {
+//                btn_finish.setVisibility(View.GONE);
+//                btn_estimate.setVisibility(View.VISIBLE);
+//                btn_estimate.setText(getResources().getString(R.string.cancel_appley));
+////                btn_finish.setVisibility(View.GONE);
+////                btn_estimate.setVisibility(View.GONE);
+////                ll_button.setVisibility(View.GONE);
+//            }
+                if (confirmedOrderDetail.getStatus() == 5) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.GONE);
+                    ll_button.setVisibility(View.GONE);
 //                tv_showstatus.setVisibility(View.VISIBLE);
 //                tv_showstatus.setText("等待对方付款");
-            }
-            if(confirmedOrderDetail.getStatus() == 6)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.GONE);
-                ll_button.setVisibility(View.GONE);
-            }
-            if(confirmedOrderDetail.getStatus() == 7)
-            {
-                btn_finish.setVisibility(View.VISIBLE);
-                btn_finish.setText(getResources().getString(R.string.agree));
-                btn_estimate.setText(getResources().getString(R.string.disagree));
-            }
-            if(confirmedOrderDetail.getStatus() == 8)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.GONE);
-                ll_button.setVisibility(View.GONE);
+                }
+
+                if (confirmedOrderDetail.getStatus() == 6) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.GONE);
+                    ll_button.setVisibility(View.GONE);
+                }
+                if (confirmedOrderDetail.getStatus() == 7) {
+                    btn_finish.setVisibility(View.VISIBLE);
+                    btn_finish.setText(getResources().getString(R.string.agree));
+                    btn_estimate.setText(getResources().getString(R.string.disagree));
+                }
+                if (confirmedOrderDetail.getStatus() == 8) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.GONE);
+                    ll_button.setVisibility(View.GONE);
 //                mHolder.tv_showstatus.setVisibility(View.VISIBLE);
 //                mHolder.tv_showstatus.setText("已拒绝退款申请，客服正在处理中，请耐心等待");
+                }
             }
-        }
-        if(confirmedOrderDetail.getServiceReceiver().getId() == Auth.getCurrentUserId())
-        {
-            if(confirmedOrderDetail.getStatus() == 0)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.GONE);
-                ll_button.setVisibility(View.GONE);
-            }
+            if (confirmedOrderDetail.getServiceReceiver().getId() == Auth.getCurrentUserId()) {
+                if (confirmedOrderDetail.getStatus() == 0) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.GONE);
+                    ll_button.setVisibility(View.GONE);
+                }
 
-            if(confirmedOrderDetail.getStatus() == 1) {
-                btn_finish.setVisibility(View.VISIBLE);
-                btn_finish.setText("催单");
-                btn_estimate.setText(getResources().getString(R.string.service_stop));
-            }
-            if(confirmedOrderDetail.getStatus() == 2)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.VISIBLE);
-                btn_estimate.setText(getResources().getString(R.string.estimate));
-            }
-            if(confirmedOrderDetail.getStatus() == 5) {
-                btn_finish.setVisibility(View.VISIBLE);
-                btn_finish.setText("付款");
-                btn_estimate.setText(getResources().getString(R.string.refund_apply));
-            }
-            if(confirmedOrderDetail.getStatus() == 6)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.GONE);
-                ll_button.setVisibility(View.GONE);
-            }
-            if(confirmedOrderDetail.getStatus() == 7)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.GONE);
-                ll_button.setVisibility(View.GONE);
+                if (confirmedOrderDetail.getStatus() == 1) {
+                    btn_finish.setVisibility(View.VISIBLE);
+                    btn_finish.setText("催单");
+                    btn_estimate.setText(getResources().getString(R.string.service_stop));
+                }
+                if (confirmedOrderDetail.getStatus() == 2) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.VISIBLE);
+                    btn_estimate.setText(getResources().getString(R.string.estimate));
+                }
+                if (confirmedOrderDetail.getStatus() == 5) {
+                    btn_finish.setVisibility(View.VISIBLE);
+                    btn_finish.setText("付款");
+                    btn_estimate.setText(getResources().getString(R.string.refund_apply));
+                }
+                if (confirmedOrderDetail.getStatus() == 6) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.GONE);
+                    ll_button.setVisibility(View.GONE);
+                }
+                if (confirmedOrderDetail.getStatus() == 7) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.GONE);
+                    ll_button.setVisibility(View.GONE);
 //                tv_showstatus.setVisibility(View.VISIBLE);
 //                tv_showstatus.setText("已发送退款申请，等待对方确认");
-            }
-            if(confirmedOrderDetail.getStatus() == 8)
-            {
-                btn_finish.setVisibility(View.GONE);
-                btn_estimate.setVisibility(View.VISIBLE);
-                btn_estimate.setText(getResources().getString(R.string.dispute));
+                }
+                if (confirmedOrderDetail.getStatus() == 8) {
+                    btn_finish.setVisibility(View.GONE);
+                    btn_estimate.setVisibility(View.VISIBLE);
+                    btn_estimate.setText(getResources().getString(R.string.dispute));
 //                tv_showstatus.setVisibility(View.VISIBLE);
 //                tv_showstatus.setText("对方拒绝退款申请，客服正在处理中，请耐心等待");
+                }
             }
         }
     }

@@ -13,5 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/iv_showavatar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="80dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        />
 
 </LinearLayout>

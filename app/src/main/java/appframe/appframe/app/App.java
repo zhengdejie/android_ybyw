@@ -15,6 +15,8 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.Poi;
 import com.github.snowdream.android.util.Log;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ import appframe.appframe.utils.InitHelper;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.utils.MemoryCache;
 import appframe.appframe.utils.Utils;
+import cn.smssdk.SMSSDK;
 
 /**
  * Created by dashi on 15/6/11.
@@ -35,6 +38,8 @@ public class App extends Application {
 //    public final String APP_KEY = "23243435";
 //    public static YWIMKit mIMKit;
     private static Context sContext;
+
+    public  static IWXAPI msgApi;
 
     public static Context getContext(){
         return sContext;
@@ -85,7 +90,12 @@ public class App extends Application {
         Log.setEnabled(true);
         Log.setLog2ConsoleEnabled(true);
 
+        SMSSDK.initSDK(this, "1098959928c6e", "7028d351c316b5bd360232ae00e67efb");
 
+        msgApi = WXAPIFactory.createWXAPI(this, null);
+
+        // 将该app注册到微信
+        msgApi.registerApp(AppConfig.WX_APP_ID);
 
     }
 

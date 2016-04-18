@@ -12,12 +12,13 @@
         android:layout_marginTop= "5dp"
         android:layout_marginLeft= "5dp"
         android:layout_marginRight= "5dp"
+        android:src="@drawable/default_avatar"
         />
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:gravity="center"
         android:textSize="14sp"
         android:lines="2"
@@ -105,6 +106,19 @@
         android:layout_toLeftOf="@+id/tv_pay"
         android:layout_alignLeft="@+id/txt_title" />
 
+    <TextView
+        android:id="@+id/txt_tag"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textSize="14sp"
+        android:lines="1"
+        android:ellipsize="end"
+        android:text="标签标签标签标签标签标签标签标签标签"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/txt_location"
+        android:layout_toLeftOf="@+id/tv_pay"
+        android:layout_alignLeft="@+id/txt_title" />
+
 
     <TextView
         android:id="@+id/txt_bounty"
@@ -137,7 +151,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
-        android:layout_below="@+id/txt_location"
+        android:layout_below="@+id/tv_name"
         android:id="@+id/view" />
 
     <!--<Button-->
@@ -150,12 +164,24 @@
         <!--android:focusable="false"-->
         <!--android:layout_below="@+id/view"-->
         <!--/>-->
+    <GridView
+        android:id="@+id/gridview"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_marginTop="10dp"
+        android:horizontalSpacing="3dp"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:verticalSpacing="5dp"
+        android:layout_below="@+id/view"
+        android:visibility="gone">
+    </GridView>
     <LinearLayout
         android:id="@+id/ll_button"
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:orientation="horizontal"
-        android:layout_below="@+id/view"
+        android:layout_below="@+id/gridview"
         >
 
         <RelativeLayout
@@ -163,15 +189,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
-            <!--<Button-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:id="@+id/btn_finish"-->
-                <!--android:text="完成"-->
-                <!--android:textSize="14sp"-->
-                <!--android:focusable="false"-->
-                <!--android:visibility="invisible"-->
-                <!--/>-->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/btn_finish"
+                android:text="支付"
+                android:textSize="14sp"
+                android:focusable="false"
+                android:visibility="gone"
+                />
+        </RelativeLayout>
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/btn_candidate"
+                android:text="候选接单人"
+                android:textSize="14sp"
+                android:focusable="false"
+                android:visibility="gone"
+                />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"

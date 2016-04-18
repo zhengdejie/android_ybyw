@@ -1,6 +1,8 @@
 package appframe.appframe.utils;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -260,12 +262,28 @@ public final class Http {
                         String[] ps = message.split("\\|\\|");
                         message = ps[1];
                     }
-
                     if (message.equals("AppFrame authorization failed")) {
-                        message = "你的账号在其他地方登入过，请重新登入";
-                        context.startActivity(new Intent(context, LoginActivity.class));
+
+                        synchronized (this) {
+
+                            ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+                            ComponentName componentName = mActivityManager.getRunningTasks(1).get(0).topActivity;
+                            String className = componentName.getClassName();
+                            if (!className.equals("appframe.appframe.activity.LoginActivity") )
+                            {
+                                message = "你的账号在其他地方登入过，请重新登入";
+                                context.startActivity(new Intent(context, LoginActivity.class));
+                                Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
                     }
-                    Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
+                    else
+                    {
+                        Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
+
+                    }
+
 //                        if("info".equalsIgnoreCase(ps[0]))
 //                            color = android.R.color.background_dark;
 //                        else if("warning".equalsIgnoreCase(ps[0]))
@@ -964,6 +982,7 @@ public final class Http {
     static boolean isRawTypeParamKey(String k){
         return RAW_TYPE_FIELD_KEY.equals(k);
     }
+
     static boolean isAdditionalHeaderParamKey(String k){
         return k != null && k.startsWith(ADDITIONAL_HEADER_FIELD_KEY);
     }
@@ -988,4 +1007,6 @@ public final class Http {
         }
         return sb.toString();
     }
+
+
 }

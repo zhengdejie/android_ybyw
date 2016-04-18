@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
     <!-- GPS定位权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -105,9 +107,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.HomeActivity" android:launchMode="singleTop" android:screenOrientation="portrait" />
-        <activity android:name=".activity.LoginActivity" android:label="登入" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.RegisterActivity" android:label="注册" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OrderSendActivity" android:launchMode="singleTop"   android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.LoginActivity" android:label="登入"  android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.RegisterActivity" android:label="注册"  android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.OrderSendActivity" android:launchMode="singleTask"   android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activity.OrderDetailsActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.MyInfoActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.PrivacyActivity"  android:screenOrientation="portrait"/>
@@ -148,15 +150,46 @@
         <activity android:name=".activity.EditFriendsNickNameActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.MyMissionActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.ConfirmOrderDetailsActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PayActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.TopupActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.WithdrawActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.SearchTagActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ReportActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ForgetPasswordActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.CertificateActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".wxapi.WXPayEntryActivity" android:screenOrientation="portrait" android:exported="true" android:launchMode="singleTop" />
+
 
 
         <activity android:name=".widget.photopicker.view.ImageBucketChooseActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.photopicker.view.ImageChooseActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.photopicker.view.ImageZoomActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".widget.sortlistview.SortListViewActivity"  android:screenOrientation="portrait"/>
+        <activity android:name=".widget.sortlistview.SortListViewActivity"  android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".widget.sortlistview.MyContact" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".widget.sortlistview.FirstClassFriends" android:screenOrientation="portrait"/>
 
+        <!-- ...........................................MOB短信验证................................................. -->
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <!-- ...........................................MOB短信验证................................................. -->
+
+        <!-- ...........................................支付宝................................................. -->
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" >
+        </activity>
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind" >
+        </activity>
+        <!-- ...........................................支付宝................................................. -->
 
 
         <!-- ...........................................个推................................................. -->

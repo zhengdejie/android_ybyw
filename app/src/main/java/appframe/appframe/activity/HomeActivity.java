@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,11 +20,19 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +82,9 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     BaseFragment[] fragments;
     public static final int SCAN_CODE = 1;
     private LoginSampleHelper loginHelper;
+    private FrameLayout btn_ck;
+    private ImageView iv_center;
+    public boolean isReverse=false;
     private Drawable tv_ubang_Pressed;
     private Drawable tv_ubang_Normal;
     private Drawable tv_myorder_Pressed;
@@ -130,10 +143,13 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         tv_discovery = (TextView) findViewById(R.id.tv_discovery);
         tv_setting = (TextView) findViewById(R.id.tv_setting);
         tv_unread = (TextView) findViewById(R.id.tv_unread);
+        btn_ck = (FrameLayout)findViewById(R.id.btn_ck);
+        iv_center = (ImageView)findViewById(R.id.iv_center);
         tv_ubang.setOnClickListener(this);
         tv_discovery.setOnClickListener(this);
         tv_myorder.setOnClickListener(this);
         tv_setting.setOnClickListener(this);
+        btn_ck.setOnClickListener(this);
         setUbangText(true);
         setMyorderText(false);
         setDiscoveryText(false);
@@ -488,6 +504,9 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                 pager.setCurrentItem(3);
                 tv_unread.setVisibility(View.INVISIBLE);
                 break;
+            case R.id.btn_ck:
+                new PopupWindows_Picture(this,btn_ck);
+                break;
         }
     }
 
@@ -632,6 +651,78 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public class PopupWindows_Picture extends PopupWindow
+    {
+
+        public PopupWindows_Picture(final Context mContext, View parent)
+        {
+
+            View view = View.inflate(mContext, R.layout.popupwindow_makeorder, null);
+            view.startAnimation(AnimationUtils.loadAnimation(mContext,
+                    R.anim.fade_ins));
+            LinearLayout ll_popup = (LinearLayout) view
+                    .findViewById(R.id.ll_popup);
+            ll_popup.startAnimation(AnimationUtils.loadAnimation(mContext,
+                    R.anim.push_bottom_in_2));
+            RelativeLayout rl_photopopup = (RelativeLayout)view.findViewById(R.id.rl_photopopup);
+
+            setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+            setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            setFocusable(true);
+            setBackgroundDrawable(new BitmapDrawable());
+            setOutsideTouchable(true);
+            setContentView(view);
+            showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+            update();
+
+            rl_photopopup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+            ImageView iv_require = (ImageView) view
+                    .findViewById(R.id.iv_require);
+            ImageView iv_recommend = (ImageView) view
+                    .findViewById(R.id.iv_recommend);
+            FrameLayout btn_ck = (FrameLayout) view
+                    .findViewById(R.id.btn_ck);
+            btn_ck.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+
+                    dismiss();
+                }
+            });
+            iv_require.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent();
+                    intent.putExtra("demand","demand");
+                    intent.setClass(HomeActivity.this, OrderSendActivity.class);
+                    startActivity(intent);
+
+                    dismiss();
+                }
+            });
+            iv_recommend.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent();
+                    intent.putExtra("self", "self");
+                    intent.setClass(HomeActivity.this, OrderSendActivity.class);
+                    startActivity(intent);
+
+                    dismiss();
+                }
+            });
+
         }
     }
 

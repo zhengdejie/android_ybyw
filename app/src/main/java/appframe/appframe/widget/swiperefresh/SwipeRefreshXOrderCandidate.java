@@ -10,12 +10,17 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.CandidateActivity;
+import appframe.appframe.dto.ConfirmedOrderDetail;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.UserDetail;
+import appframe.appframe.utils.Arith;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/11/9.
@@ -23,15 +28,15 @@ import appframe.appframe.dto.UserDetail;
 public class SwipeRefreshXOrderCandidate extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
-    CheckBox cb_candidate;
-    List<UserDetail> userDetails = new ArrayList<UserDetail>();
-    TextView tv_content,tv_title,tv_name;
+//    CheckBox cb_candidate;
+    List<ConfirmedOrderDetail> confirmedOrderDetail = new ArrayList<ConfirmedOrderDetail>();
+//    TextView tv_content,tv_title,tv_name;
 
-    public SwipeRefreshXOrderCandidate(Context context,List<UserDetail> userDetails)
+    public SwipeRefreshXOrderCandidate(Context context,List<ConfirmedOrderDetail> confirmedOrderDetail)
     {
         this.context =context;
         this.layoutInflater = LayoutInflater.from(context);
-        this.userDetails = userDetails;
+        this.confirmedOrderDetail = confirmedOrderDetail;
         //initData();
     }
 
@@ -55,28 +60,47 @@ public class SwipeRefreshXOrderCandidate extends BaseAdapter {
 
         @Override
     public int getCount() {
-        if(userDetails == null)
+        if(confirmedOrderDetail == null)
         {
             return 0;
         }
-        return userDetails.size();
+        return confirmedOrderDetail.size();
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        convertView = layoutInflater.inflate(R.layout.swiperefreshx_candidate, null);
-        cb_candidate = (CheckBox)convertView.findViewById(R.id.cb_candidate);
-        tv_name = (TextView)convertView.findViewById(R.id.tv_name);
+        final ViewHolder mHolder;
+        if (convertView == null)
+        {
+            convertView = layoutInflater.inflate(R.layout.swiperefreshx_candidate, null);
+            mHolder = new ViewHolder();
+            mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
+            mHolder.cb_candidate = (CheckBox)convertView.findViewById(R.id.cb_candidate);
+            convertView.setTag(mHolder);
+        }
+        else
+        {
+            mHolder = (ViewHolder) convertView.getTag();
+        }
+        final ConfirmedOrderDetail item = confirmedOrderDetail.get(position);
+        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
+        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getReceiver().getAvatar());
 
-        tv_name.setText(userDetails.get(position).getName());
+        mHolder.tv_name.setText(item.getReceiver().getName());
+        mHolder.tv_price.setText(String.valueOf(item.getBid()));
 
-        cb_candidate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mHolder.cb_candidate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    userDetails.get(position).setCheck("Checked");
+                    item.getReceiver().setCheck("Checked");
+                    CandidateActivity.tv_showtotal.setText(String.valueOf(Arith.add(Double.parseDouble(CandidateActivity.tv_showtotal.getText().toString()),item.getBid())));
                 } else {
-                    userDetails.get(position).setCheck("UnCheck");
+                    item.getReceiver().setCheck("UnCheck");
+                    CandidateActivity.tv_showtotal.setText(String.valueOf(Arith.sub(Double.parseDouble(CandidateActivity.tv_showtotal.getText().toString()),item.getBid())));
                 }
 
             }
@@ -87,7 +111,7 @@ public class SwipeRefreshXOrderCandidate extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return userDetails.get(position);
+        return confirmedOrderDetail.get(position);
     }
 
     @Override
@@ -95,4 +119,10 @@ public class SwipeRefreshXOrderCandidate extends BaseAdapter {
         return position;
     }
 
+    static class ViewHolder
+    {
+        private TextView tv_name,tv_price;
+        private CheckBox cb_candidate;
+        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+    }
 }

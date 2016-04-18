@@ -30,6 +30,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,6 +39,7 @@ import java.util.regex.Pattern;
 import appframe.appframe.BuildConfig;
 import appframe.appframe.activity.LoginActivity;
 import appframe.appframe.activity.SplashActivity;
+import appframe.appframe.app.API;
 import appframe.appframe.app.App;
 
 public final class Utils {
@@ -197,6 +200,24 @@ public final class Utils {
         return (int)(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, App.instance.getResources().getDisplayMetrics()) + 0.5f);
     }
 
-
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+//            Log.e("src",src);
+            URL url = new URL(API.API_BASE + src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", "AppFrame " + Http.getAuthorizationToken());
+            connection.setRequestProperty("Content-Type", "image/jpeg");
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+//            Log.e("Bitmap","returned");
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Exception",e.getMessage());
+            return null;
+        }
+    }
 
 }

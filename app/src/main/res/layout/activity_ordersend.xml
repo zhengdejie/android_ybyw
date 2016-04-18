@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
@@ -42,6 +43,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_margin="5dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="您的发单可以在我的-我的任务里查看"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 >
                 <LinearLayout
@@ -59,7 +71,7 @@
                     <TextView
                         android:id="@+id/tv_name"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="120dp"
                         android:gravity="center"
                         android:textSize="14sp"
                         android:lines="2"
@@ -170,7 +182,43 @@
 
 
                     </LinearLayout>
+                    <appframe.appframe.widget.tagview.TagView
+                        android:id="@+id/tagview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:lineMargin="5dp"
+                        app:tagMargin="3dp"
+                        app:textPaddingBottom="3dp"
+                        app:textPaddingLeft="10dp"
+                        app:textPaddingRight="10dp"
+                        app:textPaddingTop="3dp">
+                    </appframe.appframe.widget.tagview.TagView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:orientation="horizontal">
 
+                        <!--<EditText-->
+                            <!--android:id="@+id/edit_tag"-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:hint="输入标签名"/>-->
+                        <TextView
+                            android:id="@+id/tv_addtag"
+                            android:layout_marginRight="2dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/shape_tagview"
+                            android:ellipsize="marquee"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:textColor="#FFFFFF"
+                            android:text="添加标签"/>
+
+                    </LinearLayout>
                 </LinearLayout>
 
 

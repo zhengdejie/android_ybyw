@@ -48,6 +48,7 @@ import appframe.appframe.activity.SearchActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.com.google.zxing.client.android.CaptureActivity;
+import appframe.appframe.dto.OrderCategory;
 import appframe.appframe.dto.OrderDetailAndCount;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.UserDetail;
@@ -70,37 +71,38 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 public class OrderFragment extends BaseFragment  {
 
     View test_button,UploadContact_button;
+    private List<DropdownItemObject> datasetType = new ArrayList<>();//类别
     LinearLayout progress_bar;
     String locationCity;
     double latitude =0.0, longitude = 0.0;
     int OrderCount = 0;
     //类别
     private static final int ID_TYPE_ALL = 0;
-    private static final int ID_TYPE_CLOSE = 1;
-    private static final int ID_TYPE_FOOD = 2;
-    private static final int ID_TYPE_HOUSE = 3;
-    private static final int ID_TYPE_WALK = 4;
-    private static final int ID_TYPE_ACADEMIC = 5;
-    private static final int ID_TYPE_WORK = 6;
-    private static final int ID_TYPE_LIFE = 7;
-    private static final int ID_TYPE_PERSON = 8;
-    private static final int ID_TYPE_SECOND = 9;
-    private static final int ID_TYPE_SHARE = 10;
-    private static final int ID_TYPE_COOP = 11;
-    private static final int ID_TYPE_ACTIVITY = 12;
+//    private static final int ID_TYPE_CLOSE = 1;
+//    private static final int ID_TYPE_FOOD = 2;
+//    private static final int ID_TYPE_HOUSE = 3;
+//    private static final int ID_TYPE_WALK = 4;
+//    private static final int ID_TYPE_ACADEMIC = 5;
+//    private static final int ID_TYPE_WORK = 6;
+//    private static final int ID_TYPE_LIFE = 7;
+//    private static final int ID_TYPE_PERSON = 8;
+//    private static final int ID_TYPE_SECOND = 9;
+//    private static final int ID_TYPE_SHARE = 10;
+//    private static final int ID_TYPE_COOP = 11;
+//    private static final int ID_TYPE_ACTIVITY = 12;
     private static final String TYPE_ALL = "类别";
-    private static final String TYPE_CLOSE = "衣";
-    private static final String TYPE_FOOD = "食";
-    private static final String TYPE_HOUSE = "住";
-    private static final String TYPE_WALK = "行";
-    private static final String TYPE_ACADEMIC = "学术/艺术";
-    private static final String TYPE_WORK = "工作/商务";
-    private static final String TYPE_LIFE = "生活/娱乐";
-    private static final String TYPE_PERSON = "找人";
-    private static final String TYPE_SECOND = "二手/转让";
-    private static final String TYPE_SHARE = "资源共享";
-    private static final String TYPE_COOP = "合作/推广";
-    private static final String TYPE_ACTIVITY = "活动";
+//    private static final String TYPE_CLOSE = "衣";
+//    private static final String TYPE_FOOD = "食";
+//    private static final String TYPE_HOUSE = "住";
+//    private static final String TYPE_WALK = "行";
+//    private static final String TYPE_ACADEMIC = "学术/艺术";
+//    private static final String TYPE_WORK = "工作/商务";
+//    private static final String TYPE_LIFE = "生活/娱乐";
+//    private static final String TYPE_PERSON = "找人";
+//    private static final String TYPE_SECOND = "二手/转让";
+//    private static final String TYPE_SHARE = "资源共享";
+//    private static final String TYPE_COOP = "合作/推广";
+//    private static final String TYPE_ACTIVITY = "活动";
     //智能
     private static final int ID_MULTI_ALL = 50;
     private static final int ID_MULTI_DISTANCE = 51;
@@ -376,7 +378,7 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Page", "1");
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
                 map.put("Type", String.valueOf(Type));
-                map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" : URLEncoder.encode(dropdownType.current.text.toString()));
+                map.put("Category", dropdownType.current == null ? "" : dropdownType.current.text.toString().equals("类别") ? "" :String.valueOf(dropdownType.current.id)); //URLEncoder.encode(dropdownType.current.text.toString())
                 map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                 map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
@@ -395,11 +397,11 @@ public class OrderFragment extends BaseFragment  {
                             if (hasTopOrder()) {
                                 OrderDetails topOrder = getTopOrder();
                                 List<OrderDetails> list_OD = getOrders(result.getOrderList(), topOrder);
-                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true);
+                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true,Type);
                                 listView.setAdapter(hasTopAdapater);
 
                             } else {
-                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false);
+                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false,Type);
                                 listView.setAdapter(hasnotTopAdapater);
                             }
                         } else {
@@ -442,7 +444,7 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Page", "1");
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
                 map.put("Type", String.valueOf(Type));
-                map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
+                map.put("Category", dropdownType.current == null ? "" : dropdownType.current.text.toString().equals("类别") ? "" :String.valueOf(dropdownType.current.id));
                 map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                 map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
@@ -463,11 +465,11 @@ public class OrderFragment extends BaseFragment  {
                             if (hasTopOrder()) {
                                 OrderDetails topOrder = getTopOrder();
                                 List<OrderDetails> list_OD = getOrders(result.getOrderList(), topOrder);
-                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true);
+                                hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true,Type);
                                 listView.setAdapter(hasTopAdapater);
 
                             } else {
-                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false);
+                                hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false,Type);
                                 listView.setAdapter(hasnotTopAdapater);
                             }
                         } else {
@@ -531,7 +533,7 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Page", "1");
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
                 map.put("Type", String.valueOf(Type));
-                map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
+                map.put("Category", dropdownType.current == null ? "" : dropdownType.current.text.toString().equals("类别") ? "" :String.valueOf(dropdownType.current.id));
                 map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                 map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
@@ -592,7 +594,7 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Page", String.valueOf(Page));
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
                 map.put("Type", String.valueOf(Type));
-                map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
+                map.put("Category", dropdownType.current == null ? "" : dropdownType.current.text.toString().equals("类别") ? "" :String.valueOf(dropdownType.current.id));
                 map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                 map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
@@ -702,7 +704,7 @@ public class OrderFragment extends BaseFragment  {
 
     private class DropdownButtonsController implements DropdownListView.Container {
         private DropdownListView currentDropdownList;
-        private List<DropdownItemObject> datasetType = new ArrayList<>();//类别
+
         private List<DropdownItemObject> datasetMulti = new ArrayList<>();//智能
         private List<DropdownItemObject> datasetMoney = new ArrayList<>();//赏金
         private List<DropdownItemObject> datasetSelect = new ArrayList<>();//筛选
@@ -745,7 +747,7 @@ public class OrderFragment extends BaseFragment  {
             listView.setAdapter(null);
             progress_bar.setVisibility(View.VISIBLE);
             Map<String, String> map = new HashMap<String, String>();
-            map.put("Category", dropdownType.current.text.toString().equals("类别") ? "" :URLEncoder.encode(dropdownType.current.text.toString()));
+            map.put("Category", dropdownType.current== null ? "" : dropdownType.current.text.toString().equals("类别") ? "" :String.valueOf(dropdownType.current.id));
             map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
             map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
             map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
@@ -886,22 +888,68 @@ public class OrderFragment extends BaseFragment  {
 
         void init() {
             reset();
-            //类别
             datasetType.add(new DropdownItemObject(TYPE_ALL, ID_TYPE_ALL, "ALL"));
-            datasetType.add(new DropdownItemObject(TYPE_CLOSE, ID_TYPE_CLOSE, "CLOSE"));
-            datasetType.add(new DropdownItemObject(TYPE_FOOD, ID_TYPE_FOOD, "FOOD"));
-            datasetType.add(new DropdownItemObject(TYPE_HOUSE, ID_TYPE_HOUSE, "HOUSE"));
-            datasetType.add(new DropdownItemObject(TYPE_WALK, ID_TYPE_WALK, "WALK"));
-            datasetType.add(new DropdownItemObject(TYPE_ACADEMIC, ID_TYPE_ACADEMIC, "ACADEMIC"));
-            datasetType.add(new DropdownItemObject(TYPE_WORK, ID_TYPE_WORK, "WORK"));
-            datasetType.add(new DropdownItemObject(TYPE_LIFE, ID_TYPE_LIFE, "LIFE"));
-            datasetType.add(new DropdownItemObject(TYPE_PERSON, ID_TYPE_PERSON, "PERSON"));
-            datasetType.add(new DropdownItemObject(TYPE_SECOND, ID_TYPE_SECOND, "SECOND"));
-            datasetType.add(new DropdownItemObject(TYPE_SHARE, ID_TYPE_SHARE, "SHARE"));
-            datasetType.add(new DropdownItemObject(TYPE_COOP, ID_TYPE_COOP, "COOP"));
-            datasetType.add(new DropdownItemObject(TYPE_ACTIVITY, ID_TYPE_ACTIVITY, "ACTIVITY"));
+            dropdownType.bind(datasetType, chooseType, DropdownButtonsController.this, ID_TYPE_ALL,0);
 
-            dropdownType.bind(datasetType, chooseType, this, ID_TYPE_ALL,0);
+//            chooseType.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+////                    datasetType.add(new DropdownItemObject(TYPE_ALL, ID_TYPE_ALL, "ALL"));
+//                    Http.request(getActivity(), API.GET_ORDERCATEGORY, new Http.RequestListener<List<OrderCategory>>() {
+//                        @Override
+//                        public void onSuccess(List<OrderCategory> result) {
+//                            super.onSuccess(result);
+//                            datasetType.clear();
+//                            datasetType.add(new DropdownItemObject(TYPE_ALL, ID_TYPE_ALL, "ALL"));
+//                            for (OrderCategory orderCategory : result) {
+//                                datasetType.add(new DropdownItemObject(orderCategory.getCategoryName(), orderCategory.getId(), orderCategory.getCategoryName()));
+//                            }
+//
+//                            dropdownType.bind(datasetType, chooseType, DropdownButtonsController.this, ID_TYPE_ALL,0);
+//
+//                        }
+//
+//                        @Override
+//                        public void onFail(String code) {
+//                            super.onFail(code);
+//                        }
+//                    });
+//                }
+//            });
+            //类别
+//            Http.request(getActivity(), API.GET_ORDERCATEGORY, new Http.RequestListener<List<OrderCategory>>() {
+//                @Override
+//                public void onSuccess(List<OrderCategory> result) {
+//                    super.onSuccess(result);
+//                    for (OrderCategory orderCategory : result) {
+//                        datasetType.add(new DropdownItemObject(orderCategory.getCategoryName(), orderCategory.getId(), orderCategory.getCategoryName()));
+//                    }
+//
+//                    dropdownType.bind(datasetType, chooseType, DropdownButtonsController.this, ID_TYPE_ALL,0);
+//
+//                }
+//
+//                @Override
+//                public void onFail(String code) {
+//                    super.onFail(code);
+//                }
+//            });
+
+//            datasetType.add(new DropdownItemObject(TYPE_CLOSE, ID_TYPE_CLOSE, "CLOSE"));
+//            datasetType.add(new DropdownItemObject(TYPE_FOOD, ID_TYPE_FOOD, "FOOD"));
+//            datasetType.add(new DropdownItemObject(TYPE_HOUSE, ID_TYPE_HOUSE, "HOUSE"));
+//            datasetType.add(new DropdownItemObject(TYPE_WALK, ID_TYPE_WALK, "WALK"));
+//            datasetType.add(new DropdownItemObject(TYPE_ACADEMIC, ID_TYPE_ACADEMIC, "ACADEMIC"));
+//            datasetType.add(new DropdownItemObject(TYPE_WORK, ID_TYPE_WORK, "WORK"));
+//            datasetType.add(new DropdownItemObject(TYPE_LIFE, ID_TYPE_LIFE, "LIFE"));
+//            datasetType.add(new DropdownItemObject(TYPE_PERSON, ID_TYPE_PERSON, "PERSON"));
+//            datasetType.add(new DropdownItemObject(TYPE_SECOND, ID_TYPE_SECOND, "SECOND"));
+//            datasetType.add(new DropdownItemObject(TYPE_SHARE, ID_TYPE_SHARE, "SHARE"));
+//            datasetType.add(new DropdownItemObject(TYPE_COOP, ID_TYPE_COOP, "COOP"));
+//            datasetType.add(new DropdownItemObject(TYPE_ACTIVITY, ID_TYPE_ACTIVITY, "ACTIVITY"));
+
+
 
             //智能
             datasetMulti.add(new DropdownItemObject(MULTI_ALL, ID_MULTI_ALL,"ALL"));
@@ -1043,10 +1091,10 @@ public class OrderFragment extends BaseFragment  {
 
             Button btn_addfriends = (Button) view
                     .findViewById(R.id.item_popupwindows_addfriends);
-            Button btn_require = (Button) view
-                    .findViewById(R.id.item_popupwindows_send_require_order);
-            Button btn_recommand = (Button) view
-                    .findViewById(R.id.item_popupwindows_send_recommand_order);
+//            Button btn_require = (Button) view
+//                    .findViewById(R.id.item_popupwindows_send_require_order);
+//            Button btn_recommand = (Button) view
+//                    .findViewById(R.id.item_popupwindows_send_recommand_order);
             Button btn_search = (Button) view
                     .findViewById(R.id.item_popupwindows_search);
             Button btn_feedback = (Button) view
@@ -1060,28 +1108,28 @@ public class OrderFragment extends BaseFragment  {
                     dismiss();
                 }
             });
-            btn_require.setOnClickListener(new View.OnClickListener()
-            {
-                public void onClick(View v)
-                {
-                    Intent intent = new Intent();
-                    intent.putExtra("demand","demand");
-                    intent.setClass(getActivity(), OrderSendActivity.class);
-                    getActivity().startActivity(intent);
-                    dismiss();
-                }
-            });
-            btn_recommand.setOnClickListener(new View.OnClickListener()
-            {
-                public void onClick(View v)
-                {
-                    Intent intent = new Intent();
-                    intent.putExtra("self","self");
-                    intent.setClass(getActivity(), OrderSendActivity.class);
-                    getActivity().startActivity(intent);
-                    dismiss();
-                }
-            });
+//            btn_require.setOnClickListener(new View.OnClickListener()
+//            {
+//                public void onClick(View v)
+//                {
+//                    Intent intent = new Intent();
+//                    intent.putExtra("demand","demand");
+//                    intent.setClass(getActivity(), OrderSendActivity.class);
+//                    getActivity().startActivity(intent);
+//                    dismiss();
+//                }
+//            });
+//            btn_recommand.setOnClickListener(new View.OnClickListener()
+//            {
+//                public void onClick(View v)
+//                {
+//                    Intent intent = new Intent();
+//                    intent.putExtra("self","self");
+//                    intent.setClass(getActivity(), OrderSendActivity.class);
+//                    getActivity().startActivity(intent);
+//                    dismiss();
+//                }
+//            });
 
             btn_search.setOnClickListener(new View.OnClickListener()
             {
@@ -1120,5 +1168,25 @@ public class OrderFragment extends BaseFragment  {
         if(hasnotTopAdapater!=null) {
             hasnotTopAdapater.notifyDataSetChanged();
         }
+
+        Http.request(getActivity(), API.GET_ORDERCATEGORY, new Http.RequestListener<List<OrderCategory>>() {
+            @Override
+            public void onSuccess(List<OrderCategory> result) {
+                super.onSuccess(result);
+                datasetType.clear();
+                datasetType.add(new DropdownItemObject(TYPE_ALL, ID_TYPE_ALL, "ALL"));
+                for (OrderCategory orderCategory : result) {
+                    datasetType.add(new DropdownItemObject(orderCategory.getCategoryName(), orderCategory.getId(), orderCategory.getCategoryName()));
+                }
+
+                dropdownType.bind(datasetType, chooseType, dropdownButtonsController, ID_TYPE_ALL,0);
+
+            }
+
+            @Override
+            public void onFail(String code) {
+                super.onFail(code);
+            }
+        });
     }
 }

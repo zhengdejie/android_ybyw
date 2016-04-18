@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/dialog">
+
+    <TextView
+        android:id="@+id/tv_originalprice"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:drawableRight="@drawable/ic_task_status_list_check"
+        android:text="原价接单"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
+        <!--<RadioButton-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="44dp"-->
+            <!--android:text="原价接单"-->
+            <!--android:id="@+id/rb_originalprice"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_alignParentStart="true"-->
+            <!--android:checked="true"/>-->
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/bg_gray"
+            android:layout_below="@+id/tv_originalprice"
+            />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="66dp"
+                android:text="已该价格接单"
+                style="@style/more_item_style"
+                android:id="@+id/tv_bargain"
+                android:layout_below="@+id/view1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+
+            <EditText
+                android:id="@+id/et_price"
+                style="@style/more_item_style"
+                android:layout_width="match_parent"
+                android:layout_height="66dp"
+                android:layout_below="@+id/view1"
+                android:layout_toRightOf="@+id/tv_bargain"
+                android:hint="价格（元）"
+                android:enabled="false"/>
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/tv_bargain"
+        />
+
+
+
+</RelativeLayout>

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -30,8 +31,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
  */
 public class FeedbackActivity extends BaseActivity implements View.OnClickListener {
     private TextView tb_title,tb_back;
-    private ListView lv_mycollect ;
-    private EditText et_title,et_content;
+    private EditText et_content;
     private Button bt_send;
 
     @Override
@@ -44,8 +44,6 @@ public class FeedbackActivity extends BaseActivity implements View.OnClickListen
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
-        lv_mycollect = (ListView)findViewById(R.id.lv_mycollect);
-        et_title = (EditText)findViewById(R.id.et_title);
         et_content = (EditText)findViewById(R.id.et_content);
         et_content = (EditText)findViewById(R.id.et_content);
         bt_send = (Button)findViewById(R.id.bt_send);
@@ -66,14 +64,14 @@ public class FeedbackActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.bt_send:
                 Http.request(FeedbackActivity.this, API.USER_FEEDBACK, new Object[]{Auth.getCurrentUserId()},Http.map(
-                        "Title", et_title.getText().toString(),
                         "Content",et_content.getText().toString()
                 ), new Http.RequestListener<String>() {
                     @Override
                     public void onSuccess(String result) {
                         super.onSuccess(result);
 
-
+                        Toast.makeText(FeedbackActivity.this,"提交成功",Toast.LENGTH_SHORT).show();
+                        finish();
 
 
                     }

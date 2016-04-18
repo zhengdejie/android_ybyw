@@ -23,10 +23,10 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
+            style="@style/more_item_style"
             android:text="余额"
-            android:textSize="18sp"
-            android:layout_margin="10dp"/>
+            android:gravity="center_vertical"/>
 
         <View
             android:layout_width="match_parent"
@@ -35,11 +35,10 @@
             />
 
         <TextView
+            android:id="@+id/tv_deposit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="￥100.00"
+            android:layout_height="44dp"
             android:textSize="18sp"
-            android:layout_margin="10dp"
             android:gravity="center"/>
 
         <View
@@ -49,11 +48,11 @@
             />
 
         <TextView
+            android:id="@+id/tv_topup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
             android:text="充值"
-            android:textSize="18sp"
-            android:layout_margin="10dp"
+            style="@style/more_item_style"
             android:gravity="center"/>
 
         <View
@@ -63,48 +62,96 @@
             />
 
         <TextView
+            android:id="@+id/tv_withdraw"
+            style="@style/more_item_style"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="44dp"
             android:text="提现"
-            android:textSize="18sp"
-            android:layout_margin="10dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:layout_below="@+id/payway"/>
+
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="1dp"
             android:background="@color/divide"
             />
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_below="@+id/view_divide6">
+        <TextView
+
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="@string/revenue"/>
+        <TextView
+            android:id="@+id/tv_revenue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_below="@+id/view_divide6">
+        <TextView
+
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="@string/cost"/>
+        <TextView
+            android:id="@+id/tv_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="horizontal">
 
-        <TextView
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="总收益"
-            android:textSize="18sp"
-            android:layout_margin="10dp"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divide"
+            android:text="分享我的收益和花费"
+            style="@style/more_item_style"
+            android:gravity="left|center"
+            android:background="@color/white"
+            android:layout_weight="1"
             />
 
-        <TextView
+        <Switch
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="￥100.00"
-            android:textSize="18sp"
-            android:layout_margin="10dp"
-            android:gravity="center"/>
-
+            android:id="@+id/switch_cost"
+            android:layout_weight="1"
+            android:checked="false"
+            android:background="@color/white"/>
     </LinearLayout>
-
 
 </LinearLayout>

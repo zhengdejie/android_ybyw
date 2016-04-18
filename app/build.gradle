@@ -35,7 +35,9 @@ repositories {
         url "https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/"
     }
     maven { url "https://jitpack.io" }
-
+    flatDir{
+        dirs 'libs'
+    }
 
 }
 
@@ -65,4 +67,18 @@ dependencies {
     compile 'com.igexin:getuiext:2.0.3'
     //compile 'com.android.support:support-v4:22.2.0'
     compile project(':wx')
+    compile files('libs/alipaySingle-20160120.jar')
+
+    compile name: 'SMSSDK-2.0.2', ext:'aar'
+    compile name: 'SMSSDKGUI-2.0.2', ext:'aar'
+    compile files('libs/libammsdk.jar')
+//    compile 'com.loopj.android:android-async-http:1.4.9'
+
+//    compile files('libs/android-async-http-1.4.9.jar')
+
+//    compile files('libs/BaiduLBS_Android.jar')
+
+//    compile files('libs/MobCommons-2016.0303.1229.jar')
+//    compile files('libs/MobTools-2016.0303.1229.jar')
+
 }

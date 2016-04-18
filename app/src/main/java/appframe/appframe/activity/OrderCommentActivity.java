@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.Rating;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,11 +26,12 @@ import appframe.appframe.widget.tagview.TagView;
  */
 public class OrderCommentActivity extends BaseActivity implements View.OnClickListener {
 
-    private TextView tv_addtag,tb_back,tb_title;
-    private EditText edit_tag,et_content;
-    private TagView tagView;
+    private TextView tb_back,tb_title;
+    private EditText et_content;
+//    private TagView tagView;
     private Button btn_evaluate;
     private RatingBar rb_service,rb_attitude,rb_personality;
+    private LinearLayout ll_skill,ll_service;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,21 +41,37 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
     protected void init()
     {
         rb_attitude = (RatingBar)findViewById(R.id.rb_attitude);
-        tv_addtag = (TextView)findViewById(R.id.tv_addtag);
-        edit_tag = (EditText)findViewById(R.id.edit_tag);
-        tagView = (TagView)findViewById(R.id.tagview);
+//        tv_addtag = (TextView)findViewById(R.id.tv_addtag);
+//        edit_tag = (EditText)findViewById(R.id.edit_tag);
+//        tagView = (TagView)findViewById(R.id.tagview);
         btn_evaluate = (Button)findViewById(R.id.btn_evaluate);
         et_content = (EditText)findViewById(R.id.et_content);
         rb_service = (RatingBar)findViewById(R.id.rb_service);
         rb_attitude = (RatingBar)findViewById(R.id.rb_attitude);
         rb_personality = (RatingBar)findViewById(R.id.rb_personality);
-        tv_addtag.setOnClickListener(this);
+        ll_skill = (LinearLayout)findViewById(R.id.ll_skill);
+        ll_service = (LinearLayout)findViewById(R.id.ll_service);
+//        tv_addtag.setOnClickListener(this);
         btn_evaluate.setOnClickListener(this);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_title.setText("评价");
         tb_back.setText("我的发单");
         tb_back.setOnClickListener(this);
+        Log.i("sdfsd", getIntent().getStringExtra("Estimate"));
+        if(getIntent().getStringExtra("Estimate") != null && getIntent().getStringExtra("Estimate").equals("1"))
+        {
+
+        }
+        else if (getIntent().getStringExtra("Estimate") != null && getIntent().getStringExtra("Estimate").equals("2"))
+        {
+            ll_skill.setVisibility(View.GONE);
+            ll_service.setVisibility(View.GONE);
+        }
+        else
+        {
+
+        }
 //        rb_attitude.getRating(true);
     }
 
@@ -60,15 +79,15 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.tv_addtag:
-                if (edit_tag.getText().toString()!=null&&!edit_tag.getText().toString().equals("")) {
-                    String tagTitle= edit_tag.getText().toString();
-                    Tag tag = new Tag(tagTitle);
-                    tag.isDeletable=true;
-                    tagView.addTag(tag);
-
-                }
-                break;
+//            case R.id.tv_addtag:
+//                if (edit_tag.getText().toString()!=null&&!edit_tag.getText().toString().equals("")) {
+//                    String tagTitle= edit_tag.getText().toString();
+//                    Tag tag = new Tag(tagTitle);
+//                    tag.isDeletable=true;
+//                    tagView.addTag(tag);
+//
+//                }
+//                break;
             case R.id.btn_evaluate:
 //                Http.request(this, API.EVALUATION_ORDER, Http.map(
 //                        "OrderId", String.valueOf(11),

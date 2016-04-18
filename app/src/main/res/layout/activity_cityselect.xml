@@ -2,10 +2,17 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="#E9E9E9"
               android:orientation="vertical"
-              android:paddingTop="20dip" >
+              >
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/divide"
+        />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

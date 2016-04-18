@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appframe.appframe.R;
+import appframe.appframe.dto.ConfirmedOrderDetailWithFriend;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.ImageUtils;
@@ -21,9 +22,9 @@ import appframe.appframe.utils.ImageUtils;
 public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
-    List<UserDetail> friendshops;
+    List<ConfirmedOrderDetailWithFriend> friendshops;
 
-    public SwipeRefreshXFriendShopsAdapater(Context context, List<UserDetail> friendshops)
+    public SwipeRefreshXFriendShopsAdapater(Context context, List<ConfirmedOrderDetailWithFriend> friendshops)
     {
         this.context =context;
         this.layoutInflater = LayoutInflater.from(context);
@@ -47,8 +48,10 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
         {
             convertView = layoutInflater.inflate(R.layout.swiperefreshx_friendshops, null);
             mHolder = new ViewHolder();
-            mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.tv_myname = (TextView) convertView.findViewById(R.id.tv_myname);
+            mHolder.tv_yourname = (TextView) convertView.findViewById(R.id.tv_yourname);
+            mHolder.iv_myavatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_myavatar);
+            mHolder.iv_youravatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_youravatar);
             convertView.setTag(mHolder);
         }
         else
@@ -56,11 +59,30 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
             mHolder = (ViewHolder) convertView.getTag();
         }
 
-        final UserDetail item = friendshops.get(position);
-        mHolder.tv_name.setText(item.getName());
-        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
-        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
-        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+        final ConfirmedOrderDetailWithFriend item = friendshops.get(position);
+        mHolder.iv_myavatar.setDefaultImageResId(R.drawable.default_avatar);
+        mHolder.iv_youravatar.setDefaultImageResId(R.drawable.default_avatar);
+
+        if(item.getFirstDegreeFriendId() == item.getServiceProvider().getId())
+        {
+            mHolder.tv_myname.setText(item.getServiceProvider().getName());
+            ImageUtils.setImageUrl(mHolder.iv_myavatar, item.getServiceProvider().getAvatar());
+            mHolder.tv_yourname.setText(item.getServiceReceiver().getName());
+            ImageUtils.setImageUrl(mHolder.iv_youravatar, item.getServiceReceiver().getAvatar());
+        }
+        else if(item.getFirstDegreeFriendId() == item.getServiceReceiver().getId())
+        {
+            mHolder.tv_myname.setText(item.getServiceReceiver().getName());
+            ImageUtils.setImageUrl(mHolder.iv_myavatar, item.getServiceReceiver().getAvatar());
+            mHolder.tv_yourname.setText(item.getServiceProvider().getName());
+            ImageUtils.setImageUrl(mHolder.iv_youravatar, item.getServiceProvider().getAvatar());
+        }
+        else
+        {
+
+        }
+
+
         return convertView;
 
     }
@@ -77,7 +99,7 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
 
     static class ViewHolder
     {
-        private TextView tv_name;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private TextView tv_myname,tv_yourname;
+        private com.android.volley.toolbox.NetworkImageView iv_myavatar,iv_youravatar;
     }
 }

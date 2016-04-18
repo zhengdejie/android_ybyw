@@ -19,6 +19,7 @@ import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.dto.Friendship;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
@@ -30,7 +31,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXFriendShopsAdapater;
  * Created by Administrator on 2015/10/14.
  */
 public class RelativenetActivity extends BaseActivity implements View.OnClickListener {
-    private TextView tv_myname,tv_yourname,tb_title,tb_back;
+    private TextView tv_myname,tv_yourname,tb_title,tb_back,tv_relation;
     private com.android.volley.toolbox.NetworkImageView iv_myavatar,iv_youravatar;
     private GridView gridview;
 
@@ -47,6 +48,7 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
     protected void init() {
         tv_myname = (TextView) findViewById(R.id.tv_myname);
         tv_yourname = (TextView) findViewById(R.id.tv_yourname);
+        tv_relation = (TextView) findViewById(R.id.tv_relation);
         gridview =(GridView)findViewById(R.id.gridview);
         iv_myavatar = (com.android.volley.toolbox.NetworkImageView) findViewById(R.id.iv_myavatar);
         iv_youravatar = (com.android.volley.toolbox.NetworkImageView) findViewById(R.id.iv_youravatar);
@@ -70,14 +72,26 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
         }
         Map<String, String> map = new HashMap<String, String>();
         map.put("FriendId", getIntent().getStringExtra("UserID"));
-        Http.request(RelativenetActivity.this, API.GET_MIDDLEMAN, new Object[]{Auth.getCurrentUserId(), Http.getURL(map)},
+        Http.request(RelativenetActivity.this, API.GET_RELATIONSHIP, Http.map("FriendId",getIntent().getStringExtra("UserID").toString()),
 
-                new Http.RequestListener<List<UserDetail>>() {
+                new Http.RequestListener<Friendship>() {
                     @Override
-                    public void onSuccess(List<UserDetail> result) {
+                    public void onSuccess(Friendship result) {
                         super.onSuccess(result);
+                        if( result.getType() == 1 )
+                        {
+                            tv_relation.setText("一度朋友");
+                        }
+                        else if( result.getType() == 2 )
+                        {
+                            tv_relation.setText("二度朋友");
+                        }
+                        else
+                        {
+                            tv_relation.setText("陌生人");
+                        }
 
-                        gridview.setAdapter(new RelativenetGridViewAdapater(RelativenetActivity.this, result));
+                        gridview.setAdapter(new RelativenetGridViewAdapater(RelativenetActivity.this, result.getMidman()));
                     }
                 });
 

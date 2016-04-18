@@ -3,6 +3,7 @@ package appframe.appframe.activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import appframe.appframe.R;
@@ -22,11 +23,17 @@ public class CitySelectActivity extends CitySelectBaseActivity implements View.O
     private WheelView mViewCity;
     private WheelView mViewDistrict;
     private Button mBtnConfirm;
+    private TextView tb_title,tb_back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cityselect);
+        tb_title = (TextView)findViewById(R.id.tb_title);
+        tb_back = (TextView)findViewById(R.id.tb_back);
+        tb_back.setText("个人信息");
+        tb_title.setText("选择地区");
+        tb_back.setOnClickListener(this);
         setUpViews();
         setUpListener();
         setUpData();
@@ -122,6 +129,9 @@ public class CitySelectActivity extends CitySelectBaseActivity implements View.O
                         finish();
                     }
                 });
+                break;
+            case R.id.tb_back:
+                finish();
                 break;
             default:
                 break;

@@ -9,14 +9,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.text.NoCopySpan;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -26,29 +22,23 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RatingBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
-import appframe.appframe.app.App;
-import appframe.appframe.app.AppConfig;
-import appframe.appframe.com.google.zxing.client.android.CaptureActivity;
+import appframe.appframe.dto.ConfirmedOrderDetail;
 import appframe.appframe.dto.OrderComment;
 import appframe.appframe.dto.OrderDetails;
-import appframe.appframe.dto.UserDetail;
+import appframe.appframe.dto.PayResult;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
@@ -56,7 +46,6 @@ import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.widget.sortlistview.FirstClassFriends;
 import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
-import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 
 /**
@@ -65,18 +54,62 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 public class OrderDetailsActivity extends BaseActivity implements View.OnClickListener{
 
     //private ImageView img_avatar;
-    private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit;
+    private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit,
+            tv_originalprice,tv_bargain,tv_tags;
     private ImageButton imgbtn_conversation,imgbtn_call;
     com.android.volley.toolbox.NetworkImageView iv_avatar;
     private Button btn_select,btn_comment,btn_recommend;
+    private EditText et_price;
     private String OrderID,Tel, hasTopOrder, Entrance;
     private ListView lv_ordercomment;
+    private Drawable icon;
 //    private LinearLayout lly_photos;
     private GridView gridView;
     private RatingBar rb_totalvalue;
     OrderDetails orderDetails;
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
+    String Bid;
+    private static final int SDK_PAY_FLAG = 1;
+    private Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case SDK_PAY_FLAG: {
+                    PayResult payResult = new PayResult((String) msg.obj);
+                    /**
+                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
+                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
+                     * docType=1) 建议商户依赖异步通知
+                     */
+                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+
+                    String resultStatus = payResult.getResultStatus();
+                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
+                    if (TextUtils.equals(resultStatus, "9000")) {
+                        Toast.makeText(OrderDetailsActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // 判断resultStatus 为非"9000"则代表可能支付失败
+                        // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
+                        if (TextUtils.equals(resultStatus, "8000")) {
+                            Toast.makeText(OrderDetailsActivity.this, "支付结果确认中", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
+                            Toast.makeText(OrderDetailsActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                    break;
+                }
+//                case SDK_CHECK_FLAG: {
+//                    Toast.makeText(PayDemoActivity.this, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
+//                    break;
+//                }
+                default:
+                    break;
+            }
+        };
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,14 +135,12 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                 startActivity(intent);
                 break;
             case R.id.imgbtn_call:
-                if(!Tel.equals("")) {
-                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Tel)); //直接拨打电话android.intent.action.CALL
-                    startActivity(phoneIntent);
-                }
-                else
-                {
-                    Toast.makeText(OrderDetailsActivity.this,"该用户不是用手机注册",Toast.LENGTH_SHORT).show();
-                }
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Tel)); //直接拨打电话android.intent.action.CALL
+                startActivity(phoneIntent);
+//                else
+//                {
+//                    Toast.makeText(OrderDetailsActivity.this,"该用户不是用手机注册",Toast.LENGTH_SHORT).show();
+//                }
                 break;
             case R.id.tb_action:
                 new PopupWindows(OrderDetailsActivity.this,tb_action);
@@ -129,30 +160,67 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                 }
                 else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage("确认接单吗?");
-                    builder.setTitle("提示");
-                    builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    LayoutInflater inflater = getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.dialog_bargain, (ViewGroup) findViewById(R.id.dialog));
+                    tv_originalprice = (TextView)layout.findViewById(R.id.tv_originalprice);
+                    tv_bargain = (TextView)layout.findViewById(R.id.tv_bargain);
+                    et_price = (EditText)layout.findViewById(R.id.et_price);
+                    icon = getResources().getDrawable(R.drawable.ic_task_status_list_check);
+                    tv_originalprice.setOnClickListener(this);
+                    tv_bargain.setOnClickListener(this);
+//                    rg_bargain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//                        @Override
+//                        public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                            if(rb_originalprice.getId() == checkedId)
+//                            {
+//                                rb_bargain.setChecked(false);
+//                                et_price.setEnabled(false);
+//                                Bid = String.valueOf(orderDetails.getBounty());
+//                            }
+//                            else if(rb_bargain.getId() == checkedId)
+//                            {
+//                                rb_originalprice.setChecked(false);
+//                                et_price.setEnabled(true);
+//                                Bid = et_price.getText().toString();
+//                            }
+//                        }
+//                    });
+
+
+
+//                    builder.setMessage("确认接单吗?");
+                    builder.setTitle("提示").setView(layout).setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Http.request(OrderDetailsActivity.this, API.ORDER_ACCEPT, new Object[]{OrderID}, new Http.RequestListener<UserDetail>() {
+                            Http.request(OrderDetailsActivity.this, API.ORDER_ACCEPT, new Object[]{OrderID}, Http.map("Bid",et_price.getText().toString()), new Http.RequestListener<ConfirmedOrderDetail>() {
                                 @Override
-                                public void onSuccess(UserDetail result) {
+                                public void onSuccess(ConfirmedOrderDetail result) {
                                     super.onSuccess(result);
+                                    if(orderDetails.getType() == 1)
+                                    {
+                                        intent.setClass(OrderDetailsActivity.this, PayActivity.class);
+                                        bundle.putSerializable("ConfirmedOrderDetail", result);
+                                        intent.putExtras(bundle);
+                                        startActivity(intent);
 
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(OrderDetailsActivity.this,"接单成功",Toast.LENGTH_SHORT);
+                                        finish();
+                                    }
 
                                 }
                             });
                             dialog.dismiss();
 
                         }
-                    });
-                     builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                          @Override
                          public void onClick(DialogInterface dialog, int which) {
                              dialog.dismiss();
                          }
-                     });
-                     builder.create().show();
+                    }).show();
 
 
                 }
@@ -218,6 +286,18 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                 intent.putExtras(bundle);
                 startActivity(intent);
             break;
+            case R.id.tv_originalprice:
+                tv_originalprice.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+                et_price.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                et_price.setEnabled(false);
+
+                break;
+            case R.id.tv_bargain:
+                tv_originalprice.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                et_price.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+                et_price.setEnabled(true);
+
+                break;
         }
     }
 
@@ -238,7 +318,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tb_title = (TextView)findViewById(R.id.tb_title);
         btn_select = (Button)findViewById(R.id.btn_select);
         tv_time = (TextView)findViewById(R.id.tv_time);
-        tv_status = (TextView)findViewById(R.id.tv_status);
+//        tv_status = (TextView)findViewById(R.id.tv_status);
         tv_require = (TextView)findViewById(R.id.tv_require);
         tv_paymethod = (TextView)findViewById(R.id.tv_paymethod);
         tv_deadline = (TextView)findViewById(R.id.tv_deadline);
@@ -251,6 +331,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         btn_recommend = (Button)findViewById(R.id.btn_recommend);
         iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
         rb_totalvalue = (RatingBar)findViewById(R.id.rb_totalvalue);
+        tv_tags = (TextView)findViewById(R.id.tv_tags);
 
 
         iv_avatar.setOnClickListener(this);
@@ -262,6 +343,14 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 
         Intent intent = this.getIntent();
         orderDetails=(OrderDetails)intent.getSerializableExtra("OrderDetails");
+
+        if(orderDetails.getLocationAnonymity() == 1) {
+            tv_location.setText("");
+        }
+        else
+        {
+            tv_location.setText(orderDetails.getAddress().toString());
+        }
         if( orderDetails.getType() == 1 )
         {
             tv_moneyunit.setText("索 ￥");
@@ -278,25 +367,39 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         Entrance = intent.getStringExtra("Entrance") == null ? null : intent.getStringExtra("Entrance");
         tv_title.setText(orderDetails.getTitle().toString());
         tv_money.setText(String.valueOf(orderDetails.getBounty()));
-        tv_location.setText(orderDetails.getAddress().toString());
+
         tv_type.setText(orderDetails.getCategory().toString());
         tv_content.setText(orderDetails.getContent().toString());
         tv_time.setText(orderDetails.getCreatedAt().toString());
-        tv_status.setText(orderDetails.getOrderStatus().toString());
+//        tv_status.setText(orderDetails.getOrderStatus().toString());
+        tv_tags.setText(orderDetails.getTags());
         tv_require.setText(orderDetails.getRequest() == null ? "" : orderDetails.getRequest().toString());
         tv_paymethod.setText(orderDetails.getPaymentMethod().toString());
         tv_deadline.setText(orderDetails.getDeadline().toString());
-        if(orderDetails.getOrderer().getFNickName() != null && !orderDetails.getOrderer().getFNickName().equals(""))
+        iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+        if(orderDetails.getNameAnonymity() == 1)
         {
-            tv_name.setText(orderDetails.getOrderer().getFNickName());
+            tv_name.setText("匿名");
+            iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
         }
         else {
-            tv_name.setText(orderDetails.getOrderer().getName().toString());
+            if (orderDetails.getOrderer().getFNickName() != null && !orderDetails.getOrderer().getFNickName().equals("")) {
+                tv_name.setText(orderDetails.getOrderer().getFNickName());
+            } else {
+                tv_name.setText(orderDetails.getOrderer().getName().toString());
+            }
+            if(orderDetails.getOrderer().getAvatar() != null) {
+                ImageUtils.setImageUrl(iv_avatar, orderDetails.getOrderer().getAvatar().toString());
+            }
         }
-        rb_totalvalue.setRating((float)orderDetails.getOrderer().getTotalPoint());
-        if(orderDetails.getOrderer().getAvatar() != null) {
-            ImageUtils.setImageUrl(iv_avatar, orderDetails.getOrderer().getAvatar().toString());
+        if(orderDetails.getType() == 1) {
+            rb_totalvalue.setRating((float)orderDetails.getOrderer().getTotalWorkerPoint());
         }
+        if(orderDetails.getType() == 2) {
+            rb_totalvalue.setRating((float) orderDetails.getOrderer().getTotalBossPoint());
+        }
+
+
 
         if(orderDetails.getPhotos() != null && orderDetails.getPhotos() != "") {
             List<String> photoPath = new ArrayList<String>();
@@ -326,7 +429,10 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tb_action.setCompoundDrawables(drawable, null, null, null);
         tb_action.setOnClickListener(this);
         tb_back.setOnClickListener(this);
-
+        if(orderDetails.getPhoneAnonymity() == 1)
+        {
+            imgbtn_call.setVisibility(View.INVISIBLE);
+        }
         Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID},
                 new Http.RequestListener<List<OrderComment>>() {
                     @Override
@@ -518,7 +624,10 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
             {
                 public void onClick(View v)
                 {
-
+                    intent.setClass(OrderDetailsActivity.this, ReportActivity.class);
+                    bundle.putSerializable("OrderDetails", orderDetails);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                     dismiss();
                 }
             });

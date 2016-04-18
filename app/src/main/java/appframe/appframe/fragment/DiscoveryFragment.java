@@ -21,6 +21,7 @@ import appframe.appframe.activity.NearByActivity;
 import appframe.appframe.activity.FriendsInfoActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
+import appframe.appframe.dto.ConfirmedOrderDetailWithFriend;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
@@ -69,9 +70,9 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         Map<String, String> map = new HashMap<String, String>();
         map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
 
-        Http.request(getActivity(), API.GET_HOTSELLER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<UserDetail>>() {
+        Http.request(getActivity(), API.GET_FRIENDTRACE, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetailWithFriend>>() {
             @Override
-            public void onSuccess(List<UserDetail> result) {
+            public void onSuccess(List<ConfirmedOrderDetailWithFriend> result) {
                 super.onSuccess(result);
 
                 listView.setAdapter(new SwipeRefreshXFriendShopsAdapater(getActivity(), result));

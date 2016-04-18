@@ -24,4 +24,13 @@ public class AppConfig {
     public static final String ORDERSTATUS_DELETE = "delete";
 
     public static boolean RECEIVE_NOTIFICATION = true;
+
+    //支付宝
+    // 商户PID
+    public static final String PARTNER = "2088121524451366";
+    // 商户收款账号
+    public static final String SELLER = "fuxi_tech@163.com";
+
+    //微信APP_ID
+    public static final String WX_APP_ID = "wxfcdc5b3ad4fb99f4";
 }

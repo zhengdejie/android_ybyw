@@ -22,25 +22,26 @@
         android:layout_below="@+id/title_bar"
         />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/email"
-        android:layout_gravity="center_horizontal"
-        android:hint="Email"
-        android:layout_below="@+id/avatar"/>
+    <!--<EditText-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/email"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:hint="Email"-->
+        <!--android:layout_below="@+id/avatar"/>-->
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:id="@+id/et_mobile"
         android:layout_gravity="center_horizontal"
-        android:hint="Mobile"
-        android:layout_below="@+id/email"/>
+        android:hint="手机号码"
+        android:layout_below="@+id/avatar"
+        android:inputType="phone"/>
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/password"
@@ -49,15 +50,40 @@
         android:layout_below="@+id/et_mobile"/>
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:id="@+id/name"
         android:layout_gravity="center_horizontal"
         android:hint="昵称"
         android:layout_below="@+id/password"/>
+    <RelativeLayout
+        android:id="@+id/rl_code"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/name">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/et_code"
+            android:layout_gravity="center"
+            android:hint="验证码"
+            />
+        <TextView
+            android:id="@+id/tv_code"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:padding="5dp"
+            android:text="获取验证码"
+            android:background="@drawable/textview_unclicked"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+
+            />
+    </RelativeLayout>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="注册"
         android:id="@+id/ok"
-        android:layout_below="@+id/name"/>
+        android:layout_below="@+id/rl_code"/>
 </RelativeLayout>

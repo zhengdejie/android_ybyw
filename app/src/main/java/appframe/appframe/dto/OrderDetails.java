@@ -12,7 +12,7 @@ import appframe.appframe.utils.Http;
 public class OrderDetails extends Http.BaseDto implements Serializable {
     private int Id ;
     private String Title;
-    private float Bounty;
+    private double Bounty;
     private String Address;
     private String Category;
     private String Content;
@@ -31,7 +31,9 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
     private String OrderStatus;
     private UserDetail Orderer;
     private UserDetail Orderee;
-    private List<UserDetail> Candidate;
+    private List<ConfirmedOrderDetail> Candidate;
+    private int  BossPaid;
+    private String Tags;
 
 
 
@@ -51,11 +53,11 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
         Title = title;
     }
 
-    public float getBounty() {
+    public double getBounty() {
         return Bounty;
     }
 
-    public void setBounty(float bounty) {
+    public void setBounty(double bounty) {
         Bounty = bounty;
     }
 
@@ -203,13 +205,27 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
         Orderee = orderee;
     }
 
-    public List<UserDetail> getCandidate() {
+    public List<ConfirmedOrderDetail> getCandidate() {
         return Candidate;
     }
 
-    public void setCandidate(List<UserDetail> candidate) {
+    public void setCandidate(List<ConfirmedOrderDetail> candidate) {
         Candidate = candidate;
     }
 
+    public int getBossPaid() {
+        return BossPaid;
+    }
 
+    public void setBossPaid(int bossPaid) {
+        BossPaid = bossPaid;
+    }
+
+    public String getTags() {
+        return Tags;
+    }
+
+    public void setTags(String tags) {
+        Tags = tags;
+    }
 }

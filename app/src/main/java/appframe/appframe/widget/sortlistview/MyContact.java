@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -176,8 +177,10 @@ public class MyContact extends Activity {
                             public void onItemClick(AdapterView<?> parent, View view,
                                                     int position, long id) {
                                 //����Ҫ����adapter.getItem(position)����ȡ��ǰposition����Ӧ�Ķ���
-                                //ContactDetail orderDetails = (ContactDetail)parent.getAdapter().getItem(position);
-                                //Toast.makeText(MyContact.this,(((ContactDetail) parent.getAdapter().getItem(position)).getType()), Toast.LENGTH_SHORT).show();
+                                ContactDetail contactDetail = (ContactDetail)parent.getAdapter().getItem(position);
+                                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + contactDetail.getMobileContact().getMobile())); //直接拨打电话android.intent.action.CALL
+                                startActivity(phoneIntent);
+//                                Toast.makeText(MyContact.this,(((ContactDetail) parent.getAdapter().getItem(position)).getType()), Toast.LENGTH_SHORT).show();
 
                             }
                         });

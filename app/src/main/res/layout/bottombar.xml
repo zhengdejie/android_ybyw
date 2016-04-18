@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/ly_main_tab_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="50dip"
-                android:layout_alignParentBottom="true"
-                 >
-    <LinearLayout
-        android:id="@+id/tabbottom"
-        android:layout_width="match_parent"
-        android:layout_height="50dip"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/demo_tab_bg"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="65.32999dp"
+    android:layout_alignParentBottom="true"
+    >
 
-        <RelativeLayout
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="52.0dip"
+        android:layout_gravity="bottom"
+        android:background="@drawable/tab_bg"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <FrameLayout
+            android:id="@+id/frame_home"
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:layout_weight="1.0" >
 
             <TextView
                 android:id="@+id/tv_ubang"
@@ -29,15 +29,14 @@
                 android:paddingTop="3dp"
                 android:text="友帮"
                 android:textColor="#bcbfc1" />
+        </FrameLayout>
 
-
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1">
+        <FrameLayout
+            android:id="@+id/frame_forum"
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:layout_marginRight="10.0dip"
+            android:layout_weight="1.0" >
 
             <TextView
                 android:id="@+id/tv_myorder"
@@ -49,14 +48,18 @@
                 android:paddingTop="3dp"
                 android:text="订单"
                 android:textColor="#bcbfc1" />
+        </FrameLayout>
 
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0" />
 
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:layout_weight="1">
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:layout_marginLeft="10.0dip"
+            android:layout_weight="1.0" >
 
             <TextView
                 android:id="@+id/tv_discovery"
@@ -68,12 +71,12 @@
                 android:paddingTop="3dp"
                 android:text="发现"
                 android:textColor="#bcbfc1" />
-        </RelativeLayout>
+        </FrameLayout>
 
-        <RelativeLayout
-            android:layout_width="0dip"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:layout_weight="1.0" >
 
             <TextView
                 android:id="@+id/tv_setting"
@@ -98,10 +101,150 @@
                 android:textSize="@dimen/aliwx_unread_text_size"
                 android:visibility="invisible"
                 />
-
-        </RelativeLayout>
-
+        </FrameLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1.0" >
+
+        <ImageView
+            android:layout_width="66.666595dip"
+            android:layout_height="65.33328dip"
+            android:layout_gravity="center"
+            android:src="@drawable/toolbar_write_bg" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/btn_ck"
+        android:layout_width="65.33328dip"
+        android:layout_height="65.33328dip"
+        android:layout_gravity="center"
+        android:layout_weight="1.0" >
+
+        <ImageView
+            android:id="@+id/iv_center"
+            android:layout_width="22.666595dip"
+            android:layout_height="22.666595dip"
+            android:layout_gravity="center"
+            android:layout_marginTop="2.0dip"
+            android:src="@drawable/toolbar_plus" />
+    </FrameLayout>
+
+</FrameLayout>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+                <!--android:id="@+id/ly_main_tab_bottom"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dip"-->
+                <!--android:layout_alignParentBottom="true"-->
+                 <!-->-->
+    <!--<LinearLayout-->
+        <!--android:id="@+id/tabbottom"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dip"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:background="@drawable/demo_tab_bg"-->
+        <!--android:baselineAligned="false"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dip"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tv_ubang"-->
+                <!--style="@style/tab_text_style"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:drawableTop="@drawable/demo_tab_icon_message_normal"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingTop="3dp"-->
+                <!--android:text="友帮"-->
+                <!--android:textColor="#bcbfc1" />-->
+
+
+
+        <!--</RelativeLayout>-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dip"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="1">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tv_myorder"-->
+                <!--style="@style/tab_text_style"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="fill_parent"-->
+                <!--android:drawableTop="@drawable/demo_tab_icon_contact_normal"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingTop="3dp"-->
+                <!--android:text="订单"-->
+                <!--android:textColor="#bcbfc1" />-->
+
+
+        <!--</RelativeLayout>-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dip"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:layout_weight="1">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tv_discovery"-->
+                <!--style="@style/tab_text_style"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="fill_parent"-->
+                <!--android:drawableTop="@drawable/demo_tab_icon_tribe_normal"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingTop="3dp"-->
+                <!--android:text="发现"-->
+                <!--android:textColor="#bcbfc1" />-->
+        <!--</RelativeLayout>-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="0dip"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tv_setting"-->
+                <!--style="@style/tab_text_style"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="fill_parent"-->
+                <!--android:drawableTop="@drawable/demo_tab_icon_setting_normal"-->
+                <!--android:gravity="center"-->
+                <!--android:paddingTop="3dp"-->
+                <!--android:text="我的"-->
+                <!--android:textColor="#bcbfc1" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tv_unread"-->
+                <!--android:layout_width="10dp"-->
+                <!--android:layout_height="10dp"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_alignParentTop="true"-->
+                <!--android:layout_marginRight="25dp"-->
+                <!--android:background="@drawable/aliwx_topbar_icon_new"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textSize="@dimen/aliwx_unread_text_size"-->
+                <!--android:visibility="invisible"-->
+                <!--/>-->
+
+        <!--</RelativeLayout>-->
+
+    <!--</LinearLayout>-->
+
+
+
+
+
+
+
     <!--<LinearLayout-->
         <!--android:layout_width="fill_parent"-->
         <!--android:layout_height="55dp" >-->
@@ -199,4 +342,4 @@
         <!--</LinearLayout>-->
     <!--</LinearLayout>-->
 
-</RelativeLayout>
+<!--</RelativeLayout>-->

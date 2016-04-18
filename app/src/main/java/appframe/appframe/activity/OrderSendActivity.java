@@ -21,7 +21,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -59,16 +61,22 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.Serializable;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import appframe.appframe.R;
 
 import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
+import appframe.appframe.dto.OrderCategory;
+import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.Token;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
@@ -77,6 +85,7 @@ import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.UploadUtils;
 import appframe.appframe.utils.Utils;
+import appframe.appframe.widget.dropdownmenu.DropdownItemObject;
 import appframe.appframe.widget.photopicker.adapter.ImagePublishAdapter;
 import appframe.appframe.widget.photopicker.model.ImageItem;
 import appframe.appframe.widget.photopicker.util.CustomConstants;
@@ -84,16 +93,21 @@ import appframe.appframe.widget.photopicker.util.IntentConstants;
 import appframe.appframe.widget.photopicker.view.ImageBucketChooseActivity;
 import appframe.appframe.widget.photopicker.view.ImageZoomActivity;
 import appframe.appframe.widget.popupwindow.SelectPicPopupWindow;
+import appframe.appframe.widget.swiperefresh.CategoryAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
+import appframe.appframe.widget.tagview.Tag;
+import appframe.appframe.widget.tagview.TagView;
 
 /**
  * Created by Administrator on 2015/8/12.
  */
 public class OrderSendActivity extends BaseActivity{
-    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_name,tv_progress_content;
-    private EditText edit_title,edit_bounty,edit_content,edit_require;
+    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_name,tv_progress_content,tv_addtag;
+    private EditText edit_title,edit_bounty,edit_content,edit_require,edit_tag;
     private Spinner spinner_category,spinner_range;
     private RadioButton radio_online,radio_offline;
     private CheckBox checkBox_anonymous,checkBox_donotshowphonenum,checkBox_donotshowlocation,checkBox_oneclass,checkBox_twoclass,checkBox_stranger;
+    private TagView tagView;
     private Button btn_send;
     private SelectPicPopupWindow menuWindow;
     private static final int PHOTO_GRAPH = 10;
@@ -122,7 +136,10 @@ public class OrderSendActivity extends BaseActivity{
     public static List<ImageItem> mDataList = new ArrayList<ImageItem>();
     private String Type="0" ;
     StringBuilder sb = new StringBuilder();
+    StringBuilder tag = new StringBuilder();
     public int upload_iamge_num = 0;
+    Intent intent = new Intent();
+    Bundle bundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +153,7 @@ public class OrderSendActivity extends BaseActivity{
         {
             edit_title.setText(savedInstanceState.getString("Title"));
             edit_content.setText(savedInstanceState.getString("Content"));
-            spinner_category.setSelection(savedInstanceState.getInt("Category"));
+//            spinner_category.setSelection(savedInstanceState.getInt("Category"));
             String[] dataArr = savedInstanceState.getString("Deadline").split(" ");
             txt_deadlinedate.setText(dataArr[0]);
             txt_deadlinetime.setText(dataArr[1]);
@@ -220,6 +237,10 @@ public class OrderSendActivity extends BaseActivity{
                         else
                         {
                             progress_bar.setVisibility(View.VISIBLE);
+                            for(Tag tags : tagView.getTags())
+                            {
+                                tag.append("," + tags.text);
+                            }
                             if(mDataList.size() == 0)
                             {
                                 Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
@@ -229,8 +250,8 @@ public class OrderSendActivity extends BaseActivity{
                                         "Content", edit_content.getText().toString(),
                                         "latitude", String.valueOf(latitude),
                                         "longitude", String.valueOf(longitude),
-                                        "Category", spinner_category.getSelectedItem().toString(),
-                                        "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
+                                        "Category", String.valueOf(((OrderCategory)spinner_category.getSelectedItem()).getId()),
+                                        "Visibility", TransferVisibility(checkBox_oneclass.isChecked(), checkBox_twoclass.isChecked(), checkBox_stranger.isChecked()),
                                         "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
                                         "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
                                         "Bounty", edit_bounty.getText().toString(),
@@ -239,13 +260,27 @@ public class OrderSendActivity extends BaseActivity{
                                         "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
                                         "Photos", "",
                                         "Request", edit_require.getText().toString(),
-                                        "Type", Type
-                                ), new Http.RequestListener<UserDetail>() {
+                                        "Type", Type,
+                                        "Tags",tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
+                                ), new Http.RequestListener<OrderDetails>() {
                                     @Override
-                                    public void onSuccess(UserDetail result) {
+                                    public void onSuccess(OrderDetails result) {
                                         super.onSuccess(result);
-                                        Toast.makeText(OrderSendActivity.this,"发单成功",Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
                                         progress_bar.setVisibility(View.GONE);
+                                        removeTempFromPref();
+                                        mDataList.clear();
+                                        if(radio_online.isChecked() == true && Type.equals("2")) {
+                                            intent.setClass(OrderSendActivity.this, PayActivity.class);
+                                            bundle.putSerializable("OrderDetails", result);
+                                            intent.putExtras(bundle);
+                                            startActivity(intent);
+                                        }
+                                        else
+                                        {
+                                            finish();
+                                        }
+
                                     }
 
                                     @Override
@@ -254,14 +289,12 @@ public class OrderSendActivity extends BaseActivity{
                                         progress_bar.setVisibility(View.GONE);
                                     }
                                 });
-                                removeTempFromPref();
-                                mDataList.clear();
-                                finish();
+
                             }
                             else
                             {
                                 //boolean success = false ;
-                                Log.i("mDataList",String.valueOf(mDataList.size()));
+                                Log.i("mDataList", String.valueOf(mDataList.size()));
 
                                 for( ImageItem dl : mDataList)
                                 {
@@ -292,8 +325,8 @@ public class OrderSendActivity extends BaseActivity{
                                                                 "Content", edit_content.getText().toString(),
                                                                 "latitude", String.valueOf(latitude),
                                                                 "longitude", String.valueOf(longitude),
-                                                                "Category", spinner_category.getSelectedItem().toString(),
-                                                                "Visibility", TransferVisibility(checkBox_oneclass.isChecked(),checkBox_twoclass.isChecked(),checkBox_stranger.isChecked()),
+                                                                "Category", String.valueOf(((OrderCategory)spinner_category.getSelectedItem()).getId()),
+                                                                "Visibility", TransferVisibility(checkBox_oneclass.isChecked(), checkBox_twoclass.isChecked(), checkBox_stranger.isChecked()),
                                                                 "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
                                                                 "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
                                                                 "Bounty", edit_bounty.getText().toString(),
@@ -302,13 +335,28 @@ public class OrderSendActivity extends BaseActivity{
                                                                 "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
                                                                 "Photos", sb.deleteCharAt(0).toString(),
                                                                 "Request", edit_require.getText().toString(),
-                                                                "Type", Type
-                                                        ), new Http.RequestListener<UserDetail>() {
+                                                                "Type", Type,
+                                                                "Tags",tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
+                                                        ), new Http.RequestListener<OrderDetails>() {
                                                             @Override
-                                                            public void onSuccess(UserDetail result) {
+                                                            public void onSuccess(OrderDetails result) {
                                                                 super.onSuccess(result);
                                                                 progress_bar.setVisibility(View.GONE);
-                                                                Toast.makeText(OrderSendActivity.this,"发单成功",Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
+                                                                upload_iamge_num = 0;
+                                                                removeTempFromPref();
+                                                                mDataList.clear();
+                                                                if(radio_online.isChecked() == true && Type.equals("2")) {
+                                                                    intent.setClass(OrderSendActivity.this, PayActivity.class);
+                                                                    bundle.putSerializable("OrderDetails", result);
+                                                                    intent.putExtras(bundle);
+                                                                    startActivity(intent);
+                                                                }
+                                                                else
+                                                                {
+                                                                    finish();
+                                                                }
+
                                                             }
 
                                                             @Override
@@ -317,10 +365,8 @@ public class OrderSendActivity extends BaseActivity{
                                                                 progress_bar.setVisibility(View.GONE);
                                                             }
                                                         });
-                                                        upload_iamge_num = 0;
-                                                        removeTempFromPref();
-                                                        mDataList.clear();
-                                                        finish();
+
+
                                                     }
 
                                                 }
@@ -345,7 +391,7 @@ public class OrderSendActivity extends BaseActivity{
 
     protected void onPause()
     {
-        Log.i("onPause","");
+        Log.i("onPause", "");
         super.onPause();
         saveTempToPref();
     }
@@ -353,10 +399,10 @@ public class OrderSendActivity extends BaseActivity{
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
-        Log.i("onSaveInstanceState",edit_title.getText().toString());
+        Log.i("onSaveInstanceState", edit_title.getText().toString());
         outState.putString("Title", edit_title.getText().toString());
         outState.putString("Content", edit_content.getText().toString());
-        outState.putInt("Category", spinner_category.getSelectedItemPosition());
+//        outState.putInt("Category", spinner_category.getSelectedItemPosition());
         outState.putString("Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText());
         outState.putString("PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付");
         outState.putString("Bounty", edit_bounty.getText().toString());
@@ -375,7 +421,7 @@ public class OrderSendActivity extends BaseActivity{
         Log.i("onRestoreInstanceState", savedInstanceState.getString("Title"));
         edit_title.setText(savedInstanceState.getString("Title"));
         edit_content.setText(savedInstanceState.getString("Content"));
-        spinner_category.setSelection(savedInstanceState.getInt("Category"));
+//        spinner_category.setSelection(savedInstanceState.getInt("Category"));
         String[] dataArr = savedInstanceState.getString("Deadline").split(" ");
         txt_deadlinedate.setText(dataArr[0]);
         txt_deadlinetime.setText(dataArr[1]);
@@ -431,6 +477,22 @@ public class OrderSendActivity extends BaseActivity{
     protected void onResume()
     {Log.i("onResume","");
         super.onResume();
+        if(getIntent().getStringExtra("TagName") != null && !getIntent().getStringExtra("TagName").equals("")) {
+            String tagTitle = getIntent().getStringExtra("TagName");
+            boolean newtag = true;
+            for(Tag tag :tagView.getTags())
+            {
+                if(tag.text.equals(tagTitle))
+                {
+                    newtag = false;
+                }
+            }
+            if(newtag) {
+                Tag tag = new Tag(tagTitle);
+                tag.isDeletable = true;
+                tagView.addTag(tag);
+            }
+        }
         notifyDataChanged(); //当在ImageZoomActivity中删除图片时，返回这里需要刷新
     }
 
@@ -506,6 +568,7 @@ public class OrderSendActivity extends BaseActivity{
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        setIntent(intent);
         getTempFromPref();
         List<ImageItem> incomingDataList = (List<ImageItem>) intent
                 .getSerializableExtra(IntentConstants.EXTRA_IMAGE_LIST);
@@ -813,6 +876,45 @@ public class OrderSendActivity extends BaseActivity{
         startActivityForResult(intent, PHOTO_RESOULT);
     }
 
+    private TextWatcher textWatcher = new TextWatcher(){
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if (s.toString().contains(".")) {
+                if (s.length() - 1 - s.toString().indexOf(".") > 2) {
+                    s = s.toString().subSequence(0,
+                            s.toString().indexOf(".") + 3);
+                    edit_bounty.setText(s);
+                    edit_bounty.setSelection(s.length());
+                }
+            }
+            if (s.toString().trim().substring(0).equals(".")) {
+                s = "0" + s;
+                edit_bounty.setText(s);
+                edit_bounty.setSelection(2);
+            }
+
+            if (s.toString().startsWith("0")
+                    && s.toString().trim().length() > 1) {
+                if (!s.toString().substring(1, 2).equals(".")) {
+                    edit_bounty.setText(s.subSequence(0, 1));
+                    edit_bounty.setSelection(1);
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
     private void init()
     {
         txt_deadlinedate = (TextView)findViewById(R.id.txt_deadlinedate);
@@ -832,8 +934,9 @@ public class OrderSendActivity extends BaseActivity{
             ImageUtils.setImageUrl(iv_avatar, Auth.getCurrentUser().getAvatar());
         }
 
+        edit_bounty.addTextChangedListener(textWatcher);
         tv_name.setText(Auth.getCurrentUser().getName());
-        rb_totalvalue.setTag(Auth.getCurrentUser().getTotalPoint());
+//        rb_totalvalue.setRating(Auth.getCurrentUser().getTotalPoint());
 
         checkBox_oneclass = (CheckBox)findViewById(R.id.checkBox_oneclass);
         checkBox_twoclass = (CheckBox)findViewById(R.id.checkBox_twoclass);
@@ -899,23 +1002,30 @@ public class OrderSendActivity extends BaseActivity{
             Type = "2";
         }
 
-        final String category[]=new String[]{
-                "我也不知道分哪类",
-                "衣",
-                "食",
-                "住",
-                "行",
-                "学术/艺术",
-                "工作/商务",
-                "生活/娱乐",
-                "找人",
-                "二手/转让",
-                "资源共享",
-                "合作/推广",
-                "活动"
-        };
-        spinner_category = (Spinner)findViewById(R.id.spinner_category);
-        spinner_category.setAdapter(getAdapter(category));
+        Http.request(OrderSendActivity.this, API.GET_ORDERCATEGORY, new Http.RequestListener<List<OrderCategory>>() {
+            @Override
+            public void onSuccess(List<OrderCategory> result) {
+                super.onSuccess(result);
+//                List<String> category = new ArrayList<String>();
+//                for (OrderCategory orderCategory : result) {
+//                    category.add(orderCategory.getCategoryName());
+//                }
+
+                spinner_category = (Spinner) findViewById(R.id.spinner_category);
+//                spinner_category.setAdapter(getAdapter(category));
+                spinner_category.setAdapter(new CategoryAdapater(OrderSendActivity.this,result));
+
+            }
+
+            @Override
+            public void onFail(String code) {
+                super.onFail(code);
+                finish();
+                Toast.makeText(OrderSendActivity.this,"请连接网络",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         final String range[] = new String[]{
                 "一度朋友",
                 "二度朋友",
@@ -948,6 +1058,30 @@ public class OrderSendActivity extends BaseActivity{
         checkBox_donotshowlocation = (CheckBox)findViewById(R.id.checkBox_donotshowlocation);
         checkBox_donotshowphonenum = (CheckBox)findViewById(R.id.checkBox_donotshowphonenum);
         btn_send = (Button)findViewById(R.id.btn_send);
+        tv_addtag = (TextView)findViewById(R.id.tv_addtag);
+//        edit_tag = (EditText)findViewById(R.id.edit_tag);
+        tagView = (TagView)findViewById(R.id.tagview);
+
+        if(getIntent().getStringExtra("TagName") != null && !getIntent().getStringExtra("TagName").equals("")) {
+            String tagTitle = getIntent().getStringExtra("TagName");
+            Tag tag = new Tag(tagTitle);
+            tag.isDeletable = true;
+            tagView.addTag(tag);
+        }
+
+        tv_addtag.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(tagView.getTags().size() < 3) {
+                    startActivity(new Intent(OrderSendActivity.this, SearchTagActivity.class));
+                }
+                else
+                {
+                    Toast.makeText(OrderSendActivity.this,"最多添加3个标签",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
         //百度地图定位
@@ -958,7 +1092,7 @@ public class OrderSendActivity extends BaseActivity{
     }
 
 
-    private ArrayAdapter<String> getAdapter(String arr[]){
+    private ArrayAdapter<String> getAdapter(List<String> arr){
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, arr);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;
@@ -1030,4 +1164,5 @@ public class OrderSendActivity extends BaseActivity{
             longitude = location.getLongitude();
         }
     }
+
 }

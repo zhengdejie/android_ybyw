@@ -85,7 +85,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                         super.onSuccess(result);
 
 
-                        lv_mysearch.setAdapter(new SwipeRefreshXOrderAdapater(SearchActivity.this, result, "order"));
+                        lv_mysearch.setAdapter(new SwipeRefreshXOrderAdapater(SearchActivity.this, result, AppConfig.ORDERSTATUS_MAIN));
 
                     }
                 });
@@ -93,7 +93,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             else
             {
                 List<OrderDetails> result = new ArrayList<OrderDetails>();
-                lv_mysearch.setAdapter(new SwipeRefreshXOrderAdapater(SearchActivity.this, result, "order"));
+                lv_mysearch.setAdapter(new SwipeRefreshXOrderAdapater(SearchActivity.this, result, AppConfig.ORDERSTATUS_MAIN));
             }
         }
 

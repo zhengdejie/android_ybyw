@@ -1,14 +1,17 @@
 package appframe.appframe.activity;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -26,8 +29,12 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,19 +47,22 @@ import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.UploadUtils;
 import appframe.appframe.utils.Utils;
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
 
 /**
  * Created by dashi on 15/6/21.
  */
-public class RegisterActivity extends BaseActivity {
+public class RegisterActivity extends BaseActivity implements View.OnClickListener{
     private static final int SELECT_PHOTO = 100;
-    TextView tb_back,tb_action,tb_title,tv_progress_content;
-    EditText email, password, name,et_mobile;
+    TextView tb_back,tb_action,tb_title,tv_progress_content,tv_code;
+    EditText  password, name,et_mobile,et_code;
     View ok;
     ImageButton avatar;
     List<UserContact> contactsList = new ArrayList<UserContact>();
     LinearLayout progress_bar;
     String uploadedAvatarId;
+    private MyCount mc;
 
 
     @Override
@@ -63,10 +73,12 @@ public class RegisterActivity extends BaseActivity {
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_action = (TextView)findViewById(R.id.tb_action);
         tb_title = (TextView)findViewById(R.id.tb_title);
-        email = (EditText)findViewById(R.id.email);
+        tv_code = (TextView)findViewById(R.id.tv_code);
+//        email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
         name = (EditText)findViewById(R.id.name);
         et_mobile = (EditText)findViewById(R.id.et_mobile);
+        et_code = (EditText)findViewById(R.id.et_code);
         progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
         tv_progress_content = (TextView)findViewById(R.id.tv_progress_content);
         tv_progress_content.setText("正在注册");
@@ -74,84 +86,180 @@ public class RegisterActivity extends BaseActivity {
         ok = findViewById(R.id.ok);
         avatar = (ImageButton)findViewById(R.id.avatar);
 
-        ok.setOnClickListener(new View.OnClickListener(){
+        tb_action.setOnClickListener(this);
+        avatar.setOnClickListener(this);
+        ok.setOnClickListener(this);
+        tv_code.setOnClickListener(this);
 
-            @Override
-            public void onClick(View v) {
-                progress_bar.setVisibility(View.VISIBLE);
-                Http.request(RegisterActivity.this, API.USER_REGISTER, Http.map(
-                        "Email", email.getText().toString(),
-                        "Password", password.getText().toString(),
-                        "Avatar", uploadedAvatarId,
-                        "Name", name.getText().toString(),
-                        "Mobile",et_mobile.getText().toString()
 
-                ), new Http.RequestListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult result) {
-                        super.onSuccess(result);
-                        try {
 
-                            contactsList = UploadUtils.uploadContact(RegisterActivity.this);
-                            Auth.login(result.Token, result.User);
+        tb_back.setVisibility(View.GONE);
+        tb_action.setText("登入");
+        tb_title.setText("友帮");
 
-                            Http.request(RegisterActivity.this, API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
-                                    "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
-                                @Override
-                                public void onSuccess(String result) {
-                                    super.onSuccess(result);
-                                    SplashActivity.startRootActivity(RegisterActivity.this);
-                                    progress_bar.setVisibility(View.GONE);
-                                }
+    }
 
-                                @Override
-                                public void onFail(String code) {
-                                    super.onFail(code);
-
-                                    SplashActivity.startRootActivity(RegisterActivity.this);
-                                    progress_bar.setVisibility(View.GONE);
-                                }
-                            });
-
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-
-                    }
-                    @Override
-                    public void onFail(String code) {
-                        super.onFail(code);
-                        progress_bar.setVisibility(View.GONE);
-                    }
-                });
-            }
-        });
-        avatar.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId())
+        {
+            case R.id.avatar:
                 uploadedAvatarId = null;
                 Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 //Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
 
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, SELECT_PHOTO);
-            }
-        });
+                break;
+            case R.id.ok:
+                if(et_mobile.getText().toString().equals("") || et_mobile.getText() == null)
+                {
+                    Toast.makeText(this,"手机号码不能为空",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    if(name.getText().toString().equals("") || name.getText() == null)
+                    {
+                        Toast.makeText(this,"昵称不能为空",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        if(password.getText().toString().equals("") || password.getText() == null)
+                        {
+                            Toast.makeText(this,"密码不能为空",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            if(et_code.getText().toString().equals("") || et_code.getText() == null)
+                            {
+                                Toast.makeText(this,"验证码不能为空",Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                progress_bar.setVisibility(View.VISIBLE);
+                                Http.request(RegisterActivity.this, API.USER_REGISTER, Http.map(
 
-        tb_back.setVisibility(View.GONE);
-        tb_action.setText("登入");
-        tb_title.setText("友帮");
-        tb_action.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                                        "Password", password.getText().toString(),
+                                        "Avatar", uploadedAvatarId,
+                                        "Name", name.getText().toString(),
+                                        "Mobile", et_mobile.getText().toString(),
+                                        "Code",et_code.getText().toString()
+
+                                ), new Http.RequestListener<AuthResult>() {
+                                    @Override
+                                    public void onSuccess(AuthResult result) {
+                                        super.onSuccess(result);
+                                        try {
+
+                                            contactsList = UploadUtils.uploadContact(RegisterActivity.this);
+                                            Auth.login(result.Token, result.User);
+
+                                            Http.request(RegisterActivity.this, API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
+                                                    "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
+                                                @Override
+                                                public void onSuccess(String result) {
+                                                    super.onSuccess(result);
+                                                    SplashActivity.startRootActivity(RegisterActivity.this);
+                                                    SMSSDK.unregisterEventHandler(eh);
+                                                    progress_bar.setVisibility(View.GONE);
+                                                }
+
+                                                @Override
+                                                public void onFail(String code) {
+                                                    super.onFail(code);
+
+                                                    SplashActivity.startRootActivity(RegisterActivity.this);
+                                                    progress_bar.setVisibility(View.GONE);
+                                                }
+                                            });
+
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                        progress_bar.setVisibility(View.GONE);
+                                    }
+                                });//HTTP
+                            }
+                        }
+                    }
+                }
+
+                break;
+            case R.id.tv_code:
+                if(et_mobile.getText().toString().equals("") || et_mobile.getText() == null) {
+                    tv_code.setEnabled(false);
+                    mc = new MyCount(60000, 1000);
+                    mc.start();
+                }
+//                SMSSDK.registerEventHandler(eh); //注册短信回调
+//                SMSSDK.getVerificationCode("86", et_mobile.getText().toString());
+                break;
+            case R.id.tb_action:
                 finish();
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-            }
-        });
+                break;
+
+        }
     }
+
+    EventHandler eh=new EventHandler(){
+
+        @Override
+        public void afterEvent(int event, int result, Object data) {
+
+            if (result == SMSSDK.RESULT_COMPLETE) {
+                //回调完成
+                if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+                    //提交验证码成功
+                }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+                    //获取验证码成功
+//                    SMSSDK.submitVerificationCode("86",et_mobile.getText().toString(),et_code.getText().toString());
+                }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+                    //返回支持发送验证码的国家列表
+//                    HashMap<String,Object> phoneMap = (HashMap<String, Object>) data;
+//                    String country = (String) phoneMap.get("country");
+
+                }
+            }else{
+                ((Throwable)data).printStackTrace();
+            }
+        }
+    };
+
+//    private String getPhoneNumber(){
+//        TelephonyManager mTelephonyMgr;
+//        mTelephonyMgr = (TelephonyManager)  getSystemService(Context.TELEPHONY_SERVICE);
+//        return mTelephonyMgr.getLine1Number();
+//    }
+
+    /*定义一个倒计时的内部类*/
+    class MyCount extends CountDownTimer {
+        public MyCount(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+        @Override
+        public void onFinish() {
+            tv_code.setEnabled(true);
+            tv_code.setText("获取验证码");
+        }
+        @Override
+        public void onTick(long millisUntilFinished) {
+            SimpleDateFormat sdf = new SimpleDateFormat("ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+0"));
+            Date date = new Date(millisUntilFinished);
+            String text = sdf.format(date);
+
+            tv_code.setText("(" + text +"）"+ "获取验证码");
+
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -186,6 +294,7 @@ public class RegisterActivity extends BaseActivity {
                 }
         }
     }
+
 
 //    static final int MENU_LOGIN = 1;
 //

@@ -46,6 +46,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
     View root,bottomLine_progress,bottomLine_done,bottomLine_close,bottomLine_apply;
     LinearLayout tabtop;
     LinearLayout progress_bar;
+    String from;
 //    boolean require_selected =true;
 
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -100,6 +101,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 ConfirmedOrderDetail orderDetails = (ConfirmedOrderDetail) parent.getAdapter().getItem(position);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("ConfirmOrderDetails", orderDetails);
+                bundle.putString("From",from);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -130,6 +132,11 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 tv_progess.setText(String.valueOf(result.getOngoingCount()));
                 tv_done.setText(String.valueOf(result.getUnReviewedCount()));
 
+            }
+
+            @Override
+            public void onFail(String code) {
+                super.onFail(code);
             }
         });
 
@@ -183,6 +190,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 setTabClose(false);
                 proListView.setAdapter(null);
                 progress_bar.setVisibility(View.VISIBLE);
+                from = AppConfig.ORDERSTATUS_APPLY;
                 Map<String, String> map_apply = new HashMap<String, String>();
                 map_apply.put("Status", "3");
                 Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map_apply)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
@@ -202,6 +210,23 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                     }
                 });
 
+                Http.request(getActivity(), API.GET_ORDER_NUM, new Http.RequestListener<ConfirmedOrderUndoCount>() {
+                    @Override
+                    public void onSuccess(ConfirmedOrderUndoCount result) {
+                        super.onSuccess(result);
+
+                        tv_apply.setText(String.valueOf(result.getPendingCount()));
+                        tv_progess.setText(String.valueOf(result.getOngoingCount()));
+                        tv_done.setText(String.valueOf(result.getUnReviewedCount()));
+
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                    }
+                });
+
                 break;
             case R.id.tab_progess:
                 setTabApply(false);
@@ -210,6 +235,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 setTabClose(false);
                 proListView.setAdapter(null);
                 progress_bar.setVisibility(View.VISIBLE);
+                from = AppConfig.ORDERSTATUS_PROGRESS;
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Status", "1");
                 Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
@@ -229,6 +255,22 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                     }
                 });
 
+                Http.request(getActivity(), API.GET_ORDER_NUM, new Http.RequestListener<ConfirmedOrderUndoCount>() {
+                    @Override
+                    public void onSuccess(ConfirmedOrderUndoCount result) {
+                        super.onSuccess(result);
+
+                        tv_apply.setText(String.valueOf(result.getPendingCount()));
+                        tv_progess.setText(String.valueOf(result.getOngoingCount()));
+                        tv_done.setText(String.valueOf(result.getUnReviewedCount()));
+
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                    }
+                });
                 break;
             case R.id.tab_done:
                 setTabApply(false);
@@ -237,6 +279,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 setTabClose(false);
                 proListView.setAdapter(null);
                 progress_bar.setVisibility(View.VISIBLE);
+                from = AppConfig.ORDERSTATUS_DONE;
                 Map<String, String> map_done = new HashMap<String, String>();
                 map_done.put("Status", "2");
                 Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map_done)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
@@ -256,6 +299,22 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                     }
                 });
 
+                Http.request(getActivity(), API.GET_ORDER_NUM, new Http.RequestListener<ConfirmedOrderUndoCount>() {
+                    @Override
+                    public void onSuccess(ConfirmedOrderUndoCount result) {
+                        super.onSuccess(result);
+
+                        tv_apply.setText(String.valueOf(result.getPendingCount()));
+                        tv_progess.setText(String.valueOf(result.getOngoingCount()));
+                        tv_done.setText(String.valueOf(result.getUnReviewedCount()));
+
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                    }
+                });
                 break;
             case R.id.tab_close:
                 setTabApply(false);
@@ -264,6 +323,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 setTabClose(true);
                 proListView.setAdapter(null);
                 progress_bar.setVisibility(View.VISIBLE);
+                from = AppConfig.ORDERSTATUS_CLOSE;
                 Map<String, String> map_close = new HashMap<String, String>();
                 map_close.put("Status", "0");
                 Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map_close)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {

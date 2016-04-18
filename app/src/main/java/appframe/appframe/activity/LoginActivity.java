@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -38,8 +39,8 @@ import appframe.appframe.utils.Utils;
  * Created by dashi on 15/6/21.
  */
 public class LoginActivity extends BaseActivity {
-    EditText email, password,et_mobile;
-    View ok;
+    EditText  password,et_mobile;
+    Button ok,btn_forgetpassword;
     TextView tb_back,tb_action,tb_title,tv_progress_content;
     LinearLayout progress_bar;
 
@@ -53,7 +54,7 @@ public class LoginActivity extends BaseActivity {
         tb_action = (TextView)findViewById(R.id.tb_action);
         tb_title = (TextView)findViewById(R.id.tb_title);
 
-        email = (EditText)findViewById(R.id.email);
+//        email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
         et_mobile = (EditText)findViewById(R.id.et_mobile);
         progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
@@ -63,7 +64,8 @@ public class LoginActivity extends BaseActivity {
         //List<UserContact> contactsList = new ArrayList<UserContact>();
 
 
-        ok = findViewById(R.id.ok);
+        ok = (Button)findViewById(R.id.ok);
+        btn_forgetpassword = (Button)findViewById(R.id.btn_forgetpassword);
 
         ok.setOnClickListener(new View.OnClickListener() {
 
@@ -71,7 +73,7 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View v) {
                 progress_bar.setVisibility(View.VISIBLE);
                 Http.request(LoginActivity.this, API.USER_LOGIN, Http.map(
-                        "Email", email.getText().toString(),
+
                         "Password", password.getText().toString(),
                         "Mobile",et_mobile.getText().toString()
 
@@ -116,6 +118,13 @@ public class LoginActivity extends BaseActivity {
                         progress_bar.setVisibility(View.GONE);
                     }
                 });
+            }
+        });
+
+        btn_forgetpassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,ForgetPasswordActivity.class));
             }
         });
 

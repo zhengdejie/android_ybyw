@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/title_bar"
+        />
+
+    <EditText
+        android:id="@+id/et_yuer"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:inputType="numberDecimal"
+        android:ems="5"
+        android:hint="0.00"
+        android:gravity="center"
+        android:textColor="@color/viewfinder_laser"
+        android:textSize="32dp"
+        android:layout_below="@+id/view1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view1"
+        android:layout_margin="5dp"
+        android:text="请输入充值金额:"
+        android:id="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/payway"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="充值方式"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/et_yuer"
+        />
+
+    <TextView
+        android:id="@+id/tv_alipay"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:drawableRight="@drawable/aliwx_arrow"
+        android:text="@string/ali"
+        android:layout_below="@+id/payway"/>
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/tv_alipay"
+        />
+
+    <TextView
+    android:id="@+id/tv_weixing"
+    style="@style/more_item_style"
+    android:layout_width="match_parent"
+    android:layout_height="66dp"
+    android:drawableRight="@drawable/aliwx_arrow"
+    android:text="@string/weixing"
+    android:layout_below="@+id/view2"/>
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/tv_weixing"
+        />
+
+
+
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:id="@+id/lly_send">-->
+        <!--<Button-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="确认"-->
+            <!--android:id="@+id/btn_send"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--/>-->
+    <!--</LinearLayout>-->
+</RelativeLayout>
