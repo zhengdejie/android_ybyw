@@ -52,7 +52,7 @@ public class LoginSampleHelper {
     }
 
     // 应用APPKEY，这个APPKEY是申请应用时获取的
-    public static final String APP_KEY = "23243435";
+    public static final String APP_KEY = "23350659";
 
     //以下两个内容是测试环境使用，开发无需关注
     public static final String APP_KEY_TEST = "60027574";  //60026702

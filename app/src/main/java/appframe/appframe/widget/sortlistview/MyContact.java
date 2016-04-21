@@ -303,10 +303,12 @@ public class MyContact extends Activity {
                 filterDateList = MyContactList;
             } else {
                 filterDateList.clear();
-                for (ContactDetail sortModel : MyContactList) {
-                    String name = sortModel.getMobileContact().getName();
-                    if (name.indexOf(filterStr.toString()) != -1 || characterParser.getSelling(name).startsWith(filterStr.toString())) {
-                        filterDateList.add(sortModel);
+                if(MyContactList != null && MyContactList.size() > 0) {
+                    for (ContactDetail sortModel : MyContactList) {
+                        String name = sortModel.getMobileContact().getName();
+                        if (name.indexOf(filterStr.toString()) != -1 || characterParser.getSelling(name).startsWith(filterStr.toString())) {
+                            filterDateList.add(sortModel);
+                        }
                     }
                 }
             }
@@ -317,17 +319,21 @@ public class MyContact extends Activity {
                 filterDateList = SourceDateList;
             } else {
                 filterDateList.clear();
-                for (ContactDetail sortModel : SourceDateList) {
-                    String name = sortModel.getUser().getFNickName() != null ? sortModel.getUser().getFNickName() : sortModel.getUser().getName();
-                    if (name.indexOf(filterStr.toString()) != -1 || characterParser.getSelling(name).startsWith(filterStr.toString())) {
-                        filterDateList.add(sortModel);
+                if(SourceDateList != null && SourceDateList.size() > 0) {
+                    for (ContactDetail sortModel : SourceDateList) {
+                        String name = sortModel.getUser().getFNickName() != null ? sortModel.getUser().getFNickName() : sortModel.getUser().getName();
+                        if (name.indexOf(filterStr.toString()) != -1 || characterParser.getSelling(name).startsWith(filterStr.toString())) {
+                            filterDateList.add(sortModel);
+                        }
                     }
                 }
             }
         }
 
         // ����a-z��������
-        Collections.sort(filterDateList, pinyinComparator);
-        adapter.updateListView(filterDateList);
+        if(filterDateList != null && filterDateList.size() > 0) {
+            Collections.sort(filterDateList, pinyinComparator);
+            adapter.updateListView(filterDateList);
+        }
     }
 }

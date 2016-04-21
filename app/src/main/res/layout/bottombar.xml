@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="65.32999dp"
     android:layout_alignParentBottom="true"
     >
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="52.0dip"
         android:layout_gravity="bottom"
         android:background="@drawable/tab_bg"
@@ -15,7 +15,7 @@
 
         <FrameLayout
             android:id="@+id/frame_home"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="48.0dip"
             android:layout_weight="1.0" >
 
@@ -33,7 +33,7 @@
 
         <FrameLayout
             android:id="@+id/frame_forum"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="48.0dip"
             android:layout_marginRight="10.0dip"
             android:layout_weight="1.0" >
@@ -56,7 +56,7 @@
             android:layout_weight="1.0" />
 
         <FrameLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="48.0dip"
             android:layout_marginLeft="10.0dip"
             android:layout_weight="1.0" >
@@ -74,33 +74,41 @@
         </FrameLayout>
 
         <FrameLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="48.0dip"
             android:layout_weight="1.0" >
 
-            <TextView
-                android:id="@+id/tv_setting"
-                style="@style/tab_text_style"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:drawableTop="@drawable/demo_tab_icon_setting_normal"
-                android:gravity="center"
-                android:paddingTop="3dp"
-                android:text="我的"
-                android:textColor="#bcbfc1" />
+            <!--<RelativeLayout-->
+            <!--android:layout_width="0dip"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1">-->
 
             <TextView
-                android:id="@+id/tv_unread"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginRight="25dp"
-                android:background="@drawable/aliwx_topbar_icon_new"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/aliwx_unread_text_size"
-                android:visibility="invisible"
-                />
+            android:id="@+id/tv_setting"
+            style="@style/tab_text_style"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:drawableTop="@drawable/demo_tab_icon_setting_normal"
+            android:gravity="center"
+            android:paddingTop="3dp"
+            android:text="我的"
+            android:textColor="#bcbfc1" />
+
+            <TextView
+            android:id="@+id/tv_unread"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/aliwx_topbar_icon_new"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/aliwx_unread_text_size"
+            android:visibility="invisible"
+                android:layout_gravity="right|top" />
+
+            <!--</RelativeLayout>-->
+
         </FrameLayout>
     </LinearLayout>
 

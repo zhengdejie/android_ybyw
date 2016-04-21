@@ -167,7 +167,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                                 @Override
                                                 public void onFail(String code) {
                                                     super.onFail(code);
-
+                                                    Toast.makeText(RegisterActivity.this,code,Toast.LENGTH_SHORT).show();
                                                     SplashActivity.startRootActivity(RegisterActivity.this);
                                                     progress_bar.setVisibility(View.GONE);
                                                 }
@@ -182,6 +182,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                     @Override
                                     public void onFail(String code) {
                                         super.onFail(code);
+                                        Toast.makeText(RegisterActivity.this,code,Toast.LENGTH_SHORT).show();
                                         progress_bar.setVisibility(View.GONE);
                                     }
                                 });//HTTP
@@ -192,13 +193,17 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
                 break;
             case R.id.tv_code:
-                if(et_mobile.getText().toString().equals("") || et_mobile.getText() == null) {
+                if(!et_mobile.getText().toString().equals("") && et_mobile.getText() != null) {
                     tv_code.setEnabled(false);
                     mc = new MyCount(60000, 1000);
                     mc.start();
+                    SMSSDK.registerEventHandler(eh); //注册短信回调
+                    SMSSDK.getVerificationCode("86", et_mobile.getText().toString());
                 }
-//                SMSSDK.registerEventHandler(eh); //注册短信回调
-//                SMSSDK.getVerificationCode("86", et_mobile.getText().toString());
+                else
+                {
+                    Toast.makeText(this,"请填写手机号",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.tb_action:
                 finish();
