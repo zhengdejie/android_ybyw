@@ -37,7 +37,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXNearbyAdapater;
  * Created by Administrator on 2015/11/12.
  */
 public class MyMessageActivity extends BaseActivity implements View.OnClickListener{
-    private TextView tb_title,tb_back,tv_systemmessage,tv_ordermessage,tv_friendmessage,tv_recentcontacter,tv_smunread,tv_omunread,tv_fmunread,tv_rcunread;
+    private TextView tb_title,tb_back,tv_systemmessage,tv_ordermessage,tv_questionmessage,tv_friendmessage,tv_recentcontacter,tv_smunread,tv_qmunread,tv_omunread,tv_fmunread,tv_rcunread;
     private Fragment fgm_recentcontacter;
     private LinearLayout lv_fragment_container;
     private IYWConversationUnreadChangeListener mConversationUnreadChangeListener;
@@ -59,17 +59,20 @@ public class MyMessageActivity extends BaseActivity implements View.OnClickListe
         tv_ordermessage = (TextView)findViewById(R.id.tv_ordermessage);
         tv_friendmessage = (TextView)findViewById(R.id.tv_friendmessage);
         tv_recentcontacter = (TextView)findViewById(R.id.tv_recentcontacter);
+        tv_questionmessage = (TextView)findViewById(R.id.tv_questionmessage);
         tv_smunread = (TextView)findViewById(R.id.tv_smunread);
         tv_omunread = (TextView)findViewById(R.id.tv_omunread);
         tv_fmunread = (TextView)findViewById(R.id.tv_fmunread);
         tv_rcunread = (TextView)findViewById(R.id.tv_rcunread);
-        tb_back.setText("个人中心");
+        tv_qmunread = (TextView)findViewById(R.id.tv_qmunread);
+        tb_back.setText("我的");
         tb_title.setText("我的消息");
         tb_back.setOnClickListener(this);
         tv_systemmessage.setOnClickListener(this);
         tv_ordermessage.setOnClickListener(this);
         tv_friendmessage.setOnClickListener(this);
         tv_recentcontacter.setOnClickListener(this);
+        tv_questionmessage.setOnClickListener(this);
 
 //        YWIMKit imKit = LoginSampleHelper.getInstance().getIMKit();
 //        FragmentManager fragmentManager = getSupportFragmentManager();
@@ -107,9 +110,10 @@ public class MyMessageActivity extends BaseActivity implements View.OnClickListe
                         tv_fmunread.setVisibility(View.VISIBLE);
                         tv_fmunread.setText(String.valueOf(mtc.getCount()));
                     }
-                    else
+                    else if(mtc.getType() == 5 && mtc.getCount() != 0 )
                     {
-
+                        tv_qmunread.setVisibility(View.VISIBLE);
+                        tv_qmunread.setText(String.valueOf(mtc.getCount()));
                     }
                 }
 
@@ -186,6 +190,17 @@ public class MyMessageActivity extends BaseActivity implements View.OnClickListe
                     }
                 });
                 startActivity(new Intent(MyMessageActivity.this, OrderMessageActivity.class));
+                break;
+            case R.id.tv_questionmessage:
+                tv_qmunread.setVisibility(View.INVISIBLE);
+                Http.request(MyMessageActivity.this, API.MARK_ALLREAD, Http.map("Type","5"), new Http.RequestListener<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        super.onSuccess(result);
+
+                    }
+                });
+                startActivity(new Intent(MyMessageActivity.this, QuestionMessageActivity.class));
                 break;
             case R.id.tv_friendmessage:
                 tv_fmunread.setVisibility(View.INVISIBLE);

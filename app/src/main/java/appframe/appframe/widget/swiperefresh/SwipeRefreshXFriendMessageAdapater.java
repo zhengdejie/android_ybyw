@@ -50,6 +50,8 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
             mHolder = new ViewHolder();
             mHolder.tv_message = (TextView) convertView.findViewById(R.id.tv_message);
             mHolder.tv_accept = (TextView) convertView.findViewById(R.id.tv_accept);
+            mHolder.tv_title = (TextView) convertView.findViewById(R.id.tv_title);
+            mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
             convertView.setTag(mHolder);
         }
         else
@@ -59,6 +61,8 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
 
         final PushMessage item = pushMessages.get(position);
         mHolder.tv_message.setText(item.getContent());
+        mHolder.tv_title.setText(item.getTitle());
+        mHolder.tv_time.setText(item.getCreatedAt());
         if(item.getFriendRequestAccepted() == 1)
         {
             mHolder.tv_accept.setBackgroundColor(Color.GRAY);
@@ -96,7 +100,6 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
 
     static class ViewHolder
     {
-        private TextView tv_message;
-        private TextView tv_accept;
+        private TextView tv_message,tv_accept,tv_title,tv_time;
     }
 }

@@ -1,6 +1,7 @@
 package appframe.appframe.widget.dropdownmenu;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ public class DropdownListItemView extends TextView {
     public void bind(CharSequence text,boolean checked){
         setText(text);
         if (checked){
+//            setTextColor(Color.rgb(56, 171, 228));
             Drawable icon = getResources().getDrawable(R.drawable.ic_task_status_list_check);
             setCompoundDrawablesWithIntrinsicBounds(null,null,icon,null);
         }else{

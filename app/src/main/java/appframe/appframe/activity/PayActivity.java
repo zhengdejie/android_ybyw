@@ -27,6 +27,7 @@ import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.OrderPay;
 import appframe.appframe.dto.PayResult;
 import appframe.appframe.dto.OnlinePay;
+import appframe.appframe.dto.Question;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Arith;
 import appframe.appframe.utils.Auth;
@@ -52,6 +53,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
     OrderDetails orderDetails,orderDetailsPay,Candidate;
     ConfirmedOrderDetail confirmedOrderDetail,confirmedOrderDetailPay;
     OrderPay orderPay;
+    Question question,myQuestion;
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -137,6 +139,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
         Candidate = (OrderDetails)getIntent().getSerializableExtra("Candidate");
         confirmedOrderDetail = (ConfirmedOrderDetail)getIntent().getSerializableExtra("ConfirmedOrderDetail");
         confirmedOrderDetailPay = (ConfirmedOrderDetail)getIntent().getSerializableExtra("ConfirmedOrderDetailPay");
+        question = (Question)getIntent().getSerializableExtra("Question");
+        myQuestion = (Question)getIntent().getSerializableExtra("MyQuestion");
 
         orderPay = (OrderPay)getIntent().getSerializableExtra("OrderPay");
         if(orderDetails != null) {
@@ -157,6 +161,16 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
         if(orderPay != null)
         {
             tv_showtotal.setText(String.valueOf(orderPay.getAmount()));
+        }
+
+        if(question != null)
+        {
+            tv_showtotal.setText(String.valueOf(question.getBounty()));
+        }
+
+        if(myQuestion != null)
+        {
+            tv_showtotal.setText(String.valueOf(myQuestion.getBounty()));
         }
 
         if(Candidate != null) {
@@ -555,6 +569,110 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                     }
                                 });
                     }
+                    //提问
+                    if(question != null)
+                    {
+                        Http.request(PayActivity.this, API.ORDERPAY, Http.map(
+                                        "ActionType", "2",
+                                        "PlatformType", PlatformType,
+                                        "Amount", tv_showtotal.getText().toString(),
+                                        "OrderId", String.valueOf(question.getId())),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+                                        /**
+                                         * 完整的符合支付宝参数规范的订单信息
+                                         */
+//                        final String payInfo = AliPay.getOrderInfo("测试的商品", "该测试商品的详细描述", "0.01", "1") + "&sign=\"" + result.getSign() + "\"&" + AliPay.getSignType();
+
+                                        if (result != null) {
+                                            Runnable payRunnable = new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    // 构造PayTask 对象
+                                                    PayTask alipay = new PayTask(PayActivity.this);
+                                                    // 调用支付接口，获取支付结果
+                                                    String resultInfo = alipay.pay(result.getSign(), true);
+
+                                                    Message msg = new Message();
+                                                    msg.what = SDK_PAY_FLAG;
+                                                    msg.obj = resultInfo;
+                                                    mHandler.sendMessage(msg);
+                                                }
+                                            };
+
+                                            // 必须异步调用
+                                            Thread payThread = new Thread(payRunnable);
+                                            payThread.start();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+                    //我的提问
+                    if(myQuestion != null)
+                    {
+                        Http.request(PayActivity.this, API.ORDERPAY, Http.map(
+                                        "ActionType", "2",
+                                        "PlatformType", PlatformType,
+                                        "Amount", tv_showtotal.getText().toString(),
+                                        "OrderId", String.valueOf(myQuestion.getId())),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+                                        /**
+                                         * 完整的符合支付宝参数规范的订单信息
+                                         */
+//                        final String payInfo = AliPay.getOrderInfo("测试的商品", "该测试商品的详细描述", "0.01", "1") + "&sign=\"" + result.getSign() + "\"&" + AliPay.getSignType();
+
+                                        if (result != null) {
+                                            Runnable payRunnable = new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    // 构造PayTask 对象
+                                                    PayTask alipay = new PayTask(PayActivity.this);
+                                                    // 调用支付接口，获取支付结果
+                                                    String resultInfo = alipay.pay(result.getSign(), true);
+
+                                                    Message msg = new Message();
+                                                    msg.what = SDK_PAY_FLAG;
+                                                    msg.obj = resultInfo;
+                                                    mHandler.sendMessage(msg);
+                                                }
+                                            };
+
+                                            // 必须异步调用
+                                            Thread payThread = new Thread(payRunnable);
+                                            payThread.start();
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
                 }
                 else if(TypeofPay == WeixingPay)
                 {
@@ -776,6 +894,72 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                     }
                                 });
                     }
+                    //提问
+                    if(question != null)
+                    {
+                        Http.request(PayActivity.this, API.ORDERPAY, Http.map(
+                                        "ActionType", "2",
+                                        "PlatformType", PlatformType,
+                                        "Amount", tv_showtotal.getText().toString(),
+                                        "OrderId", String.valueOf(question.getId())),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+
+                                        PayReq req = new PayReq();
+                                        req.appId = result.getAppid();
+                                        req.partnerId	= result.getPartnerid();
+                                        req.prepayId = result.getPrepayid();
+                                        req.nonceStr = result.getNoncestr();
+                                        req.timeStamp	= result.getTimestamp();
+                                        req.packageValue = result.getPackage();
+                                        req.sign = result.getSign();
+
+                                        api.sendReq(req);
+
+
+                                    }
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+                    //我的提问
+                    if(myQuestion != null)
+                    {
+                        Http.request(PayActivity.this, API.ORDERPAY, Http.map(
+                                        "ActionType", "2",
+                                        "PlatformType", PlatformType,
+                                        "Amount", tv_showtotal.getText().toString(),
+                                        "OrderId", String.valueOf(myQuestion.getId())),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+
+                                        PayReq req = new PayReq();
+                                        req.appId = result.getAppid();
+                                        req.partnerId	= result.getPartnerid();
+                                        req.prepayId = result.getPrepayid();
+                                        req.nonceStr = result.getNoncestr();
+                                        req.timeStamp	= result.getTimestamp();
+                                        req.packageValue = result.getPackage();
+                                        req.sign = result.getSign();
+
+                                        api.sendReq(req);
+
+
+                                    }
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
                 }
                 else if(TypeofPay == YBPay)
                 {
@@ -944,6 +1128,54 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(PayActivity.this, MyMissionActivity.class));
                                     }
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+                    //提问
+                    if(question != null) {
+                        Http.request(PayActivity.this, API.ORDERPAY, Http.map(
+                                        "ActionType", "2",
+                                        "PlatformType",PlatformType,
+                                        "Amount", tv_showtotal.getText().toString(),
+                                        "OrderId", String.valueOf(question.getId())),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(OnlinePay result) {
+                                        super.onSuccess(result);
+
+                                        Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(PayActivity.this,HomeActivity.class));
+
+                                    }
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+                    //我的提问
+                    if(myQuestion != null) {
+                        Http.request(PayActivity.this, API.ORDERPAY, Http.map(
+                                        "ActionType", "2",
+                                        "PlatformType",PlatformType,
+                                        "Amount", tv_showtotal.getText().toString(),
+                                        "OrderId", String.valueOf(myQuestion.getId())),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(OnlinePay result) {
+                                        super.onSuccess(result);
+
+                                        Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(PayActivity.this,HomeActivity.class));
+
+                                    }
+
 
                                     @Override
                                     public void onFail(String code) {

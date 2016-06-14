@@ -20,6 +20,7 @@ import appframe.appframe.dto.UserDetail;
 import appframe.appframe.fragment.MyOrderFragment;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderMessageAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXSystemMessageAdapater;
 
 /**
@@ -27,7 +28,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXSystemMessageAdapater;
  */
 
 public class OrderMessageActivity extends BaseActivity implements View.OnClickListener{
-    private TextView tb_title,tb_back;
+    private TextView tb_title,tb_back,tv_empty;
     ListView lv_ordermessage;
 
     @Override
@@ -47,6 +48,7 @@ public class OrderMessageActivity extends BaseActivity implements View.OnClickLi
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
+        tv_empty = (TextView)findViewById(R.id.tv_empty);
         lv_ordermessage = (ListView)findViewById(R.id.lv_ordermessage);
         tb_back.setText("我的消息");
         tb_title.setText("订单通知");
@@ -81,13 +83,20 @@ public class OrderMessageActivity extends BaseActivity implements View.OnClickLi
     {
         Map<String, String> map = new HashMap<String, String>();
         map.put("ReceiverID", String.valueOf(Auth.getCurrentUserId()));
+
         map.put("Type", "1");
         Http.request(OrderMessageActivity.this, API.GET_PUSHMESSAGE, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<PushMessage>>() {
             @Override
             public void onSuccess(List<PushMessage> result) {
                 super.onSuccess(result);
 
-                lv_ordermessage.setAdapter(new SwipeRefreshXSystemMessageAdapater(OrderMessageActivity.this, result));
+                lv_ordermessage.setAdapter(new SwipeRefreshXOrderMessageAdapater(OrderMessageActivity.this, result));
+                if(result != null && result.size() != 0) {
+                    tv_empty.setVisibility(View.GONE);
+                }
+                else {
+                    tv_empty.setVisibility(View.VISIBLE);
+                }
 
             }
         });

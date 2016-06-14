@@ -3,7 +3,7 @@
                 android:id="@+id/title_bar"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/white" >
+                android:background="#373737" >
 
     <TextView
         android:id="@+id/tb_back"
@@ -13,10 +13,10 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
         android:gravity="center"
-        android:textColor="@drawable/text_selector"
+        android:textColor="@color/white"
         android:textSize="15sp"
         android:text=""
-        android:drawableLeft="@drawable/ic_ab_back_holo_light_am"/>
+        android:drawableLeft="@drawable/back"/>
 
     <TextView
         android:id="@+id/tb_title"
@@ -26,7 +26,7 @@
         android:text="标题"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 
     <TextView
@@ -36,6 +36,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
+        android:textColor="@color/white"
         android:gravity="center"
         />
 

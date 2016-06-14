@@ -62,7 +62,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         tv_privacy.setOnClickListener(this);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
-        tb_back.setText("个人中心");
+        tb_back.setText("我的");
         tb_title.setText("设置");
         tb_back.setOnClickListener(this);
 

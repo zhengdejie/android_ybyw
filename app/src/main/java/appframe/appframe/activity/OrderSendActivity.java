@@ -102,19 +102,19 @@ import appframe.appframe.widget.tagview.TagView;
  * Created by Administrator on 2015/8/12.
  */
 public class OrderSendActivity extends BaseActivity{
-    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_name,tv_progress_content,tv_addtag;
+    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_progress_content,tv_addtag,tv_title,btn_send,tv_titlecount,tv_contentcount;
     private EditText edit_title,edit_bounty,edit_content,edit_require,edit_tag;
     private Spinner spinner_category,spinner_range;
     private RadioButton radio_online,radio_offline;
     private CheckBox checkBox_anonymous,checkBox_donotshowphonenum,checkBox_donotshowlocation,checkBox_oneclass,checkBox_twoclass,checkBox_stranger;
     private TagView tagView;
-    private Button btn_send;
+//    private Button btn_send;
     private SelectPicPopupWindow menuWindow;
     private static final int PHOTO_GRAPH = 10;
     private static final int PHOTO_RESOULT = 301;
     private static final String IMAGE_UNSPECIFIED = "image/*";
     private LocationClient mLocationClient;
-    private com.android.volley.toolbox.NetworkImageView iv_avatar;
+//    private com.android.volley.toolbox.NetworkImageView iv_avatar;
     private RatingBar rb_totalvalue;
     private LinearLayout progress_bar;
     //public MyLocationListener mMyLocationListener;
@@ -192,7 +192,7 @@ public class OrderSendActivity extends BaseActivity{
             {
                 checkBox_donotshowphonenum.setChecked(false);
             }
-            edit_require.setText(savedInstanceState.getString("Request"));
+//            edit_require.setText(savedInstanceState.getString("Request"));
         }
         txt_deadlinedate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,7 +245,7 @@ public class OrderSendActivity extends BaseActivity{
                             {
                                 Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
                                         "Id", String.valueOf(Auth.getCurrentUserId()),
-                                        "Title", edit_title.getText().toString(),
+                                        "Title", tv_title.getText().toString() + edit_title.getText().toString(),
                                         "Address", locationCity,
                                         "Content", edit_content.getText().toString(),
                                         "latitude", String.valueOf(latitude),
@@ -259,7 +259,7 @@ public class OrderSendActivity extends BaseActivity{
                                         "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
                                         "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
                                         "Photos", "",
-                                        "Request", edit_require.getText().toString(),
+//                                        "Request", edit_require.getText().toString(),
                                         "Type", Type,
                                         "Tags",tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
                                 ), new Http.RequestListener<OrderDetails>() {
@@ -320,7 +320,7 @@ public class OrderSendActivity extends BaseActivity{
                                                     {
                                                         Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
                                                                 "Id", String.valueOf(Auth.getCurrentUserId()),
-                                                                "Title", edit_title.getText().toString(),
+                                                                "Title", tv_title.getText().toString() + edit_title.getText().toString(),
                                                                 "Address", locationCity,
                                                                 "Content", edit_content.getText().toString(),
                                                                 "latitude", String.valueOf(latitude),
@@ -334,7 +334,7 @@ public class OrderSendActivity extends BaseActivity{
                                                                 "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
                                                                 "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
                                                                 "Photos", sb.deleteCharAt(0).toString(),
-                                                                "Request", edit_require.getText().toString(),
+//                                                                "Request", edit_require.getText().toString(),
                                                                 "Type", Type,
                                                                 "Tags",tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
                                                         ), new Http.RequestListener<OrderDetails>() {
@@ -409,7 +409,7 @@ public class OrderSendActivity extends BaseActivity{
         outState.putString("NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0");
         outState.putString("LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0");
         outState.putString("PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0");
-        outState.putString("Request", edit_require.getText().toString());
+//        outState.putString("Request", edit_require.getText().toString());
         super.onSaveInstanceState(outState);
         saveTempToPref();
 
@@ -460,7 +460,7 @@ public class OrderSendActivity extends BaseActivity{
         {
             checkBox_donotshowphonenum.setChecked(false);
         }
-        edit_require.setText(savedInstanceState.getString("Request"));
+//        edit_require.setText(savedInstanceState.getString("Request"));
 
     }
 
@@ -876,6 +876,42 @@ public class OrderSendActivity extends BaseActivity{
         startActivityForResult(intent, PHOTO_RESOULT);
     }
 
+    private TextWatcher contentWatcher = new TextWatcher(){
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            tv_contentcount.setText(String.format("%d/250",s.length()));
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
+    private TextWatcher titleWatcher = new TextWatcher(){
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            tv_titlecount.setText(String.format("%d/10",s.length()));
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
     private TextWatcher textWatcher = new TextWatcher(){
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -924,18 +960,36 @@ public class OrderSendActivity extends BaseActivity{
         txt_location = (TextView)findViewById(R.id.txt_location);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_title = (TextView)findViewById(R.id.tb_title);
-        iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
-        tv_name = (TextView)findViewById(R.id.tv_name);
+        tv_titlecount = (TextView)findViewById(R.id.tv_titlecount);
+        tv_contentcount = (TextView)findViewById(R.id.tv_contentcount);
+//        iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
+//        tv_name = (TextView)findViewById(R.id.tv_name);
         rb_totalvalue = (RatingBar)findViewById(R.id.rb_totalvalue);
         progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
         tv_progress_content = (TextView)findViewById(R.id.tv_progress_content);
+        tv_title = (TextView)findViewById(R.id.tv_title);
+
+        edit_content = (EditText)findViewById(R.id.edit_content);
+        radio_online = (RadioButton)findViewById(R.id.radio_online);
+        radio_offline = (RadioButton)findViewById(R.id.radio_offline);
+        checkBox_anonymous = (CheckBox)findViewById(R.id.checkBox_anonymous);
+        checkBox_donotshowlocation = (CheckBox)findViewById(R.id.checkBox_donotshowlocation);
+        checkBox_donotshowphonenum = (CheckBox)findViewById(R.id.checkBox_donotshowphonenum);
+        btn_send = (TextView)findViewById(R.id.btn_send);
+        tv_addtag = (TextView)findViewById(R.id.tv_addtag);
+//        edit_tag = (EditText)findViewById(R.id.edit_tag);
+        tagView = (TagView)findViewById(R.id.tagview);
+
+        txt_location.setText(locationCity);
         tv_progress_content.setText("正在发单");
-        if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
-            ImageUtils.setImageUrl(iv_avatar, Auth.getCurrentUser().getAvatar());
-        }
+//        if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
+//            ImageUtils.setImageUrl(iv_avatar, Auth.getCurrentUser().getAvatar());
+//        }
 
         edit_bounty.addTextChangedListener(textWatcher);
-        tv_name.setText(Auth.getCurrentUser().getName());
+        edit_title.addTextChangedListener(titleWatcher);
+        edit_content.addTextChangedListener(contentWatcher);
+//        tv_name.setText(Auth.getCurrentUser().getName());
 //        rb_totalvalue.setRating(Auth.getCurrentUser().getTotalPoint());
 
         checkBox_oneclass = (CheckBox)findViewById(R.id.checkBox_oneclass);
@@ -994,12 +1048,14 @@ public class OrderSendActivity extends BaseActivity{
             edit_bounty.setHint("索酬");
             tb_title.setText("自荐单");
             Type = "1";
+            tv_title.setText("我能 · ");
         }
         if(getIntent().getStringExtra("demand")!=null && getIntent().getStringExtra("demand").equals("demand"))
         {
             edit_bounty.setHint("赏金");
             tb_title.setText("需求单");
             Type = "2";
+            tv_title.setText("我要 · ");
         }
 
         Http.request(OrderSendActivity.this, API.GET_ORDERCATEGORY, new Http.RequestListener<List<OrderCategory>>() {
@@ -1014,6 +1070,7 @@ public class OrderSendActivity extends BaseActivity{
                 spinner_category = (Spinner) findViewById(R.id.spinner_category);
 //                spinner_category.setAdapter(getAdapter(category));
                 spinner_category.setAdapter(new CategoryAdapater(OrderSendActivity.this,result));
+                spinner_category.setSelection(result.size()-1,true);
 
             }
 
@@ -1050,17 +1107,8 @@ public class OrderSendActivity extends BaseActivity{
 //        });
 
 
-        edit_require = (EditText) findViewById(R.id.edit_require);
-        edit_content = (EditText)findViewById(R.id.edit_content);
-        radio_online = (RadioButton)findViewById(R.id.radio_online);
-        radio_offline = (RadioButton)findViewById(R.id.radio_offline);
-        checkBox_anonymous = (CheckBox)findViewById(R.id.checkBox_anonymous);
-        checkBox_donotshowlocation = (CheckBox)findViewById(R.id.checkBox_donotshowlocation);
-        checkBox_donotshowphonenum = (CheckBox)findViewById(R.id.checkBox_donotshowphonenum);
-        btn_send = (Button)findViewById(R.id.btn_send);
-        tv_addtag = (TextView)findViewById(R.id.tv_addtag);
-//        edit_tag = (EditText)findViewById(R.id.edit_tag);
-        tagView = (TagView)findViewById(R.id.tagview);
+//        edit_require = (EditText) findViewById(R.id.edit_require);
+
 
         if(getIntent().getStringExtra("TagName") != null && !getIntent().getStringExtra("TagName").equals("")) {
             String tagTitle = getIntent().getStringExtra("TagName");

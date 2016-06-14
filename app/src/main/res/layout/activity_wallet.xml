@@ -9,149 +9,340 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-       >
+        android:layout_height="match_parent">
 
-        <View
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:background="@color/divide"
-            />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            style="@style/more_item_style"
-            android:text="余额"
-            android:gravity="center_vertical"/>
+            <RelativeLayout
+                android:id="@+id/rl_top"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divide"
-            />
+                <ImageView
+                    android:id="@+id/iv_wallet"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:src="@drawable/wallet"
+                    />
+                <TextView
+                    android:id="@+id/tv_yu"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="余额"
+                    android:layout_below="@+id/iv_wallet"
+                    android:gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/tv_deposit"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="￥0.00"
+                    android:layout_below="@+id/tv_yu"
+                    android:gravity="center"
+                    />
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tv_deposit"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:textSize="18sp"
-            android:gravity="center"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#F5F5F5">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divide"
-            />
+             <LinearLayout
+                android:id="@+id/ll_cost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_bottom"
+                android:orientation="horizontal"
+                android:layout_margin="10dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="总收益"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tv_revenue"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="￥0.00"
+                    android:layout_weight="1" />
+            </LinearLayout>
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="60dp"
+                android:background="@color/font_gray"
+                />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                android:gravity="center"
+                android:text="总消费"
+                android:layout_weight="1"
+
+                />
+            <TextView
+                android:id="@+id/tv_cost"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                android:gravity="center"
+                android:text="￥0.00"
+                android:layout_weight="1"
+
+                />
+            </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_topup"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/ll_cost"
+            android:layout_margin="10dp"
             android:text="充值"
-            style="@style/more_item_style"
+            android:background="#5CAAEB"
+            android:textColor="@color/white"
             android:gravity="center"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divide"
-            />
 
         <TextView
             android:id="@+id/tv_withdraw"
-            style="@style/more_item_style"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/tv_topup"
+            android:layout_margin="10dp"
             android:text="提现"
-            android:gravity="center"
-            android:layout_below="@+id/payway"/>
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divide"
-            />
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:layout_below="@+id/view_divide6">
-        <TextView
-
-            style="@style/more_item_style"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:text="@string/revenue"/>
-        <TextView
-            android:id="@+id/tv_revenue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:gravity="center"/>
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:layout_below="@+id/view_divide6">
-        <TextView
-
-            style="@style/more_item_style"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:text="@string/cost"/>
-        <TextView
-            android:id="@+id/tv_cost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"
-            android:gravity="center"/>
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="分享我的收益和花费"
-            style="@style/more_item_style"
-            android:gravity="left|center"
             android:background="@color/white"
-            android:layout_weight="1"
-            />
+            android:textColor="@color/black"
+            android:gravity="center"/>
 
-        <Switch
+        <RelativeLayout
+            android:id="@+id/rl_earn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/switch_cost"
-            android:layout_weight="1"
-            android:checked="false"
-            android:background="@color/white"/>
-    </LinearLayout>
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/tv_withdraw"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="秀出您的收益"
+                android:gravity="left|center" />
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/switch_earn"
+                android:layout_alignParentRight="true"
+                android:checked="false" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@id/rl_cost"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/rl_earn"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="秀出您的消费"
+                android:gravity="left|center"
+
+                />
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/switch_cost"
+                android:layout_alignParentRight="true"
+                android:checked="false"
+
+                />
+        </RelativeLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="（打开开关,能让其他用户看到您的收益与消费）"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:layout_below="@+id/rl_cost"/>
+    </RelativeLayout>
+
+
+
+         </LinearLayout>
+
+    </ScrollView>
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+       <!-->-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:background="@color/divide"-->
+            <!--/>-->
+
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="44dp"-->
+            <!--style="@style/more_item_style"-->
+            <!--android:text="余额"-->
+            <!--android:gravity="center_vertical"/>-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/divide"-->
+            <!--/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_deposit"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="44dp"-->
+            <!--android:textSize="18sp"-->
+            <!--android:gravity="center"/>-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/divide"-->
+            <!--/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_topup"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="44dp"-->
+            <!--android:text="充值"-->
+            <!--style="@style/more_item_style"-->
+            <!--android:gravity="center"/>-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/divide"-->
+            <!--/>-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_withdraw"-->
+            <!--style="@style/more_item_style"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="44dp"-->
+            <!--android:text="提现"-->
+            <!--android:gravity="center"-->
+            <!--android:layout_below="@+id/payway"/>-->
+
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/divide"-->
+            <!--/>-->
+
+    <!--</LinearLayout>-->
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="44dp"-->
+        <!--android:layout_below="@+id/view_divide6">-->
+        <!--<TextView-->
+
+            <!--style="@style/more_item_style"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="44dp"-->
+            <!--android:text="@string/revenue"/>-->
+        <!--<TextView-->
+            <!--android:id="@+id/tv_revenue"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:gravity="center"/>-->
+    <!--</RelativeLayout>-->
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="44dp"-->
+        <!--android:layout_below="@+id/view_divide6">-->
+        <!--<TextView-->
+
+            <!--style="@style/more_item_style"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="44dp"-->
+            <!--android:text="@string/cost"/>-->
+        <!--<TextView-->
+            <!--android:id="@+id/tv_cost"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:gravity="center"/>-->
+    <!--</RelativeLayout>-->
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<Button-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="分享我的收益和花费"-->
+            <!--style="@style/more_item_style"-->
+            <!--android:gravity="left|center"-->
+            <!--android:background="@color/white"-->
+            <!--android:layout_weight="1"-->
+            <!--/>-->
+
+        <!--<Switch-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/switch_cost"-->
+            <!--android:layout_weight="1"-->
+            <!--android:checked="false"-->
+            <!--android:background="@color/white"/>-->
+    <!--</LinearLayout>-->
 
 </LinearLayout>

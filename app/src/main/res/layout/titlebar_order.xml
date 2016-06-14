@@ -3,20 +3,31 @@
                 android:id="@+id/title_bar"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="@color/white" >
+                android:background="#373737" >
 
+    <!--<TextView-->
+        <!--android:id="@+id/tv_back"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginLeft="8dp"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="@drawable/text_selector"-->
+        <!--android:textSize="15sp"-->
+        <!--android:drawableLeft="@drawable/ic_launcher"/>-->
     <TextView
-        android:id="@+id/tv_back"
+        android:id="@+id/tb_back"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
         android:gravity="center"
-        android:textColor="@drawable/text_selector"
+        android:textColor="@color/white"
         android:textSize="15sp"
-        android:drawableLeft="@drawable/ic_launcher"/>
-
+        android:text=""
+        android:drawableLeft="@drawable/back"/>
     <TextView android:id="@+id/tv_hide"
               android:layout_width="0dp"
               android:layout_height="0dp"
@@ -33,7 +44,7 @@
         android:gravity="center"
         android:textSize="16sp"
         android:layout_toLeftOf="@id/tv_hide"
-
+        android:textColor="@color/white"
         />
 
     <TextView
@@ -46,7 +57,7 @@
         android:gravity="center"
         android:textSize="16sp"
         android:layout_toRightOf="@id/tv_hide"
-
+        android:textColor="@color/white"
         />
 
     <TextView
@@ -57,7 +68,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="8dp"
         android:gravity="center"
-        android:drawableLeft="@drawable/ic_add_black_24dp"
+        android:drawableLeft="@drawable/add"
         />
 
     <View

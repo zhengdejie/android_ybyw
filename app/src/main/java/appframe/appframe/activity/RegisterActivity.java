@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,9 +56,9 @@ import cn.smssdk.SMSSDK;
  */
 public class RegisterActivity extends BaseActivity implements View.OnClickListener{
     private static final int SELECT_PHOTO = 100;
-    TextView tb_back,tb_action,tb_title,tv_progress_content,tv_code;
+    TextView tb_back,tb_action,tb_title,tv_progress_content,tv_code,ok;
     EditText  password, name,et_mobile,et_code;
-    View ok;
+    RadioButton rb_male,rb_female;
     ImageButton avatar;
     List<UserContact> contactsList = new ArrayList<UserContact>();
     LinearLayout progress_bar;
@@ -79,11 +80,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         name = (EditText)findViewById(R.id.name);
         et_mobile = (EditText)findViewById(R.id.et_mobile);
         et_code = (EditText)findViewById(R.id.et_code);
+        rb_male = (RadioButton)findViewById(R.id.rb_male);
         progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
         tv_progress_content = (TextView)findViewById(R.id.tv_progress_content);
         tv_progress_content.setText("正在注册");
 
-        ok = findViewById(R.id.ok);
+        ok = (TextView)findViewById(R.id.ok);
         avatar = (ImageButton)findViewById(R.id.avatar);
 
         tb_action.setOnClickListener(this);
@@ -143,7 +145,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                         "Avatar", uploadedAvatarId,
                                         "Name", name.getText().toString(),
                                         "Mobile", et_mobile.getText().toString(),
-                                        "Code",et_code.getText().toString()
+                                        "Code",et_code.getText().toString(),
+                                        "Gender",rb_male.isChecked() ? "男" : "女"
 
                                 ), new Http.RequestListener<AuthResult>() {
                                     @Override

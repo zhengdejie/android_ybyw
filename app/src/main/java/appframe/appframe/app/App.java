@@ -93,8 +93,8 @@ public class App extends Application {
         SMSSDK.initSDK(this, "1098959928c6e", "7028d351c316b5bd360232ae00e67efb");
 
         msgApi = WXAPIFactory.createWXAPI(this, null);
-
-        // 将该app注册到微信
+//
+//        // 将该app注册到微信
         msgApi.registerApp(AppConfig.WX_APP_ID);
 
     }

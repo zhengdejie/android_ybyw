@@ -57,9 +57,9 @@ public class FriendEstimateActivity extends BaseActivity implements View.OnClick
         tb_action = (TextView)findViewById(R.id.tb_action);
         tb_back.setText("TA的口碑");
         tb_title.setText("好友评价");
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_add_black_24dp);
+        Drawable drawable = getResources().getDrawable(R.drawable.add);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        tb_action.setCompoundDrawables(drawable, null, null, null);
+        tb_action.setCompoundDrawables(null, null, drawable, null);
         tb_back.setOnClickListener(this);
         tb_action.setOnClickListener(this);
         userID = getIntent().getStringExtra("UserID");

@@ -38,7 +38,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 public class NearByActivity extends BaseActivity implements View.OnClickListener {
     SwipeRefreshX swipeRefresh;
     ListView listView;
-    TextView tb_title,tb_back;
+    TextView tb_title,tb_back,tv_empty;
     LinearLayout progress_bar;
     String latitude,longitude;
     BDLocation bdLocation = new BDLocation();
@@ -56,6 +56,7 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
+        tv_empty = (TextView)findViewById(R.id.tv_empty);
         progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
         progress_bar.setVisibility(View.VISIBLE);
 
@@ -116,7 +117,11 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
                 progress_bar.setVisibility(View.GONE);
                 adapater = new SwipeRefreshXNearbyAdapater(NearByActivity.this, result);
                 listView.setAdapter(adapater);
-
+                if (result != null && result.size() != 0) {
+                    tv_empty.setVisibility(View.GONE);
+                } else {
+                    tv_empty.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -149,7 +154,11 @@ public class NearByActivity extends BaseActivity implements View.OnClickListener
 
                         adapater = new SwipeRefreshXNearbyAdapater(NearByActivity.this, result);
                         listView.setAdapter(adapater);
-
+                        if (result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        } else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
                     }
                 });
                 swipeRefresh.setRefreshing(false);

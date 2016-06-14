@@ -35,7 +35,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXNearbyAdapater;
  */
 public class DiscoveryFragment extends BaseFragment implements View.OnClickListener {
     View root;
-    TextView tb_title,tb_back,tv_nearby;
+    TextView tb_title,tb_back,tv_nearby,tv_empty;
     SwipeRefreshX swipeRefresh;
     ListView listView;
 
@@ -58,6 +58,7 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
         tb_title = (TextView)root.findViewById(R.id.tb_title);
         tb_back = (TextView)root.findViewById(R.id.tb_back);
+        tv_empty = (TextView)root.findViewById(R.id.tv_empty);
         tb_title.setText("发现");
         tb_back.setVisibility(View.GONE);
 
@@ -76,7 +77,12 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
                 super.onSuccess(result);
 
                 listView.setAdapter(new SwipeRefreshXFriendShopsAdapater(getActivity(), result));
-
+                if(result != null && result.size() != 0) {
+                    tv_empty.setVisibility(View.GONE);
+                }
+                else {
+                    tv_empty.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
@@ -100,7 +106,28 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
             @Override
             public void onRefresh() {
 
-                Toast.makeText(getActivity(), "refresh", Toast.LENGTH_SHORT).show();
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
+
+                Http.request(getActivity(), API.GET_FRIENDTRACE, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetailWithFriend>>() {
+                    @Override
+                    public void onSuccess(List<ConfirmedOrderDetailWithFriend> result) {
+                        super.onSuccess(result);
+                        swipeRefresh.setRefreshing(false);
+                        listView.setAdapter(new SwipeRefreshXFriendShopsAdapater(getActivity(), result));
+                        if (result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        } else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
 
             }
         });
@@ -110,7 +137,7 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
             @Override
             public void onLoad() {
 
-                Toast.makeText(getActivity(), "load", Toast.LENGTH_SHORT).show();
+                swipeRefresh.setLoading(false);
 
             }
         });

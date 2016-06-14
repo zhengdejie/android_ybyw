@@ -36,7 +36,7 @@ public class EditNickNameActivity extends BaseActivity implements View.OnClickLi
         tb_back = (TextView) findViewById(R.id.tb_back);
         tb_action = (TextView) findViewById(R.id.tb_action);
         et_nickname = (EditText) findViewById(R.id.et_nickname);
-        tb_back.setText("个人中心");
+        tb_back.setText("我的");
         tb_title.setText("个人信息");
         tb_action.setText("保存");
         et_nickname.setText(Auth.getCurrentUser().getName());

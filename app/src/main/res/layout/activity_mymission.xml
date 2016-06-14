@@ -21,7 +21,13 @@
             android:cacheColorHint="@android:color/transparent">
         </ListView>
     </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
-
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="您还没发过单，快去发个吧"
+        android:visibility="gone"/>
     <include
         android:id="@+id/progress_bar"
         layout="@layout/progressbar_loading" />

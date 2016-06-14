@@ -36,7 +36,7 @@ import appframe.appframe.utils.Http;
 public class MyContact extends Activity {
     private ListView sortListView;
     private SideBar sideBar;
-    private TextView dialog,tv_back,tv_action,tv_require,tv_recommand;
+    private TextView dialog,tv_back,tv_action,tv_require,tv_recommand,tv_empty;
     private ContactAdapter adapter;
     private ClearEditText mClearEditText;
     private boolean isRegister = true;
@@ -63,17 +63,19 @@ public class MyContact extends Activity {
     private void initViews() {
 
         //tb_title = (TextView)findViewById(R.id.tb_title);
-        tv_back = (TextView)findViewById(R.id.tv_back);
+//        tv_back = (TextView)findViewById(R.id.tv_back);
         tv_action = (TextView)findViewById(R.id.tv_action);
         tv_require = (TextView)findViewById(R.id.tv_require);
         tv_recommand  = (TextView)findViewById(R.id.tv_recommand);
+        tv_empty  = (TextView)findViewById(R.id.tv_empty);
+        tv_back  = (TextView)findViewById(R.id.tb_back);
         mClearEditText = (ClearEditText) findViewById(R.id.filter_edit);
         tv_require.setText("已注册");
         tv_recommand.setText("未注册");
-        tv_back.setText("个人中心");
-        Drawable img = getResources().getDrawable(R.drawable.ic_ab_back_holo_light_am);
-        img.setBounds(0, 0, img.getMinimumWidth(), img.getMinimumHeight());
-        tv_back.setCompoundDrawables(img, null, null, null);
+        tv_back.setText("我的");
+//        Drawable img = getResources().getDrawable(R.drawable.ic_ab_back_holo_light_am);
+//        img.setBounds(0, 0, img.getMinimumWidth(), img.getMinimumHeight());
+//        tv_back.setCompoundDrawables(img, null, null, null);
         //tb_title.setText("我的好友");
         tv_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,10 +121,12 @@ public class MyContact extends Activity {
         tv_require.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClearEditText.setText("");
                 isRegister = true;
+                mClearEditText.setText("");
                 tv_require.setBackgroundResource(R.drawable.titlebar_order_left_selected);
+                tv_require.setTextColor(Color.rgb(37, 37, 37));
                 tv_recommand.setBackgroundResource(R.drawable.titlebar_order_right_unselected);
+                tv_recommand.setTextColor(Color.rgb(255, 255, 255));
                 Http.request(MyContact.this, API.GET_YBFRIEND, new Http.RequestListener<List<ContactDetail>>() {
                     @Override
                     public void onSuccess(final List<ContactDetail> result) {
@@ -132,6 +136,12 @@ public class MyContact extends Activity {
                         Collections.sort(SourceDateList, pinyinComparator);
                         adapter = new ContactAdapter(MyContact.this, SourceDateList);
                         sortListView.setAdapter(adapter);
+                        if(result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        }
+                        else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
                         sortListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                             @Override
@@ -158,10 +168,12 @@ public class MyContact extends Activity {
         tv_recommand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClearEditText.setText("");
                 isRegister = false;
+                mClearEditText.setText("");
                 tv_require.setBackgroundResource(R.drawable.titlebar_order_left_unselected);
+                tv_require.setTextColor(Color.rgb(255, 255, 255));
                 tv_recommand.setBackgroundResource(R.drawable.titlebar_order_right_selected);
+                tv_recommand.setTextColor(Color.rgb(37, 37, 37));
                 Http.request(MyContact.this, API.GET_MOBILEFRIEND, new Http.RequestListener<List<ContactDetail>>() {
                     @Override
                     public void onSuccess(final List<ContactDetail> result) {
@@ -171,6 +183,12 @@ public class MyContact extends Activity {
                         Collections.sort(MyContactList, pinyinComparator);
                         adapter = new ContactAdapter(MyContact.this, MyContactList);
                         sortListView.setAdapter(adapter);
+                        if(result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        }
+                        else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
                         sortListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                             @Override
@@ -184,6 +202,12 @@ public class MyContact extends Activity {
 
                             }
                         });
+
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
 
                     }
                 });

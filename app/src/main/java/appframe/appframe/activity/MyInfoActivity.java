@@ -87,7 +87,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         tv_showselfestimate = (TextView)findViewById(R.id.tv_showselfestimate);
         tv_author = (TextView)findViewById(R.id.tv_author);
         //iv_showavatar.setDefaultImageResId(R.drawable.ic_launcher);
-        tb_back.setText("个人中心");
+        tb_back.setText("我的");
         tb_title.setText("个人信息");
 
         tb_back.setOnClickListener(this);
@@ -109,7 +109,15 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         }
         else
         {
-            iv_showavatar.setDefaultImageResId(R.drawable.default_avatar);
+            if(Auth.getCurrentUser().getGender().equals(getResources().getString(R.string.male).toString()))
+            {
+                iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+            }
+            else
+            {
+                iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+            }
+
         }
         tv_showdistrict.setText(Auth.getCurrentUser().getLocation());
         tv_showselfestimate.setText(Auth.getCurrentUser().getSignature());

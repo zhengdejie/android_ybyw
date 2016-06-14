@@ -19,7 +19,7 @@ import appframe.appframe.utils.Http;
  */
 public class WalletActivity extends BaseActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     private TextView tb_title,tb_back,tv_topup,tv_withdraw,tv_deposit,tv_revenue,tv_cost;
-    private Switch switch_cost;
+    private Switch switch_cost,switch_earn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +59,17 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
         tv_revenue = (TextView)findViewById(R.id.tv_revenue);
         tv_cost = (TextView)findViewById(R.id.tv_cost);
         switch_cost = (Switch)findViewById(R.id.switch_cost);
-        switch_cost.setChecked(Auth.getCurrentUser().isShowRevenueAndExpense());
+        switch_earn = (Switch)findViewById(R.id.switch_earn);
+        switch_cost.setChecked(Auth.getCurrentUser().isShowExpense());
+        switch_earn.setChecked(Auth.getCurrentUser().isShowRevenue());
         tb_title.setText("我的钱包");
-        tb_back.setText("个人中心");
+        tb_back.setText("我的");
 
         tb_back.setOnClickListener(this);
         tv_topup.setOnClickListener(this);
         tv_withdraw.setOnClickListener(this);
         switch_cost.setOnCheckedChangeListener(this);
+        switch_earn.setOnCheckedChangeListener(this);
 
 
     }
@@ -79,7 +82,7 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
                 if(isChecked == true) {
 
                     Http.request(WalletActivity.this, API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
-                            "ShowRevenueAndExpense", "true"
+                            "ShowExpense", "true"
                     ), new Http.RequestListener<UserDetail>() {
                         @Override
                         public void onSuccess(UserDetail result) {
@@ -92,7 +95,35 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
                 else
                 {
                     Http.request(WalletActivity.this, API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
-                            "ShowRevenueAndExpense", "false"
+                            "ShowExpense", "false"
+                    ), new Http.RequestListener<UserDetail>() {
+                        @Override
+                        public void onSuccess(UserDetail result) {
+                            super.onSuccess(result);
+                            // 上传成功
+                            Auth.updateCurrentUser(result);
+                        }
+                    });
+                }
+                break;
+            case R.id.switch_earn:
+                if(isChecked == true) {
+
+                    Http.request(WalletActivity.this, API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                            "ShowRevenue", "true"
+                    ), new Http.RequestListener<UserDetail>() {
+                        @Override
+                        public void onSuccess(UserDetail result) {
+                            super.onSuccess(result);
+                            // 上传成功
+                            Auth.updateCurrentUser(result);
+                        }
+                    });
+                }
+                else
+                {
+                    Http.request(WalletActivity.this, API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                            "ShowRevenue", "false"
                     ), new Http.RequestListener<UserDetail>() {
                         @Override
                         public void onSuccess(UserDetail result) {

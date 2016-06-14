@@ -14,5 +14,11 @@
         android:layout_height="wrap_content">
 
     </ListView>
-
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="快去找找，一定有您喜欢的"
+        android:visibility="gone"/>
 </LinearLayout>

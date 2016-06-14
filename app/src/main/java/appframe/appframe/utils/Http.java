@@ -391,7 +391,13 @@ public final class Http {
                 responseString = new String(error.networkResponse.data);
             }
             if(responseStatus.Message.equals("服务器错误")) {
-                responseStatus.Message = parse(responseString).ResponseStatus.Message;
+                if(parse(responseString).ResponseStatus.Message == null)
+                {
+                    responseStatus.Message = responseString;
+                }
+                else {
+                    responseStatus.Message = parse(responseString).ResponseStatus.Message;
+                }
             }
 
             Log.e(TAG, String.format("request error: %s %s %s\n%s",
@@ -545,7 +551,7 @@ public final class Http {
 
         private String rawBody = null;
         private String rawBodyType = null;
-        private MultipartEntity multiPartEntity = null;
+            private MultipartEntity multiPartEntity = null;
         private Map<String,String> params = null;
         private Map<String,String> additionalHeaders;
 
@@ -624,6 +630,7 @@ public final class Http {
                             }
 
                             multiPartEntity.addPart(k, body);
+
                         }else{
                             if(this.params == null)
                                 this.params = new HashMap<String,String>();
@@ -947,18 +954,25 @@ public final class Http {
         return field != null && field.startsWith(PREFIX_FILE_POST_FIELD);
     }
     static FileBody getFileFileNameAndMimeTypeFromFilePostField(String field){
+//        if(!isFilePostField(field)) return null;
+//        String [] parts = field.substring(PREFIX_FILE_POST_FIELD.length()).split("|");
+//        if(parts == null || parts.length == 0) return null;
+//        File file = new File(parts[0]);
+//        if(file == null || !file.exists()) return null;
+//        String name = file.getName();
+//        if(parts.length > 1 && !TextUtils.isEmpty(parts[1])) name = parts[1];
+//        String mimeType = "application/octet-stream";
+//        if(parts.length > 2 && !TextUtils.isEmpty(parts[2])) mimeType = parts[2];
+//        String charset = "binary";
+//        if(parts.length > 3 && !TextUtils.isEmpty(parts[3])) charset = parts[3];
+//        return new FileBody(file, name, mimeType, charset);
         if(!isFilePostField(field)) return null;
-        String [] parts = field.substring(PREFIX_FILE_POST_FIELD.length()).split("\\|");
+        String [] parts = field.substring(PREFIX_FILE_POST_FIELD.length()).split(",");
         if(parts == null || parts.length == 0) return null;
-        File file = new File(parts[0]);
-        if(file == null || !file.exists()) return null;
-        String name = file.getName();
-        if(parts.length > 1 && !TextUtils.isEmpty(parts[1])) name = parts[1];
-        String mimeType = "application/octet-stream";
-        if(parts.length > 2 && !TextUtils.isEmpty(parts[2])) mimeType = parts[2];
-        String charset = "binary";
-        if(parts.length > 3 && !TextUtils.isEmpty(parts[3])) charset = parts[3];
-        return new FileBody(file, name, mimeType, charset);
+        File file = new File(parts[0],parts[1]);
+
+
+        return new FileBody(file,"positive","application/octet-stream","");
     }
 
     public static String getFilePostField(File file){

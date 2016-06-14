@@ -27,35 +27,34 @@
 
             <TextView
                 android:id="@+id/tab_apply"
-                style="@style/tab_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:text="申请中"
-                android:layout_marginLeft="10dp"
+
                 android:textColor="@color/font_black_content" />
             <TextView
                 android:id="@+id/tv_apply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
+
                 android:background="@drawable/aliwx_unread_hint"
                 android:layout_centerVertical="true"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/aliwx_unread_text_size"
                 android:visibility="visible"
                 android:gravity="center"/>
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="#dddddd"
-                android:layout_alignRight="@+id/tab_apply"/>
+            <!--<View-->
+                <!--android:layout_width="0.5dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="#dddddd"-->
+                <!--android:layout_alignRight="@+id/tab_apply"/>-->
             <View
                 android:id="@+id/bottomLine_apply"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/green"
+                android:layout_height="3dp"
+                android:background="#56abe4"
                 android:layout_alignParentBottom="true"
                 android:visibility="invisible"
                 />
@@ -69,11 +68,9 @@
 
             <TextView
                 android:id="@+id/tab_progess"
-                style="@style/tab_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="10dp"
+                android:gravity="center"
                 android:text="进行中"
                 android:textColor="@color/font_black_content" />
             <TextView
@@ -81,23 +78,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/aliwx_unread_hint"
                 android:layout_centerVertical="true"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/aliwx_unread_text_size"
                 android:visibility="visible"
                 android:gravity="center"/>
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="#dddddd"
-                android:layout_alignRight="@+id/tab_progess"/>
+            <!--<View-->
+                <!--android:layout_width="0.5dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="#dddddd"-->
+                <!--android:layout_alignRight="@+id/tab_progess"/>-->
             <View
                 android:id="@+id/bottomLine_progress"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/green"
+                android:layout_height="3dp"
+                android:background="#56abe4"
                 android:layout_alignParentBottom="true"
                 android:visibility="invisible"
                 />
@@ -123,11 +119,9 @@
 
             <TextView
                 android:id="@+id/tab_done"
-                style="@style/tab_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="10dp"
+                android:gravity="center"
                 android:text="待评价"
                 android:textColor="@color/font_black_content" />
             <TextView
@@ -135,23 +129,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
                 android:background="@drawable/aliwx_unread_hint"
                 android:layout_centerVertical="true"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/aliwx_unread_text_size"
                 android:visibility="visible"
                 android:gravity="center"/>
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="match_parent"
-                android:background="#dddddd"
-                android:layout_alignRight="@+id/tab_done"/>
+            <!--<View-->
+                <!--android:layout_width="0.5dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="#dddddd"-->
+                <!--android:layout_alignRight="@+id/tab_done"/>-->
             <View
                 android:id="@+id/bottomLine_done"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/green"
+                android:layout_height="3dp"
+                android:background="#56abe4"
                 android:layout_alignParentBottom="true"
                 android:visibility="invisible"
                 />
@@ -165,18 +158,16 @@
 
             <TextView
                 android:id="@+id/tab_close"
-                style="@style/tab_text_style"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingTop="3dp"
                 android:text="已关闭"
                 android:textColor="@color/font_black_content" />
             <View
                 android:id="@+id/bottomLine_close"
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/green"
+                android:layout_height="3dp"
+                android:background="#56abe4"
                 android:layout_alignParentBottom="true"
                 android:visibility="invisible"
                 />
@@ -185,22 +176,29 @@
 
     </LinearLayout>
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        android:layout_below="@+id/tabtop"
-        />
+    <!--<View-->
+        <!--android:id="@+id/divider"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divide"-->
+        <!--android:layout_below="@+id/tabtop"-->
+        <!--/>-->
 
     <ListView
         android:id="@+id/proListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/divider"
+        android:layout_below="@+id/tabtop"
+        android:background="#F5F5F5"
         >
     </ListView>
-
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="没有相关订单"
+        android:visibility="gone"/>
     <include
         android:id="@+id/progress_bar"
         layout="@layout/progressbar_loading" />

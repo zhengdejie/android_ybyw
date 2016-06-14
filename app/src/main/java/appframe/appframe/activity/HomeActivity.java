@@ -82,7 +82,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     BaseFragment[] fragments;
     public static final int SCAN_CODE = 1;
     private LoginSampleHelper loginHelper;
-    private FrameLayout btn_ck;
+//    private FrameLayout btn_ck;
     private ImageView iv_center;
     public boolean isReverse=false;
     private Drawable tv_ubang_Pressed;
@@ -143,13 +143,14 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         tv_discovery = (TextView) findViewById(R.id.tv_discovery);
         tv_setting = (TextView) findViewById(R.id.tv_setting);
         tv_unread = (TextView) findViewById(R.id.tv_unread);
-        btn_ck = (FrameLayout)findViewById(R.id.btn_ck);
+//        btn_ck = (FrameLayout)findViewById(R.id.btn_ck);
         iv_center = (ImageView)findViewById(R.id.iv_center);
         tv_ubang.setOnClickListener(this);
         tv_discovery.setOnClickListener(this);
         tv_myorder.setOnClickListener(this);
         tv_setting.setOnClickListener(this);
-        btn_ck.setOnClickListener(this);
+//        btn_ck.setOnClickListener(this);
+        iv_center.setOnClickListener(this);
         setUbangText(true);
         setMyorderText(false);
         setDiscoveryText(false);
@@ -372,7 +373,8 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_pressed_color));
             if (tv_ubang_Pressed == null) {
                 tv_ubang_Pressed = getResources().getDrawable(
-                        R.drawable.demo_tab_icon_message_pressed);
+                        R.drawable.home);
+
             }
             drawable = tv_ubang_Pressed;
         } else {
@@ -380,7 +382,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_normal_color));
             if (tv_ubang_Normal == null) {
                 tv_ubang_Normal = getResources().getDrawable(
-                        R.drawable.demo_tab_icon_message_normal);
+                        R.drawable.homegray);
             }
             drawable = tv_ubang_Normal;
         }
@@ -398,7 +400,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_pressed_color));
             if (tv_myorder_Pressed == null) {
                 tv_myorder_Pressed = getResources().getDrawable(
-                        R.drawable.demo_tab_icon_contact_pressed);
+                        R.drawable.order);
             }
             drawable = tv_myorder_Pressed;
         } else {
@@ -406,7 +408,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_normal_color));
             if (tv_myorder_Normal == null) {
                 tv_myorder_Normal = getResources().getDrawable(
-                        R.drawable.demo_tab_icon_contact_normal);
+                        R.drawable.ordergray);
             }
             drawable = tv_myorder_Normal;
         }
@@ -424,7 +426,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_pressed_color));
             if (tv_discovery_Pressed == null) {
                 tv_discovery_Pressed = getResources().getDrawable(
-                        R.drawable.demo_tab_icon_tribe_pressed);
+                        R.drawable.discovery);
             }
             drawable = tv_discovery_Pressed;
         } else {
@@ -432,7 +434,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_normal_color));
             if (tv_discovery_Normal == null) {
                 tv_discovery_Normal = getResources().getDrawable(
-                        R.drawable.demo_tab_icon_tribe_normal);
+                        R.drawable.discoverygray);
             }
             drawable = tv_discovery_Normal;
         }
@@ -450,7 +452,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_pressed_color));
             if (tv_setting_Pressed == null) {
                 tv_setting_Pressed = getResources().getDrawable(
-                        R.drawable.demo_tab_icon_setting_pressed);
+                        R.drawable.my);
             }
             drawable = tv_setting_Pressed;
         } else {
@@ -458,7 +460,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_normal_color));
             if (tv_setting_Normal == null) {
                 tv_setting_Normal = getResources().getDrawable(
-                        R.drawable.demo_tab_icon_setting_normal);
+                        R.drawable.mygray);
             }
             drawable = tv_setting_Normal;
         }
@@ -504,8 +506,8 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                 pager.setCurrentItem(3);
                 tv_unread.setVisibility(View.INVISIBLE);
                 break;
-            case R.id.btn_ck:
-                new PopupWindows_Picture(this,btn_ck);
+            case R.id.iv_center:
+                new PopupWindows_Picture(this,iv_center);
                 break;
         }
     }
@@ -688,6 +690,8 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     .findViewById(R.id.iv_require);
             ImageView iv_recommend = (ImageView) view
                     .findViewById(R.id.iv_recommend);
+            ImageView iv_question = (ImageView) view
+                    .findViewById(R.id.iv_question);
             FrameLayout btn_ck = (FrameLayout) view
                     .findViewById(R.id.btn_ck);
             btn_ck.setOnClickListener(new View.OnClickListener()
@@ -717,6 +721,18 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     Intent intent = new Intent();
                     intent.putExtra("self", "self");
                     intent.setClass(HomeActivity.this, OrderSendActivity.class);
+                    startActivity(intent);
+
+                    dismiss();
+                }
+            });
+            iv_question.setOnClickListener(new View.OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    Intent intent = new Intent();
+
+                    intent.setClass(HomeActivity.this, QuestionSendActivity.class);
                     startActivity(intent);
 
                     dismiss();

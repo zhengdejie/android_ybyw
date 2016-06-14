@@ -19,7 +19,14 @@
             android:layout_height="match_parent" >
         </ListView>
     </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
-
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="附近暂时还没有帮友"
+        android:visibility="gone"
+        />
     <include
         android:id="@+id/progress_bar"
         layout="@layout/progressbar_loading" />

@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ordersend">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:id="@+id/ll_tb">
+
+            <include
+                android:id="@+id/title_bar"
+                layout="@layout/titlebar" />
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_below="@+id/ll_tb"
+            android:gravity="center_horizontal|center_vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_title"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:text="我能　•　"-->
+                        <!--android:gravity="center|right"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:textSize="14sp"/>-->
+                    <EditText
+                        android:id="@+id/edit_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/editext_none"
+                        android:hint="如:帮洗车,帮跟拍"
+                        android:paddingLeft="20dp"
+                        android:layout_toLeftOf="@+id/tv_titlecount"
+                        android:singleLine="true"
+                        android:textSize="14sp"
+                        android:maxLength="10"/>
+                    <TextView
+                        android:id="@+id/tv_titlecount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="0/10"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:textColor="@color/font_gray"
+                        android:paddingRight="20dp"
+                        android:textSize="14sp"/>
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/bg_gray"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/edit_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="@drawable/editext_none"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:inputType="textMultiLine"
+                        android:hint="描述一下您的服务,让大家更感兴趣"
+                        android:textSize="14sp"
+                        android:gravity="top"
+                        android:maxLength="250"/>
+                    <TextView
+                        android:id="@+id/tv_contentcount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:text="0/250"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:textColor="@color/font_gray"
+                        android:paddingRight="20dp"
+                        android:layout_below="@+id/edit_content"
+                        android:textSize="14sp"/>
+
+                    <GridView
+                        android:id="@+id/gridview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="70dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:horizontalSpacing="-80dp"
+                        android:numColumns="3"
+                        android:scrollbars="none"
+                        android:verticalSpacing="5dp"
+                        android:layout_below="@+id/tv_contentcount"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:background="@color/bg_gray"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_bounty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="定价"
+                        android:gravity="center|right"
+                        android:paddingLeft="20dp"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:id="@+id/tv_moneyunit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:text="￥"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="20dp"
+                        android:textSize="14sp"
+                        android:layout_toRightOf="@+id/tv_bounty"/>
+                    <EditText
+                        android:id="@+id/edit_bounty"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/editext_none"
+                        android:textSize="14sp"
+                        android:layout_toRightOf="@+id/tv_moneyunit"
+                        android:inputType="numberDecimal"/>
+
+                </RelativeLayout>
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_category"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:text="分类"-->
+                        <!--android:gravity="center|right"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:textSize="14sp"/>-->
+
+                    <!--<Spinner-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:id="@+id/spinner_category"-->
+                        <!--android:layout_toRightOf="@+id/tv_category"-->
+                        <!--android:background="@drawable/editext_none"-->
+                        <!--android:paddingLeft="20dp"/>-->
+
+
+                <!--</RelativeLayout>-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_location"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:text="位置"-->
+                        <!--android:gravity="center|right"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:textSize="14sp"/>-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/txt_location"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:background="@drawable/editext_none"-->
+                        <!--android:textSize="14sp"-->
+                        <!--android:layout_toRightOf="@+id/tv_location"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:paddingLeft="20dp"/>-->
+
+                <!--</RelativeLayout>-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_tag"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:text="标签"-->
+                        <!--android:gravity="center|right"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:textSize="14sp"/>-->
+
+                    <!--<appframe.appframe.widget.tagview.TagView-->
+                        <!--android:id="@+id/tagview"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:layout_toRightOf="@+id/tv_tag"-->
+                        <!--app:lineMargin="5dp"-->
+                        <!--app:tagMargin="3dp"-->
+                        <!--app:textPaddingBottom="3dp"-->
+                        <!--app:textPaddingLeft="10dp"-->
+                        <!--app:textPaddingRight="10dp"-->
+                        <!--app:textPaddingTop="3dp" />-->
+
+
+                <!--</RelativeLayout>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_addtag"-->
+                    <!--android:layout_marginRight="2dp"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:ellipsize="marquee"-->
+                    <!--android:gravity="center"-->
+                    <!--android:singleLine="true"-->
+                    <!--android:drawableLeft="@drawable/ic_add_black_24dp"-->
+                    <!--android:paddingLeft="20dp"-->
+                    <!--android:text="添加标签"/>-->
+
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="10dp"-->
+                    <!--android:background="@color/bg_gray"-->
+                    <!--/>-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_range"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:text="可见范围"-->
+                        <!--android:gravity="center|right"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:textSize="14sp"/>-->
+
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:orientation="horizontal"-->
+                        <!--android:layout_toRightOf="@+id/tv_range"-->
+                        <!--android:paddingLeft="20dp">-->
+
+                        <!--<CheckBox-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:text="一度"-->
+                            <!--android:id="@+id/checkBox_oneclass"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:checked="true"-->
+                            <!--android:layout_toRightOf="@+id/tv_range"/>-->
+                        <!--<CheckBox-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:text="二度"-->
+                            <!--android:id="@+id/checkBox_twoclass"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:layout_gravity="center"-->
+                            <!--android:checked="true"-->
+                            <!--android:layout_toRightOf="@+id/checkBox_oneclass"/>-->
+                        <!--<CheckBox-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:text="陌生人"-->
+                            <!--android:id="@+id/checkBox_stranger"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:layout_gravity="center"-->
+                            <!--android:checked="true"-->
+                            <!--android:layout_toRightOf="@+id/checkBox_twoclass"/>-->
+                    <!--</LinearLayout>-->
+
+                <!--</RelativeLayout>-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_deadline"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:text="截止日期"-->
+                        <!--android:gravity="center|right"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:textSize="14sp"/>-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/txt_deadlinedate"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:background="@drawable/editext_none"-->
+                        <!--android:textSize="14sp"-->
+                        <!--android:layout_toRightOf="@+id/tv_deadline"-->
+                        <!--android:text="16-05-01"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:paddingLeft="20dp"/>-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/txt_deadlinetime"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:background="@drawable/editext_none"-->
+                        <!--android:textSize="14sp"-->
+                        <!--android:layout_toRightOf="@+id/txt_deadlinedate"-->
+                        <!--android:text="16:19"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:paddingLeft="20dp"/>-->
+
+                <!--</RelativeLayout>-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_pay"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:text="支付方式"-->
+                        <!--android:gravity="center|right"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:textSize="14sp"/>-->
+
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:orientation="horizontal"-->
+                        <!--android:layout_toRightOf="@+id/tv_pay"-->
+                        <!--android:paddingLeft="20dp">-->
+
+                        <!--<RadioGroup-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:orientation="horizontal">-->
+
+                            <!--<RadioButton-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:text="线上支付"-->
+                                <!--android:id="@+id/radio_online"-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:checked="true"/>-->
+
+                            <!--<RadioButton-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:text="线下支付"-->
+                                <!--android:id="@+id/radio_offline"-->
+                                <!--android:layout_weight="1"/>-->
+                        <!--</RadioGroup>-->
+                    <!--</LinearLayout>-->
+
+                <!--</RelativeLayout>-->
+
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
+
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_anonymous"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:text="匿名方式"-->
+                        <!--android:gravity="center|right"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:textSize="14sp"/>-->
+
+                    <!--<LinearLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:orientation="horizontal"-->
+                        <!--android:layout_toRightOf="@+id/tv_anonymous"-->
+                        <!--android:paddingLeft="20dp">-->
+
+                        <!--<CheckBox-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:text="匿名"-->
+                            <!--android:id="@+id/checkBox_anonymous"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:checked="false"-->
+                            <!--android:layout_toRightOf="@+id/tv_range"/>-->
+                        <!--<CheckBox-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:text="匿地"-->
+                            <!--android:id="@+id/checkBox_donotshowlocation"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:layout_gravity="center"-->
+                            <!--android:checked="false"-->
+                            <!--android:layout_toRightOf="@+id/checkBox_oneclass"/>-->
+                        <!--<CheckBox-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="40dp"-->
+                            <!--android:text="匿电话"-->
+                            <!--android:id="@+id/checkBox_donotshowphonenum"-->
+                            <!--android:layout_weight="1"-->
+                            <!--android:layout_gravity="center"-->
+                            <!--android:checked="false"-->
+                            <!--android:layout_toRightOf="@+id/checkBox_twoclass"/>-->
+                    <!--</LinearLayout>-->
+
+                <!--</RelativeLayout>-->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="提问"
+                    android:id="@+id/btn_send"
+                    android:layout_gravity="bottom"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/textview_clicked"
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    />
+            </LinearLayout>
+
+
+        </ScrollView>
+
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:id="@+id/lly_send">-->
+        <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:text="发布"-->
+        <!--android:id="@+id/btn_send"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:background="@drawable/textview_clicked"-->
+        <!--android:gravity="center"-->
+        <!--android:textSize="20sp"-->
+        <!--android:textColor="@color/white"-->
+        <!--/>-->
+        <!--</LinearLayout>-->
+    </RelativeLayout>
+
+
+</LinearLayout>

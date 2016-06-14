@@ -27,6 +27,7 @@ import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.BaiduLocation;
 import appframe.appframe.utils.Http;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXNearbyAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 
@@ -36,8 +37,10 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 public class MyMissionActivity extends BaseActivity implements View.OnClickListener {
     SwipeRefreshX swipeRefresh;
     ListView listView;
-    TextView tb_title,tb_back;
+    TextView tb_title,tb_back,tv_empty;
     LinearLayout progress_bar;
+    int page = 1;
+    SwipeRefreshXMyMissionAdapater swipeRefreshXMyMissionAdapater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +54,12 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
+        tv_empty = (TextView)findViewById(R.id.tv_empty);
         progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
         progress_bar.setVisibility(View.VISIBLE);
 
         tb_back.setText("我的");
-        tb_title.setText("我的任务");
+        tb_title.setText("我的助人");
         tb_back.setOnClickListener(this);
 
         swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
@@ -88,20 +92,32 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
 
     public void initdata()
     {
-        Http.request(MyMissionActivity.this, API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
-            @Override
-            public void onSuccess(List<OrderDetails> result) {
-                super.onSuccess(result);
-                progress_bar.setVisibility(View.GONE);
-                listView.setAdapter(new SwipeRefreshXOrderAdapater(MyMissionActivity.this, result, AppConfig.ORDERSTATUS_DELETE));
-            }
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("Page", "1");
+        map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+        map.put("Type", String.valueOf("1"));
+        Http.request(MyMissionActivity.this, API.GET_SELFORDER, new Object[]{Http.getURL(map)},
+                new Http.RequestListener<List<OrderDetails>>() {
+                    @Override
+                    public void onSuccess(List<OrderDetails> result) {
+                        super.onSuccess(result);
+                        progress_bar.setVisibility(View.GONE);
+                        swipeRefreshXMyMissionAdapater = new SwipeRefreshXMyMissionAdapater(MyMissionActivity.this, result);
+                        listView.setAdapter(swipeRefreshXMyMissionAdapater);
+                        if(result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        }
+                        else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
+                    }
 
-            @Override
-            public void onFail(String code) {
-                super.onFail(code);
-                progress_bar.setVisibility(View.GONE);
-            }
-        });
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
+                    }
+                });
 
 
                         // 设置下拉刷新监听器
@@ -110,12 +126,25 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onRefresh() {
 
-                Http.request(MyMissionActivity.this, API.GET_SELFORDER, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<OrderDetails>>() {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("Type", String.valueOf("1"));
+                Http.request(MyMissionActivity.this, API.GET_SELFORDER, new Object[]{Http.getURL(map)},
+                        new Http.RequestListener<List<OrderDetails>>() {
                     @Override
                     public void onSuccess(List<OrderDetails> result) {
                         super.onSuccess(result);
+                        page = 1;
                         swipeRefresh.setRefreshing(false);
-                        listView.setAdapter(new SwipeRefreshXOrderAdapater(MyMissionActivity.this, result, AppConfig.ORDERSTATUS_DELETE));
+                        swipeRefreshXMyMissionAdapater = new SwipeRefreshXMyMissionAdapater(MyMissionActivity.this, result);
+                        listView.setAdapter(swipeRefreshXMyMissionAdapater);
+                        if(result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        }
+                        else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override
@@ -129,35 +158,38 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
             }
         });
         // 加载监听器
-//        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
-//
-//            @Override
-//            public void onLoad() {
-//
-////                Page++;
-////                Map<String, String> map = new HashMap<String, String>();
-////                map.put("Page", String.valueOf(Page));
-////                map.put("Limit", String.valueOf(AppConfig.ORDER_SIZE));
-////                map.put("Latitude", latitude);
-////                map.put("Longitude", longitude);
-////                map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
-////
-////                Http.request(NearByActivity.this, API.GET_USERNEARBY, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<Nearby>>() {
-////                    @Override
-////                    public void onSuccess(List<Nearby> result) {
-////                        super.onSuccess(result);
-////                        if (result != null) {
-////
-////                            adapater.addItems(result);
-////                        }
-////                        //listView.setAdapter(adapater);
-////
-////                    }
-////                });
-//                swipeRefresh.setLoading(false);
-//
-//            }
-//        });
+        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
+
+            @Override
+            public void onLoad() {
+
+                page++;
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", String.valueOf(page));
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("Type", String.valueOf("1"));
+                Http.request(MyMissionActivity.this, API.GET_SELFORDER, new Object[]{Http.getURL(map)},
+                        new Http.RequestListener<List<OrderDetails>>() {
+                            @Override
+                            public void onSuccess(List<OrderDetails> result) {
+                                super.onSuccess(result);
+                                if (result != null) {
+                                    swipeRefresh.setLoading(false);
+                                    loadMore(swipeRefreshXMyMissionAdapater, result);
+                                }
+                                swipeRefresh.setLoading(false);
+                            }
+
+                            @Override
+                            public void onFail(String code) {
+                                super.onFail(code);
+                                swipeRefresh.setLoading(false);
+                            }
+                        });
+
+
+            }
+        });
     }
 
     @Override
@@ -173,6 +205,9 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
 
     }
 
+    private void loadMore(SwipeRefreshXMyMissionAdapater adapater, List<OrderDetails> orderDetailses) {
+        adapater.addItems(orderDetailses);
+    }
 
 }
 

@@ -14,14 +14,16 @@
 
         <include
             android:id="@+id/title_bar"
-            layout="@layout/titlebar_order" />
+            layout="@layout/titlebar_home" />
 
     <LinearLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/white"
-        android:gravity="center">
+        android:gravity="center"
+
+        >
 
         <appframe.appframe.widget.dropdownmenu.DropdownButton
             android:id="@+id/chooseType"
@@ -61,6 +63,43 @@
             android:layout_height="match_parent"
             android:layout_weight="1" />
     </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/question_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/white"
+            android:gravity="center"
+            android:visibility="gone"
+            >
+
+            <appframe.appframe.widget.dropdownmenu.DropdownButton
+                android:id="@+id/chooseQuestionMoney"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="18dp"
+                android:background="#dddddd" />
+
+            <appframe.appframe.widget.dropdownmenu.DropdownButton
+                android:id="@+id/chooseQuestionStatus"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="18dp"
+                android:background="#dddddd" />
+
+            <appframe.appframe.widget.dropdownmenu.DropdownButton
+                android:id="@+id/chooseQuestionSelect"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -109,6 +148,25 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
 
+        <appframe.appframe.widget.dropdownmenu.DropdownListView
+            android:id="@+id/dropdownQeustionMoney"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownListView
+            android:id="@+id/dropdownQuestionStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownListView
+            android:id="@+id/dropdownQuestionSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+
         <!--<appframe.appframe.widget.swiperefresh.SwipeRefreshListView-->
 
             <!--android:layout_width="match_parent"-->
@@ -139,6 +197,14 @@
                 >
             </ListView>
         </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="现在还没有人发单，您快去发一单吧"
+            android:visibility="gone"
+            />
         <!--<ListView-->
             <!--android:id="@+id/swipeListView"-->
             <!--android:layout_width="match_parent"-->

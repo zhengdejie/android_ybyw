@@ -1,6 +1,7 @@
 package appframe.appframe.widget.dropdownmenu;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -176,6 +177,8 @@ public class DropdownListView extends ScrollView {
         if (multiSelect == 1) {
             Button btn_ok = new Button(getContext());
             btn_ok.setText("确定");
+
+            btn_ok.setBackgroundDrawable(getResources().getDrawable(R.drawable.textview_clicked));
             btn_ok.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

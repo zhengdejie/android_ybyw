@@ -179,7 +179,7 @@ public class CandidateActivity extends BaseActivity implements View.OnClickListe
                             Http.request(CandidateActivity.this, API.CONFIRMORDER, new Object[]{orderID}, Http.map(
                                     "ReceiverId", getReceiverId(),
                                     "OrderType", orderType,
-                                    "IsCancel", "TRUE",
+                                    "HasCancel", "TRUE",
                                     "Total",String.valueOf(getTotal())
                             ), new Http.RequestListener<String>() {
                                 @Override
@@ -233,7 +233,7 @@ public class CandidateActivity extends BaseActivity implements View.OnClickListe
                             Http.request(CandidateActivity.this, API.CONFIRMORDER, new Object[]{orderID}, Http.map(
                                     "ReceiverId", getReceiverId(),
                                     "OrderType", orderType,
-                                    "IsCancel", "FALSE",
+                                    "HasCancel", "FALSE",
                                     "Total",String.valueOf(getTotal())
                             ), new Http.RequestListener<String>() {
                                 @Override

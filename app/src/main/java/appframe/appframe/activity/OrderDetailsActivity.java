@@ -22,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -54,9 +55,9 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 public class OrderDetailsActivity extends BaseActivity implements View.OnClickListener{
 
     //private ImageView img_avatar;
-    private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit,
+    private TextView tv_name,tv_title,tv_money,tv_location,tv_type,tv_status,tv_content,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,
             tv_originalprice,tv_bargain,tv_tags;
-    private ImageButton imgbtn_conversation,imgbtn_call;
+    private ImageView imgbtn_conversation,imgbtn_call;
     com.android.volley.toolbox.NetworkImageView iv_avatar;
     private Button btn_select,btn_comment,btn_recommend;
     private EditText et_price;
@@ -225,9 +226,9 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 
                 }
                 break;
-            case R.id.btn_estimate:
-                startActivity(new Intent(this,OrderEstimateActivity.class));
-                break;
+//            case R.id.btn_estimate:
+//                startActivity(new Intent(this,OrderEstimateActivity.class));
+//                break;
             case R.id.btn_comment:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 //final EditText comment = new EditText(this);
@@ -306,8 +307,8 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         //img_avatar = (ImageView)findViewById(R.id.img_avatar);
         //lly_photos = (LinearLayout)findViewById(R.id.lly_photos);
         gridView =(GridView)findViewById(R.id.gridview);
-        imgbtn_conversation = (ImageButton)findViewById(R.id.imgbtn_conversation);
-        imgbtn_call = (ImageButton)findViewById(R.id.imgbtn_call);
+        imgbtn_conversation = (ImageView)findViewById(R.id.imgbtn_conversation);
+        imgbtn_call = (ImageView)findViewById(R.id.imgbtn_call);
         tv_title =(TextView)findViewById(R.id.tv_title);
         tv_money =(TextView)findViewById(R.id.tv_money);
         tv_location =(TextView)findViewById(R.id.tv_location);
@@ -317,7 +318,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tb_action = (TextView)findViewById(R.id.tb_action);
         tb_title = (TextView)findViewById(R.id.tb_title);
         btn_select = (Button)findViewById(R.id.btn_select);
-        tv_time = (TextView)findViewById(R.id.tv_time);
+//        tv_time = (TextView)findViewById(R.id.tv_time);
 //        tv_status = (TextView)findViewById(R.id.tv_status);
         tv_require = (TextView)findViewById(R.id.tv_require);
         tv_paymethod = (TextView)findViewById(R.id.tv_paymethod);
@@ -326,8 +327,8 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         btn_comment = (Button)findViewById(R.id.btn_comment);
         lv_ordercomment = (ListView)findViewById(R.id.lv_ordercomment);
         tv_comment = (TextView)findViewById(R.id.tv_comment);
-        tv_moneyunit = (TextView)findViewById(R.id.tv_moneyunit);
-        tv_range = (TextView)findViewById(R.id.tv_range);
+//        tv_moneyunit = (TextView)findViewById(R.id.tv_moneyunit);
+//        tv_range = (TextView)findViewById(R.id.tv_range);
         btn_recommend = (Button)findViewById(R.id.btn_recommend);
         iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
         rb_totalvalue = (RatingBar)findViewById(R.id.rb_totalvalue);
@@ -344,6 +345,12 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         Intent intent = this.getIntent();
         orderDetails=(OrderDetails)intent.getSerializableExtra("OrderDetails");
 
+        if(orderDetails.getOrderStatus().equals("1"))
+        {
+            btn_select.setVisibility(View.INVISIBLE);
+            btn_recommend.setVisibility(View.INVISIBLE);
+        }
+
         if(orderDetails.getLocationAnonymity() == 1) {
             tv_location.setText("");
         }
@@ -351,14 +358,14 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         {
             tv_location.setText(orderDetails.getAddress().toString());
         }
-        if( orderDetails.getType() == 1 )
-        {
-            tv_moneyunit.setText("索 ￥");
-        }
-        else
-        {
-            tv_moneyunit.setText("赏 ￥");
-        }
+//        if( orderDetails.getType() == 1 )
+//        {
+//            tv_moneyunit.setText("索 ￥");
+//        }
+//        else
+//        {
+//            tv_moneyunit.setText("赏 ￥");
+//        }
         if((intent.getStringExtra("From") != null && intent.getStringExtra("From").equals("MyOrder")) || orderDetails.getOrderer().getId() == Auth.getCurrentUserId())
         {
             btn_select.setText("候选接单人");
@@ -370,17 +377,33 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 
         tv_type.setText(orderDetails.getCategory().toString());
         tv_content.setText(orderDetails.getContent().toString());
-        tv_time.setText(orderDetails.getCreatedAt().toString());
+//        tv_time.setText(orderDetails.getCreatedAt().toString());
 //        tv_status.setText(orderDetails.getOrderStatus().toString());
         tv_tags.setText(orderDetails.getTags());
         tv_require.setText(orderDetails.getRequest() == null ? "" : orderDetails.getRequest().toString());
         tv_paymethod.setText(orderDetails.getPaymentMethod().toString());
         tv_deadline.setText(orderDetails.getDeadline().toString());
-        iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+//        iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+        if(orderDetails.getOrderer().getGender().equals(getResources().getString(R.string.male).toString()))
+        {
+            iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+        }
+        else
+        {
+            iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+        }
         if(orderDetails.getNameAnonymity() == 1)
         {
             tv_name.setText("匿名");
-            iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+            if(orderDetails.getOrderer().getGender().equals(getResources().getString(R.string.male).toString()))
+            {
+                iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+            }
+            else
+            {
+                iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+            }
+
         }
         else {
             if (orderDetails.getOrderer().getFNickName() != null && !orderDetails.getOrderer().getFNickName().equals("")) {
@@ -390,6 +413,17 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
             }
             if(orderDetails.getOrderer().getAvatar() != null) {
                 ImageUtils.setImageUrl(iv_avatar, orderDetails.getOrderer().getAvatar().toString());
+            }
+            else
+            {
+                if(orderDetails.getOrderer().getGender().equals(getResources().getString(R.string.male).toString()))
+                {
+                    iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+                }
+                else
+                {
+                    iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+                }
             }
         }
         if(orderDetails.getType() == 1) {
@@ -420,13 +454,13 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         }
         Tel = orderDetails.getOrderer().getMobile() == null ? "" : orderDetails.getOrderer().getMobile().toString();
         OrderID = String.valueOf(orderDetails.getId());
-        tv_range.setText(setRange(orderDetails.getVisibility()));
+//        tv_range.setText(setRange(orderDetails.getVisibility()));
         //Log.i("OrderDetailsID--",String.valueOf(orderDetails.getId()));
         tb_title.setText("需求单");
         tb_back.setText("友帮");
-        Drawable drawable = getResources().getDrawable(R.drawable.ic_menu_moreoverflow_normal_holo_light);
+        Drawable drawable = getResources().getDrawable(R.drawable.moreoverflow_normal_holo_light);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        tb_action.setCompoundDrawables(drawable, null, null, null);
+        tb_action.setCompoundDrawables(null, null, drawable, null);
         tb_action.setOnClickListener(this);
         tb_back.setOnClickListener(this);
         if(orderDetails.getPhoneAnonymity() == 1)
@@ -517,13 +551,13 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
             showAsDropDown(parent, 0,0);
             update();
 
-            Button btn_viewfdinfo = (Button) view
+            TextView btn_viewfdinfo = (TextView) view
                     .findViewById(R.id.item_popupwindows_viewfdinfo);
-            final Button btn_collectorder = (Button) view
+            final TextView btn_collectorder = (TextView) view
                     .findViewById(R.id.item_popupwindows_collectorder);
-            final Button btn_toporder = (Button) view
+            final TextView btn_toporder = (TextView) view
                     .findViewById(R.id.item_popupwindows_toporder);
-            Button btn_reportorder = (Button) view
+            TextView btn_reportorder = (TextView) view
                     .findViewById(R.id.item_popupwindows_reportorder);
             if(hasTopOrder != null && hasTopOrder.equals("1"))
             {

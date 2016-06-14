@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RatingBar;
@@ -61,6 +63,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
     List<ConfirmedOrderDetail> orderDetails = new ArrayList<ConfirmedOrderDetail>();
     CompletedCountDown mc;
     String from;
+    Drawable serviceProviderDrawable,serviceReceiverDrawable;
     private static final int SDK_PAY_FLAG = 1;
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -129,24 +132,31 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
             mHolder = new ViewHolder();
             mHolder.txt_title = (TextView) convertView.findViewById(R.id.txt_title);
             mHolder.txt_bounty = (TextView) convertView.findViewById(R.id.txt_bounty);
-            mHolder.txt_type = (TextView)convertView.findViewById(R.id.txt_type);
+//            mHolder.txt_type = (TextView)convertView.findViewById(R.id.txt_type);
             mHolder.txt_location = (TextView)convertView.findViewById(R.id.txt_location);
-            mHolder.btn_estimate = (Button)convertView.findViewById(R.id.btn_estimate);
-            mHolder.btn_finish = (Button)convertView.findViewById(R.id.btn_finish);
+//            mHolder.btn_estimate = (Button)convertView.findViewById(R.id.btn_estimate);
+//            mHolder.btn_finish = (Button)convertView.findViewById(R.id.btn_finish);
             mHolder.tv_time = (TextView)convertView.findViewById(R.id.tv_time);
             mHolder.tv_name = (TextView)convertView.findViewById(R.id.tv_name);
-            mHolder.tv_pay = (TextView)convertView.findViewById(R.id.tv_pay);
-            mHolder.tv_showserviceprovider = (TextView)convertView.findViewById(R.id.tv_showserviceprovider);
-            mHolder.tv_showservicereceiver = (TextView)convertView.findViewById(R.id.tv_showservicereceiver);
+//            mHolder.tv_pay = (TextView)convertView.findViewById(R.id.tv_pay);
+//            mHolder.tv_showserviceprovider = (TextView)convertView.findViewById(R.id.tv_showserviceprovider);
+//            mHolder.tv_showservicereceiver = (TextView)convertView.findViewById(R.id.tv_showservicereceiver);
             mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
-            mHolder.rb_totalvalue = (RatingBar)convertView.findViewById(R.id.rb_totalvalue);
-            mHolder.ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
-            mHolder.imgbtn_conversation =(ImageButton)convertView.findViewById(R.id.imgbtn_conversation);
-            mHolder.imgbtn_call =(ImageButton)convertView.findViewById(R.id.imgbtn_call);
+//            mHolder.rb_totalvalue = (RatingBar)convertView.findViewById(R.id.rb_totalvalue);
+//            mHolder.ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
+//            mHolder.imgbtn_conversation =(ImageButton)convertView.findViewById(R.id.imgbtn_conversation);
+//            mHolder.imgbtn_call =(ImageButton)convertView.findViewById(R.id.imgbtn_call);
             mHolder.tv_showstatus = (TextView) convertView.findViewById(R.id.tv_showstatus);
-            mHolder.tv_numofconforder = (TextView) convertView.findViewById(R.id.tv_numofconforder);
-            mHolder.tv_countdown = (TextView) convertView.findViewById(R.id.tv_countdown);
+//            mHolder.tv_numofconforder = (TextView) convertView.findViewById(R.id.tv_numofconforder);
+//            mHolder.tv_countdown = (TextView) convertView.findViewById(R.id.tv_countdown);
 
+            mHolder.tv_service = (TextView)convertView.findViewById(R.id.tv_service);
+            mHolder.tv_bid = (TextView)convertView.findViewById(R.id.tv_bid);
+            mHolder.tv_total = (TextView)convertView.findViewById(R.id.tv_total);
+            mHolder.tv_estimate = (TextView)convertView.findViewById(R.id.tv_estimate);
+            mHolder.tv_finish = (TextView)convertView.findViewById(R.id.tv_finish);
+            mHolder.iv_service = (ImageView)convertView.findViewById(R.id.iv_service);
+            mHolder.iv_photos = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_photos);
             convertView.setTag(mHolder);
         }
         else
@@ -155,104 +165,121 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
         }
         final ConfirmedOrderDetail item = orderDetails.get(position);
         mHolder.txt_title.setText(item.getOrder().getTitle());
-        if(item.getType() == 1)
-        {
-            mHolder.txt_bounty.setTextColor(context.getResources().getColor(R.color.green));
-        }
-        else
-        {
-            mHolder.txt_bounty.setTextColor(Color.RED);
-        }
-        SpannableString ss = new SpannableString( "￥" + String.valueOf(item.getOrder().getBounty()));
-        ss.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        mHolder.txt_bounty.setText(ss);
-        mHolder.txt_type.setText("类别:" + item.getOrder().getCategory());
-        mHolder.txt_location.setText("地址:" + item.getOrder().getAddress());
+        mHolder.tv_bid.setText("￥" + String.valueOf(item.getBid()));
+        mHolder.txt_bounty.setText("￥" + String.valueOf(item.getOrder().getBounty()));
+        mHolder.tv_total.setText("￥" + String.valueOf(item.getBid()));
+//        if(item.getType() == 1)
+//        {
+//            mHolder.txt_bounty.setTextColor(context.getResources().getColor(R.color.green));
+//        }
+//        else
+//        {
+//            mHolder.txt_bounty.setTextColor(Color.RED);
+//        }
+//        SpannableString ss = new SpannableString( "￥" + String.valueOf(item.getOrder().getBounty()));
+//        ss.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        mHolder.txt_bounty.setText(ss);
+//        mHolder.txt_type.setText("类别:" + item.getOrder().getCategory());
+        mHolder.txt_location.setText(item.getOrder().getAddress());
         mHolder.tv_time.setText(item.getOrder().getCreatedAt());
-        mHolder.tv_countdown.setVisibility(View.GONE);
+//        mHolder.tv_countdown.setVisibility(View.GONE);
 
-        if(item.getOrder().getOrderer().getFNickName() != null && !item.getOrder().getOrderer().getFNickName().equals(""))
-        {
-            mHolder.tv_name.setText(item.getOrder().getOrderer().getFNickName());
-        }
-        else {
-            mHolder.tv_name.setText(item.getOrder().getOrderer().getName());
-        }
-        if(item.getServiceProvider().getId() == Auth.getCurrentUserId()) {
-            mHolder.tv_showserviceprovider.setText(item.getServiceProvider().getName() +"(我)");
-        }
-        else {
-            mHolder.tv_showserviceprovider.setText(item.getServiceProvider().getName());
-        }
-        if(item.getServiceReceiver().getId() == Auth.getCurrentUserId())
-        {
-            mHolder.tv_showservicereceiver.setText(item.getServiceReceiver().getName() +"(我)");
-        }
-        else {
-            mHolder.tv_showservicereceiver.setText(item.getServiceReceiver().getName());
-        }
 
         mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
         mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
-        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrder().getOrderer().getAvatar());
+        serviceProviderDrawable = context.getResources().getDrawable( R.drawable.servicereprovider);
+        serviceReceiverDrawable = context.getResources().getDrawable( R.drawable.servicereceiver);
+        if(item.getServiceProvider().getId() == Auth.getCurrentUserId()) {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getServiceReceiver().getAvatar());
+            mHolder.tv_service.setText("被服务方");
+            mHolder.iv_service.setImageDrawable(serviceReceiverDrawable);
+            if(item.getServiceReceiver().getFNickName() != null && !item.getServiceReceiver().getFNickName().equals(""))
+            {
+                mHolder.tv_name.setText(item.getServiceReceiver().getFNickName());
+            }
+            else {
+                mHolder.tv_name.setText(item.getServiceReceiver().getName());
+            }
+        }
+        else {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getServiceProvider().getAvatar());
+            mHolder.tv_service.setText("被服务方");
+            mHolder.iv_service.setImageDrawable(serviceProviderDrawable);
+            if(item.getServiceProvider().getFNickName() != null && !item.getServiceProvider().getFNickName().equals(""))
+            {
+                mHolder.tv_name.setText(item.getServiceProvider().getFNickName());
+            }
+            else {
+                mHolder.tv_name.setText(item.getServiceProvider().getName());
+            }
+        }
+//        if(item.getServiceReceiver().getId() == Auth.getCurrentUserId())
+//        {
+//            mHolder.tv_showservicereceiver.setText(item.getServiceReceiver().getName() +"(我)");
+//        }
+//        else {
+//            mHolder.tv_showservicereceiver.setText(item.getServiceReceiver().getName());
+//        }
 
-        if(item.getOrder().getType() == 1) {
-            mHolder.rb_totalvalue.setRating((float)item.getOrder().getOrderer().getTotalWorkerPoint());
-        }
-        else if(item.getOrder().getType() == 2) {
-            mHolder.rb_totalvalue.setRating((float) item.getOrder().getOrderer().getTotalBossPoint());
-        }
 
 
-        if(item.getOrder().getPaymentMethod().equals("线上支付"))
-        {
-            mHolder.tv_pay.setText("已支付");
-        }
-        else
-        {
-            mHolder.tv_pay.setText("未支付");
-        }
-        mHolder.tv_numofconforder.setText(String.format("友帮了%d次",item.getOrder().getOrderer().getCompletedNumberOfOrder()));
+//        if(item.getOrder().getType() == 1) {
+//            mHolder.rb_totalvalue.setRating((float)item.getOrder().getOrderer().getTotalWorkerPoint());
+//        }
+//        else if(item.getOrder().getType() == 2) {
+//            mHolder.rb_totalvalue.setRating((float) item.getOrder().getOrderer().getTotalBossPoint());
+//        }
+//
+//
+//        if(item.getOrder().getPaymentMethod().equals("线上支付"))
+//        {
+//            mHolder.tv_pay.setText("已支付");
+//        }
+//        else
+//        {
+//            mHolder.tv_pay.setText("未支付");
+//        }
+//        mHolder.tv_numofconforder.setText(String.format("友帮了%d次",item.getOrder().getOrderer().getCompletedNumberOfOrder()));
         switch (from)
         {
             case AppConfig.ORDERSTATUS_APPLY:
                 if(item.getOrder().getType() == 1 && item.getOrder().getBossPaid() != 1) {
-                    mHolder.btn_finish.setVisibility(View.VISIBLE);
-                    mHolder.btn_finish.setText("支付");
+                    mHolder.tv_finish.setVisibility(View.VISIBLE);
+                    mHolder.tv_finish.setText("支付");
                 }
                 else
                 {
-                    mHolder.btn_finish.setVisibility(View.GONE);
+                    mHolder.tv_finish.setVisibility(View.GONE);
                 }
-                mHolder.btn_estimate.setText(context.getResources().getString(R.string.cancel_appley));
+                mHolder.tv_estimate.setText(context.getResources().getString(R.string.cancel_appley));
                 break;
             case AppConfig.ORDERSTATUS_PROGRESS:
-                mHolder.btn_finish.setVisibility(View.VISIBLE);
+                mHolder.tv_finish.setVisibility(View.VISIBLE);
                 if (item.getServiceProvider().getId() == Auth.getCurrentUserId())
                 {
 
                     if(item.getStatus() == 1) {
-                        mHolder.btn_finish.setText(context.getResources().getString(R.string.service_done));
-                        mHolder.btn_estimate.setText(context.getResources().getString(R.string.service_stop));
+                        mHolder.tv_finish.setText(context.getResources().getString(R.string.service_done));
+                        mHolder.tv_estimate.setText(context.getResources().getString(R.string.service_stop));
                     }
                     if(item.getStatus() == 5)
                     {
-                        mHolder.btn_finish.setVisibility(View.GONE);
-                        mHolder.btn_estimate.setVisibility(View.GONE);
-                        mHolder.ll_button.setVisibility(View.GONE);
+                        mHolder.tv_finish.setVisibility(View.GONE);
+                        mHolder.tv_estimate.setVisibility(View.GONE);
+//                        mHolder.ll_button.setVisibility(View.GONE);
                         mHolder.tv_showstatus.setVisibility(View.VISIBLE);
-                        mHolder.tv_showstatus.setText("等待对方付款");
+                        mHolder.tv_showstatus.setText("等待对方付款,您收到的费用将扣除1%为平台服务费");
                     }
                     if(item.getStatus() == 7)
                     {
-                        mHolder.btn_finish.setText(context.getResources().getString(R.string.agree));
-                        mHolder.btn_estimate.setText(context.getResources().getString(R.string.disagree));
+                        mHolder.tv_finish.setText(context.getResources().getString(R.string.agree));
+                        mHolder.tv_estimate.setText(context.getResources().getString(R.string.disagree));
                     }
                     if(item.getStatus() == 8)
                     {
-                        mHolder.btn_finish.setVisibility(View.GONE);
-                        mHolder.btn_estimate.setVisibility(View.GONE);
-                        mHolder.ll_button.setVisibility(View.GONE);
+                        mHolder.tv_finish.setVisibility(View.GONE);
+                        mHolder.tv_estimate.setVisibility(View.GONE);
+//                        mHolder.ll_button.setVisibility(View.GONE);
                         mHolder.tv_showstatus.setVisibility(View.VISIBLE);
                         mHolder.tv_showstatus.setText("已拒绝退款申请，客服正在处理中，请耐心等待");
                     }
@@ -260,55 +287,55 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                 if(item.getServiceReceiver().getId() == Auth.getCurrentUserId())
                 {
                     if(item.getStatus() == 1) {
-                        mHolder.btn_finish.setText("催单");
-                        mHolder.btn_estimate.setText(context.getResources().getString(R.string.service_stop));
+                        mHolder.tv_finish.setText("催单");
+                        mHolder.tv_estimate.setText(context.getResources().getString(R.string.service_stop));
                     }
                     if(item.getStatus() == 5) {
-                        mHolder.btn_finish.setText("付款");
-                        mHolder.btn_estimate.setText(context.getResources().getString(R.string.refund_apply));
-                        mHolder.tv_countdown.setVisibility(View.VISIBLE);
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        Calendar rightNow = Calendar.getInstance();
-                        try {
-                            String[] date= item.getCompleteDate().toString().split(" ");
-                            String runTime = date[0] + " 01:00:00";
-                            Date completedRunTime = dateFormat.parse(runTime);
-                            Date completedDate = dateFormat.parse(item.getCompleteDate().toString());
-                            rightNow.setTime(completedDate);
-                            if(completedDate.before(completedRunTime))
-                            {
-                                rightNow.add(Calendar.DAY_OF_YEAR, 7);//日期加7天
-                            }
-                            else
-                            {
-                                rightNow.add(Calendar.DAY_OF_YEAR, 8);//日期加8天
-                            }
-
-                            String countDown = simpleDateFormat.format(rightNow.getTime());
-                            Date countDownTime = dateFormat.parse(countDown + " 01:00:00");
-                            Date nowdate = new Date();
-                            mc = new CompletedCountDown(countDownTime.getTime() -nowdate.getTime(), 1000, mHolder.tv_countdown);
-                            mc.start();
-                        }
-                        catch (ParseException e)
-                        {
-                            Log.e("ParseException", e.getMessage());
-                        }
+                        mHolder.tv_finish.setText("付款");
+                        mHolder.tv_estimate.setText(context.getResources().getString(R.string.refund_apply));
+//                        mHolder.tv_countdown.setVisibility(View.VISIBLE);
+//                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+//                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//                        Calendar rightNow = Calendar.getInstance();
+//                        try {
+//                            String[] date= item.getCompleteDate().toString().split(" ");
+//                            String runTime = date[0] + " 01:00:00";
+//                            Date completedRunTime = dateFormat.parse(runTime);
+//                            Date completedDate = dateFormat.parse(item.getCompleteDate().toString());
+//                            rightNow.setTime(completedDate);
+//                            if(completedDate.before(completedRunTime))
+//                            {
+//                                rightNow.add(Calendar.DAY_OF_YEAR, 7);//日期加7天
+//                            }
+//                            else
+//                            {
+//                                rightNow.add(Calendar.DAY_OF_YEAR, 8);//日期加8天
+//                            }
+//
+//                            String countDown = simpleDateFormat.format(rightNow.getTime());
+//                            Date countDownTime = dateFormat.parse(countDown + " 01:00:00");
+//                            Date nowdate = new Date();
+//                            mc = new CompletedCountDown(countDownTime.getTime() -nowdate.getTime(), 1000, mHolder.tv_countdown);
+//                            mc.start();
+//                        }
+//                        catch (ParseException e)
+//                        {
+//                            Log.e("ParseException", e.getMessage());
+//                        }
                     }
                     if(item.getStatus() == 7)
                     {
-                        mHolder.btn_finish.setVisibility(View.GONE);
-                        mHolder.btn_estimate.setVisibility(View.GONE);
-                        mHolder.ll_button.setVisibility(View.GONE);
+                        mHolder.tv_finish.setVisibility(View.GONE);
+                        mHolder.tv_estimate.setVisibility(View.GONE);
+//                        mHolder.ll_button.setVisibility(View.GONE);
                         mHolder.tv_showstatus.setVisibility(View.VISIBLE);
                         mHolder.tv_showstatus.setText("已发送退款申请，等待对方确认");
                     }
                     if(item.getStatus() == 8)
                     {
-                        mHolder.btn_finish.setVisibility(View.INVISIBLE);
-                        mHolder.btn_estimate.setVisibility(View.VISIBLE);
-                        mHolder.btn_estimate.setText(context.getResources().getString(R.string.dispute));
+                        mHolder.tv_finish.setVisibility(View.GONE);
+                        mHolder.tv_estimate.setVisibility(View.VISIBLE);
+                        mHolder.tv_estimate.setText(context.getResources().getString(R.string.dispute));
 //                        mHolder.btn_finish.setVisibility(View.GONE);
 //                        mHolder.btn_estimate.setVisibility(View.GONE);
 //                        mHolder.ll_button.setVisibility(View.GONE);
@@ -321,9 +348,9 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
 
                 break;
             case AppConfig.ORDERSTATUS_DONE:
-                mHolder.btn_finish.setVisibility(View.INVISIBLE);
-                mHolder.btn_estimate.setVisibility(View.VISIBLE);
-                mHolder.btn_estimate.setText(context.getResources().getString(R.string.estimate));
+                mHolder.tv_finish.setVisibility(View.GONE);
+                mHolder.tv_estimate.setVisibility(View.VISIBLE);
+                mHolder.tv_estimate.setText(context.getResources().getString(R.string.estimate));
 //                if(item.getServiceReceiver().getId() == Auth.getCurrentUserId()) {
 //                    mHolder.btn_finish.setVisibility(View.INVISIBLE);
 //                    mHolder.btn_estimate.setVisibility(View.VISIBLE);
@@ -337,24 +364,24 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
 //                }
                 break;
             case AppConfig.ORDERSTATUS_CLOSE:
-                mHolder.btn_finish.setVisibility(View.GONE);
-                mHolder.btn_estimate.setVisibility(View.GONE);
-                mHolder.ll_button.setVisibility(View.GONE);
+                mHolder.tv_finish.setVisibility(View.GONE);
+                mHolder.tv_estimate.setVisibility(View.GONE);
+//                mHolder.ll_buttotton.setVisibility(View.GONE);
                 break;
             case AppConfig.ORDERSTATUS_DELETE:
-                mHolder.btn_finish.setVisibility(View.INVISIBLE);
-                mHolder.btn_estimate.setText(context.getResources().getString(R.string.delete));
+                mHolder.tv_finish.setVisibility(View.GONE);
+                mHolder.tv_estimate.setText(context.getResources().getString(R.string.delete));
                 break;
             case AppConfig.ORDERSTATUS_MAIN:
-                mHolder.btn_finish.setVisibility(View.INVISIBLE);
-                mHolder.btn_estimate.setVisibility(View.GONE);
+                mHolder.tv_finish.setVisibility(View.GONE);
+                mHolder.tv_estimate.setVisibility(View.GONE);
                 break;
         }
 
-        mHolder.btn_estimate.setOnClickListener(new View.OnClickListener() {
+        mHolder.tv_estimate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mHolder.btn_estimate.getText() == context.getResources().getString(R.string.cancel_appley))
+                if(mHolder.tv_estimate.getText() == context.getResources().getString(R.string.cancel_appley))
                 {
                     Map<String, String> map = new HashMap<String, String>();
                     map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
@@ -368,7 +395,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                                 }
                             });
                 }
-                if(mHolder.btn_estimate.getText() == context.getResources().getString(R.string.estimate))
+                if(mHolder.tv_estimate.getText() == context.getResources().getString(R.string.estimate))
                 {
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
@@ -384,7 +411,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }
-                if(mHolder.btn_estimate.getText() == context.getResources().getString(R.string.refund_apply))
+                if(mHolder.tv_estimate.getText() == context.getResources().getString(R.string.refund_apply))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     LayoutInflater inflater =LayoutInflater.from(context);
@@ -424,7 +451,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
 
                 }
 
-                if(mHolder.btn_estimate.getText() == context.getResources().getString(R.string.disagree))
+                if(mHolder.tv_estimate.getText() == context.getResources().getString(R.string.disagree))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
 //                    builder.setMessage("是否确认拒绝退款并进入纠纷处理环节？您可能需要等待1-30天，让我们客服介入并解决")
@@ -494,7 +521,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
 
                 }
 
-                if(mHolder.btn_estimate.getText() == context.getResources().getString(R.string.service_stop))
+                if(mHolder.tv_estimate.getText() == context.getResources().getString(R.string.service_stop))
                 {
                     Http.request((Activity) context, API.ORDER_CLOSE,
                             Http.map("ConfirmedOrderId", String.valueOf(item.getId()),
@@ -507,7 +534,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                                 }
                             });
                 }
-                if(mHolder.btn_estimate.getText() == context.getResources().getString(R.string.delete))
+                if(mHolder.tv_estimate.getText() == context.getResources().getString(R.string.delete))
                 {
                     Http.request((Activity) context, API.CLOSE_ORDER, Http.map("Id", String.valueOf(item.getId())), new Http.RequestListener<String>() {
                         @Override
@@ -517,7 +544,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                         }
                     });
                 }
-                if(mHolder.btn_estimate.getText() == context.getResources().getString(R.string.dispute))
+                if(mHolder.tv_estimate.getText() == context.getResources().getString(R.string.dispute))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     //final EditText comment = new EditText(this);
@@ -557,10 +584,10 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
             }
         });
 
-        mHolder.btn_finish.setOnClickListener(new View.OnClickListener() {
+        mHolder.tv_finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mHolder.btn_finish.getText() == "支付")
+                if(mHolder.tv_finish.getText() == "支付")
                 {
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
@@ -610,7 +637,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
 //                                }
 //                            });
                 }
-                if(mHolder.btn_finish.getText() == context.getResources().getString(R.string.service_done))
+                if(mHolder.tv_finish.getText() == context.getResources().getString(R.string.service_done))
                 {
                     Http.request((Activity)context, API.ORDER_COMPLETE,new Object[]{String.valueOf(item.getId())}, Http.map(
                             "UserId", String.valueOf(Auth.getCurrentUserId())
@@ -624,7 +651,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                         }
                     });
                 }
-                if(mHolder.btn_finish.getText() == "催单")
+                if(mHolder.tv_finish.getText() == "催单")
                 {
                     Http.request((Activity)context, API.ORDER_HURRYUP,new Object[]{String.valueOf(item.getId())},
                     new Http.RequestListener<String>() {
@@ -637,7 +664,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                         }
                     });
                 }
-                if(mHolder.btn_finish.getText() == "付款")
+                if(mHolder.tv_finish.getText() == "付款")
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -671,7 +698,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                     }).show();
 
                 }
-                if(mHolder.btn_finish.getText() == context.getResources().getString(R.string.agree))
+                if(mHolder.tv_finish.getText() == context.getResources().getString(R.string.agree))
                 {
                     Http.request((Activity)context, API.REFUND_AGREE,new Object[]{String.valueOf(item.getId())}, Http.map(
                             "UserId", String.valueOf(Auth.getCurrentUserId())
@@ -688,44 +715,44 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
             }
         });
 
-        mHolder.imgbtn_conversation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LoginSampleHelper ls = LoginSampleHelper.getInstance();
-                String target = String.valueOf(item.getServiceProvider().getId() == Auth.getCurrentUserId() ? item.getServiceReceiver().getId() : item.getServiceProvider().getId());
-                Intent intent = ls.getIMKit().getChattingActivityIntent(target);
-                context.startActivity(intent);
-            }
-        });
-
-        mHolder.imgbtn_call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(item.getServiceReceiver().getId() == Auth.getCurrentUserId())
-                {
-                    if(!item.getServiceProvider().getMobile().equals("")) {
-                        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + item.getServiceProvider().getMobile())); //直接拨打电话android.intent.action.CALL
-                        context.startActivity(phoneIntent);
-                    }
-                    else
-                    {
-                        Toast.makeText(context,"该用户不是用手机注册",Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else
-                {
-                    if(!item.getServiceReceiver().getMobile().equals("")) {
-                        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + item.getServiceReceiver().getMobile())); //直接拨打电话android.intent.action.CALL
-                        context.startActivity(phoneIntent);
-                    }
-                    else
-                    {
-                        Toast.makeText(context,"该用户不是用手机注册",Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-            }
-        });
+//        mHolder.imgbtn_conversation.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                LoginSampleHelper ls = LoginSampleHelper.getInstance();
+//                String target = String.valueOf(item.getServiceProvider().getId() == Auth.getCurrentUserId() ? item.getServiceReceiver().getId() : item.getServiceProvider().getId());
+//                Intent intent = ls.getIMKit().getChattingActivityIntent(target);
+//                context.startActivity(intent);
+//            }
+//        });
+//
+//        mHolder.imgbtn_call.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(item.getServiceReceiver().getId() == Auth.getCurrentUserId())
+//                {
+//                    if(!item.getServiceProvider().getMobile().equals("")) {
+//                        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + item.getServiceProvider().getMobile())); //直接拨打电话android.intent.action.CALL
+//                        context.startActivity(phoneIntent);
+//                    }
+//                    else
+//                    {
+//                        Toast.makeText(context,"该用户不是用手机注册",Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//                else
+//                {
+//                    if(!item.getServiceReceiver().getMobile().equals("")) {
+//                        Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + item.getServiceReceiver().getMobile())); //直接拨打电话android.intent.action.CALL
+//                        context.startActivity(phoneIntent);
+//                    }
+//                    else
+//                    {
+//                        Toast.makeText(context,"该用户不是用手机注册",Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//
+//            }
+//        });
 
 
 
@@ -744,12 +771,15 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
 
     static class ViewHolder
     {
-        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_showserviceprovider,tv_showservicereceiver,tv_pay,tv_showstatus,tv_numofconforder,tv_countdown;
-        private Button btn_estimate,btn_finish;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
-        private RatingBar rb_totalvalue;
-        private LinearLayout ll_button;
-        private ImageButton imgbtn_conversation,imgbtn_call;
+//        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_showserviceprovider,tv_showservicereceiver,tv_pay,tv_showstatus,tv_numofconforder,tv_countdown;
+//        private Button btn_estimate,btn_finish;
+//        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+//        private RatingBar rb_totalvalue;
+//        private LinearLayout ll_button;
+//        private ImageButton imgbtn_conversation,imgbtn_call;
+        private TextView tv_time,tv_name,tv_service,txt_title,txt_location,tv_bid,txt_bounty,tv_total,tv_estimate,tv_finish,tv_showstatus;
+        private ImageView iv_service;
+        private com.android.volley.toolbox.NetworkImageView iv_avatar,iv_photos;
     }
 
 

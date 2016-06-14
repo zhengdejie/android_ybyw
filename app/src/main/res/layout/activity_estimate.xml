@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:app="http://schemas.android.com/apk/res-auto"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:background="@color/white">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <RelativeLayout
+        android:id="@+id/rl_top"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/title_bar">
+
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="-因为信任,所以简单-"
+            android:gravity="center"/>
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/tv_text"
+            />
+
+        <!--<de.hdodenhof.circleimageview.CircleImageView-->
+            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+            <!--android:id="@+id/clv_avatar"-->
+            <!--android:layout_width="100dp"-->
+            <!--android:layout_height="100dp"-->
+            <!--app:civ_border_width="2dp"-->
+            <!--android:src="@color/white"-->
+            <!--app:civ_border_color="@color/blue"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--android:layout_below="@+id/tv_text"/>-->
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rl_top"
+        android:background="@color/border_gray">
+
+        <TextView
+            android:id="@+id/tv_hide"
+            android:layout_width="30dp"
+            android:layout_height="10dp"
+            android:visibility="invisible"
+            android:background="@color/black"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
+
+        <RelativeLayout
+            android:id="@+id/rl_selfestimate"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_above="@+id/tv_hide"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/civ_selfestimate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@color/blue"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/white"
+                android:layout_centerHorizontal="true"/>
+
+
+
+            <ImageView
+                android:id="@+id/iv_selfestimate"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/selfestimate"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@+id/iv_selfestimate"
+                android:textColor="@color/white"
+                android:text="个人评价"
+                android:gravity="center"/>
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:id="@+id/rl_friendestimate"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/tv_hide"
+            android:layout_toLeftOf="@+id/tv_hide"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/civ_friendestimate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@color/blue"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/white"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                android:id="@+id/iv_friendestimate"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/friendestimate"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@+id/iv_friendestimate"
+                android:textColor="@color/white"
+                android:text="好友评价"
+                android:gravity="center"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_orderestimate"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/tv_hide"
+            android:layout_toRightOf="@+id/tv_hide"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/civ_orderestimate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@color/blue"
+                app:civ_border_width="2dp"
+                app:civ_border_color="@color/white"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                android:id="@+id/iv_orderestimate"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/orderestimate"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_below="@+id/iv_orderestimate"
+                android:textColor="@color/white"
+                android:text="好友评价"
+                android:gravity="center"/>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

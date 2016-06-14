@@ -32,7 +32,11 @@ public class UserBrief extends Http.BaseDto implements Serializable {
     public String YBAccount;
     public double TotalRevenue;
     public double TotalExpense;
-    public boolean ShowRevenueAndExpense;
+    public boolean ShowRevenue;
+    public boolean ShowExpense;
+    public boolean ShowConfirmedOrderHistoryAsProvider;
+    public boolean ShowConfirmedOrderHistoryAsReceiver;
+
 
     public int getId() {
         return Id;
@@ -211,11 +215,35 @@ public class UserBrief extends Http.BaseDto implements Serializable {
         TotalExpense = totalExpense;
     }
 
-    public boolean isShowRevenueAndExpense() {
-        return ShowRevenueAndExpense;
+    public boolean isShowRevenue() {
+        return ShowRevenue;
     }
 
-    public void setShowRevenueAndExpense(boolean showRevenueAndExpense) {
-        ShowRevenueAndExpense = showRevenueAndExpense;
+    public void setShowRevenue(boolean showRevenue) {
+        ShowRevenue = showRevenue;
+    }
+
+    public boolean isShowExpense() {
+        return ShowExpense;
+    }
+
+    public void setShowExpense(boolean showExpense) {
+        ShowExpense = showExpense;
+    }
+
+    public boolean isShowConfirmedOrderHistoryAsProvider() {
+        return ShowConfirmedOrderHistoryAsProvider;
+    }
+
+    public void setShowConfirmedOrderHistoryAsProvider(boolean showConfirmedOrderHistoryAsProvider) {
+        ShowConfirmedOrderHistoryAsProvider = showConfirmedOrderHistoryAsProvider;
+    }
+
+    public boolean isShowConfirmedOrderHistoryAsReceiver() {
+        return ShowConfirmedOrderHistoryAsReceiver;
+    }
+
+    public void setShowConfirmedOrderHistoryAsReceiver(boolean showConfirmedOrderHistoryAsReceiver) {
+        ShowConfirmedOrderHistoryAsReceiver = showConfirmedOrderHistoryAsReceiver;
     }
 }

@@ -28,7 +28,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
  * Created by Administrator on 2015/11/2.
  */
 public class MyCollectActivity extends BaseActivity implements View.OnClickListener  {
-    private TextView tb_title,tb_back;
+    private TextView tb_title,tb_back,tv_empty;
     private ListView lv_mycollect ;
     private List<OrderDetails> topOrderDetails = new ArrayList<OrderDetails>();
 
@@ -43,8 +43,9 @@ public class MyCollectActivity extends BaseActivity implements View.OnClickListe
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
+        tv_empty = (TextView)findViewById(R.id.tb_back);
         lv_mycollect = (ListView)findViewById(R.id.lv_mycollect);
-        tb_back.setText("个人中心");
+        tb_back.setText("我的");
         tb_title.setText("我的收藏");
         tb_back.setOnClickListener(this);
         lv_mycollect.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -70,7 +71,12 @@ public class MyCollectActivity extends BaseActivity implements View.OnClickListe
                 super.onSuccess(result);
 
                 lv_mycollect.setAdapter(new SwipeRefreshXOrderAdapater(MyCollectActivity.this, result, AppConfig.ORDERSTATUS_PROGRESS));
-
+                if(result != null && result.size() != 0) {
+                    tv_empty.setVisibility(View.GONE);
+                }
+                else {
+                    tv_empty.setVisibility(View.VISIBLE);
+                }
             }
         });
 

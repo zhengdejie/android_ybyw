@@ -8,123 +8,105 @@
 
     <LinearLayout
         android:id="@+id/ll_popup"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
+        android:background="#373737"
         android:orientation="vertical" >
 
 
 
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1px"-->
-            <!--android:background="@color/bg_gray" />-->
-
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="55dp"-->
-            <!--android:orientation="horizontal" >-->
-
-            <!--<Button-->
-                <!--android:id="@+id/item_popupwindows_send_require_order"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="55dp"-->
-                <!--android:background="@drawable/btn"-->
-                <!--android:text="@string/send_require_order"-->
-                <!--android:textColor="@color/deep_gray"-->
-                <!--android:textSize="18sp"-->
-                <!--android:drawableLeft="@drawable/ic_search_black_24dp"/>-->
-
-        <!--</LinearLayout>-->
-
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1px"-->
-            <!--android:background="@color/border_gray" />-->
-
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="55dp"-->
-            <!--android:orientation="horizontal" >-->
-
-            <!--<Button-->
-                <!--android:id="@+id/item_popupwindows_send_recommand_order"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="55dp"-->
-                <!--android:background="@drawable/btn"-->
-                <!--android:text="@string/send_recommand_order"-->
-                <!--android:textColor="@color/deep_gray"-->
-                <!--android:textSize="18sp"-->
-                <!--android:drawableLeft="@drawable/ic_search_black_24dp"/>-->
-
-        <!--</LinearLayout>-->
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/border_gray" />
+            android:background="@color/white" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="horizontal" >
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            >
 
-            <Button
-                android:id="@+id/item_popupwindows_addfriends"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:text="@string/addfriends"
-                android:drawableLeft="@drawable/ic_search_black_24dp"
-                />
-        </LinearLayout>
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/border_gray" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="horizontal" >
-
-            <Button
+            <TextView
                 android:id="@+id/item_popupwindows_search"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
+                android:layout_height="24dp"
                 android:text="@string/search"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"/>
+                android:paddingLeft="34dp"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/search"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
 
-        </LinearLayout>
+        </RelativeLayout>
 
-        <TextView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/border_gray" />
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"/>
 
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="horizontal" >
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            >
 
-            <Button
+            <TextView
+                android:id="@+id/item_popupwindows_addfriends"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/addfriends"
+                android:paddingLeft="34dp"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/addfriends"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/white"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            >
+
+            <TextView
                 android:id="@+id/item_popupwindows_feedback"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
+                android:layout_height="24dp"
                 android:text="@string/feedback"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"/>
+                android:paddingLeft="34dp"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/help"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
 
-        </LinearLayout>
+        </RelativeLayout>
+
 
     </LinearLayout>
 

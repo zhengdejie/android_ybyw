@@ -3,6 +3,8 @@ package appframe.appframe.app;
 import java.util.List;
 
 import appframe.appframe.dto.APKVersion;
+import appframe.appframe.dto.AnswerDetail;
+import appframe.appframe.dto.AnswerDetailWithQuestionDetail;
 import appframe.appframe.dto.AuthResult;
 import appframe.appframe.dto.ConfirmedOrderDetail;
 import appframe.appframe.dto.ConfirmedOrderDetailWithFriend;
@@ -20,6 +22,8 @@ import appframe.appframe.dto.OrderReviewDetail;
 import appframe.appframe.dto.OrderReviewDetailAndCount;
 import appframe.appframe.dto.PhotoResponse;
 import appframe.appframe.dto.PushMessage;
+import appframe.appframe.dto.Question;
+import appframe.appframe.dto.QuestionWithAnswers;
 import appframe.appframe.dto.ReportCategory;
 import appframe.appframe.dto.SearchOrderTagResponse;
 import appframe.appframe.dto.SelfEvaluationDetail;
@@ -32,7 +36,7 @@ import appframe.appframe.utils.Http;
  * Created by dashi on 15/6/11.
  */
 public final class API {
-    static String HOST = "42.96.152.105";   //42.96.152.105       //192.168.31.123
+    static String HOST = "114.55.100.9";   //42.96.152.105       //192.168.31.123        //114.55.100.9
     public static String API_BASE = "http://" + HOST + ":1337";
     public static String[] OFFICAL_HOSTS = new String[]{"localhost", HOST};
 
@@ -41,7 +45,7 @@ public final class API {
     public static final Http.API<UserDetail> USER_PROFILE = Http.API.get("/profile/%s.json", UserDetail.class);
     public static final Http.API<UserDetail> USER_PROFILE_UPDATE = Http.API.post("/profile/%s/update.json", UserDetail.class);
     public static final Http.API<OrderDetails> ORDER_SEND = Http.API.post("/order/place.json", OrderDetails.class);
-    public static final Http.API<List<OrderDetails>> GET_SELFORDER = Http.API.getList("/order/self.json", OrderDetails.class);
+    public static final Http.API<List<OrderDetails>> GET_SELFORDER = Http.API.getList("/order/self.json%s", OrderDetails.class);
     public static final Http.API<List<UserDetail>> GET_SECOND = Http.API.getList("/contact/%s/second.json", UserDetail.class);
     public static final Http.API<OrderDetailAndCount> GET_ORDER = Http.API.get("/order/friends.json%s", OrderDetailAndCount.class);
     public static final Http.API<UserDetail> EVALUATION_ORDER = Http.API.post("/review/order/make.json", UserDetail.class);
@@ -117,4 +121,18 @@ public final class API {
     public static final Http.API POST_REPORT = Http.API.postEmpty("/reportorder.json");
     public static final Http.API<AuthResult> FORGET_PASSWORD = Http.API.post("/forgetpassword.json", AuthResult.class);
     public static final Http.API<PhotoResponse> GET_PHOTORESPONSE = Http.API.get("/user/%s/verification.json", PhotoResponse.class);
+    public static final Http.API CERTIFICATE_ID = Http.API.postEmpty("/user/%s/verification.json");
+    public static final Http.API<Question> POST_QUESTION = Http.API.post("/question.json", Question.class);
+    public static final Http.API<List<Question>> GET_QUESTION = Http.API.getList("/question.json%s", Question.class);
+    public static final Http.API<QuestionWithAnswers> GET_ANSWERS = Http.API.get("/question/%s.json", QuestionWithAnswers.class);
+    public static final Http.API MAKE_ANSWERS = Http.API.postEmpty("/question/%s.json");
+    public static final Http.API ACCEPT_ANSWERS = Http.API.postEmpty("/question/%s/%s.json");
+    public static final Http.API<List<Question>> GET_MYQUESTION = Http.API.getList("/profile/%s/question.json", Question.class);
+    public static final Http.API<List<AnswerDetailWithQuestionDetail>> GET_MYANSWER = Http.API.getList("/profile/%s/answer.json", AnswerDetailWithQuestionDetail.class);
+    public static final Http.API COLSE_MYQUESTION = Http.API.postEmpty("/question/%s/close.json");
+    public static final Http.API<AnswerDetail> UPDATE_MYANSWER = Http.API.post("/question/%s/update.json", AnswerDetail.class);
+    public static final Http.API<UserDetail> OPEN_TRADEHISTORY = Http.API.post("/profile/%s/confirmedOrderHistory.json",UserDetail.class);
+    public static final Http.API<List<ConfirmedOrderDetail>> GET_CONFIRMEDORDERHISTORY = Http.API.getList("/profile/%s/confirmedOrderHistory.json%s", ConfirmedOrderDetail.class);
+
+
 }

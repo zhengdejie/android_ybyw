@@ -50,6 +50,10 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
             mHolder = new ViewHolder();
             mHolder.tv_myname = (TextView) convertView.findViewById(R.id.tv_myname);
             mHolder.tv_yourname = (TextView) convertView.findViewById(R.id.tv_yourname);
+            mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
+            mHolder.tv_title = (TextView) convertView.findViewById(R.id.tv_title);
+            mHolder.tv_yourtitle = (TextView) convertView.findViewById(R.id.tv_yourtitle);
+
             mHolder.iv_myavatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_myavatar);
             mHolder.iv_youravatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_youravatar);
             convertView.setTag(mHolder);
@@ -69,6 +73,17 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
             ImageUtils.setImageUrl(mHolder.iv_myavatar, item.getServiceProvider().getAvatar());
             mHolder.tv_yourname.setText(item.getServiceReceiver().getName());
             ImageUtils.setImageUrl(mHolder.iv_youravatar, item.getServiceReceiver().getAvatar());
+
+            if(item.getFirstDegreeFriendId() == item.getPoster().getId())
+            {
+                mHolder.tv_title.setText(item.getOrder().getTitle());
+                mHolder.tv_yourtitle.setVisibility(View.INVISIBLE);
+            }
+            else
+            {
+                mHolder.tv_title.setVisibility(View.INVISIBLE);
+                mHolder.tv_yourtitle.setText(item.getOrder().getTitle());
+            }
         }
         else if(item.getFirstDegreeFriendId() == item.getServiceReceiver().getId())
         {
@@ -76,12 +91,24 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
             ImageUtils.setImageUrl(mHolder.iv_myavatar, item.getServiceReceiver().getAvatar());
             mHolder.tv_yourname.setText(item.getServiceProvider().getName());
             ImageUtils.setImageUrl(mHolder.iv_youravatar, item.getServiceProvider().getAvatar());
+
+            if(item.getFirstDegreeFriendId() == item.getPoster().getId())
+            {
+                mHolder.tv_title.setText(item.getOrder().getTitle());
+                mHolder.tv_yourtitle.setVisibility(View.INVISIBLE);
+            }
+            else
+            {
+                mHolder.tv_title.setVisibility(View.INVISIBLE);
+                mHolder.tv_yourtitle.setText(item.getOrder().getTitle());
+            }
         }
         else
         {
 
         }
 
+        mHolder.tv_time.setText(item.getCompleteDate());
 
         return convertView;
 
@@ -99,7 +126,7 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
 
     static class ViewHolder
     {
-        private TextView tv_myname,tv_yourname;
+        private TextView tv_myname,tv_yourname,tv_time,tv_title,tv_yourtitle;
         private com.android.volley.toolbox.NetworkImageView iv_myavatar,iv_youravatar;
     }
 }

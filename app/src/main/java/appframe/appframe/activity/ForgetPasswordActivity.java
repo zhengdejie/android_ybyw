@@ -26,9 +26,8 @@ import cn.smssdk.SMSSDK;
  * Created by Administrator on 2016/3/28.
  */
 public class ForgetPasswordActivity extends BaseActivity implements View.OnClickListener {
-    private TextView tb_title,tb_back,tv_code;
+    private TextView tb_title,tb_back,tv_code,btn_ok;
     private EditText et_mobile,et_code,et_password;
-    private Button btn_ok;
     private LinearLayout progress_bar;
     private MyCount mc;
 
@@ -48,7 +47,7 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
         et_password = (EditText)findViewById(R.id.et_password);
         progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
 
-        btn_ok = (Button)findViewById(R.id.btn_ok);
+        btn_ok = (TextView)findViewById(R.id.btn_ok);
         tb_back.setText("登入");
         tb_title.setText("忘记密码");
         tb_back.setOnClickListener(this);

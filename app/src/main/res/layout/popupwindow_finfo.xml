@@ -8,9 +8,9 @@
 
     <LinearLayout
         android:id="@+id/ll_popup"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:background="#ffffff"
+        android:background="#373737"
         android:orientation="vertical" >
 
         <TextView
@@ -18,208 +18,265 @@
             android:layout_height="1dp"
             android:background="@color/bg_gray" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="horizontal" >
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            >
 
-            <Button
+            <TextView
                 android:id="@+id/item_popupwindows_addoneclassfriend"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
+                android:layout_height="24dp"
                 android:text="@string/addoneclassfriend"
-                android:drawableLeft="@drawable/ic_search_black_24dp"
-                />
-        </LinearLayout>
+                android:textColor="@color/white"
+                android:gravity="center"/>
+            <!--<ImageView-->
+            <!--android:layout_width="24dp"-->
+            <!--android:layout_height="24dp"-->
+            <!--android:src="@drawable/addfriends"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--/>-->
 
-        <TextView
+        </RelativeLayout>
+
+        <View
             android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/bg_gray" />
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"/>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="horizontal" >
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            >
 
-            <Button
+            <TextView
                 android:id="@+id/item_popupwindows_viewrelationnet"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
+                android:layout_height="24dp"
                 android:text="@string/viewrelationnet"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"/>
+                android:textColor="@color/white"
+                android:gravity="center"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
-
-
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="vertical"
-            android:id="@+id/lly_whocannotsee"
-            android:visibility="gone">
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            >
+
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/border_gray" />
-            <Button
-                android:id="@+id/item_popupwindows_whocannotsee"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
-                android:text="@string/whocannotsee"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"
-                />
-
-        </LinearLayout>
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="vertical"
-            android:id="@+id/lly_cannotsee"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/border_gray" />
-            <Button
-                android:id="@+id/item_popupwindows_cannotsee"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
-                android:text="@string/cannotsee"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"/>
-
-        </LinearLayout>
-
-
-
-        <LinearLayout
-            android:id="@+id/lly_blacklist"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/border_gray" />
-            <Button
-                android:id="@+id/item_popupwindows_addblacklist"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
-                android:text="@string/addblacklist"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="vertical"
-            android:id="@+id/lly_cannotseecancle"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/border_gray" />
-            <Button
-                android:id="@+id/item_popupwindows_cannotseecancle"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
-                android:text="@string/cannotseecancle"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="vertical"
-            android:id="@+id/lly_whocannotseecancle"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/border_gray" />
-            <Button
-                android:id="@+id/item_popupwindows_whocannotseecancle"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
-                android:text="@string/whocannotseecancle"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="vertical"
-            android:id="@+id/lly_removeblacklist"
-            android:visibility="gone">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:background="@color/border_gray" />
-            <Button
-                android:id="@+id/item_popupwindows_removeblacklist"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
-                android:text="@string/removeblacklist"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"
-                />
-
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/border_gray" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:orientation="horizontal" >
-
-            <Button
                 android:id="@+id/item_popupwindows_report"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:background="@drawable/btn"
+                android:layout_height="24dp"
                 android:text="@string/report"
-                android:textColor="@color/deep_gray"
-                android:textSize="18sp"
-                android:drawableLeft="@drawable/ic_search_black_24dp"/>
+                android:textColor="@color/white"
+                android:gravity="center"/>
+            <!--<ImageView-->
+            <!--android:layout_width="24dp"-->
+            <!--android:layout_height="24dp"-->
+            <!--android:src="@drawable/addfriends"-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--/>-->
 
-        </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/view_popupwindows_report"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_whocannotsee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/item_popupwindows_whocannotsee"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/whocannotsee"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+
+
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/view_popupwindows_whocannotsee"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:id="@+id/rl_cannotsee"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/item_popupwindows_cannotsee"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/cannotsee"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/view_popupwindows_cannotsee"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:id="@+id/rl_blacklist"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/item_popupwindows_addblacklist"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/addblacklist"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+
+
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/view_popupwindows_addblacklist"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:id="@+id/rl_cannotseecancle"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/item_popupwindows_cannotseecancle"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/cannotseecancle"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+
+
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/view_popupwindows_cannotseecancle"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:id="@+id/rl_whocannotseecancle"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/item_popupwindows_whocannotseecancle"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/whocannotseecancle"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/view_popupwindows_whocannotseecancle"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:id="@+id/rl_removeblacklist"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:id="@+id/item_popupwindows_removeblacklist"
+                android:layout_width="match_parent"
+                android:layout_height="24dp"
+                android:text="@string/removeblacklist"
+                android:textColor="@color/white"
+                android:gravity="center"/>
+
+
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/view_popupwindows_removeblacklist"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"
+            android:visibility="gone"/>
+
+
+
 
     </LinearLayout>
 

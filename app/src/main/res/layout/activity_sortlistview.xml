@@ -46,7 +46,14 @@
             android:textColor="#ffffffff"
             android:textSize="30.0dip"
             android:visibility="invisible" />
-
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="好友为空，赶快去添加好友吧"
+            android:visibility="gone"
+            />
         <appframe.appframe.widget.sortlistview.SideBar
             android:id="@+id/sidrbar"
             android:layout_width="30.0dip"

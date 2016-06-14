@@ -41,7 +41,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
  */
 public class MyOrderFragment extends BaseFragment implements View.OnClickListener{
     ListView proListView;
-    TextView tb_title,tb_back,tv_apply,tv_progess,tv_done;
+    TextView tb_title,tb_back,tv_apply,tv_progess,tv_done,tv_empty;
     public static TextView tab_progess,tab_done,tab_close,tab_apply;
     View root,bottomLine_progress,bottomLine_done,bottomLine_close,bottomLine_apply;
     LinearLayout tabtop;
@@ -67,6 +67,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
         tb_back = (TextView) root.findViewById(R.id.tb_back);
         tb_title = (TextView) root.findViewById(R.id.tb_title);
         tv_apply = (TextView) root.findViewById(R.id.tv_apply);
+        tv_empty = (TextView) root.findViewById(R.id.tv_empty);
         tv_progess = (TextView) root.findViewById(R.id.tv_progess);
         tv_done = (TextView) root.findViewById(R.id.tv_done);
 //        tv_recommand = (TextView) root.findViewById(R.id.tv_recommand);
@@ -199,7 +200,12 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                         super.onSuccess(result);
                         progress_bar.setVisibility(View.GONE);
                         proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_APPLY));
-
+                        if(result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        }
+                        else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
 
                     }
 
@@ -244,7 +250,12 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                         super.onSuccess(result);
                         progress_bar.setVisibility(View.GONE);
                         proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_PROGRESS));
-
+                        if(result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        }
+                        else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
 
                     }
 
@@ -288,7 +299,12 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                         super.onSuccess(result);
                         progress_bar.setVisibility(View.GONE);
                         proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_DONE));
-
+                        if(result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        }
+                        else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
 
                     }
 
@@ -332,7 +348,12 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                         super.onSuccess(result);
                         progress_bar.setVisibility(View.GONE);
                         proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_CLOSE));
-
+                        if(result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        }
+                        else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
 
                     }
 
@@ -352,7 +373,8 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
     {
         if(isSelected)
         {
-            tab_apply.setTextColor(getResources().getColor(R.color.green));
+//            tab_apply.setTextColor(getResources().getColor(R.color.green));
+            tab_apply.setTextColor(Color.rgb(56, 171, 228));
             bottomLine_apply.setVisibility(View.VISIBLE);
 
         }
@@ -368,7 +390,8 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
     {
         if(isSelected)
         {
-            tab_progess.setTextColor(getResources().getColor(R.color.green));
+//            tab_progess.setTextColor(getResources().getColor(R.color.green));
+            tab_progess.setTextColor(Color.rgb(56, 171, 228));
             bottomLine_progress.setVisibility(View.VISIBLE);
 
         }
@@ -383,7 +406,8 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
     {
         if(isSelected)
         {
-            tab_done.setTextColor(getResources().getColor(R.color.green));
+//            tab_done.setTextColor(getResources().getColor(R.color.green));
+            tab_done.setTextColor(Color.rgb(56, 171, 228));
             bottomLine_done.setVisibility(View.VISIBLE);
 
         }
@@ -398,7 +422,8 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
     {
         if(isSelected)
         {
-            tab_close.setTextColor(getResources().getColor(R.color.green));
+//            tab_close.setTextColor(getResources().getColor(R.color.green));
+            tab_close.setTextColor(Color.rgb(56, 171, 228));
             bottomLine_close.setVisibility(View.VISIBLE);
 
         }

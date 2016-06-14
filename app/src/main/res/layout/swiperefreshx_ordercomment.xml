@@ -1,53 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
     android:background="@drawable/listview_item_pressed">
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/iv_avatar"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:gravity="center_vertical|right"
-        android:layout_gravity="right"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
         />
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="姓名:"
-        android:textSize="20sp"
-        android:layout_weight="1"
-        android:layout_gravity="center"/>
+        android:layout_height="20dp"
+        android:text="姓名:姓名:姓名:姓名:姓名:姓名:姓名:姓名:"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_time"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        />
 
     <TextView
         android:id="@+id/tv_ordercomment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="内容"
-        android:textSize="20sp"
-        android:layout_weight="15"
-        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="内容内容内容内容内容"
+        android:layout_below="@+id/iv_avatar"
+        android:lines="2"
+        android:ellipsize="end"
+        android:layout_toLeftOf="@+id/ib_delete"
+        android:layout_marginLeft="10dp"
         />
     <TextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
         android:text="18:00:00"
-        android:layout_weight="1"
+        android:layout_alignParentRight="true"
         android:textColor="@color/font_gray"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"/>
     <ImageButton
         android:id="@+id/ib_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/ic_delete"
         android:background="@color/white"
-        android:layout_weight="1"
-        android:layout_gravity="center"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/iv_avatar"
         />
 
-</LinearLayout>
+</RelativeLayout>

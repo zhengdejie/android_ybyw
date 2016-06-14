@@ -59,7 +59,7 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
         tb_action = (TextView) findViewById(R.id.tb_action);
         et_signature = (EditText) findViewById(R.id.et_signature);
         iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
-        tb_back.setText("个人中心");
+        tb_back.setText("我的");
         tb_title.setText("个人签名");
         tb_action.setText("保存");
 

@@ -37,7 +37,17 @@
         android:layout_gravity="center_horizontal"
         android:hint="手机号码"
         android:layout_below="@+id/avatar"
+        android:background="@drawable/editext_none"
+        android:paddingLeft="10dp"
         android:inputType="phone"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/et_mobile"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -47,14 +57,38 @@
         android:id="@+id/password"
         android:layout_gravity="center_horizontal"
         android:hint="密码"
-        android:layout_below="@+id/et_mobile"/>
+        android:layout_below="@+id/et_mobile"
+        android:background="@drawable/editext_none"
+        android:paddingLeft="10dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/password"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
+
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:id="@+id/name"
         android:layout_gravity="center_horizontal"
         android:hint="昵称"
-        android:layout_below="@+id/password"/>
+        android:layout_below="@+id/password"
+        android:background="@drawable/editext_none"
+        android:paddingLeft="10dp"
+        android:maxLength="8"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/name"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
+
     <RelativeLayout
         android:id="@+id/rl_code"
         android:layout_width="match_parent"
@@ -66,24 +100,104 @@
             android:id="@+id/et_code"
             android:layout_gravity="center"
             android:hint="验证码"
+            android:background="@drawable/editext_none"
+            android:paddingLeft="10dp"
             />
+
         <TextView
             android:id="@+id/tv_code"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:padding="5dp"
-            android:text="获取验证码"
-            android:background="@drawable/textview_unclicked"
+            android:text="发送验证码"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
+            android:textSize="10sp"
             android:gravity="center"
-
+            android:textColor="#56abe4"
             />
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_code"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:padding="5dp"-->
+            <!--android:text="获取验证码"-->
+            <!--android:background="@drawable/textview_unclicked"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dp"-->
+            <!--android:layout_marginTop="10dp"-->
+            <!--android:layout_marginBottom="10dp"-->
+            <!--android:gravity="center"-->
+            <!--/>-->
+
     </RelativeLayout>
-    <Button
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/rl_code"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_sex"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="性别"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/rl_code"
+        android:paddingLeft="10dp"
+        android:paddingRight="60dp"
+        android:textColor="@color/font_black_6"
+        android:textSize="16sp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/tv_sex"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/rl_code"
+        android:layout_toRightOf="@+id/tv_sex"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_male"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="男"
+            android:checked="true"/>
+        <RadioButton
+            android:id="@+id/rb_female"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="女"/>
+    </RadioGroup>
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="注册"-->
+        <!--android:id="@+id/ok"-->
+        <!--android:layout_below="@+id/rl_code"/>-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:text="注册"
         android:id="@+id/ok"
-        android:layout_below="@+id/rl_code"/>
+        android:layout_gravity="bottom"
+        android:layout_margin="10dp"
+        android:background="@drawable/textview_clicked"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_below="@+id/tv_sex"
+        />
 </RelativeLayout>

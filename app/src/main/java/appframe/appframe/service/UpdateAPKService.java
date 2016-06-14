@@ -24,6 +24,7 @@ import java.net.URL;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.HomeActivity;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.utils.FileUtil;
 import appframe.appframe.utils.NotificationUtils;
 
@@ -42,7 +43,7 @@ public class UpdateAPKService extends Service{
     int smallIcon = R.drawable.ic_launcher;
 
     private static final int TIMEOUT = 10 * 1000;// 超时
-    private static final String down_url = "http://7xo9lr.com1.z0.glb.clouddn.com/app-debug.apk";
+    private static final String down_url = AppConfig.QINIU_HOST +"app-debug.apk";
     private static final int DOWN_OK = 1;
     private static final int DOWN_ERROR = 0;
 

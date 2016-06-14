@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
@@ -60,6 +61,14 @@ public class PushDemoReceiver extends BroadcastReceiver {
                         String[] message = data.split("/");
                         admain.normal_notification(intent, smallIcon, ticker, message[0],
                                 message[1]);
+                        if(message[1].contains("您收到"))
+                        {
+                            String[] content = message[1].split("，");
+                            Toast toast = Toast.makeText(context, content[1], Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+
+                        }
                     }
 //                    payloadData.append(data);
 //                    payloadData.append("\n");

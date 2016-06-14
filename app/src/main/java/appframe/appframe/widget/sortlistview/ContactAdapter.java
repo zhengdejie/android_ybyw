@@ -12,6 +12,8 @@ import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.dto.ContactDetail;
+import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/11/17.
@@ -55,6 +57,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
             viewHolder.tv_name = (TextView) view.findViewById(R.id.tv_name);
             viewHolder.tv_remark = (TextView) view.findViewById(R.id.tv_remark);
             viewHolder.tvLetter = (TextView) view.findViewById(R.id.catalog);
+            viewHolder.iv_avater = (com.android.volley.toolbox.NetworkImageView) view.findViewById(R.id.iv_avater);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -70,41 +73,62 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
         }else{
             viewHolder.tvLetter.setVisibility(View.GONE);
         }
-
-        StringBuilder sb = new StringBuilder();
-
-
-        if(mContent.getType() == 1)
+        if(mContent.getUser() != null )
         {
-            if(mContent.getUser().getFNickName() !=null && !mContent.getUser().getFNickName().equals(""))
+            if(!mContent.getUser().getAvatar().equals("")) {
+                ImageUtils.setImageUrl(viewHolder.iv_avater, mContent.getUser().getAvatar());
+            }
+            else {
+                if (mContent.getUser().getGender().equals(mContext.getResources().getString(R.string.male))) {
+                    viewHolder.iv_avater.setDefaultImageResId(R.drawable.maleavatar);
+                } else {
+                    viewHolder.iv_avater.setDefaultImageResId(R.drawable.femaleavatar);
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+
+
+            if(mContent.getType() == 1)
             {
-                //sb.append(mContent.getUser().getFNickName()).append("(").append(mContent.getUser().getName()).append(")");
-                viewHolder.tv_name.setText(mContent.getUser().getFNickName());
+                if(mContent.getUser().getFNickName() !=null && !mContent.getUser().getFNickName().equals(""))
+                {
+                    //sb.append(mContent.getUser().getFNickName()).append("(").append(mContent.getUser().getName()).append(")");
+                    viewHolder.tv_name.setText(mContent.getUser().getFNickName());
+                }
+                else
+                {
+                    viewHolder.tv_name.setText(mContent.getUser().getName());
+                }
+                viewHolder.tv_remark.setText("一度好友");
+            }
+            else if(mContent.getType() == 2)
+            {
+                if(mContent.getUser().getFNickName() !=null)
+                {
+                    //sb.append(mContent.getUser().getFNickName()).append("(").append(mContent.getUser().getName()).append(")");
+                    viewHolder.tv_name.setText(mContent.getUser().getFNickName());
+                }
+                else
+                {
+                    viewHolder.tv_name.setText(mContent.getUser().getName());
+                }
+                viewHolder.tv_remark.setText("已加入友帮");
             }
             else
             {
-                viewHolder.tv_name.setText(mContent.getUser().getName());
+                viewHolder.tv_name.setText(mContent.getMobileContact().getName());
+                viewHolder.tv_remark.setText("未加入友帮");
             }
-            viewHolder.tv_remark.setText("一度好友");
-        }
-        else if(mContent.getType() == 2)
-        {
-            if(mContent.getUser().getFNickName() !=null)
-            {
-                //sb.append(mContent.getUser().getFNickName()).append("(").append(mContent.getUser().getName()).append(")");
-                viewHolder.tv_name.setText(mContent.getUser().getFNickName());
-            }
-            else
-            {
-                viewHolder.tv_name.setText(mContent.getUser().getName());
-            }
-            viewHolder.tv_remark.setText("已加入友帮");
         }
         else
         {
+            viewHolder.iv_avater.setDefaultImageResId(R.drawable.maleavatar);
             viewHolder.tv_name.setText(mContent.getMobileContact().getName());
-            viewHolder.tv_remark.setText("未加入友帮");
+            viewHolder.tv_remark.setVisibility(View.GONE);
         }
+
+
+
 
         return view;
 
@@ -113,9 +137,8 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 
 
     final static class ViewHolder {
-        TextView tvLetter;
-        TextView tv_name;
-        TextView tv_remark;
+        TextView tvLetter,tv_name,tv_remark;
+        com.android.volley.toolbox.NetworkImageView iv_avater;
     }
 
 

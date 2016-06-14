@@ -5,29 +5,25 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.mobileim.YWIMKit;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
-import appframe.appframe.app.App;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.dto.Question;
 import appframe.appframe.dto.UserBrief;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
@@ -41,12 +37,12 @@ import appframe.appframe.utils.LoginSampleHelper;
 public class FriendsInfoActivity extends BaseActivity implements View.OnClickListener{
     //private ImageView img_avatar;
     private com.android.volley.toolbox.NetworkImageView iv_showavatar;
-    private Button btn_sendmessage;
-    private TextView tb_title,tb_back,tb_action,tv_name,tv_showdistrict,tv_friendsestimate,tv_comment,tv_nickname,tv_revenue,tv_cost;
+    private TextView tb_title,tb_back,tb_action,tv_name,tv_showdistrict,tv_friendsestimate,tv_comment,tv_nickname,tv_revenue,tv_cost,btn_sendmessage,tv_questionhistory,tv_buyservice,tv_sellservice;
     private RelativeLayout rl_revenue,rl_cost;
     private OrderDetails orderDetails;
     private UserDetail userDetail,candidate;
     private UserBrief userBrief;
+    private Question question;
     private Nearby nearby;
     private String from;
     private Intent intent = new Intent();
@@ -59,7 +55,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
     }
     protected void init()
     {
-        btn_sendmessage = (Button)findViewById(R.id.btn_sendmessage);
+        btn_sendmessage = (TextView)findViewById(R.id.btn_sendmessage);
         tv_name = (TextView)findViewById(R.id.tv_name);
         tv_nickname = (TextView)findViewById(R.id.tv_nickname);
         btn_sendmessage.setOnClickListener(this);
@@ -72,9 +68,9 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
         iv_showavatar.setOnClickListener(this);
         tv_showdistrict = (TextView)findViewById(R.id.tv_showdistrict);
-        Drawable drawable= getResources().getDrawable(R.drawable.ic_menu_moreoverflow_normal_holo_light);
+        Drawable drawable= getResources().getDrawable(R.drawable.moreoverflow_normal_holo_light);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        tb_action.setCompoundDrawables(drawable, null, null, null);
+        tb_action.setCompoundDrawables(null, null, drawable, null);
         tb_action.setOnClickListener(this);
         tv_friendsestimate =(TextView)findViewById(R.id.tv_friendsestimate);
         tv_friendsestimate.setOnClickListener(this);
@@ -83,7 +79,14 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         tv_cost = (TextView)findViewById(R.id.tv_cost);
         rl_revenue = (RelativeLayout)findViewById(R.id.rl_revenue);
         rl_cost = (RelativeLayout)findViewById(R.id.rl_cost);
+        tv_questionhistory = (TextView)findViewById(R.id.tv_questionhistory);
+        tv_buyservice = (TextView)findViewById(R.id.tv_buyservice);
+        tv_sellservice = (TextView)findViewById(R.id.tv_sellservice);
         tv_comment.setOnClickListener(this);
+        tv_questionhistory.setOnClickListener(this);
+        tv_buyservice.setOnClickListener(this);
+        tv_sellservice.setOnClickListener(this);
+
         Intent intent = this.getIntent();
         orderDetails = (OrderDetails)intent.getSerializableExtra("OrderDetails");
         if(orderDetails != null) {
@@ -105,16 +108,22 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     ImageUtils.setImageUrl(iv_showavatar, orderDetails.getOrderer().getAvatar());
                 }
             }
-            if(orderDetails.getOrderer().isShowRevenueAndExpense())
+            if(orderDetails.getOrderer().isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                rl_cost.setVisibility(View.VISIBLE);
                 tv_revenue.setText(String.valueOf(orderDetails.getOrderer().getTotalRevenue()));
-                tv_cost.setText(String.valueOf(orderDetails.getOrderer().getTotalExpense()));
             }
             else
             {
                 rl_revenue.setVisibility(View.GONE);
+            }
+            if(orderDetails.getOrderer().isShowExpense())
+            {
+                rl_cost.setVisibility(View.VISIBLE);
+                tv_cost.setText(String.valueOf(orderDetails.getOrderer().getTotalExpense()));
+            }
+            else
+            {
                 rl_cost.setVisibility(View.GONE);
             }
             tv_showdistrict.setText(orderDetails.getOrderer().getLocation());
@@ -142,16 +151,22 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                 ImageUtils.setImageUrl(iv_showavatar, userDetail.getAvatar());
             }
 
-            if(userDetail.isShowRevenueAndExpense())
+            if(userDetail.isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                rl_cost.setVisibility(View.VISIBLE);
                 tv_revenue.setText(String.valueOf(userDetail.getTotalRevenue()));
-                tv_cost.setText(String.valueOf(userDetail.getTotalExpense()));
             }
             else
             {
                 rl_revenue.setVisibility(View.GONE);
+            }
+            if(userDetail.isShowExpense())
+            {
+                rl_cost.setVisibility(View.VISIBLE);
+                tv_cost.setText(String.valueOf(userDetail.getTotalExpense()));
+            }
+            else
+            {
                 rl_cost.setVisibility(View.GONE);
             }
             tv_showdistrict.setText(userDetail.getLocation());
@@ -167,52 +182,101 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             tv_showdistrict.setText(nearby.getLocation());
 //            UserID = String.valueOf(nearby.getId());
             userBrief = nearby;
-            if(nearby.isShowRevenueAndExpense())
+            if(nearby.isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                rl_cost.setVisibility(View.VISIBLE);
                 tv_revenue.setText(String.valueOf(nearby.getTotalRevenue()));
-                tv_cost.setText(String.valueOf(nearby.getTotalExpense()));
             }
             else
             {
                 rl_revenue.setVisibility(View.GONE);
+
+            }
+            if(nearby.isShowExpense())
+            {
+                rl_cost.setVisibility(View.VISIBLE);
+                tv_cost.setText(String.valueOf(nearby.getTotalExpense()));
+            }
+            else
+            {
                 rl_cost.setVisibility(View.GONE);
             }
         }
         candidate = (UserDetail)intent.getSerializableExtra("Candidate");
-        {
-            if(candidate != null) {
+        if(candidate != null) {
 
-                if(candidate.getFNickName() != null && !candidate.getFNickName().equals(""))
-                {
-                    tv_name.setText(candidate.getFNickName());
-                    tv_nickname.setText("昵称:"+candidate.getName());
-                    tv_nickname.setVisibility(View.VISIBLE);
-                }
-                else {
-                    tv_name.setText(candidate.getName());
-                }
+            if(candidate.getFNickName() != null && !candidate.getFNickName().equals(""))
+            {
+                tv_name.setText(candidate.getFNickName());
+                tv_nickname.setText("昵称:"+candidate.getName());
+                tv_nickname.setVisibility(View.VISIBLE);
+            }
+            else {
+                tv_name.setText(candidate.getName());
+            }
 
-                if(candidate.getAvatar()!=null) {
-                    ImageUtils.setImageUrl(iv_showavatar, candidate.getAvatar());
-                }
-                tv_showdistrict.setText(candidate.getLocation());
-                userBrief = candidate;
-                if(candidate.isShowRevenueAndExpense())
-                {
-                    rl_revenue.setVisibility(View.VISIBLE);
-                    rl_cost.setVisibility(View.VISIBLE);
-                    tv_revenue.setText(String.valueOf(candidate.getTotalRevenue()));
-                    tv_cost.setText(String.valueOf(candidate.getTotalExpense()));
-                }
-                else
-                {
-                    rl_revenue.setVisibility(View.GONE);
-                    rl_cost.setVisibility(View.GONE);
-                }
+            if(candidate.getAvatar()!=null) {
+                ImageUtils.setImageUrl(iv_showavatar, candidate.getAvatar());
+            }
+            tv_showdistrict.setText(candidate.getLocation());
+            userBrief = candidate;
+            if(candidate.isShowRevenue())
+            {
+                rl_revenue.setVisibility(View.VISIBLE);
+                tv_revenue.setText(String.valueOf(candidate.getTotalRevenue()));
+            }
+            else
+            {
+                rl_revenue.setVisibility(View.GONE);
+            }
+            if(candidate.isShowExpense())
+            {
+                rl_cost.setVisibility(View.VISIBLE);
+                tv_cost.setText(String.valueOf(candidate.getTotalExpense()));
+            }
+            else
+            {
+                rl_cost.setVisibility(View.GONE);
             }
         }
+        question = (Question)intent.getSerializableExtra("Question");
+        if(question != null) {
+
+            if(question.getAsker().getFNickName() != null && !question.getAsker().getFNickName().equals(""))
+            {
+                tv_name.setText(question.getAsker().getFNickName());
+                tv_nickname.setText("昵称:"+question.getAsker().getName());
+                tv_nickname.setVisibility(View.VISIBLE);
+            }
+            else {
+                tv_name.setText(question.getAsker().getName());
+            }
+
+            if(question.getAsker().getAvatar()!=null) {
+                ImageUtils.setImageUrl(iv_showavatar, question.getAsker().getAvatar());
+            }
+            tv_showdistrict.setText(question.getAsker().getLocation());
+            userBrief = question.getAsker();
+            if(question.getAsker().isShowRevenue())
+            {
+                rl_revenue.setVisibility(View.VISIBLE);
+                tv_revenue.setText(String.valueOf(question.getAsker().getTotalRevenue()));
+            }
+            else
+            {
+                rl_revenue.setVisibility(View.GONE);
+            }
+            if(question.getAsker().isShowRevenue())
+            {
+                rl_cost.setVisibility(View.VISIBLE);
+                tv_cost.setText(String.valueOf(question.getAsker().getTotalExpense()));
+            }
+            else
+            {
+                rl_cost.setVisibility(View.GONE);
+            }
+        }
+
         if(intent.getStringExtra("From") != null) {
             from = intent.getStringExtra("From").toString();
         }
@@ -291,6 +355,19 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                 startActivityForResult(intent, RESULT_CODE);
 
                 break;
+            case R.id.tv_questionhistory:
+                startActivity(intent.setClass(this, MyQuestionActivity.class));
+                break;
+            case R.id.tv_buyservice:
+                intent.setClass(this,TradeHistoryActivity.class);
+                intent.putExtra("buyservice", "2");
+                startActivity(intent);
+                break;
+            case R.id.tv_sellservice:
+                intent.setClass(this,TradeHistoryActivity.class);
+                intent.putExtra("sellservice", "1");
+                startActivity(intent);
+                break;
         }
     }
 
@@ -345,71 +422,108 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             update();
 
 
-            LinearLayout lly_whocannotsee = (LinearLayout) view.findViewById(R.id.lly_whocannotsee);
-            LinearLayout lly_cannotsee = (LinearLayout) view.findViewById(R.id.lly_cannotsee);
-            LinearLayout lly_blacklist = (LinearLayout) view.findViewById(R.id.lly_blacklist);
-            LinearLayout lly_whocannotseecancle = (LinearLayout) view.findViewById(R.id.lly_whocannotseecancle);
-            LinearLayout lly_cannotseecancle = (LinearLayout) view.findViewById(R.id.lly_cannotseecancle);
-            LinearLayout lly_removeblacklist = (LinearLayout) view.findViewById(R.id.lly_removeblacklist);
+            RelativeLayout rl_whocannotsee = (RelativeLayout) view.findViewById(R.id.rl_whocannotsee);
+            RelativeLayout rl_cannotsee = (RelativeLayout) view.findViewById(R.id.rl_cannotsee);
+            RelativeLayout rl_blacklist = (RelativeLayout) view.findViewById(R.id.rl_blacklist);
+            RelativeLayout rl_cannotseecancle = (RelativeLayout) view.findViewById(R.id.rl_cannotseecancle);
+            RelativeLayout rl_whocannotseecancle = (RelativeLayout) view.findViewById(R.id.rl_whocannotseecancle);
+            RelativeLayout rl_removeblacklist = (RelativeLayout) view.findViewById(R.id.rl_removeblacklist);
+
+            TextView addoneclassfriend = (TextView) view
+                    .findViewById(R.id.item_popupwindows_addoneclassfriend);
+            TextView viewrelationnet = (TextView) view
+                    .findViewById(R.id.item_popupwindows_viewrelationnet);
+            TextView addblacklist = (TextView) view
+                    .findViewById(R.id.item_popupwindows_addblacklist);
+            TextView btn_report = (TextView) view
+                    .findViewById(R.id.item_popupwindows_report);
+            TextView btn_whocannotsee = (TextView) view
+                    .findViewById(R.id.item_popupwindows_whocannotsee);
+            TextView btn_cannotsee = (TextView) view
+                    .findViewById(R.id.item_popupwindows_cannotsee);
+            TextView btn_whocannotseecancle = (TextView) view
+                    .findViewById(R.id.item_popupwindows_whocannotseecancle);
+            TextView btn_cannotseecancle = (TextView) view
+                    .findViewById(R.id.item_popupwindows_cannotseecancle);
+            TextView btn_removeblacklist = (TextView) view
+                    .findViewById(R.id.item_popupwindows_removeblacklist);
+            View view_report = (View)view.findViewById(R.id.view_popupwindows_report);
+            View view_addblacklist = (View)view.findViewById(R.id.view_popupwindows_addblacklist);
+            View view_whocannotsee = (View)view.findViewById(R.id.view_popupwindows_whocannotsee);
+            View view_whocannotseecancle = (View)view.findViewById(R.id.view_popupwindows_whocannotseecancle);
+            View view_cannotsee = (View)view.findViewById(R.id.view_popupwindows_cannotsee);
+            View view_cannotseecancle = (View)view.findViewById(R.id.view_popupwindows_cannotseecancle);
+            View view_removeblacklist = (View)view.findViewById(R.id.view_popupwindows_removeblacklist);
 
             if(from != null && !from.equals("") && from.equals("FIRSTCLASS"))
             {
-                lly_whocannotsee.setVisibility(View.VISIBLE);
-                lly_cannotsee.setVisibility(View.VISIBLE);
-                lly_blacklist.setVisibility(View.VISIBLE);
-                lly_whocannotseecancle.setVisibility(View.GONE);
-                lly_cannotseecancle.setVisibility(View.GONE);
-                lly_removeblacklist.setVisibility(View.GONE);
+                rl_whocannotsee.setVisibility(View.VISIBLE);
+                view_whocannotsee.setVisibility(View.VISIBLE);
+                rl_cannotsee.setVisibility(View.VISIBLE);
+                view_cannotsee.setVisibility(View.VISIBLE);
+                rl_blacklist.setVisibility(View.VISIBLE);
+                view_addblacklist.setVisibility(View.VISIBLE);
+                rl_whocannotseecancle.setVisibility(View.GONE);
+                view_whocannotseecancle.setVisibility(View.GONE);
+                rl_cannotseecancle.setVisibility(View.GONE);
+                view_cannotseecancle.setVisibility(View.GONE);
+                rl_removeblacklist.setVisibility(View.GONE);
+                view_removeblacklist.setVisibility(View.GONE);
+                view_report.setVisibility(View.VISIBLE);
             }
             else if(from != null && !from.equals("") &&from.equals("WHOCANNOTSEE"))
             {
-                lly_whocannotseecancle.setVisibility(View.VISIBLE);
-                lly_whocannotsee.setVisibility(View.GONE);
-                lly_cannotsee.setVisibility(View.GONE);
-                lly_blacklist.setVisibility(View.GONE);
-                lly_cannotseecancle.setVisibility(View.GONE);
-                lly_removeblacklist.setVisibility(View.GONE);
+                rl_whocannotseecancle.setVisibility(View.VISIBLE);
+                view_whocannotseecancle.setVisibility(View.VISIBLE);
+                rl_whocannotsee.setVisibility(View.GONE);
+                view_whocannotsee.setVisibility(View.GONE);
+                rl_cannotsee.setVisibility(View.GONE);
+                view_cannotsee.setVisibility(View.GONE);
+                rl_blacklist.setVisibility(View.GONE);
+                view_addblacklist.setVisibility(View.GONE);
+                rl_cannotseecancle.setVisibility(View.GONE);
+                view_cannotseecancle.setVisibility(View.GONE);
+                rl_removeblacklist.setVisibility(View.GONE);
+                view_removeblacklist.setVisibility(View.GONE);
+                view_report.setVisibility(View.VISIBLE);
             }
             else if(from != null && !from.equals("") &&from.equals("CANNOTSEE"))
             {
-                lly_whocannotseecancle.setVisibility(View.GONE);
-                lly_whocannotsee.setVisibility(View.GONE);
-                lly_cannotsee.setVisibility(View.GONE);
-                lly_blacklist.setVisibility(View.GONE);
-                lly_cannotseecancle.setVisibility(View.VISIBLE);
-                lly_removeblacklist.setVisibility(View.GONE);
+                rl_whocannotseecancle.setVisibility(View.GONE);
+                rl_whocannotsee.setVisibility(View.GONE);
+                rl_cannotsee.setVisibility(View.GONE);
+                rl_blacklist.setVisibility(View.GONE);
+                rl_cannotseecancle.setVisibility(View.VISIBLE);
+                rl_removeblacklist.setVisibility(View.GONE);
+                view_whocannotseecancle.setVisibility(View.GONE);
+                view_whocannotsee.setVisibility(View.GONE);
+                view_cannotsee.setVisibility(View.GONE);
+                view_addblacklist.setVisibility(View.GONE);
+                view_cannotseecancle.setVisibility(View.VISIBLE);
+                view_removeblacklist.setVisibility(View.GONE);
+                view_report.setVisibility(View.VISIBLE);
             }
             else if(from != null && !from.equals("") &&from.equals("BLACKLIST"))
             {
-                lly_whocannotseecancle.setVisibility(View.GONE);
-                lly_whocannotsee.setVisibility(View.GONE);
-                lly_cannotsee.setVisibility(View.GONE);
-                lly_blacklist.setVisibility(View.GONE);
-                lly_cannotseecancle.setVisibility(View.GONE);
-                lly_removeblacklist.setVisibility(View.VISIBLE);
+                rl_whocannotseecancle.setVisibility(View.GONE);
+                rl_whocannotsee.setVisibility(View.GONE);
+                rl_cannotsee.setVisibility(View.GONE);
+                rl_blacklist.setVisibility(View.GONE);
+                rl_cannotseecancle.setVisibility(View.GONE);
+                rl_removeblacklist.setVisibility(View.VISIBLE);
+                view_whocannotseecancle.setVisibility(View.GONE);
+                view_whocannotsee.setVisibility(View.GONE);
+                view_cannotsee.setVisibility(View.GONE);
+                view_addblacklist.setVisibility(View.GONE);
+                view_cannotseecancle.setVisibility(View.GONE);
+                view_removeblacklist.setVisibility(View.VISIBLE);
+                view_report.setVisibility(View.VISIBLE);
             }
             else
             {
 
             }
-            Button addoneclassfriend = (Button) view
-                    .findViewById(R.id.item_popupwindows_addoneclassfriend);
-            Button viewrelationnet = (Button) view
-                    .findViewById(R.id.item_popupwindows_viewrelationnet);
-            Button addblacklist = (Button) view
-                    .findViewById(R.id.item_popupwindows_addblacklist);
-            Button btn_report = (Button) view
-                .findViewById(R.id.item_popupwindows_report);
-            Button btn_whocannotsee = (Button) view
-                    .findViewById(R.id.item_popupwindows_whocannotsee);
-            Button btn_cannotsee = (Button) view
-                    .findViewById(R.id.item_popupwindows_cannotsee);
-            Button btn_whocannotseecancle = (Button) view
-                    .findViewById(R.id.item_popupwindows_whocannotseecancle);
-            Button btn_cannotseecancle = (Button) view
-                    .findViewById(R.id.item_popupwindows_cannotseecancle);
-            Button btn_removeblacklist = (Button) view
-                    .findViewById(R.id.item_popupwindows_removeblacklist);
+
             addoneclassfriend.setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)

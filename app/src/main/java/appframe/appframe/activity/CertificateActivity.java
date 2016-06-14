@@ -233,6 +233,21 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
                 else {
                     for (ImgFiles file : fileList) {
                         //uploadImg(this, file);
+                        Http.request(CertificateActivity.this, API.CERTIFICATE_ID, new Object[]{Auth.getCurrentUserId()},
+                                Http.map("Files","|FILE|"+Environment.getExternalStorageDirectory() + ",positive.jpg"),
+//                                Http.map("Name","df"),
+                                new Http.RequestListener<String>() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        super.onSuccess(result);
+
+                                    }
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
                     }
                 }
 

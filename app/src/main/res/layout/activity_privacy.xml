@@ -51,7 +51,55 @@
         android:text="@string/blacklist" />
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="20dp"
         android:background="@color/divide"
         />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/tv_withdraw"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="公开购买服务的交易记录"
+            android:gravity="left|center"
+            android:paddingLeft="10dp"
+            />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/switch_buyservice"
+            android:layout_alignParentRight="true"
+            android:checked="true"
+            android:paddingRight="10dp"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/tv_withdraw"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="公开消费服务的交易记录"
+            android:gravity="left|center"
+            android:paddingLeft="10dp"
+            />
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/switch_costservice"
+            android:layout_alignParentRight="true"
+            android:checked="true"
+            android:paddingRight="10dp"
+            />
+    </RelativeLayout>
 </LinearLayout>

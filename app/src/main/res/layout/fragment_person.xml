@@ -42,7 +42,7 @@
                     android:layout_height="60dp"
                     android:layout_centerVertical="true"
                     android:gravity="center_vertical"
-                    android:src="@drawable/ic_launcher"
+                    android:src="@drawable/default_avatar"
                     />
                 </LinearLayout>
             <LinearLayout
@@ -63,14 +63,20 @@
                         android:gravity="left|center"
                         android:layout_marginLeft="10dp"/>
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/iv_sex"
+                        android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/ic_clock"/>
+                        android:src="@drawable/female"/>
+                    <ImageView
+                        android:id="@+id/iv_member"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/idflag"/>
                 </LinearLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:text="手机号:"
+                    android:text="友帮号:"
                     android:textSize="17sp"
                     android:gravity="left|center"
                     android:id="@+id/tv_tel"
@@ -91,52 +97,115 @@
             android:layout_height="20dp"
             android:background="@color/divide"
             />
-
-        <TextView
-            android:id="@+id/tv_mission"
-            style="@style/more_item_style"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="44dip"
-            android:drawableRight="@drawable/aliwx_arrow"
-            android:text="我的任务" />
+            android:layout_height="44dp"
+
+            >
+
+            <TextView
+                android:id="@+id/tv_mymessage"
+                style="@style/more_item_style"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:drawableRight="@drawable/aliwx_arrow"
+                android:paddingLeft="34dp"
+                android:text="我的消息" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/mymessage"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                />
+            <TextView
+                android:id="@+id/tv_unread"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/aliwx_unread_hint"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/aliwx_unread_text_size"
+                android:visibility="invisible"
+                android:gravity="center"/>
+        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divide"
             />
-
-        <TextView
-            android:id="@+id/tv_contact"
-            style="@style/more_item_style"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="44dip"
-            android:drawableRight="@drawable/aliwx_arrow"
-            android:text="我的好友" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divide"
-            />
+            android:layout_height="44dp"
+            >
         <TextView
             android:id="@+id/tv_collect"
             style="@style/more_item_style"
             android:layout_width="match_parent"
             android:layout_height="44dip"
             android:drawableRight="@drawable/aliwx_arrow"
+            android:paddingLeft="34dp"
             android:text="我的收藏" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/mycollect"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divide"
             />
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
         <TextView
             android:id="@+id/tv_wallet"
             style="@style/more_item_style"
             android:layout_width="match_parent"
             android:layout_height="44dip"
             android:drawableRight="@drawable/aliwx_arrow"
+            android:paddingLeft="34dp"
             android:text="我的钱包" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/mywallet"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
+        <TextView
+            android:id="@+id/tv_myestimate"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:drawableRight="@drawable/aliwx_arrow"
+            android:paddingLeft="34dp"
+            android:text="我的口碑" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/myestimate"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="20dp"
@@ -144,67 +213,224 @@
             />
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="44dip"
+            android:layout_height="44dp"
             >
         <TextView
-            android:id="@+id/tv_mymessage"
+            android:id="@+id/tv_myhelp"
             style="@style/more_item_style"
             android:layout_width="match_parent"
             android:layout_height="44dip"
             android:drawableRight="@drawable/aliwx_arrow"
-            android:text="我的消息" />
-        <TextView
-            android:id="@+id/tv_unread"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/aliwx_unread_hint"
-            android:layout_centerVertical="true"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/aliwx_unread_text_size"
-            android:visibility="invisible"
-            android:gravity="center"/>
+            android:paddingLeft="34dp"
+            android:text="我的求助" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/mymission"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
         </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divide"
             />
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
+            <TextView
+                android:id="@+id/tv_mission"
+                style="@style/more_item_style"
+                android:layout_width="match_parent"
+                android:layout_height="44dip"
+                android:drawableRight="@drawable/aliwx_arrow"
+                android:paddingLeft="34dp"
+                android:text="我的助人" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/mymission"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
+            <TextView
+                android:id="@+id/tv_question"
+                style="@style/more_item_style"
+                android:layout_width="match_parent"
+                android:layout_height="44dip"
+                android:drawableRight="@drawable/aliwx_arrow"
+                android:paddingLeft="34dp"
+                android:text="我的提问" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/question"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
+            <TextView
+                android:id="@+id/tv_answer"
+                style="@style/more_item_style"
+                android:layout_width="match_parent"
+                android:layout_height="44dip"
+                android:drawableRight="@drawable/aliwx_arrow"
+                android:paddingLeft="34dp"
+                android:text="我的回答" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/answer"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/divide"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
+        <TextView
+            android:id="@+id/tv_author"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:drawableRight="@drawable/aliwx_arrow"
+            android:text="@string/name_author"
+            android:paddingLeft="34dp"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/myauthor"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/divide"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
+        <TextView
+            android:id="@+id/tv_contact"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dip"
+            android:drawableRight="@drawable/aliwx_arrow"
+            android:text="我的好友"
+            android:paddingLeft="34dp"/>
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/mycontact"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
         <TextView
             android:id="@+id/tv_updatecontact"
             style="@style/more_item_style"
             android:layout_width="match_parent"
             android:layout_height="44dip"
             android:drawableRight="@drawable/aliwx_arrow"
+            android:paddingLeft="34dp"
             android:text="更新通讯录到友帮" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/myupdatecontact"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divide"
             />
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
         <TextView
             android:id="@+id/tv_expandhr"
             style="@style/more_item_style"
             android:layout_width="match_parent"
             android:layout_height="44dip"
             android:drawableRight="@drawable/aliwx_arrow"
+            android:paddingLeft="34dp"
             android:text="拓展人脉" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/myexpandhr"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:background="@color/divide"
             />
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            >
         <TextView
             android:id="@+id/tv_setting"
             style="@style/more_item_style"
             android:layout_width="match_parent"
             android:layout_height="44dip"
             android:drawableRight="@drawable/aliwx_arrow"
+            android:paddingLeft="34dp"
             android:text="设置" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/mysetting"
+                android:layout_marginLeft="5dp"
+                android:layout_centerVertical="true"
+                />
+        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

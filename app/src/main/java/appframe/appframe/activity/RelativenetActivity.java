@@ -66,9 +66,31 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
         if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
             ImageUtils.setImageUrl(iv_myavatar, Auth.getCurrentUser().getAvatar());
         }
+        else
+        {
+            if(Auth.getCurrentUser().getGender().equals(getResources().getString(R.string.male).toString()))
+            {
+                iv_myavatar.setDefaultImageResId(R.drawable.maleavatar);
+            }
+            else
+            {
+                iv_myavatar.setDefaultImageResId(R.drawable.femaleavatar);
+            }
+        }
         tv_yourname.setText(getIntent().getStringExtra("Name"));
         if(getIntent().getStringExtra("Avatar") !=null && !getIntent().getStringExtra("Avatar").equals("")) {
             ImageUtils.setImageUrl(iv_youravatar, getIntent().getStringExtra("Avatar"));
+        }
+        else
+        {
+            if(Auth.getCurrentUser().getGender().equals(getResources().getString(R.string.male).toString()))
+            {
+                iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
+            }
+            else
+            {
+                iv_youravatar.setDefaultImageResId(R.drawable.femaleavatar);
+            }
         }
         Map<String, String> map = new HashMap<String, String>();
         map.put("FriendId", getIntent().getStringExtra("UserID"));
@@ -80,15 +102,15 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
                         super.onSuccess(result);
                         if( result.getType() == 1 )
                         {
-                            tv_relation.setText("一度朋友");
+                            tv_relation.setText("您和TA的关系为一度朋友");
                         }
                         else if( result.getType() == 2 )
                         {
-                            tv_relation.setText("二度朋友");
+                            tv_relation.setText("您和TA的关系为二度朋友");
                         }
                         else
                         {
-                            tv_relation.setText("陌生人");
+                            tv_relation.setText("您和TA的关系为陌生人");
                         }
 
                         gridview.setAdapter(new RelativenetGridViewAdapater(RelativenetActivity.this, result.getMidman()));

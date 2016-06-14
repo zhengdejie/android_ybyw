@@ -40,8 +40,8 @@ import appframe.appframe.utils.Utils;
  */
 public class LoginActivity extends BaseActivity {
     EditText  password,et_mobile;
-    Button ok,btn_forgetpassword;
-    TextView tb_back,tb_action,tb_title,tv_progress_content;
+//    Button ok,btn_forgetpassword;
+    TextView tb_back,tb_action,tb_title,tv_progress_content,ok,btn_forgetpassword;
     LinearLayout progress_bar;
 
 
@@ -64,8 +64,8 @@ public class LoginActivity extends BaseActivity {
         //List<UserContact> contactsList = new ArrayList<UserContact>();
 
 
-        ok = (Button)findViewById(R.id.ok);
-        btn_forgetpassword = (Button)findViewById(R.id.btn_forgetpassword);
+        ok = (TextView)findViewById(R.id.ok);
+        btn_forgetpassword = (TextView)findViewById(R.id.btn_forgetpassword);
 
         ok.setOnClickListener(new View.OnClickListener() {
 

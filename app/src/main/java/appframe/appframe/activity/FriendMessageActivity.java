@@ -21,7 +21,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXSystemMessageAdapater;
  * Created by Administrator on 2015/11/17.
  */
 public class FriendMessageActivity extends BaseActivity implements View.OnClickListener {
-    private TextView tb_title,tb_back;
+    private TextView tb_title,tb_back,tv_empty;
     ListView lv_friendmessage;
 
     @Override
@@ -35,6 +35,7 @@ public class FriendMessageActivity extends BaseActivity implements View.OnClickL
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
+        tv_empty = (TextView)findViewById(R.id.tv_empty);
         lv_friendmessage = (ListView)findViewById(R.id.lv_friendmessage);
         tb_back.setText("我的消息");
         tb_title.setText("好友通知");
@@ -54,6 +55,12 @@ public class FriendMessageActivity extends BaseActivity implements View.OnClickL
 
                 lv_friendmessage.setAdapter(new SwipeRefreshXFriendMessageAdapater(FriendMessageActivity.this, result));
 
+                if(result != null && result.size() != 0) {
+                    tv_empty.setVisibility(View.GONE);
+                }
+                else {
+                    tv_empty.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

@@ -43,7 +43,7 @@ public class SplashActivity extends BaseActivity {
             return;
         }
         setContentView(R.layout.activity_splash);
-        new Handler().postDelayed(r, 500);
+        new Handler().postDelayed(r, 2000);
     }
     public static Intent getIntentForRootActivity(Context a){
         Intent i = new Intent(a, SplashActivity.class);

@@ -22,11 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.CertificateActivity;
+import appframe.appframe.activity.EstimateActivity;
+import appframe.appframe.activity.ExpandFriendsActivity;
 import appframe.appframe.activity.FriendsInfoActivity;
+import appframe.appframe.activity.MyAnswerActivity;
 import appframe.appframe.activity.MyCollectActivity;
 import appframe.appframe.activity.MyInfoActivity;
 import appframe.appframe.activity.MyMessageActivity;
 import appframe.appframe.activity.MyMissionActivity;
+import appframe.appframe.activity.MyQuestionActivity;
+import appframe.appframe.activity.MyRequireActivity;
 import appframe.appframe.activity.PrivacyActivity;
 import appframe.appframe.activity.SettingActivity;
 import appframe.appframe.activity.WalletActivity;
@@ -34,6 +40,7 @@ import appframe.appframe.app.API;
 import appframe.appframe.com.google.zxing.client.result.BizcardResultParser;
 import appframe.appframe.dto.MessageTypeCount;
 import appframe.appframe.dto.UserContact;
+import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
@@ -47,8 +54,9 @@ import appframe.appframe.widget.sortlistview.SortListViewActivity;
  * Created by Administrator on 2015/8/8.
  */
 public class PersonFragment extends BaseFragment implements View.OnClickListener{
-    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission;
+    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission,tv_myestimate,tv_author,tv_question,tv_answer,tv_myhelp;
     public static TextView tv_unread;
+    ImageView iv_sex;
     com.android.volley.toolbox.NetworkImageView iv_avater;
     View root;
     LinearLayout ll_person;
@@ -107,6 +115,21 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
             //在Tab栏增加会话未读消息变化的全局监听器
             mConversationService.addTotalUnreadChangeListener(mConversationUnreadChangeListener);
         }
+        Http.request(getActivity(), API.USER_PROFILE, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<UserDetail>(){
+            @Override
+            public void onSuccess(UserDetail result) {
+                super.onSuccess(result);
+
+                if(result.getGender().equals(getResources().getString(R.string.male).toString()))
+                {
+                    iv_sex.setImageDrawable(getResources().getDrawable(R.drawable.male));
+                }
+                else
+                {
+                    iv_sex.setImageDrawable(getResources().getDrawable(R.drawable.female));
+                }
+            }
+        });
     }
 
     @Override
@@ -159,7 +182,7 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
                 startActivity(new Intent(getActivity(), MyContact.class));
                 break;
             case R.id.tv_expandhr:
-                startActivity(new Intent(getActivity(), SortListViewActivity.class));
+                startActivity(new Intent(getActivity(), ExpandFriendsActivity.class));
                 break;
             case R.id.tv_wallet:
                 startActivity(new Intent(getActivity(), WalletActivity.class));
@@ -174,22 +197,43 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
             case R.id.tv_updatecontact:
                 List<UserContact> contactsList = UploadUtils.uploadContact(getActivity());
                 Http.request(getActivity(), API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
-                        "Id",String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
+                        "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
                     @Override
                     public void onSuccess(String result) {
                         super.onSuccess(result);
-                        Toast.makeText(getActivity(),"上传通讯录成功",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "上传通讯录成功", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFail(String code) {
                         super.onFail(code);
-                        Toast.makeText(getActivity(),"上传通讯录失败",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "上传通讯录失败", Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;
+            case R.id.tv_myhelp:
+                startActivity(new Intent(getActivity(), MyRequireActivity.class));
+                break;
             case R.id.tv_mission:
                 startActivity(new Intent(getActivity(), MyMissionActivity.class));
+                break;
+            case R.id.tv_author:
+                startActivity(new Intent(getActivity(),CertificateActivity.class));
+                break;
+            case R.id.tv_myestimate:
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), EstimateActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("userBrief", Auth.getCurrentUser());
+                intent.putExtras(bundle);
+//                intent.putExtra("UserID",UserID);
+                startActivity(intent);
+                break;
+            case R.id.tv_question:
+                startActivity(new Intent(getActivity(),MyQuestionActivity.class));
+                break;
+            case R.id.tv_answer:
+                startActivity(new Intent(getActivity(),MyAnswerActivity.class));
                 break;
         }
     }
@@ -207,7 +251,13 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_unread = (TextView)root.findViewById(R.id.tv_unread);
         tv_tel = (TextView)root.findViewById(R.id.tv_tel);
         tv_mission = (TextView)root.findViewById(R.id.tv_mission);
+        tv_myestimate = (TextView)root.findViewById(R.id.tv_myestimate);
+        tv_author = (TextView)root.findViewById(R.id.tv_author);
         ll_person = (LinearLayout)root.findViewById(R.id.ll_person);
+        iv_sex = (ImageView)root.findViewById(R.id.iv_sex);
+        tv_question = (TextView)root.findViewById(R.id.tv_question);
+        tv_answer = (TextView)root.findViewById(R.id.tv_answer);
+        tv_myhelp = (TextView)root.findViewById(R.id.tv_myhelp);
 
         tv_contact.setOnClickListener(this);
         tv_collect.setOnClickListener(this);
@@ -219,19 +269,43 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_setting.setOnClickListener(this);
         tv_mission.setOnClickListener(this);
         ll_person.setOnClickListener(this);
+        tv_myestimate.setOnClickListener(this);
+        tv_author.setOnClickListener(this);
+        tv_question.setOnClickListener(this);
+        tv_answer.setOnClickListener(this);
+        tv_myhelp.setOnClickListener(this);
 
         tb_title = (TextView)root.findViewById(R.id.tb_title);
         tb_back = (TextView)root.findViewById(R.id.tb_back);
         tb_back.setVisibility(View.GONE);
         tb_title.setText("我的");
         tv_name.setText(Auth.getCurrentUser().getName());
-        tv_tel.setText(tv_tel.getText() + Auth.getCurrentUser().getMobile());
+        if(Auth.getCurrentUser().getYBAccount() != null && !Auth.getCurrentUser().getYBAccount().equals("")) {
+            tv_tel.setText(tv_tel.getText() + Auth.getCurrentUser().getYBAccount());
+        }
+
         if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
             ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
         }
         else
         {
-            iv_avater.setDefaultImageResId(R.drawable.default_avatar);
+            if(Auth.getCurrentUser().getGender().equals(getResources().getString(R.string.male).toString()))
+            {
+                iv_avater.setDefaultImageResId(R.drawable.maleavatar);
+            }
+            else
+            {
+                iv_avater.setDefaultImageResId(R.drawable.femaleavatar);
+            }
+
+        }
+        if(Auth.getCurrentUser().getGender().equals(getResources().getString(R.string.male).toString()))
+        {
+            iv_sex.setImageDrawable(getResources().getDrawable(R.drawable.male));
+        }
+        else
+        {
+            iv_sex.setImageDrawable(getResources().getDrawable(R.drawable.female));
         }
         tv_unread.setVisibility(View.INVISIBLE);
         initConversationServiceAndListener();

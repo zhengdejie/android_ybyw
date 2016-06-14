@@ -20,7 +20,7 @@
         android:layout_below="@+id/title_bar"
         android:layout_toLeftOf="@+id/tv_hcenter"
         android:layout_marginTop="10dp"
-        android:src="@drawable/default_avatar"
+        android:layout_marginRight="30dp"
         />
     <TextView
         android:id="@+id/tv_myname"
@@ -42,7 +42,7 @@
         android:layout_below="@+id/title_bar"
         android:layout_toRightOf="@+id/tv_hcenter"
         android:layout_marginTop="10dp"
-        android:src="@drawable/default_avatar"
+        android:layout_marginLeft="30dp"
         />
 
     <TextView
@@ -59,7 +59,7 @@
         />
 
     <View
-        android:layout_width="100dp"
+        android:layout_width="160dp"
         android:layout_height="1dp"
         android:background="@color/green"
         android:layout_alignBottom="@+id/iv_myavatar"
@@ -72,7 +72,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/view9"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        />
 
     <View
         android:id="@+id/view_divide"
@@ -82,6 +83,20 @@
         android:layout_below="@+id/tv_myname"
         android:layout_marginTop="10dp"/>
 
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:text="以下为你们的共同好友"
+        style="@style/more_item_style"
+        android:layout_below="@+id/view_divide"/>
+    <View
+        android:id="@+id/view_divide2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/tv_title"
+        />
     <GridView
         android:id="@+id/gridview"
         android:layout_width="wrap_content"
@@ -90,7 +105,7 @@
         android:numColumns="4"
         android:scrollbars="none"
         android:verticalSpacing="5dp"
-        android:layout_below="@+id/view_divide"
+        android:layout_below="@+id/view_divide2"
         android:layout_marginTop="10dp"
         android:gravity="center">
     </GridView>
