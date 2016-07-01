@@ -73,7 +73,15 @@ public class SwipeRefreshXFriendEstimateAdapater extends BaseAdapter {
     public Object getItem(int position) {
         return friendEvaluationDetails.get(position);
     }
+    //此方法通过activity给view的item添加值。通过notifyDataSetChanged 刷新界面
+    public  void addItems(List<FriendEvaluationDetail> items ){
+        for(FriendEvaluationDetail order : items)
+        {
+            friendEvaluationDetails.add(order);
+        }
+        notifyDataSetChanged();
 
+    }
     @Override
     public long getItemId(int position) {
         return position;

@@ -53,7 +53,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:background="@drawable/editext_none"
-                        android:hint="如:帮洗车,帮跟拍"
+                        android:hint="如: 1+1 = ?"
                         android:paddingLeft="20dp"
                         android:layout_toLeftOf="@+id/tv_titlecount"
                         android:singleLine="true"
@@ -91,7 +91,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:inputType="textMultiLine"
-                        android:hint="描述一下您的服务,让大家更感兴趣"
+                        android:hint="描述一下您的问题,让大家更感兴趣"
                         android:textSize="14sp"
                         android:gravity="top"
                         android:maxLength="250"/>

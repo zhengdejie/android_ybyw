@@ -12,6 +12,7 @@ import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.dto.Nearby;
+import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.ImageUtils;
 
@@ -60,9 +61,23 @@ public class SwipeRefreshXUser extends BaseAdapter {
         mHolder.tv_name.setText(item.getName());
         mHolder.tv_mobile.setText(item.getMobile());
 
-        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
-        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
-        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+//        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+//        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
+//        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+        if(item.getAvatar() != null && !item.getAvatar().equals("")) {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+        }
+        else
+        {
+            if(item.getGender().equals(context.getResources().getString(R.string.male).toString()))
+            {
+                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+            }
+            else
+            {
+                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+            }
+        }
         return convertView;
     }
 
@@ -77,7 +92,15 @@ public class SwipeRefreshXUser extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
+    //此方法通过activity给view的item添加值。通过notifyDataSetChanged 刷新界面
+    public  void addItems(List<UserDetail> items ){
+        for(UserDetail order : items)
+        {
+            userDetails.add(order);
+        }
+        notifyDataSetChanged();
 
+    }
     static class ViewHolder
     {
         private TextView tv_name,tv_mobile;

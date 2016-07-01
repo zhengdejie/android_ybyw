@@ -56,7 +56,7 @@ import appframe.appframe.widget.sortlistview.SortListViewActivity;
 public class PersonFragment extends BaseFragment implements View.OnClickListener{
     TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission,tv_myestimate,tv_author,tv_question,tv_answer,tv_myhelp;
     public static TextView tv_unread;
-    ImageView iv_sex;
+    ImageView iv_sex,iv_member;
     com.android.volley.toolbox.NetworkImageView iv_avater;
     View root;
     LinearLayout ll_person;
@@ -255,6 +255,7 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_author = (TextView)root.findViewById(R.id.tv_author);
         ll_person = (LinearLayout)root.findViewById(R.id.ll_person);
         iv_sex = (ImageView)root.findViewById(R.id.iv_sex);
+        iv_member = (ImageView)root.findViewById(R.id.iv_member);
         tv_question = (TextView)root.findViewById(R.id.tv_question);
         tv_answer = (TextView)root.findViewById(R.id.tv_answer);
         tv_myhelp = (TextView)root.findViewById(R.id.tv_myhelp);
@@ -306,6 +307,18 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         else
         {
             iv_sex.setImageDrawable(getResources().getDrawable(R.drawable.female));
+        }
+        if(Auth.getCurrentUser().getMember() == 1)
+        {
+            iv_member.setImageResource(R.drawable.idflag);
+        }
+        else if(Auth.getCurrentUser().getMember() == 2)
+        {
+            iv_member.setImageResource(R.drawable.shopflag);
+        }
+        else
+        {
+            iv_member.setVisibility(View.GONE);
         }
         tv_unread.setVisibility(View.INVISIBLE);
         initConversationServiceAndListener();

@@ -35,7 +35,7 @@ import appframe.appframe.utils.LoginSampleHelper;
  */
 public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
-    TextView tb_title,tb_back,tv_account,tv_newmessage,tv_privacy,tv_about,tv_security,tv_exit;
+    TextView tb_title,tb_back,tv_account,tv_newmessage,tv_privacy,tv_about,tv_exit;
     private YWIMKit mIMKit;
     //public static final int SCAN_CODE = 1;
     @Override

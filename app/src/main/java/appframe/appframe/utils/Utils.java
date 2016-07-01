@@ -41,6 +41,7 @@ import appframe.appframe.activity.LoginActivity;
 import appframe.appframe.activity.SplashActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.App;
+import appframe.appframe.dto.UserLocation;
 
 public final class Utils {
     static final String TAG = "Utils";
@@ -218,6 +219,18 @@ public final class Utils {
             Log.e("Exception",e.getMessage());
             return null;
         }
+    }
+
+    public static String toJSV(UserLocation userLocation)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{Province:");
+        sb.append(userLocation.getProvince()).append(",City:");
+        sb.append(userLocation.getCity()).append(",District:");
+        sb.append(userLocation.getDistrict()).append(",Street:");
+        sb.append(userLocation.getStreet()).append(",StreetNumber:");
+        sb.append(userLocation.getStreetNumber()).append("}");
+        return sb.toString();
     }
 
 }

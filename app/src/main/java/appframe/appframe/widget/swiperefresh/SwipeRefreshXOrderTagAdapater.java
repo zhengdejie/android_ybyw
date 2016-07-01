@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import appframe.appframe.R;
+import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.SearchOrderTagResponse;
 
 /**
@@ -34,7 +35,15 @@ public class SwipeRefreshXOrderTagAdapater extends BaseAdapter {
         }
         return tag.size();
     }
+    //此方法通过activity给view的item添加值。通过notifyDataSetChanged 刷新界面
+    public  void addItems(List<String> items ){
+        for(String order : items)
+        {
+            tag.add(order);
+        }
+        notifyDataSetChanged();
 
+    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

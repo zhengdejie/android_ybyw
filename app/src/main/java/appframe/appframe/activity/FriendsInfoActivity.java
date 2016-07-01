@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -21,8 +22,10 @@ import java.util.Map;
 import appframe.appframe.R;
 import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
+import appframe.appframe.dto.ConfirmedOrderDetailWithFriend;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderDetails;
+import appframe.appframe.dto.PushMessage;
 import appframe.appframe.dto.Question;
 import appframe.appframe.dto.UserBrief;
 import appframe.appframe.dto.UserDetail;
@@ -37,13 +40,15 @@ import appframe.appframe.utils.LoginSampleHelper;
 public class FriendsInfoActivity extends BaseActivity implements View.OnClickListener{
     //private ImageView img_avatar;
     private com.android.volley.toolbox.NetworkImageView iv_showavatar;
-    private TextView tb_title,tb_back,tb_action,tv_name,tv_showdistrict,tv_friendsestimate,tv_comment,tv_nickname,tv_revenue,tv_cost,btn_sendmessage,tv_questionhistory,tv_buyservice,tv_sellservice;
+    private TextView tb_title,tb_back,tb_action,tv_name,tv_showdistrict,tv_friendsestimate,tv_comment,tv_nickname,tv_revenue,tv_cost,btn_sendmessage,tv_questionhistory,tv_buyservice,tv_sellservice,tv_fbnum;
+    private ImageView iv_member,iv_gender;
     private RelativeLayout rl_revenue,rl_cost;
     private OrderDetails orderDetails;
     private UserDetail userDetail,candidate;
     private UserBrief userBrief;
-    private Question question;
+    private Question question,questionDetails;
     private Nearby nearby;
+    private PushMessage pushMessage;
     private String from;
     private Intent intent = new Intent();
     private final  int RESULT_CODE =1;
@@ -82,6 +87,9 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         tv_questionhistory = (TextView)findViewById(R.id.tv_questionhistory);
         tv_buyservice = (TextView)findViewById(R.id.tv_buyservice);
         tv_sellservice = (TextView)findViewById(R.id.tv_sellservice);
+        tv_fbnum = (TextView)findViewById(R.id.tv_fbnum);
+        iv_member = (ImageView)findViewById(R.id.iv_member);
+        iv_gender = (ImageView)findViewById(R.id.iv_gender);
         tv_comment.setOnClickListener(this);
         tv_questionhistory.setOnClickListener(this);
         tv_buyservice.setOnClickListener(this);
@@ -93,19 +101,50 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(orderDetails.getNameAnonymity() == 1)
             {
                 tv_name.setText("匿名");
-                iv_showavatar.setDefaultImageResId(R.drawable.default_avatar);
+                if(orderDetails.getOrderer().getGender().equals(getResources().getString(R.string.male)))
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                    iv_gender.setImageResource(R.drawable.male);
+                }
+                else
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_gender.setImageResource(R.drawable.female);
+                }
                 tv_nickname.setVisibility(View.INVISIBLE);
+                tv_fbnum.setText("友帮号: ");
+                iv_member.setVisibility(View.GONE);
             }
             else {
                 if (orderDetails.getOrderer().getFNickName() != null && !orderDetails.getOrderer().getFNickName().equals("")) {
                     tv_name.setText(orderDetails.getOrderer().getFNickName());
-                    tv_nickname.setText("昵称:" + orderDetails.getOrderer().getName());
+                    tv_nickname.setText("昵称: " + orderDetails.getOrderer().getName());
                     tv_nickname.setVisibility(View.VISIBLE);
                 } else {
                     tv_name.setText(orderDetails.getOrderer().getName());
                 }
+                if (orderDetails.getOrderer().getYBAccount() != null && !orderDetails.getOrderer().getYBAccount().equals("")) {
+                    tv_fbnum.setText("友帮号: " + orderDetails.getOrderer().getYBAccount());
+                }
+                else
+                {
+                    tv_fbnum.setText("友帮号: " );
+                }
                 if (orderDetails.getOrderer().getAvatar() != null) {
                     ImageUtils.setImageUrl(iv_showavatar, orderDetails.getOrderer().getAvatar());
+                }
+                else
+                {
+                    if(orderDetails.getOrderer().getGender().equals(getResources().getString(R.string.male)))
+                    {
+                        iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                        iv_gender.setImageResource(R.drawable.male);
+                    }
+                    else
+                    {
+                        iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                        iv_gender.setImageResource(R.drawable.female);
+                    }
                 }
             }
             if(orderDetails.getOrderer().isShowRevenue())
@@ -128,6 +167,19 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             }
             tv_showdistrict.setText(orderDetails.getOrderer().getLocation());
             userBrief = orderDetails.getOrderer();
+
+            if(orderDetails.getOrderer().getMember() == 1)
+            {
+                iv_member.setImageResource(R.drawable.idflag);
+            }
+            else if(orderDetails.getOrderer().getMember() == 2)
+            {
+                iv_member.setImageResource(R.drawable.shopflag);
+            }
+            else
+            {
+                iv_member.setVisibility(View.GONE);
+            }
 //            UserID = String.valueOf(orderDetails.getOrderer().getId());
 //            AvgServicePoint = String.valueOf(orderDetails.getOrderer().getAvgServicePoint());
 //            AvgAttitudePoint = String.valueOf(orderDetails.getOrderer().getAvgAttitudePoint());
@@ -146,11 +198,29 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             else {
                 tv_name.setText(userDetail.getName());
             }
-
+            if (userDetail.getYBAccount() != null && !userDetail.getYBAccount().equals("")) {
+                tv_fbnum.setText("友帮号: " + userDetail.getYBAccount());
+            }
+            else
+            {
+                tv_fbnum.setText("友帮号: " );
+            }
             if(userDetail.getAvatar()!=null) {
                 ImageUtils.setImageUrl(iv_showavatar, userDetail.getAvatar());
             }
-
+            else
+            {
+                if(userDetail.getGender().equals(getResources().getString(R.string.male)))
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                    iv_gender.setImageResource(R.drawable.male);
+                }
+                else
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_gender.setImageResource(R.drawable.female);
+                }
+            }
             if(userDetail.isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
@@ -169,6 +239,18 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 rl_cost.setVisibility(View.GONE);
             }
+            if(userDetail.getMember() == 1)
+            {
+                iv_member.setImageResource(R.drawable.idflag);
+            }
+            else if(userDetail.getMember() == 2)
+            {
+                iv_member.setImageResource(R.drawable.shopflag);
+            }
+            else
+            {
+                iv_member.setVisibility(View.GONE);
+            }
             tv_showdistrict.setText(userDetail.getLocation());
 //            UserID = String.valueOf(userDetail.getId());
             userBrief = userDetail;
@@ -179,6 +261,27 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(nearby.getAvatar()!=null) {
                 ImageUtils.setImageUrl(iv_showavatar, nearby.getAvatar());
             }
+            else
+            {
+                if(nearby.getGender().equals(getResources().getString(R.string.male)))
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                    iv_gender.setImageResource(R.drawable.male);
+                }
+                else
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_gender.setImageResource(R.drawable.female);
+                }
+            }
+            if (nearby.getYBAccount() != null && !nearby.getYBAccount().equals("")) {
+                tv_fbnum.setText("友帮号: " + nearby.getYBAccount());
+            }
+            else
+            {
+                tv_fbnum.setText("友帮号: " );
+            }
+
             tv_showdistrict.setText(nearby.getLocation());
 //            UserID = String.valueOf(nearby.getId());
             userBrief = nearby;
@@ -201,6 +304,18 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 rl_cost.setVisibility(View.GONE);
             }
+            if(nearby.getMember() == 1)
+            {
+                iv_member.setImageResource(R.drawable.idflag);
+            }
+            else if(nearby.getMember() == 2)
+            {
+                iv_member.setImageResource(R.drawable.shopflag);
+            }
+            else
+            {
+                iv_member.setVisibility(View.GONE);
+            }
         }
         candidate = (UserDetail)intent.getSerializableExtra("Candidate");
         if(candidate != null) {
@@ -214,9 +329,29 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             else {
                 tv_name.setText(candidate.getName());
             }
+            if (candidate.getYBAccount() != null && !candidate.getYBAccount().equals("")) {
+                tv_fbnum.setText("友帮号: " + candidate.getYBAccount());
+            }
+            else
+            {
+                tv_fbnum.setText("友帮号: " );
+            }
 
             if(candidate.getAvatar()!=null) {
                 ImageUtils.setImageUrl(iv_showavatar, candidate.getAvatar());
+            }
+            else
+            {
+                if(candidate.getGender().equals(getResources().getString(R.string.male)))
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                    iv_gender.setImageResource(R.drawable.male);
+                }
+                else
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_gender.setImageResource(R.drawable.female);
+                }
             }
             tv_showdistrict.setText(candidate.getLocation());
             userBrief = candidate;
@@ -238,6 +373,18 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 rl_cost.setVisibility(View.GONE);
             }
+            if(candidate.getMember() == 1)
+            {
+                iv_member.setImageResource(R.drawable.idflag);
+            }
+            else if(candidate.getMember() == 2)
+            {
+                iv_member.setImageResource(R.drawable.shopflag);
+            }
+            else
+            {
+                iv_member.setVisibility(View.GONE);
+            }
         }
         question = (Question)intent.getSerializableExtra("Question");
         if(question != null) {
@@ -251,9 +398,28 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             else {
                 tv_name.setText(question.getAsker().getName());
             }
-
+            if (question.getAsker().getYBAccount() != null && !question.getAsker().getYBAccount().equals("")) {
+                tv_fbnum.setText("友帮号: " + question.getAsker().getYBAccount());
+            }
+            else
+            {
+                tv_fbnum.setText("友帮号: " );
+            }
             if(question.getAsker().getAvatar()!=null) {
                 ImageUtils.setImageUrl(iv_showavatar, question.getAsker().getAvatar());
+            }
+            else
+            {
+                if(question.getAsker().getGender().equals(getResources().getString(R.string.male)))
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                    iv_gender.setImageResource(R.drawable.male);
+                }
+                else
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_gender.setImageResource(R.drawable.female);
+                }
             }
             tv_showdistrict.setText(question.getAsker().getLocation());
             userBrief = question.getAsker();
@@ -274,6 +440,154 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             else
             {
                 rl_cost.setVisibility(View.GONE);
+            }
+            if(question.getAsker().getMember() == 1)
+            {
+                iv_member.setImageResource(R.drawable.idflag);
+            }
+            else if(question.getAsker().getMember() == 2)
+            {
+                iv_member.setImageResource(R.drawable.shopflag);
+            }
+            else
+            {
+                iv_member.setVisibility(View.GONE);
+            }
+        }
+        questionDetails = (Question)intent.getSerializableExtra("QuestionDetails");
+        if(questionDetails != null) {
+
+            if(questionDetails.getAsker().getFNickName() != null && !questionDetails.getAsker().getFNickName().equals(""))
+            {
+                tv_name.setText(questionDetails.getAsker().getFNickName());
+                tv_nickname.setText("昵称:"+questionDetails.getAsker().getName());
+                tv_nickname.setVisibility(View.VISIBLE);
+            }
+            else {
+                tv_name.setText(questionDetails.getAsker().getName());
+            }
+            if (questionDetails.getAsker().getYBAccount() != null && !questionDetails.getAsker().getYBAccount().equals("")) {
+                tv_fbnum.setText("友帮号: " + questionDetails.getAsker().getYBAccount());
+            }
+            else
+            {
+                tv_fbnum.setText("友帮号: " );
+            }
+            if(questionDetails.getAsker().getAvatar()!=null) {
+                ImageUtils.setImageUrl(iv_showavatar, questionDetails.getAsker().getAvatar());
+            }
+            else
+            {
+                if(questionDetails.getAsker().getGender().equals(getResources().getString(R.string.male)))
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                    iv_gender.setImageResource(R.drawable.male);
+                }
+                else
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_gender.setImageResource(R.drawable.female);
+                }
+            }
+            tv_showdistrict.setText(questionDetails.getAsker().getLocation());
+            userBrief = questionDetails.getAsker();
+            if(questionDetails.getAsker().isShowRevenue())
+            {
+                rl_revenue.setVisibility(View.VISIBLE);
+                tv_revenue.setText(String.valueOf(questionDetails.getAsker().getTotalRevenue()));
+            }
+            else
+            {
+                rl_revenue.setVisibility(View.GONE);
+            }
+            if(questionDetails.getAsker().isShowRevenue())
+            {
+                rl_cost.setVisibility(View.VISIBLE);
+                tv_cost.setText(String.valueOf(questionDetails.getAsker().getTotalExpense()));
+            }
+            else
+            {
+                rl_cost.setVisibility(View.GONE);
+            }
+            if(questionDetails.getAsker().getMember() == 1)
+            {
+                iv_member.setImageResource(R.drawable.idflag);
+            }
+            else if(questionDetails.getAsker().getMember() == 2)
+            {
+                iv_member.setImageResource(R.drawable.shopflag);
+            }
+            else
+            {
+                iv_member.setVisibility(View.GONE);
+            }
+        }
+        pushMessage = (PushMessage)intent.getSerializableExtra("PushMessage");
+        if(pushMessage != null)
+        {
+            if(pushMessage.getSender().getFNickName() != null && !pushMessage.getSender().getFNickName().equals(""))
+            {
+                tv_name.setText(pushMessage.getSender().getFNickName());
+                tv_nickname.setText("昵称:"+pushMessage.getSender().getName());
+                tv_nickname.setVisibility(View.VISIBLE);
+            }
+            else {
+                tv_name.setText(pushMessage.getSender().getName());
+            }
+            if (pushMessage.getSender().getYBAccount() != null && !pushMessage.getSender().getYBAccount().equals("")) {
+                tv_fbnum.setText("友帮号: " + pushMessage.getSender().getYBAccount());
+            }
+            else
+            {
+                tv_fbnum.setText("友帮号: " );
+            }
+            if(pushMessage.getSender().getAvatar()!=null) {
+                ImageUtils.setImageUrl(iv_showavatar, pushMessage.getSender().getAvatar());
+            }
+            else
+            {
+                if(pushMessage.getSender().getGender().equals(getResources().getString(R.string.male)))
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                    iv_gender.setImageResource(R.drawable.male);
+                }
+                else
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_gender.setImageResource(R.drawable.female);
+                }
+            }
+            tv_showdistrict.setText(pushMessage.getSender().getLocation());
+            userBrief = pushMessage.getSender();
+            if(pushMessage.getSender().isShowRevenue())
+            {
+                rl_revenue.setVisibility(View.VISIBLE);
+                tv_revenue.setText(String.valueOf(pushMessage.getSender().getTotalRevenue()));
+            }
+            else
+            {
+                rl_revenue.setVisibility(View.GONE);
+            }
+            if(pushMessage.getSender().isShowRevenue())
+            {
+                rl_cost.setVisibility(View.VISIBLE);
+                tv_cost.setText(String.valueOf(pushMessage.getSender().getTotalExpense()));
+            }
+            else
+            {
+                rl_cost.setVisibility(View.GONE);
+            }
+            if(pushMessage.getSender().getMember() == 1)
+            {
+                iv_member.setImageResource(R.drawable.idflag);
+            }
+            else if(pushMessage.getSender().getMember() == 2)
+            {
+                iv_member.setImageResource(R.drawable.shopflag);
+            }
+            else
+            {
+                iv_member.setVisibility(View.GONE);
             }
         }
 
@@ -356,16 +670,22 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
 
                 break;
             case R.id.tv_questionhistory:
-                startActivity(intent.setClass(this, MyQuestionActivity.class));
+                intent.setClass(this, MyQuestionActivity.class);
+                Bundle bundleQuestion = new Bundle();
+                bundleQuestion.putSerializable("friendsinfo", userBrief);
+                intent.putExtras(bundleQuestion);
+                startActivity(intent);
                 break;
             case R.id.tv_buyservice:
                 intent.setClass(this,TradeHistoryActivity.class);
                 intent.putExtra("buyservice", "2");
+                intent.putExtra("name", userBrief.getName());
                 startActivity(intent);
                 break;
             case R.id.tv_sellservice:
                 intent.setClass(this,TradeHistoryActivity.class);
                 intent.putExtra("sellservice", "1");
+                intent.putExtra("name", userBrief.getName());
                 startActivity(intent);
                 break;
         }

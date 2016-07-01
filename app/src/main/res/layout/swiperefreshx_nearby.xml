@@ -15,7 +15,7 @@
             android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:src="@drawable/default_avatar"
+
             />
 
         <LinearLayout
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:text="夜黑风高"
                 android:textSize="18sp"
-
+                android:layout_marginLeft="10dp"
                 />
 
             <!--<TextView-->

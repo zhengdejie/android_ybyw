@@ -5,7 +5,10 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/white">
-
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading"
+        />
     <include
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
@@ -160,14 +163,28 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp">
+                android:layout_margin="10dp"
+                android:orientation="vertical">
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:hint="说些什么"
-                    android:textSize="20dp"
-                    android:background="@drawable/ic_btn_retry_normal"
-                    android:id="@+id/et_content"/>
+                    android:background="@drawable/editext_none"
+                    android:layout_gravity="top"
+                    android:gravity="top"
+                    android:id="@+id/et_content"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    />
+                <GridView
+                    android:id="@+id/gridview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="70dp"
+                    android:horizontalSpacing="-80dp"
+                    android:numColumns="3"
+                    android:scrollbars="none"
+                    android:verticalSpacing="5dp"
+                    android:layout_below="@+id/tv_contentcount"/>
             </LinearLayout>
 
             <View
@@ -185,14 +202,26 @@
             android:orientation="vertical"
             android:layout_alignParentBottom="true"
             android:id="@+id/lly_send">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="评价"
-                android:id="@+id/btn_evaluate"
-                android:layout_gravity="bottom"
-                />
-        </LinearLayout>
+            <!--<Button-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="评价"-->
+                <!--android:id="@+id/btn_evaluate"-->
+                <!--android:layout_gravity="bottom"-->
+                <!--/>-->
+        <TextView
+            android:id="@+id/btn_evaluate"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:text="评价" />
 
+        </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        />
 
 </LinearLayout>

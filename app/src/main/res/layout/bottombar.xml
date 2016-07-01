@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="80dp"
     android:layout_alignParentBottom="true"
     android:background="#00ffffff"
     >
@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="45dp"
         android:layout_gravity="bottom"
         android:background="@color/white"
         android:gravity="center_horizontal"
@@ -40,6 +40,7 @@
                 android:gravity="center"
                 android:text="友帮"
                 android:textSize="12sp"
+                android:layout_marginTop="5dp"
                 android:textColor="@color/tab_normal_color" />
         </FrameLayout>
 
@@ -63,6 +64,7 @@
                 android:gravity="center"
                 android:textSize="12sp"
                 android:text="订单"
+                android:layout_marginTop="5dp"
                 android:textColor="@color/tab_normal_color"
                 />
         </FrameLayout>
@@ -98,6 +100,7 @@
                 android:gravity="center"
                 android:text="发现"
                 android:textSize="12sp"
+                android:layout_marginTop="5dp"
                 android:textColor="@color/tab_normal_color" />
         </FrameLayout>
 
@@ -125,6 +128,7 @@
                 android:gravity="center"
                 android:textSize="12sp"
                 android:text="我的"
+                android:layout_marginTop="5dp"
                 android:textColor="@color/tab_normal_color" />
 
             <TextView

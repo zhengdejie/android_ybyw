@@ -36,9 +36,9 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXNearbyAdapater;
  * Created by Administrator on 2016/6/12.
  */
 public class ExpandFriendsActivity extends BaseActivity implements View.OnClickListener {
-    SwipeRefreshX swipeRefresh;
+//    SwipeRefreshX swipeRefresh;
     ListView listView;
-    TextView tb_title,tb_back,tv_empty;
+    TextView tb_title,tb_back,tv_empty,tv_send;
     LinearLayout progress_bar;
 //    String latitude,longitude;
 //    BDLocation bdLocation = new BDLocation();
@@ -58,17 +58,18 @@ public class ExpandFriendsActivity extends BaseActivity implements View.OnClickL
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tv_empty = (TextView)findViewById(R.id.tv_empty);
+        tv_send = (TextView)findViewById(R.id.tv_send);
         progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
         progress_bar.setVisibility(View.VISIBLE);
 
-        tb_back.setText("发现");
+        tb_back.setText("我的");
         tb_title.setText("扩展人脉");
         tb_back.setOnClickListener(this);
-
-        swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
-
-        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
-                android.R.color.holo_orange_light, android.R.color.holo_red_light);
+        tv_send.setOnClickListener(this);
+//        swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
+//
+//        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+//                android.R.color.holo_orange_light, android.R.color.holo_red_light);
         listView = (ListView)findViewById(R.id.lv_expand);
 
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -129,12 +130,67 @@ public class ExpandFriendsActivity extends BaseActivity implements View.OnClickL
 
 
 
-        // 设置下拉刷新监听器
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//        // 设置下拉刷新监听器
+//        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//
+//            @Override
+//            public void onRefresh() {
+//
+//                Http.request(ExpandFriendsActivity.this, API.GET_SECOND, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<UserDetail>>() {
+//                    @Override
+//                    public void onSuccess(final List<UserDetail> result) {
+//                        super.onSuccess(result);
+//                        adapater = new SwipeRefreshXExpandFriendsAdapater(ExpandFriendsActivity.this, result);
+//                        listView.setAdapter(adapater);
+//                        if(result != null && result.size() != 0) {
+//                            tv_empty.setVisibility(View.GONE);
+//                        }
+//                        else {
+//                            tv_empty.setVisibility(View.VISIBLE);
+//                        }
+//
+//
+//                    }
+//                });
+//                progress_bar.setVisibility(View.GONE);
+//                swipeRefresh.setRefreshing(false);
+//
+//            }
+//        });
+//        // 加载监听器
+//        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
+//
+//            @Override
+//            public void onLoad() {
+//
+//                Http.request(ExpandFriendsActivity.this, API.GET_SECOND, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<UserDetail>>() {
+//                    @Override
+//                    public void onSuccess(final List<UserDetail> result) {
+//                        super.onSuccess(result);
+//
+//                        adapater = new SwipeRefreshXExpandFriendsAdapater(ExpandFriendsActivity.this, result);
+//                        listView.setAdapter(adapater);
+//
+//
+//                    }
+//                });
+//                progress_bar.setVisibility(View.GONE);
+//                swipeRefresh.setLoading(false);
+//
+//            }
+//        });
+    }
 
-            @Override
-            public void onRefresh() {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId())
+        {
 
+            case R.id.tb_back:
+                finish();
+                break;
+            case R.id.tv_send:
+                progress_bar.setVisibility(View.VISIBLE);
                 Http.request(ExpandFriendsActivity.this, API.GET_SECOND, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<UserDetail>>() {
                     @Override
                     public void onSuccess(final List<UserDetail> result) {
@@ -147,48 +203,17 @@ public class ExpandFriendsActivity extends BaseActivity implements View.OnClickL
                         else {
                             tv_empty.setVisibility(View.VISIBLE);
                         }
-
+                        progress_bar.setVisibility(View.GONE);
 
                     }
-                });
-                progress_bar.setVisibility(View.GONE);
-                swipeRefresh.setRefreshing(false);
 
-            }
-        });
-        // 加载监听器
-        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
-
-            @Override
-            public void onLoad() {
-
-                Http.request(ExpandFriendsActivity.this, API.GET_SECOND, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<UserDetail>>() {
                     @Override
-                    public void onSuccess(final List<UserDetail> result) {
-                        super.onSuccess(result);
-
-                        adapater = new SwipeRefreshXExpandFriendsAdapater(ExpandFriendsActivity.this, result);
-                        listView.setAdapter(adapater);
-
-
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        progress_bar.setVisibility(View.GONE);
                     }
                 });
-                progress_bar.setVisibility(View.GONE);
-                swipeRefresh.setLoading(false);
-
-            }
-        });
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId())
-        {
-
-            case R.id.tb_back:
-                finish();
                 break;
-
         }
 
     }

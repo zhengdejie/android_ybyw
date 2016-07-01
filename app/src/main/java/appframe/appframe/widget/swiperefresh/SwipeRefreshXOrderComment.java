@@ -77,13 +77,13 @@ public class SwipeRefreshXOrderComment extends BaseAdapter {
         final OrderComment item = orderComments.get(position);
 
 
-        if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals(""))
+        if(item.getUser().getAvatar() != null && !item.getUser().getAvatar().equals(""))
         {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, Auth.getCurrentUser().getAvatar());
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getUser().getAvatar());
         }
         else
         {
-            if(Auth.getCurrentUser().getGender().equals(context.getResources().getString(R.string.male).toString()))
+            if(item.getUser().getGender().equals(context.getResources().getString(R.string.male).toString()))
             {
                 mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
             }
@@ -135,7 +135,15 @@ public class SwipeRefreshXOrderComment extends BaseAdapter {
     public Object getItem(int position) {
         return orderComments.get(position);
     }
+    //此方法通过activity给view的item添加值。通过notifyDataSetChanged 刷新界面
+    public  void addItems(List<OrderComment> items ){
+        for(OrderComment order : items)
+        {
+            orderComments.add(order);
+        }
+        notifyDataSetChanged();
 
+    }
     @Override
     public long getItemId(int position) {
         return position;

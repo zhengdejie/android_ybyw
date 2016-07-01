@@ -117,12 +117,12 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.iv_avatar:
-                intent.setClass(ConfirmOrderDetailsActivity.this, FriendsInfoActivity.class);
-                bundle.putSerializable("OrderDetails", confirmedOrderDetail.getOrder());
-                intent.putExtras(bundle);
-                startActivity(intent);
-                break;
+//            case R.id.iv_avatar:
+//                intent.setClass(ConfirmOrderDetailsActivity.this, FriendsInfoActivity.class);
+//                bundle.putSerializable("OrderDetails", confirmedOrderDetail.getOrder());
+//                intent.putExtras(bundle);
+//                startActivity(intent);
+//                break;
 //            case R.id.imgbtn_conversation:
 //                LoginSampleHelper ls = LoginSampleHelper.getInstance();
 //                String target = String.valueOf(confirmedOrderDetail.getOrder().getOrderer().getId());
@@ -153,13 +153,19 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                     map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
 
                     Http.request(this, API.ORDER_CANCEL, new Object[]{String.valueOf(confirmedOrderDetail.getId()), Http.getURL(map)},
-                            new Http.RequestListener<String>() {
+                            new Http.RequestListener<ConfirmedOrderDetail>() {
                                 @Override
-                                public void onSuccess(String result) {
+                                public void onSuccess(ConfirmedOrderDetail result) {
                                     super.onSuccess(result);
 
                                 }
+
+                                @Override
+                                public void onFail(String code) {
+                                    super.onFail(code);
+                                }
                             });
+
                 }
                 if(tv_estimate.getText() == getResources().getString(R.string.estimate))
                 {
@@ -281,47 +287,53 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
             case R.id.tv_finish:
                 if(tv_finish.getText() == "支付")
                 {
-                    Http.request(ConfirmOrderDetailsActivity.this, API.CONFIRMEDORDERPAY, Http.map(
-                                    "PlatformType", "1",
-                                    "Amount", String.valueOf(confirmedOrderDetail.getBid()),
-                                    "ConfirmedOrderId",String.valueOf(confirmedOrderDetail.getId()),
-                                    "orderId",String.valueOf(confirmedOrderDetail.getOrder().getId())),
-                            new Http.RequestListener<OnlinePay>() {
-                                @Override
-                                public void onSuccess(final OnlinePay result) {
-                                    super.onSuccess(result);
-                                    /**
-                                     * 完整的符合支付宝参数规范的订单信息
-                                     */
-//                        final String payInfo = AliPay.getOrderInfo("测试的商品", "该测试商品的详细描述", "0.01", "1") + "&sign=\"" + result.getSign() + "\"&" + AliPay.getSignType();
-
-
-                                    Runnable payRunnable = new Runnable() {
-
-                                        @Override
-                                        public void run() {
-                                            // 构造PayTask 对象
-                                            PayTask alipay = new PayTask(ConfirmOrderDetailsActivity.this);
-                                            // 调用支付接口，获取支付结果
-                                            String resultInfo = alipay.pay(result.getSign(), true);
-
-                                            Message msg = new Message();
-                                            msg.what = SDK_PAY_FLAG;
-                                            msg.obj = resultInfo;
-                                            mHandler.sendMessage(msg);
-                                        }
-                                    };
-
-                                    // 必须异步调用
-                                    Thread payThread = new Thread(payRunnable);
-                                    payThread.start();
-                                }
-
-                                @Override
-                                public void onFail(String code) {
-                                    super.onFail(code);
-                                }
-                            });
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    intent.setClass(ConfirmOrderDetailsActivity.this, PayActivity.class);
+                    bundle.putSerializable("ConfirmedOrderDetailPay", confirmedOrderDetail);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+//                    Http.request(ConfirmOrderDetailsActivity.this, API.CONFIRMEDORDERPAY, Http.map(
+//                                    "PlatformType", "1",
+//                                    "Amount", String.valueOf(confirmedOrderDetail.getBid()),
+//                                    "ConfirmedOrderId",String.valueOf(confirmedOrderDetail.getId()),
+//                                    "orderId",String.valueOf(confirmedOrderDetail.getOrder().getId())),
+//                            new Http.RequestListener<OnlinePay>() {
+//                                @Override
+//                                public void onSuccess(final OnlinePay result) {
+//                                    super.onSuccess(result);
+//                                    /**
+//                                     * 完整的符合支付宝参数规范的订单信息
+//                                     */
+////                        final String payInfo = AliPay.getOrderInfo("测试的商品", "该测试商品的详细描述", "0.01", "1") + "&sign=\"" + result.getSign() + "\"&" + AliPay.getSignType();
+//
+//
+//                                    Runnable payRunnable = new Runnable() {
+//
+//                                        @Override
+//                                        public void run() {
+//                                            // 构造PayTask 对象
+//                                            PayTask alipay = new PayTask(ConfirmOrderDetailsActivity.this);
+//                                            // 调用支付接口，获取支付结果
+//                                            String resultInfo = alipay.pay(result.getSign(), true);
+//
+//                                            Message msg = new Message();
+//                                            msg.what = SDK_PAY_FLAG;
+//                                            msg.obj = resultInfo;
+//                                            mHandler.sendMessage(msg);
+//                                        }
+//                                    };
+//
+//                                    // 必须异步调用
+//                                    Thread payThread = new Thread(payRunnable);
+//                                    payThread.start();
+//                                }
+//
+//                                @Override
+//                                public void onFail(String code) {
+//                                    super.onFail(code);
+//                                }
+//                            });
                 }
                 if(tv_finish.getText() == getResources().getString(R.string.service_done))
                 {
@@ -430,6 +442,28 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         Intent intent = this.getIntent();
         confirmedOrderDetail=(ConfirmedOrderDetail)intent.getSerializableExtra("ConfirmOrderDetails");
         From = intent.getStringExtra("From");
+        if(From == null)
+        {
+            if(confirmedOrderDetail.getStatus() == 3 || confirmedOrderDetail.getStatus() == 11) {
+                From = AppConfig.ORDERSTATUS_APPLY;
+            }
+            else if(confirmedOrderDetail.getStatus() == 1 || confirmedOrderDetail.getStatus() == 5 || confirmedOrderDetail.getStatus() == 7 || confirmedOrderDetail.getStatus() == 8)
+            {
+                From = AppConfig.ORDERSTATUS_PROGRESS;
+            }
+            else if(confirmedOrderDetail.getStatus() == 2)
+            {
+                From = AppConfig.ORDERSTATUS_DONE;
+            }
+            else if (confirmedOrderDetail.getStatus() == 0 || confirmedOrderDetail.getStatus() == 6)
+            {
+                From = AppConfig.ORDERSTATUS_CLOSE;
+            }
+            else
+            {
+
+            }
+        }
         updateOrderStatus(confirmedOrderDetail, From);
 
         if(confirmedOrderDetail.getServiceProvider().getId() == Auth.getCurrentUserId()) {
@@ -460,7 +494,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 //        tv_type.setText(confirmedOrderDetail.getOrder().getCategory().toString());
 //        tv_content.setText(confirmedOrderDetail.getOrder().getContent().toString());
         tv_time.setText(confirmedOrderDetail.getOrder().getCreatedAt().toString());
-        tv_status.setText(setComfirmOrderStatus(confirmedOrderDetail.getStatus()));
+        tv_status.setText(setComfirmOrderStatus(confirmedOrderDetail));
         tv_confirmorderid.setText(confirmedOrderDetail.getConfirmedOrderNumber());
 //        tv_require.setText(confirmedOrderDetail.getOrder().getRequest() == null ? "" : confirmedOrderDetail.getOrder().getRequest().toString());
         tv_paymethod.setText(confirmedOrderDetail.getOrder().getPaymentMethod().toString());
@@ -478,8 +512,16 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 //        if(confirmedOrderDetail.getOrder().getType() == 2) {
 //            rb_totalvalue.setRating((float) confirmedOrderDetail.getOrder().getOrderer().getTotalBossPoint());
 //        }
-        if(confirmedOrderDetail.getOrder().getOrderer().getAvatar() != null) {
-            ImageUtils.setImageUrl(iv_avatar, confirmedOrderDetail.getOrder().getOrderer().getAvatar().toString());
+//        if(confirmedOrderDetail.getOrder().getOrderer().getAvatar() != null) {
+//            ImageUtils.setImageUrl(iv_avatar, confirmedOrderDetail.getOrder().getOrderer().getAvatar().toString());
+//        }
+        if(confirmedOrderDetail.getOrder().getPhotos() != null && !confirmedOrderDetail.getOrder().getPhotos().equals(""))
+        {
+            ImageUtils.setImageUrl(iv_avatar, confirmedOrderDetail.getOrder().getPhotos().split(",")[0]);
+        }
+        else
+        {
+            iv_avatar.setDefaultImageResId(R.drawable.defaultphoto);
         }
 
 //        if(confirmedOrderDetail.getOrder().getPhotos() != null && confirmedOrderDetail.getOrder().getPhotos() != "") {
@@ -529,31 +571,46 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 
     }
 
-    private String setComfirmOrderStatus(int status)
+    private String setComfirmOrderStatus(ConfirmedOrderDetail confirmedOrderDetail)
     {
         StringBuilder sb = new StringBuilder();
-        if(status == 3) {
+        if(confirmedOrderDetail.getStatus() == 0) {
+            sb.append("已关闭");
+        }
+        else if(confirmedOrderDetail.getStatus() == 1) {
+            sb.append("服务进行中");
+        }
+        else if(confirmedOrderDetail.getStatus() == 2) {
+            sb.append("待评价");
+        }
+        else if(confirmedOrderDetail.getStatus() == 3) {
             sb.append("申请中");
         }
-        else if(status == 5)
+        else if(confirmedOrderDetail.getStatus() == 5)
         {
-            sb.append("服务已完成待对方付款");
+            if(confirmedOrderDetail.getServiceReceiver().getId() == Auth.getCurrentUserId())
+            {
+                sb.append("服务已完成请您付款");
+            }
+            else {
+                sb.append("服务已完成待对方付款");
+            }
         }
-        else if(status == 6)
+        else if(confirmedOrderDetail.getStatus() == 6)
         {
             sb.append("已关闭");
         }
-        else if(status == 7)
+        else if(confirmedOrderDetail.getStatus() == 7)
         {
             sb.append("申请退款中");
         }
-        else if(status == 8)
+        else if(confirmedOrderDetail.getStatus() == 8)
         {
             sb.append("拒绝退款待客服解决");
         }
-        else if(status == 9)
+        else if(confirmedOrderDetail.getStatus() == 11)
         {
-            sb.append("待支付");
+            sb.append("待被服务方支付");
         }
         return sb.toString();
     }
@@ -606,103 +663,118 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
     {
         if(from.equals(AppConfig.ORDERSTATUS_APPLY))
         {
-            tv_finish.setVisibility(View.VISIBLE);
-            tv_finish.setText("支付");
+            if(confirmedOrderDetail.getOrder().getType() == 1 && confirmedOrderDetail.getOrder().getBossPaid() != 1) {
+                tv_finish.setVisibility(View.VISIBLE);
+                tv_finish.setText("支付");
+            }
+            else
+            {
+                tv_finish.setVisibility(View.GONE);
+            }
+
             tv_estimate.setText(getResources().getString(R.string.cancel_appley));
         }
-        else {
-            if (confirmedOrderDetail.getServiceProvider().getId() == Auth.getCurrentUserId()) {
-                if (confirmedOrderDetail.getStatus() == 0) {
-                    tv_finish.setVisibility(View.GONE);
-                    tv_estimate.setVisibility(View.GONE);
-                    ll_button.setVisibility(View.GONE);
-                }
+        else if(from.equals(AppConfig.ORDERSTATUS_PROGRESS)){
+            tv_finish.setVisibility(View.VISIBLE);
+            if (confirmedOrderDetail.getServiceProvider().getId() == Auth.getCurrentUserId())
+            {
 
-                if (confirmedOrderDetail.getStatus() == 2) {
-                    tv_finish.setVisibility(View.GONE);
-                    tv_estimate.setVisibility(View.VISIBLE);
-                    tv_estimate.setText(getResources().getString(R.string.estimate));
-//                btn_finish.setVisibility(View.GONE);
-//                btn_estimate.setVisibility(View.GONE);
-//                ll_button.setVisibility(View.GONE);
+                if(confirmedOrderDetail.getStatus() == 1) {
+                    tv_finish.setText(getResources().getString(R.string.service_done));
+                    tv_estimate.setText(getResources().getString(R.string.service_stop));
                 }
-//            if(confirmedOrderDetail.getStatus() == 3)
-//            {
-//                btn_finish.setVisibility(View.GONE);
-//                btn_estimate.setVisibility(View.VISIBLE);
-//                btn_estimate.setText(getResources().getString(R.string.cancel_appley));
-////                btn_finish.setVisibility(View.GONE);
-////                btn_estimate.setVisibility(View.GONE);
-////                ll_button.setVisibility(View.GONE);
-//            }
-                if (confirmedOrderDetail.getStatus() == 5) {
+                if(confirmedOrderDetail.getStatus() == 5)
+                {
                     tv_finish.setVisibility(View.GONE);
                     tv_estimate.setVisibility(View.GONE);
-                    ll_button.setVisibility(View.GONE);
-//                tv_showstatus.setVisibility(View.VISIBLE);
-//                tv_showstatus.setText("等待对方付款");
-                }
 
-                if (confirmedOrderDetail.getStatus() == 6) {
-                    tv_finish.setVisibility(View.GONE);
-                    tv_estimate.setVisibility(View.GONE);
-                    ll_button.setVisibility(View.GONE);
+
                 }
-                if (confirmedOrderDetail.getStatus() == 7) {
-                    tv_finish.setVisibility(View.VISIBLE);
+                if(confirmedOrderDetail.getStatus() == 7)
+                {
                     tv_finish.setText(getResources().getString(R.string.agree));
                     tv_estimate.setText(getResources().getString(R.string.disagree));
                 }
-                if (confirmedOrderDetail.getStatus() == 8) {
+                if(confirmedOrderDetail.getStatus() == 8)
+                {
                     tv_finish.setVisibility(View.GONE);
                     tv_estimate.setVisibility(View.GONE);
-                    ll_button.setVisibility(View.GONE);
-//                mHolder.tv_showstatus.setVisibility(View.VISIBLE);
-//                mHolder.tv_showstatus.setText("已拒绝退款申请，客服正在处理中，请耐心等待");
+
                 }
             }
-            if (confirmedOrderDetail.getServiceReceiver().getId() == Auth.getCurrentUserId()) {
-                if (confirmedOrderDetail.getStatus() == 0) {
-                    tv_finish.setVisibility(View.GONE);
-                    tv_estimate.setVisibility(View.GONE);
-                    ll_button.setVisibility(View.GONE);
-                }
-
-                if (confirmedOrderDetail.getStatus() == 1) {
-                    tv_finish.setVisibility(View.VISIBLE);
+            if(confirmedOrderDetail.getServiceReceiver().getId() == Auth.getCurrentUserId())
+            {
+                if(confirmedOrderDetail.getStatus() == 1) {
                     tv_finish.setText("催单");
                     tv_estimate.setText(getResources().getString(R.string.service_stop));
                 }
-                if (confirmedOrderDetail.getStatus() == 2) {
-                    tv_finish.setVisibility(View.GONE);
-                    tv_estimate.setVisibility(View.VISIBLE);
-                    tv_estimate.setText(getResources().getString(R.string.estimate));
-                }
-                if (confirmedOrderDetail.getStatus() == 5) {
-                    tv_finish.setVisibility(View.VISIBLE);
+                if(confirmedOrderDetail.getStatus() == 5) {
                     tv_finish.setText("付款");
                     tv_estimate.setText(getResources().getString(R.string.refund_apply));
+//                        mHolder.tv_countdown.setVisibility(View.VISIBLE);
+//                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+//                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//                        Calendar rightNow = Calendar.getInstance();
+//                        try {
+//                            String[] date= item.getCompleteDate().toString().split(" ");
+//                            String runTime = date[0] + " 01:00:00";
+//                            Date completedRunTime = dateFormat.parse(runTime);
+//                            Date completedDate = dateFormat.parse(item.getCompleteDate().toString());
+//                            rightNow.setTime(completedDate);
+//                            if(completedDate.before(completedRunTime))
+//                            {
+//                                rightNow.add(Calendar.DAY_OF_YEAR, 7);//日期加7天
+//                            }
+//                            else
+//                            {
+//                                rightNow.add(Calendar.DAY_OF_YEAR, 8);//日期加8天
+//                            }
+//
+//                            String countDown = simpleDateFormat.format(rightNow.getTime());
+//                            Date countDownTime = dateFormat.parse(countDown + " 01:00:00");
+//                            Date nowdate = new Date();
+//                            mc = new CompletedCountDown(countDownTime.getTime() -nowdate.getTime(), 1000, mHolder.tv_countdown);
+//                            mc.start();
+//                        }
+//                        catch (ParseException e)
+//                        {
+//                            Log.e("ParseException", e.getMessage());
+//                        }
                 }
-                if (confirmedOrderDetail.getStatus() == 6) {
+                if(confirmedOrderDetail.getStatus() == 7)
+                {
                     tv_finish.setVisibility(View.GONE);
                     tv_estimate.setVisibility(View.GONE);
-                    ll_button.setVisibility(View.GONE);
+
                 }
-                if (confirmedOrderDetail.getStatus() == 7) {
-                    tv_finish.setVisibility(View.GONE);
-                    tv_estimate.setVisibility(View.GONE);
-                    ll_button.setVisibility(View.GONE);
-//                tv_showstatus.setVisibility(View.VISIBLE);
-//                tv_showstatus.setText("已发送退款申请，等待对方确认");
-                }
-                if (confirmedOrderDetail.getStatus() == 8) {
+                if(confirmedOrderDetail.getStatus() == 8)
+                {
                     tv_finish.setVisibility(View.GONE);
                     tv_estimate.setVisibility(View.VISIBLE);
                     tv_estimate.setText(getResources().getString(R.string.dispute));
-//                tv_showstatus.setVisibility(View.VISIBLE);
-//                tv_showstatus.setText("对方拒绝退款申请，客服正在处理中，请耐心等待");
+//                        mHolder.btn_finish.setVisibility(View.GONE);
+//                        mHolder.btn_estimate.setVisibility(View.GONE);
+//                        mHolder.ll_button.setVisibility(View.GONE);
+//                        mHolder.tv_showstatus.setVisibility(View.VISIBLE);
+//                        mHolder.tv_showstatus.setText("对方拒绝退款申请，客服正在处理中，请耐心等待");
                 }
+
             }
+        }
+        else if(from.equals(AppConfig.ORDERSTATUS_DONE))
+        {
+            tv_finish.setVisibility(View.GONE);
+            tv_estimate.setVisibility(View.VISIBLE);
+            tv_estimate.setText(getResources().getString(R.string.estimate));
+        }
+        else if(from.equals(AppConfig.ORDERSTATUS_CLOSE))
+        {
+            tv_finish.setVisibility(View.GONE);
+            tv_estimate.setVisibility(View.GONE);
+        }
+        else
+        {
+
         }
     }
 

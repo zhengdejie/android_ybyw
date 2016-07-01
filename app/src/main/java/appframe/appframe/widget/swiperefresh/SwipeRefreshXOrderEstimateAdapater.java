@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -54,7 +55,8 @@ public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
             mHolder.tv_content = (TextView) convertView.findViewById(R.id.tv_content);
             mHolder.tv_title = (TextView) convertView.findViewById(R.id.tv_title);
             mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
-            mHolder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingBar);
+//            mHolder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingBar);
+            mHolder.gridView = (GridView)convertView.findViewById(R.id.gridview);
             mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
@@ -67,12 +69,42 @@ public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
         mHolder.tv_name.setText(item.getUser().getName());
         mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_content.setText(item.getContent());
-        mHolder.tv_title.setText(item.getOrder().getTitle());
-        mHolder.ratingBar.setRating((float) (item.getAttitudePoint()+item.getCharacterPoint()+item.getServicePoint())/3);
-        if(item.getUser().getAvatar()!=null) {
+        mHolder.tv_title.setText("评价来自订单标题为"+item.getOrder().getTitle());
+//        mHolder.ratingBar.setRating((float) (item.getAttitudePoint() + item.getCharacterPoint() + item.getServicePoint()) / 3);
+
+        if(item.getPhotos() != null && item.getPhotos() != "") {
+            List<String> photoPath = new ArrayList<String>();
+            for (String photsCount : item.getPhotos().toString().split(",")) {
+                photoPath.add(photsCount);
+            }
+            mHolder.gridView.setAdapter(new OrderDetailsGridViewAdapater(context,photoPath));
+            mHolder.gridView.setVisibility(View.VISIBLE);
+//            mHolder.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    Intent intent = new Intent();
+//                    intent.setClass(context, AvatarZoomActivity.class);
+//                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+//                    context.startActivity(intent);
+//                }
+//            });
+        }
+        else
+        {
+            mHolder.gridView.setVisibility(View.GONE);
+        }
+        if(item.getUser().getGender().equals(context.getResources().getString(R.string.male).toString()))
+        {
+            mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+        }
+        else
+        {
+            mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+        }
+        if(item.getUser().getAvatar() != null && !item.getUser().getAvatar().equals(""))
+        {
             ImageUtils.setImageUrl(mHolder.iv_avatar, item.getUser().getAvatar());
         }
-
         return convertView;
 
     }
@@ -100,7 +132,8 @@ public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
     static class ViewHolder
     {
         private TextView tv_name,tv_content,tv_time,tv_title;
-        private RatingBar ratingBar;
+//        private RatingBar ratingBar;
         private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private GridView gridView;;
     }
 }

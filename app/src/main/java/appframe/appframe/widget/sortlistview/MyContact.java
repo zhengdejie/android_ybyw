@@ -268,22 +268,24 @@ public class MyContact extends Activity {
         List<ContactDetail> mSortList = new ArrayList<ContactDetail>();
 
         for(int i=0; i<date.size(); i++){
-            ContactDetail sortModel = new ContactDetail();
-            sortModel.setMobileContact(date.get(i).getMobileContact());
-            sortModel.setUser(date.get(i).getUser());
-            sortModel.setType(date.get(i).getType());
-            //����ת����ƴ��
-            String pinyin = characterParser.getSelling((date.get(i).getUser().getFNickName() != null && !date.get(i).getUser().getFNickName().equals(""))? date.get(i).getUser().getFNickName().toString() : date.get(i).getUser().getName().toString());
-            String sortString = pinyin.substring(0, 1).toUpperCase();
+//            if(date.get(i).getMobileContact().getName()!= null && !date.get(i).getMobileContact().getName().equals("")) {
+                ContactDetail sortModel = new ContactDetail();
+                sortModel.setMobileContact(date.get(i).getMobileContact());
+                sortModel.setUser(date.get(i).getUser());
+                sortModel.setType(date.get(i).getType());
+                //����ת����ƴ��
+                String pinyin = characterParser.getSelling((date.get(i).getUser().getFNickName() != null && !date.get(i).getUser().getFNickName().equals("")) ? date.get(i).getUser().getFNickName().toString() : date.get(i).getUser().getName().toString());
+                String sortString = pinyin.substring(0, 1).toUpperCase();
 
-            // ������ʽ���ж�����ĸ�Ƿ���Ӣ����ĸ
-            if(sortString.matches("[A-Z]")){
-                sortModel.setSortLetters(sortString.toUpperCase());
-            }else{
-                sortModel.setSortLetters("#");
-            }
+                // ������ʽ���ж�����ĸ�Ƿ���Ӣ����ĸ
+                if (sortString.matches("[A-Z]")) {
+                    sortModel.setSortLetters(sortString.toUpperCase());
+                } else {
+                    sortModel.setSortLetters("#");
+                }
 
-            mSortList.add(sortModel);
+                mSortList.add(sortModel);
+//            }
         }
         return mSortList;
 
@@ -293,22 +295,24 @@ public class MyContact extends Activity {
         List<ContactDetail> mSortList = new ArrayList<ContactDetail>();
 
         for(int i=0; i<date.size(); i++){
-            ContactDetail sortModel = new ContactDetail();
-            sortModel.setMobileContact(date.get(i).getMobileContact());
-            sortModel.setUser(date.get(i).getUser());
-            sortModel.setType(date.get(i).getType());
-            //����ת����ƴ��
-            String pinyin = characterParser.getSelling(date.get(i).getMobileContact() != null ? date.get(i).getMobileContact().getName().toString() : "#");
-            String sortString = pinyin.substring(0, 1).toUpperCase();
+            if(date.get(i).getMobileContact().getName()!= null && !date.get(i).getMobileContact().getName().equals("")) {
+                ContactDetail sortModel = new ContactDetail();
+                sortModel.setMobileContact(date.get(i).getMobileContact());
+                sortModel.setUser(date.get(i).getUser());
+                sortModel.setType(date.get(i).getType());
+                //����ת����ƴ��
+                String pinyin = characterParser.getSelling(date.get(i).getMobileContact() != null ? (date.get(i).getMobileContact().getName() != null && !date.get(i).getMobileContact().getName().equals("") ? date.get(i).getMobileContact().getName().toString() : "#") : "#");
+                String sortString = pinyin.substring(0, 1).toUpperCase();
 
-            // ������ʽ���ж�����ĸ�Ƿ���Ӣ����ĸ
-            if(sortString.matches("[A-Z]")){
-                sortModel.setSortLetters(sortString.toUpperCase());
-            }else{
-                sortModel.setSortLetters("#");
+                // ������ʽ���ж�����ĸ�Ƿ���Ӣ����ĸ
+                if (sortString.matches("[A-Z]")) {
+                    sortModel.setSortLetters(sortString.toUpperCase());
+                } else {
+                    sortModel.setSortLetters("#");
+                }
+
+                mSortList.add(sortModel);
             }
-
-            mSortList.add(sortModel);
         }
         return mSortList;
 

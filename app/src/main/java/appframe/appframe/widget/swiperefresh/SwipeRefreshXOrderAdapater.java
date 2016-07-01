@@ -108,7 +108,8 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
 //            mHolder.btn_candidate = (Button)convertView.findViewById(R.id.btn_candidate);
 //            mHolder.tv_time = (TextView)convertView.findViewById(R.id.tv_time);
             mHolder.tv_name = (TextView)convertView.findViewById(R.id.tv_name);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView)convertView.findViewById(R.id.iv_avatar);
             mHolder.rb_totalvalue = (RatingBar)convertView.findViewById(R.id.rb_totalvalue);
             mHolder.tv_pay = (TextView)convertView.findViewById(R.id.tv_pay);
 //            mHolder.ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
@@ -141,6 +142,10 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
 //                }
 //            });
         }
+        else
+        {
+            mHolder.gridView.setVisibility(View.GONE);
+        }
         mHolder.tv_content.setText(item.getContent());
         mHolder.txt_title.setText(item.getTitle());
         if(item.getType() == 1)
@@ -169,18 +174,25 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         }
         else
         {
-            mHolder.txt_location.setText("地址:" + item.getAddress());
+            if(item.getUserLocation() != null) {
+                mHolder.txt_location.setText("地址:" + item.getUserLocation().getProvince() + item.getUserLocation().getCity() + item.getUserLocation().getDistrict());
+            }
         }
 //        mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_name.setText("");
+//        mHolder.iv_avatar.setTag(item.getOrderer().getAvatar());
+//        mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+//        mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
         if(item.getOrderer().getGender().equals(context.getResources().getString(R.string.male).toString()))
         {
-            mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
             mHolder.iv_gender.setImageDrawable(context.getResources().getDrawable(R.drawable.male));
         }
         else
         {
-            mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
             mHolder.iv_gender.setImageDrawable(context.getResources().getDrawable(R.drawable.female));
         }
 
@@ -197,8 +209,35 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
             }
             if(item.getOrderer().getAvatar() != null && !item.getOrderer().getAvatar().equals(""))
             {
-                ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrderer().getAvatar());
+                mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+                mHolder.niv_avatar.setVisibility(View.VISIBLE);
             }
+            else
+            {
+                mHolder.iv_avatar.setVisibility(View.VISIBLE);
+                mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+            }
+            ImageUtils.setImageUrl(mHolder.niv_avatar, item.getOrderer().getAvatar());
+//            mHolder.iv_avatar.setTag(item.getOrderer().getAvatar());
+//            String tag = (String) mHolder.iv_avatar.getTag();
+//            if(tag != null && tag.equals(item.getOrderer().getAvatar())) {
+//                ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrderer().getAvatar());
+//            }
+//            if(item.getOrderer().getAvatar() != null && !item.getOrderer().getAvatar().equals("") && mHolder.iv_avatar.getTag() != null && mHolder.iv_avatar.getTag().equals(item.getOrderer().getAvatar()))
+//            {
+//                ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrderer().getAvatar());
+//            }
+//            else
+//            {
+//                if(item.getOrderer().getGender().equals(context.getResources().getString(R.string.male).toString()))
+//                {
+//                    mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+//                }
+//                else
+//                {
+//                    mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+//                }
+//            }
         }
         if(orderType == 1) {
             mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalWorkerPoint());
@@ -224,7 +263,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         {
             mHolder.tv_pay.setText("未支付");
         }
-        mHolder.tv_numofconforder.setText(String.format("友帮了%d次", item.getOrderer().getCompletedNumberOfOrder()));
+        mHolder.tv_numofconforder.setText(String.format("(友帮了%d次)", item.getOrderer().getCompletedNumberOfOrder()));
 //        mHolder.btn_finish.setVisibility(View.GONE);
 //        mHolder.btn_candidate.setVisibility(View.GONE);
 //        switch (from)
@@ -395,7 +434,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
 //        });
 
         if(hasTopOrder  &&  position == 0) {
-            convertView.setBackgroundColor(Color.GREEN);
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.bg_gray));
         }
         else
         {
@@ -427,12 +466,12 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
     {
 //        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_pay,tv_numofconforder,txt_tag;
         private TextView txt_title,txt_bounty,txt_type,txt_location,tv_name,tv_pay,tv_numofconforder,tv_content;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
 //        private Button btn_estimate,btn_finish,btn_candidate;
         private RatingBar rb_totalvalue;
 //        private LinearLayout ll_button;
         private GridView gridView;
-        private ImageView iv_gender;
+        private ImageView iv_gender,iv_avatar;
     }
 
 

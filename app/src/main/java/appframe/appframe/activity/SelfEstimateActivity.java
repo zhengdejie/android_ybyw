@@ -42,6 +42,7 @@ import appframe.appframe.widget.photopicker.util.CustomConstants;
 import appframe.appframe.widget.photopicker.util.IntentConstants;
 import appframe.appframe.widget.photopicker.view.ImageBucketChooseActivity;
 import appframe.appframe.widget.photopicker.view.ImageZoomActivity;
+import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
 
 /**
  * Created by Administrator on 2015/9/7.
@@ -62,15 +63,15 @@ public class SelfEstimateActivity extends BaseActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selfestimate);
         init();
-        //initData();
-        //initView();
+
     }
     protected void init()
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tv_selfestimate = (TextView)findViewById(R.id.tv_selfestimate);
-        tb_back.setText("我的口碑");
+        mGridView = (GridView)findViewById(R.id.gridview);
+        tb_back.setText("返回");
         tb_title.setText("自我评价");
         tb_back.setOnClickListener(this);
         userID = getIntent().getStringExtra("UserID");
@@ -79,9 +80,26 @@ public class SelfEstimateActivity extends BaseActivity implements View.OnClickLi
                     @Override
                     public void onSuccess(SelfEvaluationDetail result) {
                         super.onSuccess(result);
-//                        Log.i("",result.getDescription());
+
                         if(result != null) {
                             tv_selfestimate.setText(result.getDescription());
+                            if(result.getPhotos() != null && result.getPhotos() != "") {
+                                List<String> photoPath = new ArrayList<String>();
+                                for (String photsCount : result.getPhotos().toString().split(",")) {
+                                    photoPath.add(photsCount);
+                                }
+                                mGridView.setAdapter(new OrderDetailsGridViewAdapater(SelfEstimateActivity.this,photoPath));
+                                mGridView.setVisibility(View.VISIBLE);
+                                mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        Intent intent = new Intent();
+                                        intent.setClass(SelfEstimateActivity.this, AvatarZoomActivity.class);
+                                        intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
                         }
                     }
                 });
@@ -93,8 +111,7 @@ public class SelfEstimateActivity extends BaseActivity implements View.OnClickLi
         {
 
             case R.id.tb_back:
-                //removeTempFromPref();
-                //mDataList.clear();
+
                 finish();
                 break;
         }

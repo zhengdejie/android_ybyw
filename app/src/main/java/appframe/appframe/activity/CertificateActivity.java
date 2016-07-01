@@ -57,9 +57,12 @@ import appframe.appframe.utils.Utils;
  */
 public class CertificateActivity extends BaseActivity implements View.OnClickListener {
 
-    private TextView tb_title,tb_back,tv_certificate;
+    private TextView tb_title,tb_back,tv_certificate,tv_progress_content;
     private ImageView iv_positive,iv_reverse,iv_head;
-    private List<ImgFiles> fileList = new ArrayList<ImgFiles>();
+    private static List<ImgFiles> fileList = new ArrayList<ImgFiles>();
+    File front,back,frontwithface;
+    boolean updateFront = false,updateBack = false,updateFrontwithface = false;
+    private  static LinearLayout progress_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,13 +85,17 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
         iv_positive = (ImageView)findViewById(R.id.iv_positive);
         iv_reverse = (ImageView)findViewById(R.id.iv_reverse);
         iv_head = (ImageView)findViewById(R.id.iv_head);
-        tb_back.setText("我");
+        progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
+        tv_progress_content = (TextView)findViewById(R.id.tv_progress_content);
+        tb_back.setText("我的");
         tb_title.setText("实名认证");
+        tv_progress_content.setText("正在加载");
         tb_back.setOnClickListener(this);
         tv_certificate.setOnClickListener(this);
         iv_positive.setOnClickListener(this);
         iv_reverse.setOnClickListener(this);
         iv_head.setOnClickListener(this);
+        progress_bar.setVisibility(View.VISIBLE);
         Http.request(CertificateActivity.this, API.GET_PHOTORESPONSE, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<PhotoResponse>() {
             @Override
             public void onSuccess(PhotoResponse result) {
@@ -106,7 +113,15 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
 //                    iv_head.setImageBitmap(Utils.getBitmapFromURL(result.getFrontWithFaceUrl()));
                         new frontWithFaceImageDownLoad().execute(result.getFrontWithFaceUrl());
                     }
+                    progress_bar.setVisibility(View.GONE);
                 }
+
+            }
+
+            @Override
+            public void onFail(String code) {
+                super.onFail(code);
+                progress_bar.setVisibility(View.GONE);
             }
         });
     }
@@ -222,34 +237,56 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.tv_certificate:
-//                for (ImgFiles imgFiles : fileList)
-//                {
-//                    uploadImg(this,imgFiles);
-//                }
-                if(fileList.size() == 0)
+                tv_progress_content.setText("正在上传");
+                if(!updateFront && !updateBack && !updateFrontwithface)
                 {
                     Toast.makeText(CertificateActivity.this,"请选择图片进行上传",Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    for (ImgFiles file : fileList) {
-                        //uploadImg(this, file);
-                        Http.request(CertificateActivity.this, API.CERTIFICATE_ID, new Object[]{Auth.getCurrentUserId()},
-                                Http.map("Files","|FILE|"+Environment.getExternalStorageDirectory() + ",positive.jpg"),
-//                                Http.map("Name","df"),
-                                new Http.RequestListener<String>() {
-                                    @Override
-                                    public void onSuccess(String result) {
-                                        super.onSuccess(result);
+                    progress_bar.setVisibility(View.VISIBLE);
 
-                                    }
+                    if (updateBack) {
+//                        Utils.saveBitmap(((BitmapDrawable) iv_reverse.getDrawable()).getBitmap(), back, 100);
+                        ImgFiles imgFiles = new ImgFiles();
+                        imgFiles.setFile(back);
+                        imgFiles.setName("back");
+                        fileList.add(imgFiles);
 
-                                    @Override
-                                    public void onFail(String code) {
-                                        super.onFail(code);
-                                    }
-                                });
                     }
+                    if (updateFront) {
+//                        Utils.saveBitmap(((BitmapDrawable) iv_positive.getDrawable()).getBitmap(), front, 100);
+                        ImgFiles imgFiles = new ImgFiles();
+                        imgFiles.setFile(front);
+                        imgFiles.setName("front");
+                        fileList.add(imgFiles);
+
+                    }
+                    if (updateFrontwithface) {
+//                        Utils.saveBitmap(((BitmapDrawable) iv_head.getDrawable()).getBitmap(), frontwithface, 100);
+                        ImgFiles imgFiles = new ImgFiles();
+                        imgFiles.setFile(frontwithface);
+                        imgFiles.setName("frontwithface");
+                        fileList.add(imgFiles);
+
+                    }
+
+                    uploadImg(this, fileList);
                 }
+//                for (ImgFiles imgFiles : fileList)
+//                {
+//                    uploadImg(this,imgFiles);
+//                }
+//                if(fileList.size() == 0)
+//                {
+//                    Toast.makeText(CertificateActivity.this,"请选择图片进行上传",Toast.LENGTH_SHORT).show();
+//                }
+//                else {
+
+//                    for (ImgFiles file : fileList) {
+//
+//
+//                    }
+//                }
 
                 break;
             case R.id.iv_positive:
@@ -298,31 +335,51 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
 //
 //    }
 
-//    public static void uploadImg(final Activity cont,ImgFiles photodata) {
-//        try {
-////            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-////
-////            //将bitmap一字节流输出 Bitmap.CompressFormat.PNG 压缩格式，100：压缩率，baos：字节流
-////            photodata.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
-////            baos.close();
-////            byte[] buffer = baos.toByteArray();
-//////            System.out.println("图片的大小："+buffer.length);
-////
-////            //将图片的字节流数据加密成base64字符输出
-////            String photo = Base64.encodeToString(buffer, 0, buffer.length, Base64.DEFAULT);
-////
-////            //photo=URLEncoder.encode(photo,"UTF-8");
-//            StringBuilder sb = new StringBuilder();
-//            sb.append("[ \"").append(photodata.getName()).append("\"]");
-//            RequestParams params = new RequestParams();
-//            params.put("Files", photodata.getFile());
-//            params.put("Names", sb);//传输的字符数据
-//            String url = String.format("http://192.168.31.123:1337/user/%s/verification.json",Auth.getCurrentUserId());
+    public static void uploadImg(final Activity cont,List<ImgFiles> photodata) {
+        try {
+//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
 //
+//            //将bitmap一字节流输出 Bitmap.CompressFormat.PNG 压缩格式，100：压缩率，baos：字节流
+//            photodata.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, baos);
+//            baos.close();
+//            byte[] buffer = baos.toByteArray();
+////            System.out.println("图片的大小："+buffer.length);
 //
-//            AsyncHttpClient client = new AsyncHttpClient();
-//            client.addHeader("Authorization", "AppFrame " + Http.getAuthorizationToken());
+//            //将图片的字节流数据加密成base64字符输出
+//            String photo = Base64.encodeToString(buffer, 0, buffer.length, Base64.DEFAULT);
 //
+//            //photo=URLEncoder.encode(photo,"UTF-8");
+            StringBuilder sb = new StringBuilder();
+            RequestParams params = new RequestParams();
+            sb.append("[");
+            for (ImgFiles file : photodata)
+            {
+                sb.append( "\"" + file.getName() + "\"").append(",");
+                if(file.getName().equals("front"))
+                {
+                    params.put("front", file.getFile());
+                }
+                if(file.getName().equals("back"))
+                {
+                    params.put("back", file.getFile());
+                }
+                if(file.getName().equals("frontwithface"))
+                {
+                    params.put("frontwithface", file.getFile());
+                }
+            }
+            sb.deleteCharAt(sb.length() - 1);
+            sb.append("]");
+
+
+            params.put("Names", sb);//传输的字符数据
+            String url = String.format(API.API_BASE + "/user/%s/verification.json",Auth.getCurrentUserId());
+
+
+            AsyncHttpClient client = new AsyncHttpClient();
+            client.addHeader("Authorization", "AppFrame " + Http.getAuthorizationToken());
+
+
 //            client.post(url, params, new AsyncHttpResponseHandler() {
 //                @Override
 //                public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
@@ -335,12 +392,27 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
 //                    Toast.makeText(cont, "上传失败", Toast.LENGTH_SHORT).show();
 //                }
 //            });
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+            client.post(url, params, new AsyncHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    progress_bar.setVisibility(View.GONE);
+                    Toast.makeText(cont, "上传成功", Toast.LENGTH_SHORT).show();
+                    cont.finish();
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    progress_bar.setVisibility(View.GONE);
+                    fileList.clear();
+                    Toast.makeText(cont, "上传失败", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     private static final int TAKE_PICTURE_POSITIVE = 100;
     private static final int SELECT_PHOTO_POSITIVE = 2;
@@ -424,7 +496,7 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         File vFile = new File(Environment.getExternalStorageDirectory()
-                , fileName + ".jpg");
+                + "/mycertification/" , fileName + ".jpg");
         if (!vFile.exists())
         {
             File vDirPath = vFile.getParentFile();
@@ -440,7 +512,7 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
         path = vFile.getPath();
         Uri cameraUri = Uri.fromFile(vFile);
         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
-        startActivityForResult(openCameraIntent, TAKE_PICTURE_POSITIVE);
+
         if(fileName.equals("positive")) {
             startActivityForResult(openCameraIntent, TAKE_PICTURE_POSITIVE);
         }
@@ -460,52 +532,58 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
             case TAKE_PICTURE_POSITIVE:
                 if (resultCode == RESULT_OK) {
 
-                    File f = new File(Environment.getExternalStorageDirectory(),"positive.jpg");
-                    iv_positive.setImageBitmap(Utils.getResizedBitmap(f, Utils.dpToPx(80), Utils.dpToPx(80)));
+                    front = new File(Environment.getExternalStorageDirectory()+ "/mycertification/","positive.jpg");
+                    iv_positive.setImageBitmap(Utils.getResizedBitmap(front, Utils.dpToPx(80), Utils.dpToPx(80)));
+                    updateFront = true;
 //                    fileList.add(f);
-                    ImgFiles imgFiles = new ImgFiles();
-                    imgFiles.setFile(f);
-                    imgFiles.setName("front");
-                    fileList.add(imgFiles);
+//                    ImgFiles imgFiles = new ImgFiles();
+//                    imgFiles.setFile(f);
+//                    imgFiles.setName("front");
+//                    fileList.add(imgFiles);
+
                 }
                 break;
             case TAKE_PICTURE_REVERSE:
                 if (resultCode == RESULT_OK) {
 
-                    File f = new File(Environment.getExternalStorageDirectory(),"reverse.jpg");
-                    iv_reverse.setImageBitmap(Utils.getResizedBitmap(f, Utils.dpToPx(80), Utils.dpToPx(80)));
+                    back = new File(Environment.getExternalStorageDirectory()+ "/mycertification/","reverse.jpg");
+                    iv_reverse.setImageBitmap(Utils.getResizedBitmap(back, Utils.dpToPx(80), Utils.dpToPx(80)));
+                    updateBack = true;
 //                    fileList.add(f);
-                    ImgFiles imgFiles = new ImgFiles();
-                    imgFiles.setFile(f);
-                    imgFiles.setName("back");
-                    fileList.add(imgFiles);
+//                    ImgFiles imgFiles = new ImgFiles();
+//                    imgFiles.setFile(f);
+//                    imgFiles.setName("back");
+//                    fileList.add(imgFiles);
                 }
                 break;
             case TAKE_PICTURE_HEAD:
                 if (resultCode == RESULT_OK) {
 
-                    File f = new File(Environment.getExternalStorageDirectory(),"head.jpg");
-                    iv_head.setImageBitmap(Utils.getResizedBitmap(f, Utils.dpToPx(80), Utils.dpToPx(80)));
+                    frontwithface = new File(Environment.getExternalStorageDirectory()+ "/mycertification/","head.jpg");
+                    iv_head.setImageBitmap(Utils.getResizedBitmap(frontwithface, Utils.dpToPx(80), Utils.dpToPx(80)));
+                    updateFrontwithface = true;
 //                    fileList.add(f);
-                    ImgFiles imgFiles = new ImgFiles();
-                    imgFiles.setFile(f);
-                    imgFiles.setName("frontwithface");
-                    fileList.add(imgFiles);
+//                    ImgFiles imgFiles = new ImgFiles();
+//                    imgFiles.setFile(f);
+//                    imgFiles.setName("frontwithface");
+//                    fileList.add(imgFiles);
                 }
                 break;
 
             case SELECT_PHOTO_POSITIVE:
                 if (resultCode == Activity.RESULT_OK) {
+                    updateFront = true;
                     Uri uri = imageReturnedIntent.getData();
                     ContentResolver cr = this.getContentResolver();
                     try {
                         Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                         iv_positive.setImageBitmap(bitmap);
+                        front = Utils.uriToFile(uri);
 //                        fileList.add(Utils.uriToFile(uri));
-                        ImgFiles imgFiles = new ImgFiles();
-                        imgFiles.setFile(Utils.uriToFile(uri));
-                        imgFiles.setName("front");
-                        fileList.add(imgFiles);
+//                        ImgFiles imgFiles = new ImgFiles();
+//                        imgFiles.setFile(Utils.uriToFile(uri));
+//                        imgFiles.setName("front");
+//                        fileList.add(imgFiles);
                     }
                     catch (FileNotFoundException e) {
                         Log.e("Exception", e.getMessage(), e);
@@ -515,16 +593,18 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
                 break;
             case SELECT_PHOTO_REVERSE:
                 if (resultCode == Activity.RESULT_OK) {
+                    updateBack = true;
                     Uri uri = imageReturnedIntent.getData();
                     ContentResolver cr = this.getContentResolver();
                     try {
                         Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                         iv_reverse.setImageBitmap(bitmap);
+                        back = Utils.uriToFile(uri);
 //                        fileList.add(Utils.uriToFile(uri));
-                        ImgFiles imgFiles = new ImgFiles();
-                        imgFiles.setFile(Utils.uriToFile(uri));
-                        imgFiles.setName("back");
-                        fileList.add(imgFiles);
+//                        ImgFiles imgFiles = new ImgFiles();
+//                        imgFiles.setFile(Utils.uriToFile(uri));
+//                        imgFiles.setName("back");
+//                        fileList.add(imgFiles);
                     }
                     catch (FileNotFoundException e) {
                         Log.e("Exception", e.getMessage(), e);
@@ -534,16 +614,18 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
                 break;
             case SELECT_PHOTO_HEAD:
                 if (resultCode == Activity.RESULT_OK) {
+                    updateFrontwithface = true;
                     Uri uri = imageReturnedIntent.getData();
                     ContentResolver cr = this.getContentResolver();
                     try {
                         Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                         iv_head.setImageBitmap(bitmap);
+                        frontwithface = Utils.uriToFile(uri);
 //                        fileList.add(Utils.uriToFile(uri));
-                        ImgFiles imgFiles = new ImgFiles();
-                        imgFiles.setFile(Utils.uriToFile(uri));
-                        imgFiles.setName("frontwithface");
-                        fileList.add(imgFiles);
+//                        ImgFiles imgFiles = new ImgFiles();
+//                        imgFiles.setFile(Utils.uriToFile(uri));
+//                        imgFiles.setName("frontwithface");
+//                        fileList.add(imgFiles);
                     }
                     catch (FileNotFoundException e) {
                         Log.e("Exception", e.getMessage(), e);

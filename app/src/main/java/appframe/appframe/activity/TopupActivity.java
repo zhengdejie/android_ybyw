@@ -143,69 +143,79 @@ public class TopupActivity extends BaseActivity implements View.OnClickListener 
                 finish();
                 break;
             case R.id.tv_alipay:
-                Http.request(TopupActivity.this, API.TOPUP, new Object[]{Auth.getCurrentUserId()}, Http.map(
-                        "PlatformType", "1",
-                        "Amount", et_yuer.getText().toString()), new Http.RequestListener<OnlinePay>() {
-                    @Override
-                    public void onSuccess(final OnlinePay result) {
-                        super.onSuccess(result);
-                        /**
-                         * 完整的符合支付宝参数规范的订单信息
-                         */
+                if (Double.parseDouble(et_yuer.getText().toString()) <= 1) {
+                    Toast.makeText(TopupActivity.this, "金额不能小于1元", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Http.request(TopupActivity.this, API.TOPUP, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                            "PlatformType", "1",
+                            "Amount", et_yuer.getText().toString()), new Http.RequestListener<OnlinePay>() {
+                        @Override
+                        public void onSuccess(final OnlinePay result) {
+                            super.onSuccess(result);
+                            /**
+                             * 完整的符合支付宝参数规范的订单信息
+                             */
 //                        final String payInfo = AliPay.getOrderInfo("测试的商品", "该测试商品的详细描述", "0.01", "1") + "&sign=\"" + result.getSign() + "\"&" + AliPay.getSignType();
 
-                        Runnable payRunnable = new Runnable() {
+                            Runnable payRunnable = new Runnable() {
 
-                            @Override
-                            public void run() {
-                                // 构造PayTask 对象
-                                PayTask alipay = new PayTask(TopupActivity.this);
-                                // 调用支付接口，获取支付结果
-                                String resultInfo = alipay.pay(result.getSign(), true);
+                                @Override
+                                public void run() {
+                                    // 构造PayTask 对象
+                                    PayTask alipay = new PayTask(TopupActivity.this);
+                                    // 调用支付接口，获取支付结果
+                                    String resultInfo = alipay.pay(result.getSign(), true);
 
-                                Message msg = new Message();
-                                msg.what = SDK_PAY_FLAG;
-                                msg.obj = resultInfo;
-                                mHandler.sendMessage(msg);
-                            }
-                        };
+                                    Message msg = new Message();
+                                    msg.what = SDK_PAY_FLAG;
+                                    msg.obj = resultInfo;
+                                    mHandler.sendMessage(msg);
+                                }
+                            };
 
-                        // 必须异步调用
-                        Thread payThread = new Thread(payRunnable);
-                        payThread.start();
-                    }
+                            // 必须异步调用
+                            Thread payThread = new Thread(payRunnable);
+                            payThread.start();
+                        }
 
-                    @Override
-                    public void onFail(String code) {
-                        super.onFail(code);
-                    }
-                });
+                        @Override
+                        public void onFail(String code) {
+                            super.onFail(code);
+                        }
+                    });
+                }
                 break;
             case R.id.tv_weixing:
-                Http.request(TopupActivity.this, API.TOPUP, new Object[]{Auth.getCurrentUserId()}, Http.map(
-                        "PlatformType", "2",
-                        "Amount", et_yuer.getText().toString()), new Http.RequestListener<OnlinePay>() {
-                    @Override
-                    public void onSuccess(final OnlinePay result) {
-                        super.onSuccess(result);
+                if (Double.parseDouble(et_yuer.getText().toString()) <= 1) {
+                    Toast.makeText(TopupActivity.this, "金额不能小于1元", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Http.request(TopupActivity.this, API.TOPUP, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                            "PlatformType", "2",
+                            "Amount", et_yuer.getText().toString()), new Http.RequestListener<OnlinePay>() {
+                        @Override
+                        public void onSuccess(final OnlinePay result) {
+                            super.onSuccess(result);
 
-                        PayReq req = new PayReq();
-                        req.appId = result.getAppid();
-                        req.partnerId	= result.getPartnerid();
-                        req.prepayId = result.getPrepayid();
-                        req.nonceStr = result.getNoncestr();
-                        req.timeStamp	= result.getTimestamp();
-                        req.packageValue = result.getPackage();
-                        req.sign = result.getSign();
+                            PayReq req = new PayReq();
+                            req.appId = result.getAppid();
+                            req.partnerId = result.getPartnerid();
+                            req.prepayId = result.getPrepayid();
+                            req.nonceStr = result.getNoncestr();
+                            req.timeStamp = result.getTimestamp();
+                            req.packageValue = result.getPackage();
+                            req.sign = result.getSign();
 
-                        api.sendReq(req);
-                    }
+                            api.sendReq(req);
+                        }
 
-                    @Override
-                    public void onFail(String code) {
-                        super.onFail(code);
-                    }
-                });
+                        @Override
+                        public void onFail(String code) {
+                            super.onFail(code);
+                        }
+                    });
+                }
                 break;
         }
     }

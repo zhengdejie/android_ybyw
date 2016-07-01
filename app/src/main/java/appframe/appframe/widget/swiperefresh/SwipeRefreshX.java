@@ -11,6 +11,8 @@ import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import appframe.appframe.R;
 
@@ -51,6 +53,9 @@ public class SwipeRefreshX extends SwipeRefreshLayout implements OnScrollListene
      */
     private boolean isLoading = false;
 
+
+    TextView pull_to_refresh_loadmore_text;
+    ProgressBar pull_to_refresh_load_progress;
     /**
      * @param context
      */
@@ -65,6 +70,8 @@ public class SwipeRefreshX extends SwipeRefreshLayout implements OnScrollListene
 
         mListViewFooter = LayoutInflater.from(context).inflate(
                 R.layout.listview_footer, null, false);
+        pull_to_refresh_loadmore_text = (TextView)mListViewFooter.findViewById(R.id.pull_to_refresh_loadmore_text);
+        pull_to_refresh_load_progress = (ProgressBar)mListViewFooter.findViewById(R.id.pull_to_refresh_load_progress);
     }
 
     @Override
@@ -177,9 +184,13 @@ public class SwipeRefreshX extends SwipeRefreshLayout implements OnScrollListene
         if (isLoading) {
             mListView.addFooterView(mListViewFooter);
         } else {
+//            pull_to_refresh_loadmore_text.setText("已经全部加载完毕");
+//            pull_to_refresh_load_progress.setVisibility(INVISIBLE);
+//            mListView.addFooterView(mListViewFooter);
             mListView.removeFooterView(mListViewFooter);
             mYDown = 0;
             mLastY = 0;
+
         }
     }
 

@@ -81,6 +81,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     String[] titles;
     BaseFragment[] fragments;
     public static final int SCAN_CODE = 1;
+//    FrameLayout fl_bottom;
     private LoginSampleHelper loginHelper;
 //    private FrameLayout btn_ck;
     private ImageView iv_center;
@@ -145,6 +146,8 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         tv_unread = (TextView) findViewById(R.id.tv_unread);
 //        btn_ck = (FrameLayout)findViewById(R.id.btn_ck);
         iv_center = (ImageView)findViewById(R.id.iv_center);
+//        fl_bottom = (FrameLayout)findViewById(R.id.fl_bottom);
+//        fl_bottom.getBackground().setAlpha(0);
         tv_ubang.setOnClickListener(this);
         tv_discovery.setOnClickListener(this);
         tv_myorder.setOnClickListener(this);
@@ -692,9 +695,9 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     .findViewById(R.id.iv_recommend);
             ImageView iv_question = (ImageView) view
                     .findViewById(R.id.iv_question);
-            FrameLayout btn_ck = (FrameLayout) view
-                    .findViewById(R.id.btn_ck);
-            btn_ck.setOnClickListener(new View.OnClickListener()
+            ImageView iv_center = (ImageView) view
+                    .findViewById(R.id.iv_center);
+            iv_center.setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {

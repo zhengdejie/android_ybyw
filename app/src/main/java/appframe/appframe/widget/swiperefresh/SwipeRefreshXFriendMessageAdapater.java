@@ -18,6 +18,7 @@ import appframe.appframe.app.API;
 import appframe.appframe.dto.PushMessage;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/11/17.
@@ -50,8 +51,8 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
             mHolder = new ViewHolder();
             mHolder.tv_message = (TextView) convertView.findViewById(R.id.tv_message);
             mHolder.tv_accept = (TextView) convertView.findViewById(R.id.tv_accept);
-            mHolder.tv_title = (TextView) convertView.findViewById(R.id.tv_title);
-            mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
+            mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -61,8 +62,23 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
 
         final PushMessage item = pushMessages.get(position);
         mHolder.tv_message.setText(item.getContent());
-        mHolder.tv_title.setText(item.getTitle());
-        mHolder.tv_time.setText(item.getCreatedAt());
+        mHolder.tv_name.setText(item.getSender().getName());
+
+        if(item.getSender().getAvatar() != null && !item.getSender().getAvatar().equals(""))
+        {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getSender().getAvatar());
+        }
+        else
+        {
+            if(item.getSender().equals(context.getResources().getString(R.string.male).toString()))
+            {
+                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+            }
+            else
+            {
+                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+            }
+        }
         if(item.getFriendRequestAccepted() == 1)
         {
             mHolder.tv_accept.setBackgroundColor(Color.GRAY);
@@ -79,6 +95,7 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
                                 public void onSuccess(String result) {
                                     super.onSuccess(result);
                                     Toast.makeText(context, "添加一度朋友成功", Toast.LENGTH_SHORT).show();
+                                    mHolder.tv_accept.setBackgroundColor(Color.GRAY);
                                 }
                             });
                 }
@@ -100,6 +117,7 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
 
     static class ViewHolder
     {
-        private TextView tv_message,tv_accept,tv_title,tv_time;
+        private TextView tv_message,tv_accept,tv_name;
+        private com.android.volley.toolbox.NetworkImageView iv_avatar;
     }
 }

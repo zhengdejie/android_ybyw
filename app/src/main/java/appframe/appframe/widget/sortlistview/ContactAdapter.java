@@ -75,16 +75,18 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
         }
         if(mContent.getUser() != null )
         {
-            if(!mContent.getUser().getAvatar().equals("")) {
-                ImageUtils.setImageUrl(viewHolder.iv_avater, mContent.getUser().getAvatar());
+            if (mContent.getUser().getGender().equals(mContext.getResources().getString(R.string.male))) {
+                viewHolder.iv_avater.setDefaultImageResId(R.drawable.maleavatar);
+            } else {
+                viewHolder.iv_avater.setDefaultImageResId(R.drawable.femaleavatar);
             }
-            else {
-                if (mContent.getUser().getGender().equals(mContext.getResources().getString(R.string.male))) {
-                    viewHolder.iv_avater.setDefaultImageResId(R.drawable.maleavatar);
-                } else {
-                    viewHolder.iv_avater.setDefaultImageResId(R.drawable.femaleavatar);
-                }
-            }
+            ImageUtils.setImageUrl(viewHolder.iv_avater, mContent.getUser().getAvatar());
+//            if(!mContent.getUser().getAvatar().equals("")) {
+//
+//            }
+//            else {
+//
+//            }
             StringBuilder sb = new StringBuilder();
 
 

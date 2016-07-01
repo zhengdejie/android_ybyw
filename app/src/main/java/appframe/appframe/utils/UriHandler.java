@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.widget.Toast;
 
 
+import appframe.appframe.activity.FramedWebViewActivity;
 import appframe.appframe.activity.SplashActivity;
 import appframe.appframe.app.AppUri;
 
@@ -50,7 +51,7 @@ public class UriHandler {
             Intent i = null;
             Class<?> clazz = null;
             if(uri.getScheme().startsWith(URL_WF_PREFIX)){
-                clazz = null;//FramedWebViewActivity.class;
+                clazz = FramedWebViewActivity.class;
             }else{
                 i = AppUri.handleUri(context, uri, flag);
                 if(i == null) {

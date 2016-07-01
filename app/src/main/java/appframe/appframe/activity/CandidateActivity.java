@@ -234,7 +234,7 @@ public class CandidateActivity extends BaseActivity implements View.OnClickListe
                                     "ReceiverId", getReceiverId(),
                                     "OrderType", orderType,
                                     "HasCancel", "FALSE",
-                                    "Total",String.valueOf(getTotal())
+                                    "Total",String.valueOf(getTotal() + bounty)
                             ), new Http.RequestListener<String>() {
                                 @Override
                                 public void onSuccess(String result) {

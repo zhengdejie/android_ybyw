@@ -65,7 +65,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ordernotification"
+            android:src="@drawable/question"
             android:layout_marginLeft="5dp"
             android:layout_centerVertical="true"
             />

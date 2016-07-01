@@ -19,15 +19,18 @@ import java.util.Map;
 import appframe.appframe.R;
 import appframe.appframe.activity.NearByActivity;
 import appframe.appframe.activity.FriendsInfoActivity;
+import appframe.appframe.activity.OrderDetailsActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.ConfirmedOrderDetailWithFriend;
 import appframe.appframe.dto.Nearby;
+import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXFriendShopsAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXNearbyAdapater;
 
 /**
@@ -38,6 +41,8 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
     TextView tb_title,tb_back,tv_nearby,tv_empty;
     SwipeRefreshX swipeRefresh;
     ListView listView;
+    int page = 1;
+    SwipeRefreshXFriendShopsAdapater swipeRefreshXFriendShopsAdapater;
 
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -70,13 +75,14 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
         Map<String, String> map = new HashMap<String, String>();
         map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
-
+        map.put("Page", "1");
+        map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
         Http.request(getActivity(), API.GET_FRIENDTRACE, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetailWithFriend>>() {
             @Override
             public void onSuccess(List<ConfirmedOrderDetailWithFriend> result) {
                 super.onSuccess(result);
-
-                listView.setAdapter(new SwipeRefreshXFriendShopsAdapater(getActivity(), result));
+                swipeRefreshXFriendShopsAdapater = new SwipeRefreshXFriendShopsAdapater(getActivity(), result);
+                listView.setAdapter(swipeRefreshXFriendShopsAdapater);
                 if(result != null && result.size() != 0) {
                     tv_empty.setVisibility(View.GONE);
                 }
@@ -95,7 +101,13 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(new Intent(getActivity(), FriendsInfoActivity.class));
+                ConfirmedOrderDetailWithFriend confirmedOrderDetailWithFriend = (ConfirmedOrderDetailWithFriend)parent.getAdapter().getItem(position);
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                intent.setClass(getActivity(), OrderDetailsActivity.class);
+                bundle.putSerializable("ConfirmedOrderDetailWithFriend", confirmedOrderDetailWithFriend);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
@@ -107,12 +119,15 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
             public void onRefresh() {
 
                 Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
                 map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
 
                 Http.request(getActivity(), API.GET_FRIENDTRACE, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetailWithFriend>>() {
                     @Override
                     public void onSuccess(List<ConfirmedOrderDetailWithFriend> result) {
                         super.onSuccess(result);
+                        page = 1;
                         swipeRefresh.setRefreshing(false);
                         listView.setAdapter(new SwipeRefreshXFriendShopsAdapater(getActivity(), result));
                         if (result != null && result.size() != 0) {
@@ -136,13 +151,40 @@ public class DiscoveryFragment extends BaseFragment implements View.OnClickListe
 
             @Override
             public void onLoad() {
+                page++;
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", String.valueOf(page));
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
 
-                swipeRefresh.setLoading(false);
+                Http.request(getActivity(), API.GET_FRIENDTRACE, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetailWithFriend>>() {
+                    @Override
+                    public void onSuccess(List<ConfirmedOrderDetailWithFriend> result) {
+                        super.onSuccess(result);
+                        swipeRefresh.setLoading(false);
+                        if (result != null) {
+
+                            loadMore(swipeRefreshXFriendShopsAdapater, result);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setLoading(false);
+                    }
+                });
+
 
             }
         });
 
     }
+
+    private void loadMore(SwipeRefreshXFriendShopsAdapater adapater, List<ConfirmedOrderDetailWithFriend> orderDetailses) {
+        adapater.addItems(orderDetailses);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId())

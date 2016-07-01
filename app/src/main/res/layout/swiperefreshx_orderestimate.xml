@@ -14,10 +14,11 @@
         android:layout_marginLeft="10dp">
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:gravity="center_vertical|right"
             android:layout_gravity="right"
+            android:layout_marginRight="10dp"
             />
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,7 +32,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="夜黑风高"
-                    android:textColor="@color/font_gray"
                     android:layout_weight="2"
                     android:id="@+id/tv_name"
                     />
@@ -44,29 +44,36 @@
                     android:gravity="right"
                     android:text="08-04 8:30"/>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="5dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="关于吃货所关心的问题"
-                    android:textSize="15dp"
-                    android:layout_marginRight="10dp"
-                    android:id="@+id/tv_title"
-                    />
 
-                <RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/ratingBar"
-                    style="?android:attr/ratingBarStyleSmall"
-                    android:layout_marginRight="10dp"/>
-
-            </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="很好"
+            android:layout_marginTop="10dp"
+            android:id="@+id/tv_content"/>
+        <GridView
+            android:id="@+id/gridview"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            android:horizontalSpacing="-50dp"
+            android:numColumns="3"
+            android:scrollbars="none"
+            android:verticalSpacing="5dp"
+             />
+        <!--<ImageView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/ic_search_black_24dp"-->
+            <!--android:layout_weight="7"/>-->
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -75,15 +82,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="很好"
-            android:layout_marginLeft="70dp"
-            android:textSize="20dp"
-            android:layout_weight="1"
-            android:id="@+id/tv_content"/>
-        <!--<ImageView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/ic_search_black_24dp"-->
-            <!--android:layout_weight="7"/>-->
+            android:text="关于吃货所关心的问题"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/font_gray"
+            android:id="@+id/tv_title"
+            />
     </LinearLayout>
 </LinearLayout>

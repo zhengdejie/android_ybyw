@@ -18,6 +18,7 @@ public class Question extends Http.BaseDto implements Serializable {
     public boolean IsActive;
     public double Bounty;
     public int Status;
+    public int TotalAnswers;
 
     public int getId() {
         return Id;
@@ -97,5 +98,13 @@ public class Question extends Http.BaseDto implements Serializable {
 
     public void setStatus(int status) {
         Status = status;
+    }
+
+    public int getTotalAnswers() {
+        return TotalAnswers;
+    }
+
+    public void setTotalAnswers(int totalAnswers) {
+        TotalAnswers = totalAnswers;
     }
 }

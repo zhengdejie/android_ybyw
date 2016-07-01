@@ -10,6 +10,7 @@ import appframe.appframe.utils.Http;
  */
 public class QuestionWithAnswers extends Http.BaseDto implements Serializable {
     public Question QuestionDetail;
+    public AnswerDetail MyAnswer;
     public List<AnswerDetail> AnswerDetails ;
 
     public Question getQuestionDetail() {
@@ -26,5 +27,13 @@ public class QuestionWithAnswers extends Http.BaseDto implements Serializable {
 
     public void setAnswerDetails(List<AnswerDetail> answerDetails) {
         AnswerDetails = answerDetails;
+    }
+
+    public AnswerDetail getMyAnswer() {
+        return MyAnswer;
+    }
+
+    public void setMyAnswer(AnswerDetail myAnswer) {
+        MyAnswer = myAnswer;
     }
 }

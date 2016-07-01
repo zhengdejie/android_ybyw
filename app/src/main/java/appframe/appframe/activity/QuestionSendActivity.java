@@ -2,6 +2,7 @@ package appframe.appframe.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -12,6 +13,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,9 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,8 +40,10 @@ import appframe.appframe.app.API;
 import appframe.appframe.dto.OrderCategory;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.Question;
+import appframe.appframe.dto.Token;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.UploadUtils;
 import appframe.appframe.widget.photopicker.adapter.ImagePublishAdapter;
 import appframe.appframe.widget.photopicker.model.ImageItem;
 import appframe.appframe.widget.photopicker.util.CustomConstants;
@@ -53,8 +60,11 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
     private EditText edit_title,edit_bounty,edit_content;
     private GridView mGridView;
     private ImagePublishAdapter mAdapter;
+    Gson gson = new Gson();
     //private TextView sendTv;
     public static List<ImageItem> mDataList = new ArrayList<ImageItem>();
+    StringBuilder sb = new StringBuilder();
+    public int upload_iamge_num = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +72,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_questionsend);
         init();
         initView();
+        initData();
     }
 
     private void init()
@@ -114,7 +125,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                     intent.putExtra(IntentConstants.EXTRA_CURRENT_IMG_POSITION, position);
 
                     intent.putExtra("from",
-                            "OrderSendActivity");
+                            "QuestionSendActivity");
                     startActivity(intent);
                 }
             }
@@ -132,6 +143,88 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
 //            }
 //        });
     }
+    protected void onPause()
+    {
+        super.onPause();
+        saveTempToPref();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        notifyDataChanged(); //当在ImageZoomActivity中删除图片时，返回这里需要刷新
+    }
+
+    private void notifyDataChanged()
+    {
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void saveTempToPref()
+    {
+        SharedPreferences sp = getSharedPreferences(
+                CustomConstants.APPLICATION_NAME, MODE_PRIVATE);
+        String prefStr = gson.toJson(mDataList);
+        sp.edit().putString(CustomConstants.PREF_TEMP_IMAGES, prefStr).commit();
+
+    }
+    private void removeTempFromPref()
+    {
+        SharedPreferences sp = getSharedPreferences(
+                CustomConstants.APPLICATION_NAME, MODE_PRIVATE);
+        sp.edit().remove(CustomConstants.PREF_TEMP_IMAGES).commit();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        getTempFromPref();
+        List<ImageItem> incomingDataList = (List<ImageItem>) intent
+                .getSerializableExtra(IntentConstants.EXTRA_IMAGE_LIST);
+
+        if (incomingDataList != null)
+        {
+            mDataList.addAll(incomingDataList);
+        }
+        initView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeTempFromPref();
+        mDataList.clear();
+    }
+
+    private void initData()
+    {
+        getTempFromPref();
+        List<ImageItem> incomingDataList = (List<ImageItem>) getIntent()
+                .getSerializableExtra(IntentConstants.EXTRA_IMAGE_LIST);
+        if (incomingDataList != null)
+        {
+            mDataList.addAll(incomingDataList);
+        }
+    }
+
+    private void getTempFromPref()
+    {
+        SharedPreferences sp = getSharedPreferences(
+                CustomConstants.APPLICATION_NAME, MODE_PRIVATE);
+        String prefStr = sp.getString(CustomConstants.PREF_TEMP_IMAGES, null);
+        if (!TextUtils.isEmpty(prefStr))
+        {
+//            List<ImageItem> tempImages = JSON.parseArray(prefStr,
+//                    ImageItem.class);
+            List<ImageItem> tempImages = gson.fromJson(prefStr,
+                    new TypeToken<List<ImageItem>>() {
+                    }.getType());
+
+            mDataList = tempImages;
+        }
+    }
+
 
     private int getDataSize()
     {
@@ -152,6 +245,8 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tb_back:
+                removeTempFromPref();
+                mDataList.clear();
                 finish();
                 break;
             case R.id.btn_send:
@@ -159,51 +254,107 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                 {
                     Toast.makeText(QuestionSendActivity.this,"标题不能为空",Toast.LENGTH_SHORT).show();
                 }
-                else
-                {
+                else {
 
-                    if (edit_bounty.getText().toString().equals(""))
-                    {
+                    if (edit_bounty.getText().toString().equals("")) {
                         Toast.makeText(QuestionSendActivity.this, "金额不能为空", Toast.LENGTH_SHORT).show();
                     }
-                    else
-                    {
-                        if (edit_content.getText().toString().equals(""))
-                        {
+                    else {
+                        if (edit_content.getText().toString().equals("")) {
                             Toast.makeText(QuestionSendActivity.this, "内容不能为空", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
-                            Http.request(QuestionSendActivity.this, API.POST_QUESTION, Http.map(
-                                    "Title", edit_title.getText().toString(),
-                                    "Content", edit_content.getText().toString(),
-                                    "Bounty", edit_bounty.getText().toString(),
-                                    "Photos",""
-                            ), new Http.RequestListener<Question>() {
-                                @Override
-                                public void onSuccess(Question result) {
-                                    super.onSuccess(result);
+                        } else {
+                            if (Double.parseDouble(edit_bounty.getText().toString()) <= 0.00) {
+                                Toast.makeText(QuestionSendActivity.this, "金额不能小于0.01元", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                if (mDataList.size() == 0) {
+                                    Http.request(QuestionSendActivity.this, API.POST_QUESTION, Http.map(
+                                            "Title", edit_title.getText().toString(),
+                                            "Content", edit_content.getText().toString(),
+                                            "Bounty", edit_bounty.getText().toString(),
+                                            "Photos", ""
+                                    ), new Http.RequestListener<Question>() {
+                                        @Override
+                                        public void onSuccess(Question result) {
+                                            super.onSuccess(result);
+                                            mDataList.clear();
+                                            removeTempFromPref();
+                                            Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent();
+                                            Bundle bundle = new Bundle();
+                                            intent.setClass(QuestionSendActivity.this, PayActivity.class);
+                                            bundle.putSerializable("Question", result);
+                                            intent.putExtras(bundle);
+                                            startActivity(intent);
 
-                                    Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent();
-                                    Bundle bundle = new Bundle();
-                                    intent.setClass(QuestionSendActivity.this, PayActivity.class);
-                                    bundle.putSerializable("Question", result);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
+                                        }
 
+                                        @Override
+                                        public void onFail(String code) {
+                                            super.onFail(code);
+                                        }
+                                    });
+                                } else {
+                                    for (ImageItem dl : mDataList) {
+
+
+                                        final File f = new File(dl.sourcePath);
+                                        Http.request(QuestionSendActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
+                                            @Override
+                                            public void onSuccess(Token result) {
+                                                super.onSuccess(result);
+
+                                                UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+                                                    @Override
+                                                    public void done(String id) {
+                                                        if (TextUtils.isEmpty(id)) {
+                                                            // 上传失败
+                                                            upload_iamge_num = 0;
+                                                            return;
+                                                        }
+                                                        upload_iamge_num++;
+                                                        sb.append(",").append(id);
+                                                        if (upload_iamge_num == mDataList.size()) {
+                                                            Http.request(QuestionSendActivity.this, API.POST_QUESTION, Http.map(
+                                                                    "Title", edit_title.getText().toString(),
+                                                                    "Content", edit_content.getText().toString(),
+                                                                    "Bounty", edit_bounty.getText().toString(),
+                                                                    "Photos", sb.deleteCharAt(0).toString()
+                                                            ), new Http.RequestListener<Question>() {
+                                                                @Override
+                                                                public void onSuccess(Question result) {
+                                                                    super.onSuccess(result);
+                                                                    mDataList.clear();
+                                                                    removeTempFromPref();
+                                                                    Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
+                                                                    Intent intent = new Intent();
+                                                                    Bundle bundle = new Bundle();
+                                                                    intent.setClass(QuestionSendActivity.this, PayActivity.class);
+                                                                    bundle.putSerializable("Question", result);
+                                                                    intent.putExtras(bundle);
+                                                                    startActivity(intent);
+
+                                                                }
+
+                                                                @Override
+                                                                public void onFail(String code) {
+                                                                    super.onFail(code);
+                                                                }
+                                                            });
+
+                                                        }
+                                                    }
+                                                }, result.getUpToken());
+                                            }
+                                        });
+                                    }
                                 }
-
-                                @Override
-                                public void onFail(String code) {
-                                    super.onFail(code);
-                                }
-                            });
+                            }
                         }
                     }
                 }
-
                 break;
+
         }
     }
 
@@ -328,7 +479,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                     intent.putExtra(IntentConstants.EXTRA_CAN_ADD_IMAGE_SIZE,
                             getAvailableSize());
                     intent.putExtra(IntentConstants.EXTRA_IMAGE_CLASS,
-                            OrderSendActivity.class);
+                            QuestionSendActivity.class);
                     startActivity(intent);
                     dismiss();
                 }
@@ -387,105 +538,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                 }
                 break;
         }
-//        switch(requestCode) {
-//            case img1_SELECT_PHOTO:
-//                if(resultCode == RESULT_OK){
-//                    ContentResolver cr = this.getContentResolver();
-//                    Bitmap bitmap = null;
-//                    try {
-//                        bitmap = BitmapFactory.decodeStream(cr.openInputStream(imageReturnedIntent.getData()));
-//                    }
-//                    catch (FileNotFoundException e)
-//                    {
-//
-//                    }
-//
-//                    img_addimg1.setImageBitmap(bitmap);
-//                    menuWindow.dismiss();
-//
-//                };
-//                break;
-//            case img2_SELECT_PHOTO:
-//                if(resultCode == RESULT_OK){
-//                    ContentResolver cr = this.getContentResolver();
-//                    Bitmap bitmap = null;
-//                    try {
-//                        bitmap = BitmapFactory.decodeStream(cr.openInputStream(imageReturnedIntent.getData()));
-//                    }
-//                    catch (FileNotFoundException e)
-//                    {
-//
-//                    }
-//
-//                    img_addimg2.setImageBitmap(bitmap);
-//                    menuWindow.dismiss();
-//
-//                };
-//                break;
-//            case img3_SELECT_PHOTO:
-//                if(resultCode == RESULT_OK){
-//                    ContentResolver cr = this.getContentResolver();
-//                    Bitmap bitmap = null;
-//                    try {
-//                        bitmap = BitmapFactory.decodeStream(cr.openInputStream(imageReturnedIntent.getData()));
-//                    }
-//                    catch (FileNotFoundException e)
-//                    {
-//
-//                    }
-//
-//                    img_addimg3.setImageBitmap(bitmap);
-//                    menuWindow.dismiss();
-//
-//                };
-//                break;
-//            case PHOTO_GRAPH+img1_SELECT_PHOTO:
-//                if (resultCode == RESULT_OK) {
-//                    // 设置文件保存路径
-//                    File picture = new File(Environment.getExternalStorageDirectory()
-//                            + "/temp.jpg");
-////                startPhotoZoom(Uri.fromFile(picture));
-//                    Bitmap bm = Utils.getResizedBitmap(picture, Utils.dpToPx(100), Utils.dpToPx(100));
-//                    // Uri uri = imageReturnedIntent.getData();
-//                    img_addimg1.setImageBitmap(bm);
-//                    menuWindow.dismiss();
-//                }
-//                break;
-//            case PHOTO_GRAPH+img2_SELECT_PHOTO:
-//                if (resultCode == RESULT_OK) {
-//                    // 设置文件保存路径
-//                    File picture = new File(Environment.getExternalStorageDirectory()
-//                            + "/temp.jpg");
-////                startPhotoZoom(Uri.fromFile(picture));
-//                    Bitmap bm = Utils.getResizedBitmap(picture, Utils.dpToPx(100), Utils.dpToPx(100));
-//                    // Uri uri = imageReturnedIntent.getData();
-//                    img_addimg2.setImageBitmap(bm);
-//                    menuWindow.dismiss();
-//                }
-//                break;
-//            case PHOTO_GRAPH+img3_SELECT_PHOTO:
-//                if (resultCode == RESULT_OK) {
-//                    // 设置文件保存路径
-//                    File picture = new File(Environment.getExternalStorageDirectory()
-//                            + "/temp.jpg");
-////                startPhotoZoom(Uri.fromFile(picture));
-//                    Bitmap bm = Utils.getResizedBitmap(picture, Utils.dpToPx(100), Utils.dpToPx(100));
-//                    // Uri uri = imageReturnedIntent.getData();
-//                    img_addimg3.setImageBitmap(bm);
-//                    menuWindow.dismiss();
-//                }
-//                break;
-//            case PHOTO_RESOULT:
-//                Bundle extras = imageReturnedIntent.getExtras();
-//                if (extras != null) {
-//                    Bitmap photo = extras.getParcelable("data");
-//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                    photo.compress(Bitmap.CompressFormat.JPEG, 75, stream);// (0-100)压缩文件
-//                    //此处可以把Bitmap保存到sd卡中，具体请看：http://www.cnblogs.com/linjiqin/archive/2011/12/28/2304940.html
-//                    img_addimg1.setImageBitmap(photo); //把图片显示在ImageView控件上
-//                }
-//                break;
-//        }
+
     }
 
 }

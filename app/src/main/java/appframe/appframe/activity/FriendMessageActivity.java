@@ -1,7 +1,9 @@
 package appframe.appframe.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -11,6 +13,7 @@ import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.dto.AnswerDetailWithQuestionDetail;
 import appframe.appframe.dto.PushMessage;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
@@ -40,6 +43,21 @@ public class FriendMessageActivity extends BaseActivity implements View.OnClickL
         tb_back.setText("我的消息");
         tb_title.setText("好友通知");
         tb_back.setOnClickListener(this);
+
+        lv_friendmessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setClass(FriendMessageActivity.this, FriendsInfoActivity.class);
+
+                PushMessage pushMessage = (PushMessage) parent.getAdapter().getItem(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("PushMessage", pushMessage);
+                intent.putExtras(bundle);
+
+                startActivity(intent);
+            }
+        });
 
     }
 

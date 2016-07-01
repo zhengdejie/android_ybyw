@@ -44,8 +44,7 @@ public class EstimateActivity extends BaseActivity implements View.OnClickListen
 
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
-        tb_title.setText("TA的口碑");
-        tb_back.setText("帮友资料");
+        tb_back.setText("返回");
         tb_back.setOnClickListener(this);
         //userID = getIntent().getStringExtra("UserID");
         userBrief = (UserBrief)getIntent().getSerializableExtra("userBrief");
@@ -58,7 +57,7 @@ public class EstimateActivity extends BaseActivity implements View.OnClickListen
         {
             iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
         }
-
+        tb_title.setText(String.format("%s的口碑", userBrief.getName()));
     }
     @Override
     public void onClick(View v) {

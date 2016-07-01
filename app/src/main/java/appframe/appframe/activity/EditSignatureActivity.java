@@ -3,8 +3,10 @@ package appframe.appframe.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,22 +14,34 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.Selection;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.dto.Question;
 import appframe.appframe.dto.SelfEvaluationDetail;
 import appframe.appframe.dto.Token;
 import appframe.appframe.dto.UserDetail;
@@ -36,21 +50,36 @@ import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.UploadUtils;
 import appframe.appframe.utils.Utils;
+import appframe.appframe.widget.photopicker.adapter.ImagePublishAdapter;
+import appframe.appframe.widget.photopicker.model.ImageItem;
+import appframe.appframe.widget.photopicker.util.CustomConstants;
+import appframe.appframe.widget.photopicker.util.IntentConstants;
+import appframe.appframe.widget.photopicker.view.ImageBucketChooseActivity;
+import appframe.appframe.widget.photopicker.view.ImageZoomActivity;
+import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
 
 /**
  * Created by Administrator on 2015/12/8.
  */
 public class EditSignatureActivity extends BaseActivity implements View.OnClickListener {
     private TextView tb_title, tb_back,tb_action;
-    private com.android.volley.toolbox.NetworkImageView iv_showavatar;
+    private GridView mGridView;
     private EditText et_signature;
+    private ImagePublishAdapter mAdapter;
+    Gson gson = new Gson();
+    public static List<ImageItem> mDataList = new ArrayList<ImageItem>();
+    StringBuilder sb = new StringBuilder();
+    public int upload_iamge_num = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editsignature);
         init();
+        initView();
+        initData();
         inidata();
+
     }
 
     private void init() {
@@ -58,18 +87,158 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
         tb_back = (TextView) findViewById(R.id.tb_back);
         tb_action = (TextView) findViewById(R.id.tb_action);
         et_signature = (EditText) findViewById(R.id.et_signature);
-        iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
+        mGridView = (GridView)findViewById(R.id.gridview);
         tb_back.setText("我的");
         tb_title.setText("个人签名");
         tb_action.setText("保存");
 
-        tb_action.setEnabled(false);
+//        tb_action.setEnabled(false);
         tb_back.setOnClickListener(this);
         tb_action.setOnClickListener(this);
-        iv_showavatar.setOnClickListener(this);
-        iv_showavatar.setDefaultImageResId(R.drawable.icon_addpic_focused);
+
         et_signature.addTextChangedListener(textWatcher);
-        Selection.setSelection(et_signature.getText(), et_signature.getText().length());
+
+    }
+    public void initView()
+    {
+//        TextView titleTv  = (TextView) findViewById(R.id.title);
+//        titleTv.setText("");
+//        mGridView = (GridView) findViewById(R.id.gridview);
+        mGridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
+        mAdapter = new ImagePublishAdapter(this, mDataList);
+        mGridView.setAdapter(mAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id)
+            {
+                if (position == getDataSize())
+                {
+                    new PopupWindows(EditSignatureActivity.this, mGridView);
+                }
+                else
+                {
+                    Intent intent = new Intent(EditSignatureActivity.this,
+                            ImageZoomActivity.class);
+                    intent.putExtra(IntentConstants.EXTRA_IMAGE_LIST,
+                            (Serializable) mDataList);
+                    intent.putExtra(IntentConstants.EXTRA_CURRENT_IMG_POSITION, position);
+
+                    intent.putExtra("from",
+                            "EditSignatureActivity");
+                    startActivity(intent);
+                }
+            }
+        });
+//        sendTv = (TextView) findViewById(R.id.action);
+//        sendTv.setText("发送");
+//        sendTv.setOnClickListener(new View.OnClickListener()
+//        {
+//
+//            public void onClick(View v)
+//            {
+//                removeTempFromPref();
+//                System.exit(0);
+//                //TODO 这边以mDataList为来源做上传的动作
+//            }
+//        });
+    }
+    private void removeTempFromPref()
+    {
+        SharedPreferences sp = getSharedPreferences(
+                CustomConstants.APPLICATION_NAME, MODE_PRIVATE);
+        sp.edit().remove(CustomConstants.PREF_TEMP_IMAGES).commit();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        getTempFromPref();
+        List<ImageItem> incomingDataList = (List<ImageItem>) intent
+                .getSerializableExtra(IntentConstants.EXTRA_IMAGE_LIST);
+
+        if (incomingDataList != null)
+        {
+            mDataList.addAll(incomingDataList);
+        }
+        initView();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeTempFromPref();
+        mDataList.clear();
+    }
+
+    protected void onPause()
+    {
+        super.onPause();
+        saveTempToPref();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        notifyDataChanged(); //当在ImageZoomActivity中删除图片时，返回这里需要刷新
+    }
+
+    private void notifyDataChanged()
+    {
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private void saveTempToPref()
+    {
+        SharedPreferences sp = getSharedPreferences(
+                CustomConstants.APPLICATION_NAME, MODE_PRIVATE);
+        String prefStr = gson.toJson(mDataList);
+        sp.edit().putString(CustomConstants.PREF_TEMP_IMAGES, prefStr).commit();
+
+    }
+    private void initData()
+    {
+        getTempFromPref();
+        List<ImageItem> incomingDataList = (List<ImageItem>) getIntent()
+                .getSerializableExtra(IntentConstants.EXTRA_IMAGE_LIST);
+        if (incomingDataList != null)
+        {
+            mDataList.addAll(incomingDataList);
+        }
+    }
+
+    private void getTempFromPref()
+    {
+        SharedPreferences sp = getSharedPreferences(
+                CustomConstants.APPLICATION_NAME, MODE_PRIVATE);
+        String prefStr = sp.getString(CustomConstants.PREF_TEMP_IMAGES, null);
+        if (!TextUtils.isEmpty(prefStr))
+        {
+//            List<ImageItem> tempImages = JSON.parseArray(prefStr,
+//                    ImageItem.class);
+            List<ImageItem> tempImages = gson.fromJson(prefStr,
+                    new TypeToken<List<ImageItem>>() {
+                    }.getType());
+
+            mDataList = tempImages;
+        }
+    }
+
+
+    private int getDataSize()
+    {
+        return mDataList == null ? 0 : mDataList.size();
+    }
+
+    private int getAvailableSize()
+    {
+        int availSize = CustomConstants.MAX_IMAGE_SIZE - mDataList.size();
+        if (availSize >= 0)
+        {
+            return availSize;
+        }
+        return 0;
     }
 
     private void inidata()
@@ -81,7 +250,26 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                 super.onSuccess(result);
                 if(result!=null) {
                     et_signature.setText(result.getDescription());
-                    ImageUtils.setImageUrl(iv_showavatar, result.getPhotos());
+                    Selection.setSelection(et_signature.getText(), et_signature.getText().length());
+
+                    if(result.getPhotos() != null && result.getPhotos() != "") {
+                        List<String> photoPath = new ArrayList<String>();
+                        for (String photsCount : result.getPhotos().toString().split(",")) {
+                            photoPath.add(photsCount);
+                        }
+                        mGridView.setAdapter(new OrderDetailsGridViewAdapater(EditSignatureActivity.this,photoPath));
+                        mGridView.setVisibility(View.VISIBLE);
+                        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent = new Intent();
+                                intent.setClass(EditSignatureActivity.this, AvatarZoomActivity.class);
+                                intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+                                startActivity(intent);
+                            }
+                        });
+                    }
+//                    ImageUtils.setImageUrl(iv_showavatar, result.getPhotos());
                 }
             }
         });
@@ -95,8 +283,8 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            tb_action.setBackgroundColor(getResources().getColor(R.color.green));
-            tb_action.setEnabled(true);
+//            tb_action.setBackgroundColor(getResources().getColor(R.color.green));
+//            tb_action.setEnabled(true);
         }
 
         @Override
@@ -110,36 +298,90 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
         switch (v.getId()) {
 
             case R.id.tb_back:
+                mDataList.clear();
+                removeTempFromPref();
                 finish();
                 break;
             case R.id.tb_action:
-                Http.request(EditSignatureActivity.this, API.POST_SELFEVALUATION, new Object[]{Auth.getCurrentUserId()}, Http.map(
-                        "Description", et_signature.getText().toString()
-                ), new Http.RequestListener<UserDetail>() {
-                    @Override
-                    public void onSuccess(UserDetail result) {
-                        super.onSuccess(result);
-                        // 上传成功
-//                        Auth.updateCurrentUser(result);
-                        finish();
+                if (mDataList.size() == 0) {
+                    Http.request(EditSignatureActivity.this, API.POST_SELFEVALUATION, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                            "Description", et_signature.getText().toString(),
+                            "Photos", ""
+                    ), new Http.RequestListener<UserDetail>() {
+                        @Override
+                        public void onSuccess(UserDetail result) {
+                            super.onSuccess(result);
+                            // 上传成功
+                            mDataList.clear();
+                            removeTempFromPref();
+                            finish();
+                        }
+
+                        @Override
+                        public void onFail(String code) {
+                            super.onFail(code);
+                        }
+                    });
+                }
+                else
+                {
+                    for (ImageItem dl : mDataList) {
+
+
+                        final File f = new File(dl.sourcePath);
+                        Http.request(EditSignatureActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
+                            @Override
+                            public void onSuccess(Token result) {
+                                super.onSuccess(result);
+
+                                UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+                                    @Override
+                                    public void done(String id) {
+                                        if (TextUtils.isEmpty(id)) {
+                                            // 上传失败
+                                            upload_iamge_num = 0;
+                                            return;
+                                        }
+                                        upload_iamge_num++;
+                                        sb.append(",").append(id);
+                                        if (upload_iamge_num == mDataList.size()) {
+                                            Http.request(EditSignatureActivity.this, API.POST_SELFEVALUATION, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                                                    "Description", et_signature.getText().toString(),
+                                                    "Photos", sb.deleteCharAt(0).toString()
+                                            ), new Http.RequestListener<UserDetail>() {
+                                                @Override
+                                                public void onSuccess(UserDetail result) {
+                                                    super.onSuccess(result);
+                                                    // 上传成功
+                                                    mDataList.clear();
+                                                    removeTempFromPref();
+                                                    finish();
+                                                }
+
+                                                @Override
+                                                public void onFail(String code) {
+                                                    super.onFail(code);
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                }, result.getUpToken());
+                            }
+                        });
                     }
-                });
+                }
                 break;
-            case R.id.iv_showavatar:
-                new PopupWindows_Picture(this, iv_showavatar);
-            break;
+
 
         }
 
     }
 
-    private static final int TAKE_PICTURE = 0x000300;
-    private static final int SELECT_PHOTO = 0x000100;
-    private String path = "";
-    public class PopupWindows_Picture extends PopupWindow
+    public class PopupWindows extends PopupWindow
     {
 
-        public PopupWindows_Picture(final Context mContext, View parent)
+        public PopupWindows(Context mContext, View parent)
         {
 
             View view = View.inflate(mContext, R.layout.item_popupwindow, null);
@@ -149,7 +391,6 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                     .findViewById(R.id.ll_popup);
             ll_popup.startAnimation(AnimationUtils.loadAnimation(mContext,
                     R.anim.push_bottom_in_2));
-            RelativeLayout rl_photopopup = (RelativeLayout)view.findViewById(R.id.rl_photopopup);
 
             setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
             setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -160,12 +401,6 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
             showAtLocation(parent, Gravity.BOTTOM, 0, 0);
             update();
 
-            rl_photopopup.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
             Button btn_camera = (Button) view
                     .findViewById(R.id.item_popupwindows_camera);
             Button btn_photo = (Button) view
@@ -184,14 +419,13 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
             {
                 public void onClick(View v)
                 {
-                    Intent photoPickerIntent = new Intent(Intent.CATEGORY_OPENABLE);
-                    photoPickerIntent.setType("image/*");
-                    if (Build.VERSION.SDK_INT <19) {
-                        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-                    }else {
-                        photoPickerIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                    }
-                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                    Intent intent = new Intent(EditSignatureActivity.this,
+                            ImageBucketChooseActivity.class);
+                    intent.putExtra(IntentConstants.EXTRA_CAN_ADD_IMAGE_SIZE,
+                            getAvailableSize());
+                    intent.putExtra(IntentConstants.EXTRA_IMAGE_CLASS,
+                            EditSignatureActivity.class);
+                    startActivity(intent);
                     dismiss();
                 }
             });
@@ -206,12 +440,16 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    private static final int TAKE_PICTURE = 0x000000;
+    private String path = "";
+
     public void takePhoto()
     {
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         File vFile = new File(Environment.getExternalStorageDirectory()
-                , "tempAvatar.jpg");
+                + "/myimage/", String.valueOf(System.currentTimeMillis())
+                + ".jpg");
         if (!vFile.exists())
         {
             File vDirPath = vFile.getParentFile();
@@ -231,70 +469,283 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
     }
 
     @Override
-    protected void  onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        switch (requestCode) {
+    protected void  onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent)
+    {
+        switch (requestCode)
+        {
             case TAKE_PICTURE:
-                if (resultCode == RESULT_OK) {
-                    //Bitmap bm = (Bitmap) imageReturnedIntent.getExtras().get("data");
-                    final File f = new File(Environment.getExternalStorageDirectory()
-                            , "tempAvatar.jpg");
-
-                    Http.request(EditSignatureActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
-                        @Override
-                        public void onSuccess(Token result) {
-                            super.onSuccess(result);
-
-                            UploadUtils.uploadImage(f, new UploadUtils.Callback() {
-                                @Override
-                                public void done(final String id) {
-
-                                    Http.request(EditSignatureActivity.this, API.POST_SELFEVALUATION, new Object[]{Auth.getCurrentUserId()}, Http.map(
-                                            "Photos", id
-                                    ), new Http.RequestListener<UserDetail>() {
-                                        @Override
-                                        public void onSuccess(UserDetail result) {
-                                            super.onSuccess(result);
-                                            // 上传成功
-                                            ImageUtils.setImageUrl(iv_showavatar, id);
-                                        }
-                                    });
-                                }
-                            }, result.getUpToken());
-                        }
-                    });
-                    //ImageUtils.setImageUrl(iv_showavatar, result.Avatar);//想图像显示在ImageView视图上，private ImageView img;
-                }
-                break;
-            case SELECT_PHOTO:
-                if (resultCode == Activity.RESULT_OK) {
-
-                    final File f = Utils.uriToFile(imageReturnedIntent.getData());
-
-                    Http.request(EditSignatureActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
-                        @Override
-                        public void onSuccess(Token result) {
-                            super.onSuccess(result);
-
-                            UploadUtils.uploadImage(f, new UploadUtils.Callback() {
-                                @Override
-                                public void done(final String id) {
-                                    Http.request(EditSignatureActivity.this, API.POST_SELFEVALUATION, new Object[]{Auth.getCurrentUserId()}, Http.map(
-                                            "Photos", id
-                                    ), new Http.RequestListener<UserDetail>() {
-                                        @Override
-                                        public void onSuccess(UserDetail result) {
-                                            super.onSuccess(result);
-                                            // 上传成功
-                                            ImageUtils.setImageUrl(iv_showavatar, id);
-                                        }
-                                    });
-                                }
-                            }, result.getUpToken());
-                        }
-                    });
+                if (mDataList.size() < CustomConstants.MAX_IMAGE_SIZE
+                        && resultCode == -1 && !TextUtils.isEmpty(path))
+                {
+                    ImageItem item = new ImageItem();
+                    item.sourcePath = path;
+                    mDataList.add(item);
                 }
                 break;
         }
+//        switch(requestCode) {
+//            case img1_SELECT_PHOTO:
+//                if(resultCode == RESULT_OK){
+//                    ContentResolver cr = this.getContentResolver();
+//                    Bitmap bitmap = null;
+//                    try {
+//                        bitmap = BitmapFactory.decodeStream(cr.openInputStream(imageReturnedIntent.getData()));
+//                    }
+//                    catch (FileNotFoundException e)
+//                    {
+//
+//                    }
+//
+//                    img_addimg1.setImageBitmap(bitmap);
+//                    menuWindow.dismiss();
+//
+//                };
+//                break;
+//            case img2_SELECT_PHOTO:
+//                if(resultCode == RESULT_OK){
+//                    ContentResolver cr = this.getContentResolver();
+//                    Bitmap bitmap = null;
+//                    try {
+//                        bitmap = BitmapFactory.decodeStream(cr.openInputStream(imageReturnedIntent.getData()));
+//                    }
+//                    catch (FileNotFoundException e)
+//                    {
+//
+//                    }
+//
+//                    img_addimg2.setImageBitmap(bitmap);
+//                    menuWindow.dismiss();
+//
+//                };
+//                break;
+//            case img3_SELECT_PHOTO:
+//                if(resultCode == RESULT_OK){
+//                    ContentResolver cr = this.getContentResolver();
+//                    Bitmap bitmap = null;
+//                    try {
+//                        bitmap = BitmapFactory.decodeStream(cr.openInputStream(imageReturnedIntent.getData()));
+//                    }
+//                    catch (FileNotFoundException e)
+//                    {
+//
+//                    }
+//
+//                    img_addimg3.setImageBitmap(bitmap);
+//                    menuWindow.dismiss();
+//
+//                };
+//                break;
+//            case PHOTO_GRAPH+img1_SELECT_PHOTO:
+//                if (resultCode == RESULT_OK) {
+//                    // 设置文件保存路径
+//                    File picture = new File(Environment.getExternalStorageDirectory()
+//                            + "/temp.jpg");
+////                startPhotoZoom(Uri.fromFile(picture));
+//                    Bitmap bm = Utils.getResizedBitmap(picture, Utils.dpToPx(100), Utils.dpToPx(100));
+//                    // Uri uri = imageReturnedIntent.getData();
+//                    img_addimg1.setImageBitmap(bm);
+//                    menuWindow.dismiss();
+//                }
+//                break;
+//            case PHOTO_GRAPH+img2_SELECT_PHOTO:
+//                if (resultCode == RESULT_OK) {
+//                    // 设置文件保存路径
+//                    File picture = new File(Environment.getExternalStorageDirectory()
+//                            + "/temp.jpg");
+////                startPhotoZoom(Uri.fromFile(picture));
+//                    Bitmap bm = Utils.getResizedBitmap(picture, Utils.dpToPx(100), Utils.dpToPx(100));
+//                    // Uri uri = imageReturnedIntent.getData();
+//                    img_addimg2.setImageBitmap(bm);
+//                    menuWindow.dismiss();
+//                }
+//                break;
+//            case PHOTO_GRAPH+img3_SELECT_PHOTO:
+//                if (resultCode == RESULT_OK) {
+//                    // 设置文件保存路径
+//                    File picture = new File(Environment.getExternalStorageDirectory()
+//                            + "/temp.jpg");
+////                startPhotoZoom(Uri.fromFile(picture));
+//                    Bitmap bm = Utils.getResizedBitmap(picture, Utils.dpToPx(100), Utils.dpToPx(100));
+//                    // Uri uri = imageReturnedIntent.getData();
+//                    img_addimg3.setImageBitmap(bm);
+//                    menuWindow.dismiss();
+//                }
+//                break;
+//            case PHOTO_RESOULT:
+//                Bundle extras = imageReturnedIntent.getExtras();
+//                if (extras != null) {
+//                    Bitmap photo = extras.getParcelable("data");
+//                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                    photo.compress(Bitmap.CompressFormat.JPEG, 75, stream);// (0-100)压缩文件
+//                    //此处可以把Bitmap保存到sd卡中，具体请看：http://www.cnblogs.com/linjiqin/archive/2011/12/28/2304940.html
+//                    img_addimg1.setImageBitmap(photo); //把图片显示在ImageView控件上
+//                }
+//                break;
+//        }
     }
+
+//    private static final int TAKE_PICTURE = 0x000300;
+//    private static final int SELECT_PHOTO = 0x000100;
+//    private String path = "";
+//    public class PopupWindows_Picture extends PopupWindow
+//    {
+//
+//        public PopupWindows_Picture(final Context mContext, View parent)
+//        {
+//
+//            View view = View.inflate(mContext, R.layout.item_popupwindow, null);
+//            view.startAnimation(AnimationUtils.loadAnimation(mContext,
+//                    R.anim.fade_ins));
+//            LinearLayout ll_popup = (LinearLayout) view
+//                    .findViewById(R.id.ll_popup);
+//            ll_popup.startAnimation(AnimationUtils.loadAnimation(mContext,
+//                    R.anim.push_bottom_in_2));
+//            RelativeLayout rl_photopopup = (RelativeLayout)view.findViewById(R.id.rl_photopopup);
+//
+//            setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+//            setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+//            setFocusable(true);
+//            setBackgroundDrawable(new BitmapDrawable());
+//            setOutsideTouchable(true);
+//            setContentView(view);
+//            showAtLocation(parent, Gravity.BOTTOM, 0, 0);
+//            update();
+//
+//            rl_photopopup.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    dismiss();
+//                }
+//            });
+//            Button btn_camera = (Button) view
+//                    .findViewById(R.id.item_popupwindows_camera);
+//            Button btn_photo = (Button) view
+//                    .findViewById(R.id.item_popupwindows_Photo);
+//            Button btn_cancel = (Button) view
+//                    .findViewById(R.id.item_popupwindows_cancel);
+//            btn_camera.setOnClickListener(new View.OnClickListener()
+//            {
+//                public void onClick(View v)
+//                {
+//                    takePhoto();
+//                    dismiss();
+//                }
+//            });
+//            btn_photo.setOnClickListener(new View.OnClickListener()
+//            {
+//                public void onClick(View v)
+//                {
+//                    Intent photoPickerIntent = new Intent(Intent.CATEGORY_OPENABLE);
+//                    photoPickerIntent.setType("image/*");
+//                    if (Build.VERSION.SDK_INT <19) {
+//                        photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
+//                    }else {
+//                        photoPickerIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+//                    }
+//                    startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+//                    dismiss();
+//                }
+//            });
+//            btn_cancel.setOnClickListener(new View.OnClickListener()
+//            {
+//                public void onClick(View v)
+//                {
+//                    dismiss();
+//                }
+//            });
+//
+//        }
+//    }
+//
+//    public void takePhoto()
+//    {
+//        Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//        File vFile = new File(Environment.getExternalStorageDirectory()
+//                , "tempAvatar.jpg");
+//        if (!vFile.exists())
+//        {
+//            File vDirPath = vFile.getParentFile();
+//            vDirPath.mkdirs();
+//        }
+//        else
+//        {
+//            if (vFile.exists())
+//            {
+//                vFile.delete();
+//            }
+//        }
+//        path = vFile.getPath();
+//        Uri cameraUri = Uri.fromFile(vFile);
+//        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
+//        startActivityForResult(openCameraIntent, TAKE_PICTURE);
+//    }
+//
+//    @Override
+//    protected void  onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+//        switch (requestCode) {
+//            case TAKE_PICTURE:
+//                if (resultCode == RESULT_OK) {
+//                    //Bitmap bm = (Bitmap) imageReturnedIntent.getExtras().get("data");
+//                    final File f = new File(Environment.getExternalStorageDirectory()
+//                            , "tempAvatar.jpg");
+//
+//                    Http.request(EditSignatureActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
+//                        @Override
+//                        public void onSuccess(Token result) {
+//                            super.onSuccess(result);
+//
+//                            UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+//                                @Override
+//                                public void done(final String id) {
+//
+//                                    Http.request(EditSignatureActivity.this, API.POST_SELFEVALUATION, new Object[]{Auth.getCurrentUserId()}, Http.map(
+//                                            "Photos", id
+//                                    ), new Http.RequestListener<UserDetail>() {
+//                                        @Override
+//                                        public void onSuccess(UserDetail result) {
+//                                            super.onSuccess(result);
+//                                            // 上传成功
+//                                            ImageUtils.setImageUrl(iv_showavatar, id);
+//                                        }
+//                                    });
+//                                }
+//                            }, result.getUpToken());
+//                        }
+//                    });
+//                    //ImageUtils.setImageUrl(iv_showavatar, result.Avatar);//想图像显示在ImageView视图上，private ImageView img;
+//                }
+//                break;
+//            case SELECT_PHOTO:
+//                if (resultCode == Activity.RESULT_OK) {
+//
+//                    final File f = Utils.uriToFile(imageReturnedIntent.getData());
+//
+//                    Http.request(EditSignatureActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
+//                        @Override
+//                        public void onSuccess(Token result) {
+//                            super.onSuccess(result);
+//
+//                            UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+//                                @Override
+//                                public void done(final String id) {
+//                                    Http.request(EditSignatureActivity.this, API.POST_SELFEVALUATION, new Object[]{Auth.getCurrentUserId()}, Http.map(
+//                                            "Photos", id
+//                                    ), new Http.RequestListener<UserDetail>() {
+//                                        @Override
+//                                        public void onSuccess(UserDetail result) {
+//                                            super.onSuccess(result);
+//                                            // 上传成功
+//                                            ImageUtils.setImageUrl(iv_showavatar, id);
+//                                        }
+//                                    });
+//                                }
+//                            }, result.getUpToken());
+//                        }
+//                    });
+//                }
+//                break;
+//        }
+//    }
 
 }

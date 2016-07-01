@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/lly_send"
         android:layout_below="@+id/ll_tb"
+        android:fillViewport="true"
         >
 
 
@@ -29,6 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
 
 
             <RelativeLayout
@@ -272,9 +274,13 @@
                 android:id="@+id/tv_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:textSize="20sp"
-                android:text="留言"/>
+                android:text="留言"
+                style="@style/more_item_style"
+                />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -285,10 +291,27 @@
                 <!--<LinearLayout-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content">-->
-                <ListView
+
+            <!--<ListView-->
+                <!--android:id="@+id/lv_ordercomment"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"/>-->
+            <ListView
                 android:id="@+id/lv_ordercomment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+                <!--<appframe.appframe.widget.swiperefresh.SwipeRefreshX-->
+                    <!--android:id="@+id/swipeRefresh"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+
+                    <!-->-->
+                    <!--<ListView-->
+                        <!--android:id="@+id/lv_ordercomment"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"/>-->
+                <!--</appframe.appframe.widget.swiperefresh.SwipeRefreshX>-->
+
                 <!--</LinearLayout>-->
             <!--</ScrollView>-->
         </LinearLayout>

@@ -7,31 +7,6 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
-    <!--<View-->
-        <!--android:id="@+id/view1"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="20dp"-->
-        <!--android:background="@color/divide"-->
-        <!--android:layout_below="@+id/title_bar"-->
-        <!--/>-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_yuer"-->
-        <!--style="@style/more_item_style"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="88dp"-->
-        <!--android:gravity="center"-->
-        <!--android:textColor="@color/viewfinder_laser"-->
-        <!--android:textSize="32dp"-->
-        <!--android:layout_below="@+id/view1"/>-->
-
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/view1"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:text="可提现金额:"-->
-        <!--/>-->
 
     <TextView
         android:id="@+id/payway"
@@ -39,190 +14,175 @@
         android:layout_height="30dp"
         android:text="提现方式"
         android:gravity="center_vertical"
-        android:paddingLeft="5dp"
+        android:paddingLeft="10dp"
         android:background="@color/divide"
         android:layout_below="@+id/title_bar"
         />
-
     <TextView
-        android:id="@+id/tv_alipay"
-        style="@style/more_item_style"
-        android:layout_width="match_parent"
-        android:layout_height="66dp"
-        android:text="@string/ali"
-        android:layout_below="@+id/payway"/>
-
-    <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        android:layout_below="@+id/tv_alipay"
-        />
-
-    <TextView
-        android:id="@+id/tv_weixing"
-        style="@style/more_item_style"
-        android:layout_width="match_parent"
-        android:layout_height="66dp"
-        android:text="@string/weixing"
-        android:layout_below="@+id/view2"/>
-
-    <View
-        android:id="@+id/view3"
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:background="@color/divide"
-        android:layout_below="@+id/tv_weixing"
-        />
-
-    <TextView
-        android:id="@+id/tv_yb"
-        style="@style/more_item_style"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:text="到账时间"
-        android:layout_below="@+id/view3"/>
-
-    <TextView
+        android:id="@+id/tv_account"
         style="@style/more_item_style"
         android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:text="1-2个工作日到账，节假日顺延"
-        android:layout_alignRight="@+id/tv_yb"
-        android:textColor="@color/font_gray"
-        android:layout_below="@+id/view3"/>
-
-    <View
-        android:id="@+id/view4"
-        android:layout_width="match_parent"
-        android:layout_height="15dp"
-        android:background="@color/divide"
-        android:layout_below="@+id/tv_yb"
-        />
-
-    <TextView
-        android:id="@+id/tv_withdraw"
-        style="@style/more_item_style"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:text="提现金额"
-        android:layout_below="@+id/view4"/>
-
-    <EditText
-        android:id="@+id/et_amount"
-        style="@style/more_item_style"
-        android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:hint="输入提现金额"
-        android:inputType="numberDecimal"
-        android:layout_alignRight="@+id/tv_yb"
-        android:textColor="@color/font_gray"
-        android:layout_below="@+id/view4"
-        android:background="@color/white"/>
-
-    <View
-        android:id="@+id/view5"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        android:layout_below="@+id/tv_withdraw"
-        />
-
-    <TextView
-
-        style="@style/more_item_style"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:text="可提现金额"
-        android:layout_below="@+id/view5"/>
-
-    <TextView
-        android:id="@+id/tv_yuer"
-        style="@style/more_item_style"
-        android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:layout_alignRight="@+id/tv_yb"
-        android:textColor="@color/font_gray"
-        android:layout_below="@+id/view5"/>
-
-    <View
-        android:id="@+id/view6"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        android:layout_below="@+id/tv_yuer"
-        />
-
-    <TextView
-
-        style="@style/more_item_style"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:text="姓名"
-        android:layout_below="@+id/view6"/>
-
-    <EditText
-        android:id="@+id/et_name"
-        style="@style/more_item_style"
-        android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:hint="输入姓名"
-        android:layout_alignRight="@+id/tv_yb"
-        android:textColor="@color/font_gray"
-        android:layout_below="@+id/view6"
-        android:background="@color/white"/>
-
-    <View
-        android:id="@+id/view7"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        android:layout_below="@+id/et_name"
-        />
-    <TextView
-
-        style="@style/more_item_style"
-        android:layout_width="match_parent"
         android:layout_height="44dp"
         android:text="支付宝账号"
-        android:layout_below="@+id/view7"/>
+        android:layout_below="@+id/payway"/>
 
     <EditText
         android:id="@+id/et_account"
         style="@style/more_item_style"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="44dp"
         android:hint="输入支付宝账号"
-        android:layout_alignRight="@+id/tv_yb"
+        android:layout_toRightOf="@+id/tv_account"
         android:textColor="@color/font_gray"
-        android:layout_below="@+id/view7"
+        android:layout_below="@+id/payway"
         android:background="@color/white"/>
-
     <View
-        android:id="@+id/view8"
+        android:id="@+id/view1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/divide"
+        android:layout_below="@+id/et_account"
+        />
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/more_item_style"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:text="姓名"
+        android:layout_below="@+id/view1"/>
+
+    <EditText
+        android:id="@+id/et_name"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:hint="输入姓名"
+        android:layout_toRightOf="@+id/tv_name"
+        android:textColor="@color/font_gray"
+        android:layout_below="@+id/view1"
+        android:background="@color/white"/>
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/divide"
         android:layout_below="@+id/et_name"
         />
+    <TextView
+        android:id="@+id/tv_yue"
+        style="@style/more_item_style"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:text="可提现金额"
+        android:layout_below="@+id/view2"/>
+
+    <TextView
+        android:id="@+id/tv_yuer"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:textColor="@color/font_gray"
+        android:layout_toRightOf="@+id/tv_yue"
+        android:layout_below="@+id/view2"/>
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/tv_yuer"
+        />
+    <TextView
+        android:id="@+id/tv_withdraw"
+        style="@style/more_item_style"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:text="提现金额"
+        android:layout_below="@+id/view3"/>
+
+    <EditText
+        android:id="@+id/et_amount"
+        style="@style/more_item_style"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:hint="输入提现金额,最低 ￥100.00"
+        android:inputType="numberDecimal"
+        android:layout_toRightOf="@+id/tv_withdraw"
+        android:textColor="@color/font_gray"
+        android:layout_below="@+id/view3"
+        android:background="@color/white"/>
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divide"
+        android:layout_below="@+id/et_amount"
+        android:layout_marginBottom="10dp"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view4"
+        android:text="提示: 自动扣除提现金额3%的手续费，3-10个工作日之内到账"
+        android:layout_margin="10dp"/>
     <!--<TextView-->
-        <!--android:id="@+id/tv_yuer"-->
+        <!--android:id="@+id/tv_alipay"-->
         <!--style="@style/more_item_style"-->
         <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="88dp"-->
-        <!--android:gravity="center"-->
-        <!--android:textColor="@color/viewfinder_laser"-->
-        <!--android:textSize="32dp"-->
-        <!--android:layout_below="@+id/view5"/>-->
+        <!--android:layout_height="66dp"-->
+        <!--android:text="@string/ali"-->
+        <!--android:layout_below="@+id/payway"/>-->
+
+    <!--<View-->
+        <!--android:id="@+id/view2"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/divide"-->
+        <!--android:layout_below="@+id/tv_alipay"-->
+        <!--/>-->
 
     <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/view5"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:text="可提现金额:"-->
+        <!--android:id="@+id/tv_weixing"-->
+        <!--style="@style/more_item_style"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="66dp"-->
+        <!--android:text="@string/weixing"-->
+        <!--android:layout_below="@+id/view2"/>-->
+
+    <!--<View-->
+        <!--android:id="@+id/view3"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="15dp"-->
+        <!--android:background="@color/divide"-->
+        <!--android:layout_below="@+id/tv_weixing"-->
         <!--/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_yb"-->
+        <!--style="@style/more_item_style"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="44dp"-->
+        <!--android:text="到账时间"-->
+        <!--android:layout_below="@+id/view3"/>-->
+
+    <!--<TextView-->
+        <!--style="@style/more_item_style"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="44dp"-->
+        <!--android:text="1-2个工作日到账，节假日顺延"-->
+        <!--android:layout_alignRight="@+id/tv_yb"-->
+        <!--android:textColor="@color/font_gray"-->
+        <!--android:layout_below="@+id/view3"/>-->
+
+    <!--<View-->
+        <!--android:id="@+id/view4"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="15dp"-->
+        <!--android:background="@color/divide"-->
+        <!--android:layout_below="@+id/tv_yb"-->
+        <!--/>-->
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -230,12 +190,18 @@
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:id="@+id/lly_send">
-        <Button
+
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="确认"
-            android:id="@+id/btn_send"
+            android:id="@+id/tv_send"
             android:layout_gravity="bottom"
+            android:layout_margin="10dp"
+            android:background="@drawable/textview_clicked"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/white"
             />
     </LinearLayout>
 </RelativeLayout>

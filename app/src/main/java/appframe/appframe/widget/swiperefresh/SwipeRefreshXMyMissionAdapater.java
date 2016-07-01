@@ -94,12 +94,20 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
         convertView.setBackgroundResource(R.drawable.listview_item_pressed);
         final OrderDetails item = orderDetails.get(position);
 
-        if(item.getPhotos() != null && item.getPhotos() != "") {
-            List<String> photoPath = new ArrayList<String>();
-            for (String photsCount : item.getPhotos().toString().split(",")) {
-                photoPath.add(photsCount);
-            }
-
+//        if(item.getPhotos() != null && item.getPhotos() != "") {
+//            List<String> photoPath = new ArrayList<String>();
+//            for (String photsCount : item.getPhotos().toString().split(",")) {
+//                photoPath.add(photsCount);
+//            }
+//
+//        }
+        if(item.getPhotos() != null && !item.getPhotos().equals(""))
+        {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getPhotos().split(",")[0]);
+        }
+        else
+        {
+            mHolder.iv_avatar.setDefaultImageResId(R.drawable.defaultphoto);
         }
         mHolder.txt_title.setText(item.getTitle());
         if(item.getType() == 1)
@@ -125,7 +133,7 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
         }
         mHolder.tv_time.setText(item.getCreatedAt());
 
-        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+//        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
 
         mHolder.tv_delete.setText("删除");
         mHolder.tv_pay.setText("接单候选人");
@@ -164,7 +172,13 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
             mHolder.rl_bottom.setVisibility(View.GONE);
             mHolder.tv_status.setText("已关闭");
         }
-
+        //保留单子却没付款
+        if(item.getOrderStatus().equals("4"))
+        {
+            mHolder.tv_pay.setText("保留单子付款");
+            mHolder.tv_delete.setText("删除");
+            mHolder.tv_status.setText("等待支付");
+        }
 
 
 
@@ -190,6 +204,13 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
                     context.startActivity(intent);
                 }
                 else if(mHolder.tv_pay.getText().equals("付款"))
+                {
+                    intent.setClass(context, PayActivity.class);
+                    bundle.putSerializable("Candidate", item);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+                else if(mHolder.tv_pay.getText().equals("保留单子付款"))
                 {
                     intent.setClass(context, PayActivity.class);
                     bundle.putSerializable("Candidate", item);

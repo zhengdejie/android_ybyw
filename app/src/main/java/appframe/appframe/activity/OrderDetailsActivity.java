@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,11 +33,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
+import appframe.appframe.dto.CommentDetailResponseDto;
 import appframe.appframe.dto.ConfirmedOrderDetail;
+import appframe.appframe.dto.ConfirmedOrderDetailWithFriend;
 import appframe.appframe.dto.OrderComment;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.PayResult;
@@ -47,6 +53,8 @@ import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.widget.sortlistview.FirstClassFriends;
 import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 
 /**
@@ -61,6 +69,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     com.android.volley.toolbox.NetworkImageView iv_avatar;
     private Button btn_select,btn_comment,btn_recommend;
     private EditText et_price;
+    int page = 1;
     private String OrderID,Tel, hasTopOrder, Entrance;
     private ListView lv_ordercomment;
     private Drawable icon;
@@ -68,49 +77,52 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     private GridView gridView;
     private RatingBar rb_totalvalue;
     OrderDetails orderDetails;
+    ConfirmedOrderDetailWithFriend confirmedOrderDetailWithFriend;
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
     String Bid;
+//    SwipeRefreshX swipeRefresh;
+    SwipeRefreshXOrderComment swipeRefreshXOrderComment;
     private static final int SDK_PAY_FLAG = 1;
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case SDK_PAY_FLAG: {
-                    PayResult payResult = new PayResult((String) msg.obj);
-                    /**
-                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
-                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
-                     * docType=1) 建议商户依赖异步通知
-                     */
-                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
-
-                    String resultStatus = payResult.getResultStatus();
-                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
-                    if (TextUtils.equals(resultStatus, "9000")) {
-                        Toast.makeText(OrderDetailsActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // 判断resultStatus 为非"9000"则代表可能支付失败
-                        // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
-                        if (TextUtils.equals(resultStatus, "8000")) {
-                            Toast.makeText(OrderDetailsActivity.this, "支付结果确认中", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
-                            Toast.makeText(OrderDetailsActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                    break;
-                }
-//                case SDK_CHECK_FLAG: {
-//                    Toast.makeText(PayDemoActivity.this, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
+//    private Handler mHandler = new Handler() {
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case SDK_PAY_FLAG: {
+//                    PayResult payResult = new PayResult((String) msg.obj);
+//                    /**
+//                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
+//                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
+//                     * docType=1) 建议商户依赖异步通知
+//                     */
+//                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+//
+//                    String resultStatus = payResult.getResultStatus();
+//                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
+//                    if (TextUtils.equals(resultStatus, "9000")) {
+//                        Toast.makeText(OrderDetailsActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        // 判断resultStatus 为非"9000"则代表可能支付失败
+//                        // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
+//                        if (TextUtils.equals(resultStatus, "8000")) {
+//                            Toast.makeText(OrderDetailsActivity.this, "支付结果确认中", Toast.LENGTH_SHORT).show();
+//
+//                        } else {
+//                            // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
+//                            Toast.makeText(OrderDetailsActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    }
 //                    break;
 //                }
-                default:
-                    break;
-            }
-        };
-    };
+////                case SDK_CHECK_FLAG: {
+////                    Toast.makeText(PayDemoActivity.this, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
+////                    break;
+////                }
+//                default:
+//                    break;
+//            }
+//        };
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -249,18 +261,29 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                                         @Override
                                         public void onSuccess(String result) {
                                             super.onSuccess(result);
-                                            Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID},
-                                                    new Http.RequestListener<List<OrderComment>>() {
+                                            Map<String, String> map = new HashMap<String, String>();
+                                            map.put("Page", "1");
+                                            map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                                            Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID,Http.getURL(map)},
+                                                    new Http.RequestListener<CommentDetailResponseDto>() {
                                                         @Override
-                                                        public void onSuccess(List<OrderComment> result) {
+                                                        public void onSuccess(CommentDetailResponseDto result) {
                                                             super.onSuccess(result);
-                                                            if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
-                                                                lv_ordercomment.setAdapter(new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), true));
-                                                            } else {
-                                                                lv_ordercomment.setAdapter(new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), false));
+                                                            if(result!=null) {
+                                                                if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
+                                                                    swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), true);
+                                                                    lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+                                                                } else {
+                                                                    swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), false);
+                                                                    lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+                                                                }
+                                                                setListViewHeightBasedOnChildren(lv_ordercomment);
+                                                                tv_comment.setText(String.format("留言%d条 (点击查看全部)", result.getTotalCount()));
                                                             }
-                                                            setListViewHeightBasedOnChildren(lv_ordercomment);
-                                                            tv_comment.setText(String.format("留言（%d条）", result != null ? result.size() : 0));
+                                                            else
+                                                            {
+                                                                tv_comment.setText("留言0条 (点击查看全部)");
+                                                            }
                                                         }
                                                     });
 
@@ -298,6 +321,13 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                 et_price.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
                 et_price.setEnabled(true);
 
+                break;
+            case R.id.tv_comment:
+                intent.setClass(OrderDetailsActivity.this, OrderCommentAllActivity.class);
+                //Bundle bundle = new Bundle();
+                bundle.putSerializable("OrderDetails", orderDetails);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
         }
     }
@@ -341,9 +371,19 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         btn_select.setOnClickListener(this);
         btn_comment.setOnClickListener(this);
         btn_recommend.setOnClickListener(this);
+        tv_comment.setOnClickListener(this);
+//        swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
+//
+//        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+//                android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
         Intent intent = this.getIntent();
         orderDetails=(OrderDetails)intent.getSerializableExtra("OrderDetails");
+        if(orderDetails == null)
+        {
+            confirmedOrderDetailWithFriend = (ConfirmedOrderDetailWithFriend)intent.getSerializableExtra("ConfirmedOrderDetailWithFriend");
+            orderDetails = confirmedOrderDetailWithFriend.getOrder();
+        }
 
         if(orderDetails.getOrderStatus().equals("1"))
         {
@@ -356,7 +396,9 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         }
         else
         {
-            tv_location.setText(orderDetails.getAddress().toString());
+            if(orderDetails.getUserLocation() != null) {
+                tv_location.setText(orderDetails.getUserLocation().getProvince() + orderDetails.getUserLocation().getCity() + orderDetails.getUserLocation().getDistrict());
+            }
         }
 //        if( orderDetails.getType() == 1 )
 //        {
@@ -373,7 +415,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         hasTopOrder = intent.getStringExtra("hasTopOrder") == null ? null : intent.getStringExtra("hasTopOrder");
         Entrance = intent.getStringExtra("Entrance") == null ? null : intent.getStringExtra("Entrance");
         tv_title.setText(orderDetails.getTitle().toString());
-        tv_money.setText(String.valueOf(orderDetails.getBounty()));
+        tv_money.setText("￥" + String.valueOf(orderDetails.getBounty()));
 
         tv_type.setText(orderDetails.getCategory().toString());
         tv_content.setText(orderDetails.getContent().toString());
@@ -428,9 +470,11 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         }
         if(orderDetails.getType() == 1) {
             rb_totalvalue.setRating((float)orderDetails.getOrderer().getTotalWorkerPoint());
+            tb_title.setText("助人单");
         }
         if(orderDetails.getType() == 2) {
             rb_totalvalue.setRating((float) orderDetails.getOrderer().getTotalBossPoint());
+            tb_title.setText("求助单");
         }
 
 
@@ -456,7 +500,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         OrderID = String.valueOf(orderDetails.getId());
 //        tv_range.setText(setRange(orderDetails.getVisibility()));
         //Log.i("OrderDetailsID--",String.valueOf(orderDetails.getId()));
-        tb_title.setText("需求单");
+
         tb_back.setText("友帮");
         Drawable drawable = getResources().getDrawable(R.drawable.moreoverflow_normal_holo_light);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
@@ -467,23 +511,127 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         {
             imgbtn_call.setVisibility(View.INVISIBLE);
         }
-        Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID},
-                new Http.RequestListener<List<OrderComment>>() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("Page", "1");
+        map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+        Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID,Http.getURL(map)},
+                new Http.RequestListener<CommentDetailResponseDto>() {
                     @Override
-                    public void onSuccess(List<OrderComment> result) {
+                    public void onSuccess(CommentDetailResponseDto result) {
                         super.onSuccess(result);
-                        if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
-                            lv_ordercomment.setAdapter(new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), true));
-                        } else {
-                            lv_ordercomment.setAdapter(new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), false));
+                        if(result != null) {
+                            if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
+                                swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), true);
+                                lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+                            } else {
+                                swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), false);
+                                lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+                            }
+                            setListViewHeightBasedOnChildren(lv_ordercomment);
+                            tv_comment.setText(String.format("留言%d条 (点击查看全部)", result.getTotalCount()));
                         }
-                        setListViewHeightBasedOnChildren(lv_ordercomment);
-                        tv_comment.setText(String.format("留言（%d条）",result != null ? result.size() : 0));
+                        else
+                        {
+                            tv_comment.setText("留言0条 (点击查看全部)");
+                        }
                     }
                 });
 
-    }
+//        // 下拉刷新监听器
+//        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//
+//            @Override
+//            public void onRefresh() {
+//
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put("Page", "1");
+//                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+//                Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID,Http.getURL(map)},
+//                        new Http.RequestListener<CommentDetailResponseDto>() {
+//                            @Override
+//                            public void onSuccess(CommentDetailResponseDto result) {
+//                                super.onSuccess(result);
+//                                page = 1;
+//                                swipeRefresh.setRefreshing(false);
+//                                if(result!=null) {
+//                                    if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
+//                                        swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), true);
+//                                        lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+//                                    } else {
+//                                        swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), false);
+//                                        lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+//                                    }
+//                                    setListViewHeightBasedOnChildren(lv_ordercomment);
+//                                    tv_comment.setText(String.format("留言%d条,点击查看全部", result.getTotalCount()));
+//                                }
+//                                else
+//                                {
+//                                    tv_comment.setText("留言0条,点击查看全部");
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFail(String code) {
+//                                super.onFail(code);
+//                                swipeRefresh.setRefreshing(false);
+//                            }
+//                        });
+//
+//            }
+//        });
+//        // 加载监听器
+//        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
+//
+//            @Override
+//            public void onLoad() {
+//
+//                page++;
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put("Page", String.valueOf(page));
+//                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+//                Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID, Http.getURL(map)},
+//                        new Http.RequestListener<CommentDetailResponseDto>() {
+//                            @Override
+//                            public void onSuccess(CommentDetailResponseDto result) {
+//                                super.onSuccess(result);
+//
+//                                swipeRefresh.setLoading(false);
+//                                if (result != null) {
+//
+//                                    loadMore(swipeRefreshXOrderComment, result.getList());
+////                                    if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
+////                                        swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), true);
+////                                        lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+////                                    } else {
+////                                        swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result, String.valueOf(Auth.getCurrentUserId()), false);
+////                                        lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+////                                    }
+//                                    setListViewHeightBasedOnChildren(lv_ordercomment);
+//                                    tv_comment.setText(String.format("留言%d条,点击查看全部", result.getTotalCount()));
+//                                }
+//
+//                                else
+//                                {
+//                                    tv_comment.setText("留言0条,点击查看全部");
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFail(String code) {
+//                                super.onFail(code);
+//                                swipeRefresh.setLoading(false);
+//                            }
+//                        });
+//
+//
+//
+//            }
+//        });
 
+    }
+    private void loadMore(SwipeRefreshXOrderComment adapater, List<OrderComment> orderDetailses) {
+        adapater.addItems(orderDetailses);
+    }
     private String setRange(int range)
     {
         StringBuilder sb = new StringBuilder();
@@ -527,6 +675,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         // params.height最后得到整个ListView完整显示需要的高度
         listView.setLayoutParams(params);
     }
+
 
     public class PopupWindows extends PopupWindow
     {

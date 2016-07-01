@@ -4,11 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
-
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading"
+        />
     <include
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        style="@style/more_item_style"
+        android:text="上传图片（图片大小不能超过1MB）"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="20dp"
@@ -97,6 +105,7 @@
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/divide"
+
         />
 
     <RelativeLayout

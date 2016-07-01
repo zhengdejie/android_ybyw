@@ -79,6 +79,7 @@ import appframe.appframe.dto.OrderCategory;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.Token;
 import appframe.appframe.dto.UserDetail;
+import appframe.appframe.dto.UserLocation;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.BaiduLocation;
 import appframe.appframe.utils.Http;
@@ -140,6 +141,7 @@ public class OrderSendActivity extends BaseActivity{
     public int upload_iamge_num = 0;
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
+    public UserLocation userLocation = new UserLocation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -236,147 +238,144 @@ public class OrderSendActivity extends BaseActivity{
                         }
                         else
                         {
-                            progress_bar.setVisibility(View.VISIBLE);
-                            for(Tag tags : tagView.getTags())
-                            {
-                                tag.append("," + tags.text);
+                            if (Double.parseDouble(edit_bounty.getText().toString()) <= 0.00) {
+                                Toast.makeText(OrderSendActivity.this, "金额不能小于0.01元", Toast.LENGTH_SHORT).show();
                             }
-                            if(mDataList.size() == 0)
-                            {
-                                Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
-                                        "Id", String.valueOf(Auth.getCurrentUserId()),
-                                        "Title", tv_title.getText().toString() + edit_title.getText().toString(),
-                                        "Address", locationCity,
-                                        "Content", edit_content.getText().toString(),
-                                        "latitude", String.valueOf(latitude),
-                                        "longitude", String.valueOf(longitude),
-                                        "Category", String.valueOf(((OrderCategory)spinner_category.getSelectedItem()).getId()),
-                                        "Visibility", TransferVisibility(checkBox_oneclass.isChecked(), checkBox_twoclass.isChecked(), checkBox_stranger.isChecked()),
-                                        "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
-                                        "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
-                                        "Bounty", edit_bounty.getText().toString(),
-                                        "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
-                                        "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
-                                        "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
-                                        "Photos", "",
+                            else {
+                                progress_bar.setVisibility(View.VISIBLE);
+                                for (Tag tags : tagView.getTags()) {
+                                    tag.append("," + tags.text);
+                                }
+                                if (mDataList.size() == 0) {
+                                    Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
+                                            "Id", String.valueOf(Auth.getCurrentUserId()),
+                                            "Title", tv_title.getText().toString() + edit_title.getText().toString(),
+                                            "Address", locationCity,
+                                            "UserLocation",Utils.toJSV(userLocation),
+                                            "Content", edit_content.getText().toString(),
+                                            "latitude", String.valueOf(latitude),
+                                            "longitude", String.valueOf(longitude),
+                                            "Category", String.valueOf(((OrderCategory) spinner_category.getSelectedItem()).getId()),
+                                            "Visibility", TransferVisibility(checkBox_oneclass.isChecked(), checkBox_twoclass.isChecked(), checkBox_stranger.isChecked()),
+                                            "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
+                                            "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
+                                            "Bounty", edit_bounty.getText().toString(),
+                                            "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
+                                            "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
+                                            "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
+                                            "Photos", "",
 //                                        "Request", edit_require.getText().toString(),
-                                        "Type", Type,
-                                        "Tags",tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
-                                ), new Http.RequestListener<OrderDetails>() {
-                                    @Override
-                                    public void onSuccess(OrderDetails result) {
-                                        super.onSuccess(result);
-                                        Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
-                                        progress_bar.setVisibility(View.GONE);
-                                        removeTempFromPref();
-                                        mDataList.clear();
-                                        if(radio_online.isChecked() == true && Type.equals("2")) {
-                                            intent.setClass(OrderSendActivity.this, PayActivity.class);
-                                            bundle.putSerializable("OrderDetails", result);
-                                            intent.putExtras(bundle);
-                                            startActivity(intent);
-                                        }
-                                        else
-                                        {
-                                            finish();
-                                        }
-
-                                    }
-
-                                    @Override
-                                    public void onFail(String code) {
-                                        super.onFail(code);
-                                        progress_bar.setVisibility(View.GONE);
-                                    }
-                                });
-
-                            }
-                            else
-                            {
-                                //boolean success = false ;
-                                Log.i("mDataList", String.valueOf(mDataList.size()));
-
-                                for( ImageItem dl : mDataList)
-                                {
-
-
-                                    final File f = new File(dl.sourcePath);
-                                    Http.request(OrderSendActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
+                                            "Type", Type,
+                                            "Tags", tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
+                                    ), new Http.RequestListener<OrderDetails>() {
                                         @Override
-                                        public void onSuccess(Token result) {
+                                        public void onSuccess(OrderDetails result) {
                                             super.onSuccess(result);
+                                            Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
+                                            progress_bar.setVisibility(View.GONE);
+                                            removeTempFromPref();
+                                            mDataList.clear();
+                                            if (radio_online.isChecked() == true && Type.equals("2")) {
+                                                intent.setClass(OrderSendActivity.this, PayActivity.class);
+                                                bundle.putSerializable("OrderDetails", result);
+                                                intent.putExtras(bundle);
+                                                startActivity(intent);
+                                            } else {
+                                                finish();
+                                            }
 
-                                            UploadUtils.uploadImage(f, new UploadUtils.Callback() {
-                                                @Override
-                                                public void done(String id) {
-                                                    if (TextUtils.isEmpty(id)) {
-                                                        // 上传失败
-                                                        upload_iamge_num = 0;
-                                                        return;
-                                                    }
-                                                    upload_iamge_num++;
-                                                    sb.append(",").append(id);
-                                                    if(upload_iamge_num == mDataList.size())
-                                                    {
-                                                        Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
-                                                                "Id", String.valueOf(Auth.getCurrentUserId()),
-                                                                "Title", tv_title.getText().toString() + edit_title.getText().toString(),
-                                                                "Address", locationCity,
-                                                                "Content", edit_content.getText().toString(),
-                                                                "latitude", String.valueOf(latitude),
-                                                                "longitude", String.valueOf(longitude),
-                                                                "Category", String.valueOf(((OrderCategory)spinner_category.getSelectedItem()).getId()),
-                                                                "Visibility", TransferVisibility(checkBox_oneclass.isChecked(), checkBox_twoclass.isChecked(), checkBox_stranger.isChecked()),
-                                                                "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
-                                                                "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
-                                                                "Bounty", edit_bounty.getText().toString(),
-                                                                "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
-                                                                "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
-                                                                "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
-                                                                "Photos", sb.deleteCharAt(0).toString(),
-//                                                                "Request", edit_require.getText().toString(),
-                                                                "Type", Type,
-                                                                "Tags",tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
-                                                        ), new Http.RequestListener<OrderDetails>() {
-                                                            @Override
-                                                            public void onSuccess(OrderDetails result) {
-                                                                super.onSuccess(result);
-                                                                progress_bar.setVisibility(View.GONE);
-                                                                Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
-                                                                upload_iamge_num = 0;
-                                                                removeTempFromPref();
-                                                                mDataList.clear();
-                                                                if(radio_online.isChecked() == true && Type.equals("2")) {
-                                                                    intent.setClass(OrderSendActivity.this, PayActivity.class);
-                                                                    bundle.putSerializable("OrderDetails", result);
-                                                                    intent.putExtras(bundle);
-                                                                    startActivity(intent);
-                                                                }
-                                                                else
-                                                                {
-                                                                    finish();
-                                                                }
+                                        }
 
-                                                            }
-
-                                                            @Override
-                                                            public void onFail(String code) {
-                                                                super.onFail(code);
-                                                                progress_bar.setVisibility(View.GONE);
-                                                            }
-                                                        });
-
-
-                                                    }
-
-                                                }
-                                            },result.getUpToken());
+                                        @Override
+                                        public void onFail(String code) {
+                                            super.onFail(code);
+                                            progress_bar.setVisibility(View.GONE);
                                         }
                                     });
 
-                                }//for
+                                } else {
+                                    //boolean success = false ;
+//                                Log.i("mDataList", String.valueOf(mDataList.size()));
 
-                            }//else
+                                    for (ImageItem dl : mDataList) {
+
+
+                                        final File f = new File(dl.sourcePath);
+                                        Http.request(OrderSendActivity.this, API.GetQINIUUploadToken, new Http.RequestListener<Token>() {
+                                            @Override
+                                            public void onSuccess(Token result) {
+                                                super.onSuccess(result);
+
+                                                UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+                                                    @Override
+                                                    public void done(String id) {
+                                                        if (TextUtils.isEmpty(id)) {
+                                                            // 上传失败
+                                                            upload_iamge_num = 0;
+                                                            return;
+                                                        }
+                                                        upload_iamge_num++;
+                                                        sb.append(",").append(id);
+                                                        if (upload_iamge_num == mDataList.size()) {
+                                                            Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
+                                                                    "Id", String.valueOf(Auth.getCurrentUserId()),
+                                                                    "Title", tv_title.getText().toString() + edit_title.getText().toString(),
+                                                                    "Address", locationCity,
+                                                                    "UserLocation",Utils.toJSV(userLocation),
+                                                                    "Content", edit_content.getText().toString(),
+                                                                    "latitude", String.valueOf(latitude),
+                                                                    "longitude", String.valueOf(longitude),
+                                                                    "Category", String.valueOf(((OrderCategory) spinner_category.getSelectedItem()).getId()),
+                                                                    "Visibility", TransferVisibility(checkBox_oneclass.isChecked(), checkBox_twoclass.isChecked(), checkBox_stranger.isChecked()),
+                                                                    "Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText(),
+                                                                    "PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付",
+                                                                    "Bounty", edit_bounty.getText().toString(),
+                                                                    "NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0",
+                                                                    "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
+                                                                    "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
+                                                                    "Photos", sb.deleteCharAt(0).toString(),
+//                                                                "Request", edit_require.getText().toString(),
+                                                                    "Type", Type,
+                                                                    "Tags", tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
+                                                            ), new Http.RequestListener<OrderDetails>() {
+                                                                @Override
+                                                                public void onSuccess(OrderDetails result) {
+                                                                    super.onSuccess(result);
+                                                                    progress_bar.setVisibility(View.GONE);
+                                                                    Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
+                                                                    upload_iamge_num = 0;
+                                                                    removeTempFromPref();
+                                                                    mDataList.clear();
+                                                                    if (radio_online.isChecked() == true && Type.equals("2")) {
+                                                                        intent.setClass(OrderSendActivity.this, PayActivity.class);
+                                                                        bundle.putSerializable("OrderDetails", result);
+                                                                        intent.putExtras(bundle);
+                                                                        startActivity(intent);
+                                                                    } else {
+                                                                        finish();
+                                                                    }
+
+                                                                }
+
+                                                                @Override
+                                                                public void onFail(String code) {
+                                                                    super.onFail(code);
+                                                                    progress_bar.setVisibility(View.GONE);
+                                                                }
+                                                            });
+
+
+                                                        }
+
+                                                    }
+                                                }, result.getUpToken());
+                                            }
+                                        });
+
+                                    }//for
+
+                                }//else
+                            }
                         }
                     }
                 }
@@ -396,73 +395,73 @@ public class OrderSendActivity extends BaseActivity{
         saveTempToPref();
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        Log.i("onSaveInstanceState", edit_title.getText().toString());
-        outState.putString("Title", edit_title.getText().toString());
-        outState.putString("Content", edit_content.getText().toString());
-//        outState.putInt("Category", spinner_category.getSelectedItemPosition());
-        outState.putString("Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText());
-        outState.putString("PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付");
-        outState.putString("Bounty", edit_bounty.getText().toString());
-        outState.putString("NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0");
-        outState.putString("LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0");
-        outState.putString("PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0");
-//        outState.putString("Request", edit_require.getText().toString());
-        super.onSaveInstanceState(outState);
-        saveTempToPref();
-
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        Log.i("onRestoreInstanceState", savedInstanceState.getString("Title"));
-        edit_title.setText(savedInstanceState.getString("Title"));
-        edit_content.setText(savedInstanceState.getString("Content"));
-//        spinner_category.setSelection(savedInstanceState.getInt("Category"));
-        String[] dataArr = savedInstanceState.getString("Deadline").split(" ");
-        txt_deadlinedate.setText(dataArr[0]);
-        txt_deadlinetime.setText(dataArr[1]);
-        if(savedInstanceState.getString("PaymentMethod").equals("线上支付"))
-        {
-            radio_online.setChecked(true);
-            radio_offline.setChecked(false);
-        }
-        else
-        {
-            radio_online.setChecked(false);
-            radio_offline.setChecked(true);
-        }
-        edit_bounty.setText(savedInstanceState.getString("Bounty"));
-        if(savedInstanceState.getString("NameAnonymity").equals("1"))
-        {
-            checkBox_anonymous.setChecked(true);
-        }
-        else
-        {
-            checkBox_anonymous.setChecked(false);
-        }
-        if(savedInstanceState.getString("LocationAnonymity").equals("1"))
-        {
-            checkBox_donotshowlocation.setChecked(true);
-        }
-        else
-        {
-            checkBox_donotshowlocation.setChecked(false);
-        }
-        if(savedInstanceState.getString("PhoneAnonymity").equals("1"))
-        {
-            checkBox_donotshowphonenum.setChecked(true);
-        }
-        else
-        {
-            checkBox_donotshowphonenum.setChecked(false);
-        }
-//        edit_require.setText(savedInstanceState.getString("Request"));
-
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle outState)
+//    {
+//        Log.i("onSaveInstanceState", edit_title.getText().toString());
+//        outState.putString("Title", edit_title.getText().toString());
+//        outState.putString("Content", edit_content.getText().toString());
+////        outState.putInt("Category", spinner_category.getSelectedItemPosition());
+//        outState.putString("Deadline", txt_deadlinedate.getText() + " " + txt_deadlinetime.getText());
+//        outState.putString("PaymentMethod", radio_online.isChecked() ? "线上支付" : "线下支付");
+//        outState.putString("Bounty", edit_bounty.getText().toString());
+//        outState.putString("NameAnonymity", checkBox_anonymous.isChecked() ? "1" : "0");
+//        outState.putString("LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0");
+//        outState.putString("PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0");
+////        outState.putString("Request", edit_require.getText().toString());
+//        super.onSaveInstanceState(outState);
+//        saveTempToPref();
+//
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        Log.i("onRestoreInstanceState", savedInstanceState.getString("Title"));
+//        edit_title.setText(savedInstanceState.getString("Title"));
+//        edit_content.setText(savedInstanceState.getString("Content"));
+////        spinner_category.setSelection(savedInstanceState.getInt("Category"));
+//        String[] dataArr = savedInstanceState.getString("Deadline").split(" ");
+//        txt_deadlinedate.setText(dataArr[0]);
+//        txt_deadlinetime.setText(dataArr[1]);
+//        if(savedInstanceState.getString("PaymentMethod").equals("线上支付"))
+//        {
+//            radio_online.setChecked(true);
+//            radio_offline.setChecked(false);
+//        }
+//        else
+//        {
+//            radio_online.setChecked(false);
+//            radio_offline.setChecked(true);
+//        }
+//        edit_bounty.setText(savedInstanceState.getString("Bounty"));
+//        if(savedInstanceState.getString("NameAnonymity").equals("1"))
+//        {
+//            checkBox_anonymous.setChecked(true);
+//        }
+//        else
+//        {
+//            checkBox_anonymous.setChecked(false);
+//        }
+//        if(savedInstanceState.getString("LocationAnonymity").equals("1"))
+//        {
+//            checkBox_donotshowlocation.setChecked(true);
+//        }
+//        else
+//        {
+//            checkBox_donotshowlocation.setChecked(false);
+//        }
+//        if(savedInstanceState.getString("PhoneAnonymity").equals("1"))
+//        {
+//            checkBox_donotshowphonenum.setChecked(true);
+//        }
+//        else
+//        {
+//            checkBox_donotshowphonenum.setChecked(false);
+//        }
+////        edit_require.setText(savedInstanceState.getString("Request"));
+//
+//    }
 
     private void saveTempToPref()
     {
@@ -980,7 +979,7 @@ public class OrderSendActivity extends BaseActivity{
 //        edit_tag = (EditText)findViewById(R.id.edit_tag);
         tagView = (TagView)findViewById(R.id.tagview);
 
-        txt_location.setText(locationCity);
+
         tv_progress_content.setText("正在发单");
 //        if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
 //            ImageUtils.setImageUrl(iv_avatar, Auth.getCurrentUser().getAvatar());
@@ -1046,14 +1045,14 @@ public class OrderSendActivity extends BaseActivity{
         if(getIntent().getStringExtra("self") != null && getIntent().getStringExtra("self").equals("self"))
         {
             edit_bounty.setHint("索酬");
-            tb_title.setText("自荐单");
+            tb_title.setText("助人单");
             Type = "1";
             tv_title.setText("我能 · ");
         }
         if(getIntent().getStringExtra("demand")!=null && getIntent().getStringExtra("demand").equals("demand"))
         {
             edit_bounty.setHint("赏金");
-            tb_title.setText("需求单");
+            tb_title.setText("求助单");
             Type = "2";
             tv_title.setText("我要 · ");
         }
@@ -1208,8 +1207,14 @@ public class OrderSendActivity extends BaseActivity{
         public void onReceiveLocation(BDLocation location) {
 
             locationCity = location.getAddrStr();
+            userLocation.setProvince(location.getProvince());
+            userLocation.setCity(location.getCity());
+            userLocation.setDistrict(location.getDistrict());
+            userLocation.setStreet(location.getStreet());
+            userLocation.setStreetNumber(location.getStreetNumber());
             latitude = location.getLatitude();
             longitude = location.getLongitude();
+            txt_location.setText(location.getProvince() + location.getCity() + location.getDistrict());
         }
     }
 

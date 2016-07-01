@@ -3,9 +3,11 @@ package appframe.appframe.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 
 import appframe.appframe.R;
@@ -24,14 +26,23 @@ public class SplashActivity extends BaseActivity {
         Runnable r = new Runnable() {
             @Override
             public void run() {
+                SharedPreferences sp = getSharedPreferences("firstviewpager", Context.MODE_PRIVATE);
+                String Viewed = sp.getString("viewed", null);
+                if (!TextUtils.isEmpty(Viewed))
+                {
+                    if(Auth.isLoggedIn()){
+                        Intent i = new Intent(SplashActivity.this, HomeActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    }else{
 
-                if(Auth.isLoggedIn()){
-                    Intent i = new Intent(SplashActivity.this, HomeActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                }else{
-
-                    Intent i = new Intent(SplashActivity.this, RegisterActivity.class);
+                        Intent i = new Intent(SplashActivity.this, RegisterActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    }
+                }
+                else {
+                    Intent i = new Intent(SplashActivity.this, ViewPagerActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                 }

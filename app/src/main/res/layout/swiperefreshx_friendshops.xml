@@ -12,14 +12,22 @@
         android:layout_centerHorizontal="true"/>
 
     <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/niv_myavatar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        
+        />
+    <ImageView
         android:id="@+id/iv_myavatar"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:src="@drawable/default_avatar"
-        />
+        android:visibility="invisible"/>
     <TextView
         android:id="@+id/tv_myname"
         android:layout_width="120dp"
@@ -66,12 +74,19 @@
         android:background="@color/bg_gray">
 
         <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/niv_youravatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="10dp"
+
+            />
+        <ImageView
             android:id="@+id/iv_youravatar"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="10dp"
-            android:src="@drawable/default_avatar"
-            />
+            android:src="@drawable/maleavatar"
+            android:visibility="invisible"/>
         <TextView
             android:id="@+id/tv_yourname"
             android:layout_width="120dp"

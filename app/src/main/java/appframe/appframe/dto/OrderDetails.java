@@ -14,6 +14,7 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
     private String Title;
     private double Bounty;
     private String Address;
+    private UserLocation UserLocation;
     private String Category;
     private String Content;
     private String Photos;
@@ -34,6 +35,7 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
     private List<ConfirmedOrderDetail> Candidate;
     private int  BossPaid;
     private String Tags;
+    private double Prepay;
 
 
 
@@ -67,6 +69,14 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
 
     public void setAddress(String address) {
         Address = address;
+    }
+
+    public appframe.appframe.dto.UserLocation getUserLocation() {
+        return UserLocation;
+    }
+
+    public void setUserLocation(appframe.appframe.dto.UserLocation userLocation) {
+        UserLocation = userLocation;
     }
 
     public String getCategory() {
@@ -227,5 +237,13 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
 
     public void setTags(String tags) {
         Tags = tags;
+    }
+
+    public double getPrepay() {
+        return Prepay;
+    }
+
+    public void setPrepay(double prepay) {
+        Prepay = prepay;
     }
 }

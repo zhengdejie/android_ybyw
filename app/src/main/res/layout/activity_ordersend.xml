@@ -286,15 +286,17 @@
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="40dp"
-                            android:text="一度"
+                            android:text="一度好友"
                             android:id="@+id/checkBox_oneclass"
                             android:layout_weight="1"
                             android:checked="true"
+                            android:textSize="14sp"
                             android:layout_toRightOf="@+id/tv_range"/>
                         <CheckBox
                             android:layout_width="wrap_content"
                             android:layout_height="40dp"
-                            android:text="二度"
+                            android:text="二度好友"
+                            android:textSize="14sp"
                             android:id="@+id/checkBox_twoclass"
                             android:layout_weight="1"
                             android:layout_gravity="center"
@@ -308,11 +310,23 @@
                             android:layout_weight="1"
                             android:layout_gravity="center"
                             android:checked="true"
+                            android:textSize="14sp"
                             android:layout_toRightOf="@+id/checkBox_twoclass"/>
                     </LinearLayout>
 
                 </RelativeLayout>
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content">-->
 
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="40dp"-->
+                        <!--android:text="一度好友是与您关系密切的直接好友二度好友是您的间接朋友，是您的一度朋友的好友圈"-->
+                        <!--android:gravity="center"-->
+                        <!--android:paddingLeft="20dp"-->
+                        <!--android:textSize="14sp"/>-->
+                <!--</RelativeLayout>-->
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -383,12 +397,14 @@
                                 android:text="线上支付"
                                 android:id="@+id/radio_online"
                                 android:layout_weight="1"
+                                android:textSize="14sp"
                                 android:checked="true"/>
 
                             <RadioButton
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:text="线下支付"
+                                android:textSize="14sp"
                                 android:id="@+id/radio_offline"
                                 android:layout_weight="1"/>
                         </RadioGroup>
@@ -424,6 +440,7 @@
                             android:id="@+id/checkBox_anonymous"
                             android:layout_weight="1"
                             android:checked="false"
+                            android:textSize="14sp"
                             android:layout_toRightOf="@+id/tv_range"/>
                         <CheckBox
                             android:layout_width="wrap_content"
@@ -433,6 +450,7 @@
                             android:layout_weight="1"
                             android:layout_gravity="center"
                             android:checked="false"
+                            android:textSize="14sp"
                             android:layout_toRightOf="@+id/checkBox_oneclass"/>
                         <CheckBox
                             android:layout_width="wrap_content"
@@ -442,6 +460,7 @@
                             android:layout_weight="1"
                             android:layout_gravity="center"
                             android:checked="false"
+                            android:textSize="14sp"
                             android:layout_toRightOf="@+id/checkBox_twoclass"/>
                     </LinearLayout>
 

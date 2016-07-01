@@ -5,12 +5,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -19,13 +21,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.AnswerDetail;
 import appframe.appframe.dto.AnswerDetailWithQuestionDetail;
 import appframe.appframe.dto.OrderComment;
+import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.Question;
 import appframe.appframe.dto.QuestionWithAnswers;
 import appframe.appframe.dto.SelfEvaluationDetail;
@@ -33,7 +40,10 @@ import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
+import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXAnswerAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXQuestionAdapater;
 
@@ -42,17 +52,22 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXQuestionAdapater;
  */
 public class QuestionDetailsActivity extends BaseActivity implements View.OnClickListener {
 
-    private TextView tb_back,tb_title,tb_action,tv_name,tv_title,tv_content,tv_money,tv_comment,btn_comment,tv_acceptedname,tv_acceptcontent,tv_acceptedtime;
+    private TextView tb_back,tb_title,tb_action,tv_name,tv_title,tv_content,tv_money,tv_comment,btn_comment,tv_acceptedname,tv_acceptcontent,tv_acceptedtime,tv_answer;
     private ImageView imgbtn_conversation,imgbtn_call;
     private com.android.volley.toolbox.NetworkImageView iv_avatar,iv_acceptedavatar;
     private RatingBar rb_totalvalue;
     private RelativeLayout rl_accepted;
     private ListView lv_ordercomment;
+    private GridView gridview;
+//    SwipeRefreshX swipeRefresh;
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
     Question question;
     String Tel;
-    boolean hasAccept = false;
+    AnswerDetail answerDetail;
+    int page = 1;
+    SwipeRefreshXAnswerAdapater swipeRefreshXAnswerAdapater;
+//    boolean hasAccept = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +79,7 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
     private void init()
     {
         iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
+        gridview =(GridView)findViewById(R.id.gridview);
         iv_acceptedavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_acceptedavatar);
         imgbtn_conversation = (ImageView)findViewById(R.id.imgbtn_conversation);
         imgbtn_call = (ImageView)findViewById(R.id.imgbtn_call);
@@ -82,6 +98,7 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
         tv_acceptcontent = (TextView)findViewById(R.id.tv_acceptcontent);
         tv_acceptedtime = (TextView)findViewById(R.id.tv_acceptedtime);
         rl_accepted = (RelativeLayout)findViewById(R.id.rl_accepted);
+        tv_answer = (TextView)findViewById(R.id.tv_answer);
 
         tb_back.setOnClickListener(this);
         iv_avatar.setOnClickListener(this);
@@ -89,11 +106,16 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
         imgbtn_call.setOnClickListener(this);
         btn_comment.setOnClickListener(this);
         rl_accepted.setOnClickListener(this);
+        tv_answer.setOnClickListener(this);
 
         tb_action.setVisibility(View.GONE);
         tb_title.setText("问答");
         tb_back.setText("友帮");
 
+//        swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
+//
+//        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+//                android.R.color.holo_orange_light, android.R.color.holo_red_light);
         lv_ordercomment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -102,8 +124,8 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
                 intent.setClass(QuestionDetailsActivity.this, AnswerDetailsActivity.class);
                 AnswerDetail answerDetails = (AnswerDetail) parent.getAdapter().getItem(position);
                 bundle.putSerializable("AnswerDetail", answerDetails);
-                bundle.putString("QuestionID", String.valueOf(question.getId()));
-                bundle.putBoolean("hasAccept",hasAccept);
+                bundle.putSerializable("Question", question);
+//                bundle.putBoolean("hasAccept",hasAccept);
                 intent.putExtras(bundle);
                 startActivity(intent);
 
@@ -111,27 +133,44 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
             }
         });
 
-        Intent intent = this.getIntent();
-        if(intent.getSerializableExtra("Question") != null)
+        Intent getintent = this.getIntent();
+        if(getintent.getSerializableExtra("Question") != null)
         {
-            question = (Question) intent.getSerializableExtra("Question");
+            question = (Question) getintent.getSerializableExtra("Question");
 
         }
-        if(intent.getSerializableExtra("MyAnswer") != null)
+        if(getintent.getSerializableExtra("MyAnswer") != null)
         {
-            question = (Question) intent.getSerializableExtra("MyAnswer");
+            question = (Question) getintent.getSerializableExtra("MyAnswer");
 
         }
-        if(intent.getSerializableExtra("QuestionMessage") != null)
+        if(getintent.getSerializableExtra("QuestionMessage") != null)
         {
-            question = (Question) intent.getSerializableExtra("QuestionMessage");
+            question = (Question) getintent.getSerializableExtra("QuestionMessage");
 
         }
 
+        if(question.getPhotos() != null && question.getPhotos() != "") {
+            List<String> photoPath = new ArrayList<String>();
+            for (String photsCount : question.getPhotos().toString().split(",")) {
+                photoPath.add(photsCount);
+            }
+            gridview.setAdapter(new OrderDetailsGridViewAdapater(QuestionDetailsActivity.this,photoPath));
+            gridview.setVisibility(View.VISIBLE);
+            gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent();
+                    intent.setClass(QuestionDetailsActivity.this, AvatarZoomActivity.class);
+                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+                    startActivity(intent);
+                }
+            });
+        }
 
         if(question.getAcceptedAnswer() != null)
         {
-            hasAccept = true;
+//            hasAccept = true;
             rl_accepted.setVisibility(View.VISIBLE);
             tv_acceptedname.setText(question.getAcceptedAnswer().getAnswerer().getName());
             tv_acceptcontent.setText(question.getAcceptedAnswer().getContent());
@@ -177,35 +216,146 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
         }
 
         Tel = question.getAsker().getMobile() == null ? "" : question.getAsker().getMobile().toString();
-
+        rb_totalvalue.setRating((float) question.getAsker().getTotalBossPoint());
         tv_name.setText(question.getAsker().getName().toString());
         tv_title.setText(question.getTitle().toString());
         tv_content.setText(question.getContent().toString());
         tv_money.setText(String.valueOf(question.getBounty()));
 
+//        // 下拉刷新监听器
+//        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//
+//            @Override
+//            public void onRefresh() {
+//
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put("Page", "1");
+//                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+//
+//                Http.request(QuestionDetailsActivity.this, API.GET_ANSWERS, new Object[]{question.getId(),Http.getURL(map)},
+//                        new Http.RequestListener<QuestionWithAnswers>() {
+//                            @Override
+//                            public void onSuccess(QuestionWithAnswers result) {
+//                                super.onSuccess(result);
+//                                page = 1;
+//                                swipeRefresh.setRefreshing(false);
+//                                if (result != null) {
+//                                    swipeRefreshXAnswerAdapater = new SwipeRefreshXAnswerAdapater(QuestionDetailsActivity.this, result.getAnswerDetails());
+//                                    lv_ordercomment.setAdapter(swipeRefreshXAnswerAdapater);
+//
+//                                    setListViewHeightBasedOnChildren(lv_ordercomment);
+//                                    if(result.getMyAnswer() != null)
+//                                    {
+//                                        btn_comment.setText("查看我的回答");
+//                                        answerDetail = result.getMyAnswer();
+//                                    }
+//                                    else
+//                                    {
+//                                        btn_comment.setText("添加答案");
+//                                    }
+//                                    tv_comment.setText(result.getQuestionDetail().getTotalAnswers() + "条回答");
+//                                }
+//
+//
+//                            }
+//
+//                            @Override
+//                            public void onFail(String code) {
+//                                super.onFail(code);
+//                                swipeRefresh.setRefreshing(false);
+//                            }
+//                        });
+//
+//            }
+//        });
+//        // 加载监听器
+//        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
+//
+//            @Override
+//            public void onLoad() {
+//
+//                page++;
+//                Map<String, String> map = new HashMap<String, String>();
+//                map.put("Page", String.valueOf(page));
+//                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+//
+//                Http.request(QuestionDetailsActivity.this, API.GET_ANSWERS, new Object[]{question.getId(),Http.getURL(map)},
+//                        new Http.RequestListener<QuestionWithAnswers>() {
+//                            @Override
+//                            public void onSuccess(QuestionWithAnswers result) {
+//                                super.onSuccess(result);
+//
+//                                swipeRefresh.setLoading(false);
+//                                if (result != null) {
+//                                    loadMore(swipeRefreshXAnswerAdapater, result.getAnswerDetails());
+//
+//                                    setListViewHeightBasedOnChildren(lv_ordercomment);
+//                                    if(result.getMyAnswer() != null)
+//                                    {
+//                                        btn_comment.setText("查看我的回答");
+//                                        answerDetail = result.getMyAnswer();
+//                                    }
+//                                    else
+//                                    {
+//                                        btn_comment.setText("添加答案");
+//                                    }
+//                                    tv_comment.setText(result.getQuestionDetail().getTotalAnswers() + "条回答");
+//                                }
+//
+//
+//                            }
+//
+//                            @Override
+//                            public void onFail(String code) {
+//                                super.onFail(code);
+//                                swipeRefresh.setLoading(false);
+//                            }
+//                        });
+//
+//            }
+//        });
 
     }
 
+    private void loadMore(SwipeRefreshXAnswerAdapater adapater, List<AnswerDetail> orderDetailses) {
+        adapater.addItems(orderDetailses);
+    }
     @Override
     protected void onResume() {
         super.onResume();
 
-        Http.request(QuestionDetailsActivity.this, API.GET_ANSWERS, new Object[]{question.getId()},
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("Page", "1");
+        map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+
+        Http.request(QuestionDetailsActivity.this, API.GET_ANSWERS, new Object[]{question.getId(),Http.getURL(map)},
                 new Http.RequestListener<QuestionWithAnswers>() {
                     @Override
                     public void onSuccess(QuestionWithAnswers result) {
                         super.onSuccess(result);
                         if (result != null) {
-                            lv_ordercomment.setAdapter(new SwipeRefreshXAnswerAdapater(QuestionDetailsActivity.this, result.getAnswerDetails()));
+                            swipeRefreshXAnswerAdapater = new SwipeRefreshXAnswerAdapater(QuestionDetailsActivity.this, result.getAnswerDetails());
+                            lv_ordercomment.setAdapter(swipeRefreshXAnswerAdapater);
 
                             setListViewHeightBasedOnChildren(lv_ordercomment);
-                        }
-                        if (question.getAcceptedAnswer() != null) {
-                            tv_comment.setText(String.format("(%d条）回答", result != null ? result.getAnswerDetails().size() + 1 : 1));
-                        } else {
-                            tv_comment.setText(String.format("(%d条）回答", result != null ? result.getAnswerDetails().size() : 0));
+                            if(result.getMyAnswer() != null)
+                            {
+                                btn_comment.setText("查看我的回答");
+                                answerDetail = result.getMyAnswer();
+                            }
+                            else
+                            {
+                                btn_comment.setText("添加答案");
+                            }
+                            tv_comment.setText(result.getQuestionDetail().getTotalAnswers() + "条回答");
                         }
 
+
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
                     }
                 });
     }
@@ -258,71 +408,84 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
 //                }
                 break;
             case R.id.btn_comment:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                //final EditText comment = new EditText(this);
-                LayoutInflater inflater = getLayoutInflater();
-                View layout = inflater.inflate(R.layout.dialog_dispute, (ViewGroup) findViewById(R.id.dialog));
-                final EditText comment = (EditText)layout.findViewById(R.id.et_message);
-                builder.setTitle("添加答案").setView(
-                        layout).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(!comment.getText().toString().equals("")) {
-                            Http.request(QuestionDetailsActivity.this, API.MAKE_ANSWERS, new Object[]{question.getId()}, Http.map(
-                                            "Content", comment.getText().toString()),
+                if(btn_comment.getText().equals("查看我的回答"))
+                {
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    intent.setClass(QuestionDetailsActivity.this, AnswerDetailsActivity.class);
+                    bundle.putSerializable("AnswerDetail", answerDetail);
+                    bundle.putSerializable("Question", question);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    //final EditText comment = new EditText(this);
+                    LayoutInflater inflater = getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.dialog_dispute, (ViewGroup) findViewById(R.id.dialog));
+                    final EditText comment = (EditText) layout.findViewById(R.id.et_message);
+                    builder.setTitle("添加答案").setView(
+                            layout).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (!comment.getText().toString().equals("")) {
+                                Http.request(QuestionDetailsActivity.this, API.MAKE_ANSWERS, new Object[]{question.getId()}, Http.map(
+                                                "Content", comment.getText().toString()),
 
-                                    new Http.RequestListener<String>() {
-                                        @Override
-                                        public void onSuccess(String result) {
-                                            super.onSuccess(result);
-                                            btn_comment.setVisibility(View.GONE);
-//                                            Http.request(QuestionDetailsActivity.this, API.GET_ANSWERS, new Object[]{question.getId()},
-//                                                    new Http.RequestListener<QuestionWithAnswers>() {
-//                                                        @Override
-//                                                        public void onSuccess(QuestionWithAnswers result) {
-//                                                            super.onSuccess(result);
-//
-//                                                            lv_ordercomment.setAdapter(new SwipeRefreshXAnswerAdapater(QuestionDetailsActivity.this, result.getAnswerDetails()));
-//
-//                                                            setListViewHeightBasedOnChildren(lv_ordercomment);
-//                                                            if(question.getAcceptedAnswer() != null) {
-//                                                                tv_comment.setText(String.format("(%d条）回答", result != null ? result.getAnswerDetails().size() + 1 : 1));
-//                                                            }
-//                                                            else
-//                                                            {
-//                                                                tv_comment.setText(String.format("(%d条）回答", result != null ? result.getAnswerDetails().size() : 0));
-//                                                            }
-//
-//                                                        }
-//
-//                                                        @Override
-//                                                        public void onFail(String code) {
-//                                                            super.onFail(code);
-//                                                            Toast.makeText(QuestionDetailsActivity.this, code, Toast.LENGTH_SHORT).show();
-//                                                        }
-//                                                    });
+                                        new Http.RequestListener<String>() {
+                                            @Override
+                                            public void onSuccess(String result) {
+                                                super.onSuccess(result);
+//                                                btn_comment.setVisibility(View.GONE);
+                                                Map<String, String> map = new HashMap<String, String>();
+                                                map.put("Page", "1");
+                                                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                                                Http.request(QuestionDetailsActivity.this, API.GET_ANSWERS, new Object[]{question.getId(),Http.getURL(map)},
+                                                        new Http.RequestListener<QuestionWithAnswers>() {
+                                                            @Override
+                                                            public void onSuccess(QuestionWithAnswers result) {
+                                                                super.onSuccess(result);
+                                                                if (result != null) {
+                                                                    swipeRefreshXAnswerAdapater = new SwipeRefreshXAnswerAdapater(QuestionDetailsActivity.this, result.getAnswerDetails());
+                                                                    lv_ordercomment.setAdapter(swipeRefreshXAnswerAdapater);
 
-                                        }
+                                                                    setListViewHeightBasedOnChildren(lv_ordercomment);
+                                                                    if(result.getMyAnswer() != null)
+                                                                    {
+                                                                        btn_comment.setText("查看我的回答");
+                                                                        answerDetail = result.getMyAnswer();
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        btn_comment.setText("添加答案");
+                                                                    }
+                                                                    tv_comment.setText(result.getQuestionDetail().getTotalAnswers() + "条回答");
+                                                                }
 
-                                        @Override
-                                        public void onFail(String code) {
-                                            super.onFail(code);
-                                            Toast.makeText(QuestionDetailsActivity.this, code, Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
+
+                                                            }
+                                                        });
+
+                                            }
+
+                                            @Override
+                                            public void onFail(String code) {
+                                                super.onFail(code);
+                                                Toast.makeText(QuestionDetailsActivity.this, code, Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                dialog.dismiss();
+                            } else {
+                                Toast.makeText(QuestionDetailsActivity.this, "答案不能为空", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
-                        else
-                        {
-                            Toast.makeText(QuestionDetailsActivity.this, "答案不能为空", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+                    }).show();
+                }
                 break;
             case R.id.rl_accepted:
                 Intent intent = new Intent();
@@ -330,13 +493,21 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
                 intent.setClass(QuestionDetailsActivity.this, AnswerDetailsActivity.class);
                 AnswerDetail answerDetails = question.getAcceptedAnswer();
                 bundle.putSerializable("AnswerDetail", answerDetails);
-                bundle.putString("QuestionID", String.valueOf(question.getId()));
-                bundle.putBoolean("hasAccept",hasAccept);
+                bundle.putSerializable("Question", question);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
             case R.id.tb_back:
                 finish();
+                break;
+            case R.id.tv_answer:
+                Intent intentanswer = new Intent();
+                Bundle bundleanswer = new Bundle();
+                intentanswer.setClass(QuestionDetailsActivity.this, AnswerAllActivity.class);
+                //Bundle bundle = new Bundle();
+                bundleanswer.putSerializable("Question", question);
+                intentanswer.putExtras(bundleanswer);
+                startActivity(intentanswer);
                 break;
         }
     }

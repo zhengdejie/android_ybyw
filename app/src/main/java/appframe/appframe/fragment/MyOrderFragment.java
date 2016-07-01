@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,9 @@ import appframe.appframe.dto.ConfirmedOrderUndoCount;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXConfirmedOrderAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 
 /**
@@ -46,7 +49,11 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
     View root,bottomLine_progress,bottomLine_done,bottomLine_close,bottomLine_apply;
     LinearLayout tabtop;
     LinearLayout progress_bar;
-    String from;
+    SwipeRefreshX swipeRefresh;
+    SwipeRefreshXConfirmedOrderAdapater swipeRefreshXConfirmedOrderAdapater;
+    String from,Status;
+    int page = 1;
+    Map<String, String> map = new HashMap<String, String>();;
 //    boolean require_selected =true;
 
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +77,9 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
         tv_empty = (TextView) root.findViewById(R.id.tv_empty);
         tv_progess = (TextView) root.findViewById(R.id.tv_progess);
         tv_done = (TextView) root.findViewById(R.id.tv_done);
+        swipeRefresh = (SwipeRefreshX)root.findViewById(R.id.swipeRefresh);
+        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
+                android.R.color.holo_orange_light, android.R.color.holo_red_light);
 //        tv_recommand = (TextView) root.findViewById(R.id.tv_recommand);
 //        tv_action = (TextView) root.findViewById(R.id.tv_action);
         bottomLine_progress = (View) root.findViewById(R.id.bottomLine_progress);
@@ -120,6 +130,96 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
 //                startActivity(intent);
 //            }
 //        });
+        // 下拉刷新监听器
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+
+                map.put("Status", Status);
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
+                    @Override
+                    public void onSuccess(List<ConfirmedOrderDetail> result) {
+                        super.onSuccess(result);
+                        swipeRefresh.setRefreshing(false);
+                        page = 1;
+                        progress_bar.setVisibility(View.GONE);
+                        swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, from);
+                        proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
+                        if (result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        } else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setRefreshing(false);
+                        progress_bar.setVisibility(View.GONE);
+                    }
+                });
+
+                Http.request(getActivity(), API.GET_ORDER_NUM, new Http.RequestListener<ConfirmedOrderUndoCount>() {
+                    @Override
+                    public void onSuccess(ConfirmedOrderUndoCount result) {
+                        super.onSuccess(result);
+
+                        tv_apply.setText(String.valueOf(result.getPendingCount()));
+                        tv_progess.setText(String.valueOf(result.getOngoingCount()));
+                        tv_done.setText(String.valueOf(result.getUnReviewedCount()));
+
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+
+                    }
+                });
+
+            }
+        });
+        // 加载监听器
+        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
+
+            @Override
+            public void onLoad() {
+
+                page++;
+                map.put("Status", Status);
+                map.put("Page", String.valueOf(page));
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map)},
+                        new Http.RequestListener<List<ConfirmedOrderDetail>>() {
+                            @Override
+                            public void onSuccess(List<ConfirmedOrderDetail> result) {
+                                super.onSuccess(result);
+                                if (result != null) {
+
+                                    loadMore(swipeRefreshXConfirmedOrderAdapater, result);
+                                }
+                                swipeRefresh.setLoading(false);
+                            }
+
+                            @Override
+                            public void onFail(String code) {
+                                super.onFail(code);
+                                swipeRefresh.setLoading(false);
+                            }
+                        });
+
+
+            }
+        });
+    }
+
+    private void loadMore(SwipeRefreshXConfirmedOrderAdapater adapater, List<ConfirmedOrderDetail> orderDetailses) {
+        adapater.addItems(orderDetailses);
     }
 
     @Override
@@ -185,6 +285,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
 //
 //                break;
             case R.id.tab_apply:
+                map.clear();
                 setTabApply(true);
                 setTabPrgess(false);
                 setTabDone(false);
@@ -192,14 +293,18 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 proListView.setAdapter(null);
                 progress_bar.setVisibility(View.VISIBLE);
                 from = AppConfig.ORDERSTATUS_APPLY;
-                Map<String, String> map_apply = new HashMap<String, String>();
-                map_apply.put("Status", "3");
-                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map_apply)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
+                Status = "3";
+                map.put("Status", Status);
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
                     @Override
                     public void onSuccess(List<ConfirmedOrderDetail> result) {
                         super.onSuccess(result);
+                        page = 1;
                         progress_bar.setVisibility(View.GONE);
-                        proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_APPLY));
+                        swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_APPLY);
+                        proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
                         if(result != null && result.size() != 0) {
                             tv_empty.setVisibility(View.GONE);
                         }
@@ -235,6 +340,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
 
                 break;
             case R.id.tab_progess:
+                map.clear();
                 setTabApply(false);
                 setTabPrgess(true);
                 setTabDone(false);
@@ -242,14 +348,19 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 proListView.setAdapter(null);
                 progress_bar.setVisibility(View.VISIBLE);
                 from = AppConfig.ORDERSTATUS_PROGRESS;
-                Map<String, String> map = new HashMap<String, String>();
-                map.put("Status", "1");
+//                Map<String, String> map = new HashMap<String, String>();
+                Status = "1";
+                map.put("Status", Status);
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
                 Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
                     @Override
                     public void onSuccess(List<ConfirmedOrderDetail> result) {
                         super.onSuccess(result);
+                        page = 1;
                         progress_bar.setVisibility(View.GONE);
-                        proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_PROGRESS));
+                        swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_PROGRESS);
+                        proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
                         if(result != null && result.size() != 0) {
                             tv_empty.setVisibility(View.GONE);
                         }
@@ -284,6 +395,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 });
                 break;
             case R.id.tab_done:
+                map.clear();
                 setTabApply(false);
                 setTabPrgess(false);
                 setTabDone(true);
@@ -291,14 +403,19 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 proListView.setAdapter(null);
                 progress_bar.setVisibility(View.VISIBLE);
                 from = AppConfig.ORDERSTATUS_DONE;
-                Map<String, String> map_done = new HashMap<String, String>();
-                map_done.put("Status", "2");
-                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map_done)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
+//                Map<String, String> map_done = new HashMap<String, String>();
+                Status = "2";
+                map.put("Status", Status);
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
                     @Override
                     public void onSuccess(List<ConfirmedOrderDetail> result) {
                         super.onSuccess(result);
+                        page = 1;
                         progress_bar.setVisibility(View.GONE);
-                        proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_DONE));
+                        swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_DONE);
+                        proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
                         if(result != null && result.size() != 0) {
                             tv_empty.setVisibility(View.GONE);
                         }
@@ -333,6 +450,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 });
                 break;
             case R.id.tab_close:
+                map.clear();
                 setTabApply(false);
                 setTabPrgess(false);
                 setTabDone(false);
@@ -340,14 +458,19 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                 proListView.setAdapter(null);
                 progress_bar.setVisibility(View.VISIBLE);
                 from = AppConfig.ORDERSTATUS_CLOSE;
-                Map<String, String> map_close = new HashMap<String, String>();
-                map_close.put("Status", "0");
-                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map_close)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
+//                Map<String, String> map_close = new HashMap<String, String>();
+                Status = "0";
+                map.put("Status", Status);
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                Http.request(getActivity(), API.GET_CONFIRMEDORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<ConfirmedOrderDetail>>() {
                     @Override
                     public void onSuccess(List<ConfirmedOrderDetail> result) {
                         super.onSuccess(result);
+                        page = 1;
                         progress_bar.setVisibility(View.GONE);
-                        proListView.setAdapter(new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_CLOSE));
+                        swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_CLOSE);
+                        proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
                         if(result != null && result.size() != 0) {
                             tv_empty.setVisibility(View.GONE);
                         }

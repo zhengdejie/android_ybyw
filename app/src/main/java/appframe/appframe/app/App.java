@@ -14,6 +14,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.Poi;
+//import com.crashlytics.android.Crashlytics;
 import com.github.snowdream.android.util.Log;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -29,6 +30,7 @@ import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.utils.MemoryCache;
 import appframe.appframe.utils.Utils;
 import cn.smssdk.SMSSDK;
+//import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by dashi on 15/6/11.
@@ -97,6 +99,7 @@ public class App extends Application {
 //        // 将该app注册到微信
         msgApi.registerApp(AppConfig.WX_APP_ID);
 
+//        Fabric.with(this, new Crashlytics());
     }
 
 

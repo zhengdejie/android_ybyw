@@ -9,12 +9,16 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.Question;
+import appframe.appframe.dto.UserBrief;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
@@ -29,6 +33,11 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
     ListView listView;
     TextView tb_title,tb_back,tv_empty;
     LinearLayout progress_bar;
+    int userID;
+    UserBrief userBrief;
+    int page = 1;
+    boolean getUnpaid = false;
+    SwipeRefreshXMyQuestionAdapater swipeRefreshXMyQuestionAdapater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +56,7 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
         progress_bar.setVisibility(View.VISIBLE);
 
         tb_back.setText("我的");
-        tb_title.setText("我提问的");
+
         tb_back.setOnClickListener(this);
 
         swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
@@ -60,7 +69,7 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
-                intent.setClass(MyQuestionActivity.this, OrderDetailsActivity.class);
+                intent.setClass(MyQuestionActivity.this, QuestionDetailsActivity.class);
 
                 Question question = (Question) parent.getAdapter().getItem(position);
                 Bundle bundle = new Bundle();
@@ -71,7 +80,19 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
             }
         });
 
-
+        userBrief = (UserBrief)getIntent().getSerializableExtra("friendsinfo");
+        if(userBrief != null)
+        {
+            userID = userBrief.getId();
+            tb_title.setText(String.format("%s提问的",userBrief.getName()));
+            getUnpaid = false;
+        }
+        else
+        {
+            userID = Auth.getCurrentUserId();
+            tb_title.setText("我提问的");
+            getUnpaid = true;
+        }
 
     }
 
@@ -79,12 +100,17 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
 
     public void initdata()
     {
-        Http.request(MyQuestionActivity.this, API.GET_MYQUESTION, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<Question>>() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("Page", "1");
+        map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+        map.put("GetUnpaidQuestion", String.valueOf(getUnpaid));
+        Http.request(MyQuestionActivity.this, API.GET_MYQUESTION, new Object[]{userID,Http.getURL(map)}, new Http.RequestListener<List<Question>>() {
             @Override
             public void onSuccess(List<Question> result) {
                 super.onSuccess(result);
                 progress_bar.setVisibility(View.GONE);
-                listView.setAdapter(new SwipeRefreshXMyQuestionAdapater(MyQuestionActivity.this, result));
+                swipeRefreshXMyQuestionAdapater = new SwipeRefreshXMyQuestionAdapater(MyQuestionActivity.this, result);
+                listView.setAdapter(swipeRefreshXMyQuestionAdapater);
                 if(result != null && result.size() != 0) {
                     tv_empty.setVisibility(View.GONE);
                 }
@@ -106,17 +132,21 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
 
             @Override
             public void onRefresh() {
-
-                Http.request(MyQuestionActivity.this, API.GET_MYQUESTION, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<Question>>() {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("GetUnpaidQuestion", String.valueOf(getUnpaid));
+                Http.request(MyQuestionActivity.this, API.GET_MYQUESTION, new Object[]{Auth.getCurrentUserId(), Http.getURL(map)}, new Http.RequestListener<List<Question>>() {
                     @Override
                     public void onSuccess(List<Question> result) {
                         super.onSuccess(result);
+                        page = 1;
                         swipeRefresh.setRefreshing(false);
-                        listView.setAdapter(new SwipeRefreshXMyQuestionAdapater(MyQuestionActivity.this, result));
-                        if(result != null && result.size() != 0) {
+                        swipeRefreshXMyQuestionAdapater = new SwipeRefreshXMyQuestionAdapater(MyQuestionActivity.this, result);
+                        listView.setAdapter(swipeRefreshXMyQuestionAdapater);
+                        if (result != null && result.size() != 0) {
                             tv_empty.setVisibility(View.GONE);
-                        }
-                        else {
+                        } else {
                             tv_empty.setVisibility(View.VISIBLE);
                         }
                     }
@@ -132,35 +162,40 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
             }
         });
         // 加载监听器
-//        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
-//
-//            @Override
-//            public void onLoad() {
-//
-////                Page++;
-////                Map<String, String> map = new HashMap<String, String>();
-////                map.put("Page", String.valueOf(Page));
-////                map.put("Limit", String.valueOf(AppConfig.ORDER_SIZE));
-////                map.put("Latitude", latitude);
-////                map.put("Longitude", longitude);
-////                map.put("UserId", String.valueOf(Auth.getCurrentUserId()));
-////
-////                Http.request(NearByActivity.this, API.GET_USERNEARBY, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<Nearby>>() {
-////                    @Override
-////                    public void onSuccess(List<Nearby> result) {
-////                        super.onSuccess(result);
-////                        if (result != null) {
-////
-////                            adapater.addItems(result);
-////                        }
-////                        //listView.setAdapter(adapater);
-////
-////                    }
-////                });
+        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
+
+            @Override
+            public void onLoad() {
+                page++;
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", String.valueOf(page));
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                map.put("GetUnpaidQuestion", String.valueOf(getUnpaid));
+                Http.request(MyQuestionActivity.this, API.GET_MYQUESTION, new Object[]{Auth.getCurrentUserId(), Http.getURL(map)}, new Http.RequestListener<List<Question>>() {
+                    @Override
+                    public void onSuccess(List<Question> result) {
+                        super.onSuccess(result);
+                        swipeRefresh.setLoading(false);
+                        if (result != null) {
+
+                            loadMore(swipeRefreshXMyQuestionAdapater, result);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setLoading(false);
+                    }
+                });
 //                swipeRefresh.setLoading(false);
-//
-//            }
-//        });
+
+            }
+        });
+    }
+
+    private void loadMore(SwipeRefreshXMyQuestionAdapater adapater, List<Question> orderDetailses) {
+        adapater.addItems(orderDetailses);
     }
 
     @Override

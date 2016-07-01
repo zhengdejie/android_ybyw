@@ -1,44 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/title_bar"
-        layout="@layout/titlebar" />
-
-    <View
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/divide"
-        />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <include
+            android:id="@+id/title_bar"
+            layout="@layout/titlebar" />
 
-    <Button
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="友问友帮 1.0.0"
+            android:gravity="center"
+            android:textSize="16dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_score"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:drawableRight="@drawable/aliwx_arrow"
+            android:text="@string/score" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+        <TextView
+            android:id="@+id/tv_help"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:drawableRight="@drawable/aliwx_arrow"
+            android:text="@string/help" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divide"
+            />
+
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/score"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/help"
-        android:gravity="left|center"
-        android:paddingLeft="10dp"
-        android:background="@color/white"
-        />
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divide"
-        />
-
-</LinearLayout>
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:id="@+id/tv_protocol"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="友帮软件许可及服务协议"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            android:textColor="#56abe4"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="烛龙科技有限公司 版权所有"
+            android:gravity="center"
+             />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Copyright 2016 zhulong. All Right Reserved."
+            android:gravity="center"
+            />
+    </LinearLayout>
+</RelativeLayout>

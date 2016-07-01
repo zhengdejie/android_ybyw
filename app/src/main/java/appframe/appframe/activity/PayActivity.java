@@ -175,11 +175,11 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
 
         if(Candidate != null) {
             double Amount = 0.0;
-            for(ConfirmedOrderDetail confirmedOrderDetail : Candidate.getCandidate())
-            {
-                if(confirmedOrderDetail.getStatus() == 11)
-                {
-                    Amount = Arith.add(Amount,confirmedOrderDetail.getBid());
+            if(Candidate.getCandidate() != null) {
+                for (ConfirmedOrderDetail confirmedOrderDetail : Candidate.getCandidate()) {
+                    if (confirmedOrderDetail.getStatus() == 11) {
+                        Amount = Arith.add(Amount, confirmedOrderDetail.getBid());
+                    }
                 }
             }
             //关闭订单
@@ -189,6 +189,10 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
             else if (Candidate.getOrderStatus().equals("0"))
             {
                 Amount = Arith.add(Amount,Candidate.getBounty());
+            }
+            else if (Candidate.getOrderStatus().equals("4"))
+            {
+                Amount = Arith.sub(Candidate.getBounty(), Candidate.getPrepay());
             }
             else
             {
@@ -522,7 +526,14 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                         {
                             ActionType = "5";
                         }
+                        else if (Candidate.getOrderStatus().equals("4"))
+                        {
+                            ActionType = "11";
+                        }
+                        else
+                        {
 
+                        }
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
                                         "ActionType", ActionType,
                                         "PlatformType", PlatformType,
@@ -573,7 +584,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     if(question != null)
                     {
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
-                                        "ActionType", "2",
+                                        "ActionType", "9",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(question.getId())),
@@ -625,7 +636,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     if(myQuestion != null)
                     {
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
-                                        "ActionType", "2",
+                                        "ActionType", "9",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(myQuestion.getId())),
@@ -864,7 +875,14 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                         {
                             ActionType = "5";
                         }
+                        else if (Candidate.getOrderStatus().equals("4"))
+                        {
+                            ActionType = "11";
+                        }
+                        else
+                        {
 
+                        }
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
                                         "ActionType", ActionType,
                                         "PlatformType", PlatformType,
@@ -898,7 +916,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     if(question != null)
                     {
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
-                                        "ActionType", "2",
+                                        "ActionType", "9",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(question.getId())),
@@ -931,7 +949,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     if(myQuestion != null)
                     {
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
-                                        "ActionType", "2",
+                                        "ActionType", "9",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(myQuestion.getId())),
@@ -1113,7 +1131,14 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                         {
                             ActionType = "5";
                         }
+                        else if (Candidate.getOrderStatus().equals("4"))
+                        {
+                            ActionType = "11";
+                        }
+                        else
+                        {
 
+                        }
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
                                         "ActionType", ActionType,
                                         "PlatformType", PlatformType,
@@ -1138,7 +1163,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     //提问
                     if(question != null) {
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
-                                        "ActionType", "2",
+                                        "ActionType", "9",
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(question.getId())),
@@ -1162,7 +1187,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     //我的提问
                     if(myQuestion != null) {
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
-                                        "ActionType", "2",
+                                        "ActionType", "9",
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(myQuestion.getId())),

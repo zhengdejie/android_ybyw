@@ -47,7 +47,7 @@ public class TradeHistoryActivity extends BaseActivity implements View.OnClickLi
         progress_bar.setVisibility(View.VISIBLE);
 
         tb_back.setText("我的");
-        tb_title.setText("我提问的");
+        tb_title.setText("购买的服务");
         tb_back.setOnClickListener(this);
 
         swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
@@ -58,10 +58,17 @@ public class TradeHistoryActivity extends BaseActivity implements View.OnClickLi
 
         if (getIntent().getStringExtra("buyservice") != null && !getIntent().getStringExtra("buyservice").toString().equals("")) {
             map_apply.put("Type", getIntent().getStringExtra("buyservice").toString());
+            if (getIntent().getStringExtra("name") != null && !getIntent().getStringExtra("name").toString().equals("")) {
+                tb_title.setText(String.format("%s购买的服务", getIntent().getStringExtra("name").toString()));
+            }
         }
         if (getIntent().getStringExtra("sellservice") != null && !getIntent().getStringExtra("sellservice").toString().equals("")) {
             map_apply.put("Type", getIntent().getStringExtra("sellservice").toString());
+            if (getIntent().getStringExtra("name") != null && !getIntent().getStringExtra("name").toString().equals("")) {
+                tb_title.setText(String.format("%s出售的服务", getIntent().getStringExtra("name").toString()));
+            }
         }
+
 //        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

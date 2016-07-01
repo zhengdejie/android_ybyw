@@ -72,6 +72,7 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
             mHolder.txt_title = (TextView)convertView.findViewById(R.id.txt_title);
             mHolder.txt_bounty = (TextView)convertView.findViewById(R.id.txt_bounty);
             mHolder.tv_content = (TextView)convertView.findViewById(R.id.tv_content);
+            mHolder.tv_answerunm = (TextView)convertView.findViewById(R.id.tv_answerunm);
 
 //            mHolder.txt_tag = (TextView)convertView.findViewById(R.id.txt_tag);
 //            mHolder.btn_estimate = (Button)convertView.findViewById(R.id.btn_estimate);
@@ -96,6 +97,7 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
         convertView.setBackgroundResource(R.drawable.listview_item_pressed);
         final Question item = questionList.get(position);
 
+        mHolder.tv_answerunm.setText(item.getTotalAnswers() +"条回答");
         if(item.getPhotos() != null && item.getPhotos() != "") {
             List<String> photoPath = new ArrayList<String>();
             for (String photsCount : item.getPhotos().toString().split(",")) {
@@ -103,15 +105,19 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
             }
             mHolder.gridView.setAdapter(new OrderDetailsGridViewAdapater(context,photoPath));
             mHolder.gridView.setVisibility(View.VISIBLE);
-            mHolder.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent();
-                    intent.setClass(context, AvatarZoomActivity.class);
-                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
-                    context.startActivity(intent);
-                }
-            });
+//            mHolder.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    Intent intent = new Intent();
+//                    intent.setClass(context, AvatarZoomActivity.class);
+//                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+//                    context.startActivity(intent);
+//                }
+//            });
+        }
+        else
+        {
+            mHolder.gridView.setVisibility(View.GONE);
         }
         mHolder.txt_title.setText(item.getTitle());
         mHolder.tv_content.setText(item.getContent());
@@ -181,6 +187,7 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
 //                ImageUtils.setImageUrl(mHolder.iv_avatar, item.getOrderer().getAvatar());
 //            }
 //        }
+        mHolder.rb_totalvalue.setRating((float) item.getAsker().getTotalBossPoint());
 //        if(orderType == 1) {
 //            mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalWorkerPoint());
 //        }
@@ -205,7 +212,15 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
 //        {
 //            mHolder.tv_pay.setText("未支付");
 //        }
-        mHolder.tv_numofconforder.setText(String.format("友帮了%d次", item.getAsker().getCompletedNumberOfOrder()));
+        if(item.getAcceptedAnswer() != null)
+        {
+            mHolder.tv_pay.setText("已赏");
+        }
+        else
+        {
+            mHolder.tv_pay.setText("悬赏中");
+        }
+        mHolder.tv_numofconforder.setText(String.format("(友帮了%d次)", item.getAsker().getCompletedNumberOfOrder()));
 //        mHolder.btn_finish.setVisibility(View.GONE);
 //        mHolder.btn_candidate.setVisibility(View.GONE);
 //        switch (from)
@@ -407,7 +422,7 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
     static class ViewHolder
     {
         //        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_pay,tv_numofconforder,txt_tag;
-        private TextView txt_title,txt_bounty,tv_name,tv_pay,tv_numofconforder,tv_content;
+        private TextView txt_title,txt_bounty,tv_name,tv_pay,tv_numofconforder,tv_content,tv_answerunm;
         private com.android.volley.toolbox.NetworkImageView iv_avatar;
         //        private Button btn_estimate,btn_finish,btn_candidate;
         private RatingBar rb_totalvalue;

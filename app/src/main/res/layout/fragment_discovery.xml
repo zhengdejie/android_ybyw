@@ -72,7 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="没有相关订单"
+        android:text="没有相关好友足迹"
         android:visibility="gone"
         android:layout_below="@+id/tv_friend"
         />

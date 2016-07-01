@@ -91,8 +91,10 @@ public class UploadUtils {
                     Pattern pattern = Pattern.compile("^\\d{11}$");
                     Matcher matcher = pattern.matcher(ContactMobile);
                     if(matcher.matches()) {
-                        UserContact userContact = new UserContact(ContactName, ContactMobile);
-                        contactsList.add(userContact);
+                        if(ContactName != null && !ContactName.equals("") && ContactMobile != null && !ContactMobile.equals("")) {
+                            UserContact userContact = new UserContact(ContactName, ContactMobile);
+                            contactsList.add(userContact);
+                        }
                     }
                 }
                 cursorPhone.close();

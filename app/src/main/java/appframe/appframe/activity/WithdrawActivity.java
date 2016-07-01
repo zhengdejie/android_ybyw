@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
@@ -20,9 +21,9 @@ import appframe.appframe.utils.Http;
  */
 public class WithdrawActivity extends BaseActivity implements View.OnClickListener {
 
-    private TextView tb_title,tb_back,tv_yuer,tv_alipay,tv_weixing;
+    private TextView tb_title,tb_back,tv_yuer,tv_send;
     private EditText et_amount,et_name,et_account;
-    private Button btn_send;
+
     Drawable icon;
 
     @Override
@@ -37,19 +38,19 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tv_yuer = (TextView)findViewById(R.id.tv_yuer);
-        tv_alipay = (TextView)findViewById(R.id.tv_alipay);
-        tv_weixing = (TextView)findViewById(R.id.tv_weixing);
+//        tv_alipay = (TextView)findViewById(R.id.tv_alipay);
+//        tv_weixing = (TextView)findViewById(R.id.tv_weixing);
         et_amount = (EditText)findViewById(R.id.et_amount);
         et_name = (EditText)findViewById(R.id.et_name);
         et_account = (EditText)findViewById(R.id.et_account);
-        btn_send = (Button)findViewById(R.id.btn_send);
+        tv_send = (TextView)findViewById(R.id.tv_send);
         tb_back.setText("返回");
         tb_title.setText("提现");
         tb_back.setOnClickListener(this);
-        tv_alipay.setOnClickListener(this);
-        tv_weixing.setOnClickListener(this);
-        btn_send.setOnClickListener(this);
-        icon = getResources().getDrawable(R.drawable.ic_task_status_list_check);
+//        tv_alipay.setOnClickListener(this);
+//        tv_weixing.setOnClickListener(this);
+        tv_send.setOnClickListener(this);
+//        icon = getResources().getDrawable(R.drawable.ic_task_status_list_check);
         et_amount.addTextChangedListener(textWatcher);
     }
     private TextWatcher textWatcher = new TextWatcher(){
@@ -111,26 +112,55 @@ public class WithdrawActivity extends BaseActivity implements View.OnClickListen
                 finish();
 
                 break;
-            case R.id.tv_alipay:
-                tv_alipay.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
-                tv_weixing.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-                break;
-            case R.id.tv_weixing:
-                tv_alipay.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-                tv_weixing.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
-                break;
-            case R.id.btn_send:
-                Http.request(this, API.WITHDRAWAPPLY, new Object[]{Auth.getCurrentUserId()},
-                        Http.map("Account",et_account.getText().toString(),
-                                "Amount",et_amount.getText().toString(),
-                                "UserName",et_name.getText().toString()),
-                        new Http.RequestListener<String>() {
-                    @Override
-                    public void onSuccess(String result) {
-                        super.onSuccess(result);
-                        finish();
+//            case R.id.tv_alipay:
+//                tv_alipay.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+//                tv_weixing.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+//                break;
+//            case R.id.tv_weixing:
+//                tv_alipay.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+//                tv_weixing.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+//                break;
+            case R.id.tv_send:
+                if(et_account.getText().toString().equals(""))
+                {
+                    Toast.makeText(this,"请填写支付宝账号",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    if(et_name.getText().toString().equals(""))
+                    {
+                        Toast.makeText(this,"请填写姓名",Toast.LENGTH_SHORT).show();
                     }
-                });
+                    else
+                    {
+                        if(et_amount.getText().toString().equals(""))
+                        {
+                            Toast.makeText(this,"请填写提现金额",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            if(Double.parseDouble(et_amount.getText().toString()) < 100.00)
+                            {
+                                Toast.makeText(this,"提现金额最低为100元",Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Http.request(this, API.WITHDRAWAPPLY, new Object[]{Auth.getCurrentUserId()},
+                                        Http.map("Account",et_account.getText().toString(),
+                                                "Amount",et_amount.getText().toString(),
+                                                "UserName",et_name.getText().toString()),
+                                        new Http.RequestListener<String>() {
+                                            @Override
+                                            public void onSuccess(String result) {
+                                                super.onSuccess(result);
+                                                finish();
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                }
+
                 break;
         }
     }

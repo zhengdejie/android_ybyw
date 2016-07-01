@@ -29,7 +29,7 @@
             android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:src="@drawable/default_avatar"
+
             />
 
         <LinearLayout
@@ -41,14 +41,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:text="hhh"
-                android:gravity="center|left"/>
+                android:gravity="center|left"
+                android:layout_marginLeft="5dp"/>
             <TextView
                 android:id="@+id/tv_remark"
                 android:layout_width="match_parent"
                 android:layout_height="25dp"
                 android:text="一度好友"
                 android:gravity="center|left"
-                android:textColor="@color/font_gray"/>
+                android:textColor="@color/font_gray"
+                android:layout_marginLeft="5dp"/>
         </LinearLayout>
 
         <!--<TextView-->

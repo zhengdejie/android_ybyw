@@ -33,6 +33,7 @@ import com.baidu.location.BDLocationListener;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyRep;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -245,6 +246,29 @@ public class OrderFragment extends BaseFragment  {
                 friendsFilter.append("," + currentMulti.text);
             }
             if(currentMulti.id == ID_SELECT_BOTH) {
+                friendsFilter.append("," + currentMulti.text);
+            }
+
+        }
+        if(friendsFilter.length()!=0) {
+            friendsFilter.deleteCharAt(0);
+        }
+        return friendsFilter.toString();
+
+    }
+
+    protected String TransferQuestionFriendsFilter(List<DropdownItemObject> DDIO)
+    {
+        StringBuilder friendsFilter = new StringBuilder();
+        for(DropdownItemObject currentMulti : dropdownQuestionSelect.currentMulti)
+        {
+            if(currentMulti.id == ID_QUESTION_SELECT_FIRST) {
+                friendsFilter.append("," + currentMulti.text);
+            }
+            if(currentMulti.id == ID_QUESTION_SELECT_SECOND) {
+                friendsFilter.append("," + currentMulti.text);
+            }
+            if(currentMulti.id == ID_QUESTION_SELECT_BOTH) {
                 friendsFilter.append("," + currentMulti.text);
             }
 
@@ -574,7 +598,7 @@ public class OrderFragment extends BaseFragment  {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Page", "1");
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-                map.put("FriendShip",URLEncoder.encode(TransferFriendsFilter(dropdownQuestionSelect.currentMulti)));
+                map.put("FriendShip",URLEncoder.encode(TransferQuestionFriendsFilter(dropdownQuestionSelect.currentMulti)));
                 map.put("AcceptedAnswer",dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS_ALL) ? "" : dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS) ? "false" : "true");
                 map.put("SortByPriceHighToLow",dropdownQeustionMoney.current.text.toString().equals(QUESTION_ALL) ? "" : dropdownQeustionMoney.current.text.toString().equals(QUESTION_MONEY) ? "false":"true");
 
@@ -707,12 +731,12 @@ public class OrderFragment extends BaseFragment  {
                                 if (hasTopOrder()) {
                                     OrderDetails topOrder = getTopOrder();
                                     List<OrderDetails> list_OD = getOrders(result.getOrderList(), topOrder);
-                                    hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true);
+                                    hasTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), list_OD, AppConfig.ORDERSTATUS_MAIN, true, Type);
                                     listView.setAdapter(hasTopAdapater);
                                     tv_empty.setVisibility(View.GONE);
 
                                 } else {
-                                    hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false);
+                                    hasnotTopAdapater = new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN, false,Type);
                                     listView.setAdapter(hasnotTopAdapater);
                                     tv_empty.setVisibility(View.GONE);
                                 }
@@ -815,10 +839,11 @@ public class OrderFragment extends BaseFragment  {
 
                                 }
                             } else {
-                                Toast.makeText(getActivity(), "没有更多信息", Toast.LENGTH_SHORT).show();
-                            }
+//                                Toast.makeText(getActivity(), "没有更多信息", Toast.LENGTH_SHORT).show();
 
+                            }
                             swipeRefresh.setLoading(false);
+
                         }
 
                         @Override
@@ -974,10 +999,12 @@ public class OrderFragment extends BaseFragment  {
                         if(result != null) {
                             OrderCount = result.getCount();
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
+                            tv_empty.setVisibility(View.GONE);
                         }
                         else
                         {
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
+                            tv_empty.setVisibility(View.VISIBLE);
                         }
 
                     }
@@ -999,10 +1026,12 @@ public class OrderFragment extends BaseFragment  {
                         if(result != null) {
                             OrderCount = result.getCount();
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
+                            tv_empty.setVisibility(View.GONE);
                         }
                         else
                         {
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
+                            tv_empty.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -1024,10 +1053,12 @@ public class OrderFragment extends BaseFragment  {
                         if(result != null) {
                             OrderCount = result.getCount();
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
+                            tv_empty.setVisibility(View.GONE);
                         }
                         else
                         {
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
+                            tv_empty.setVisibility(View.VISIBLE);
                         }
 
                     }
@@ -1049,10 +1080,12 @@ public class OrderFragment extends BaseFragment  {
                         if(result != null) {
                             OrderCount = result.getCount();
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), result.getOrderList(), AppConfig.ORDERSTATUS_MAIN));
+                            tv_empty.setVisibility(View.GONE);
                         }
                         else
                         {
                             listView.setAdapter(new SwipeRefreshXOrderAdapater(getActivity(), null, AppConfig.ORDERSTATUS_MAIN));
+                            tv_empty.setVisibility(View.VISIBLE);
                         }
 
                     }
@@ -1067,11 +1100,11 @@ public class OrderFragment extends BaseFragment  {
             else if (view == dropdownQeustionMoney || view == dropdownQuestionSelect || view == dropdownQuestionStatus)
             {
                 Map<String, String> questionMap = new HashMap<String, String>();
-                map.put("Page", "1");
-                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-                map.put("FriendShip",URLEncoder.encode(TransferFriendsFilter(dropdownQuestionSelect.currentMulti)));
-                map.put("AcceptedAnswer",dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS_ALL) ? "" : dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS) ? "false" : "true");
-                map.put("SortByPriceHighToLow",dropdownQeustionMoney.current.text.toString().equals(QUESTION_ALL) ? "" : dropdownQeustionMoney.current.text.toString().equals(QUESTION_MONEY) ? "false":"true");
+                questionMap.put("Page", "1");
+                questionMap.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                questionMap.put("FriendShip",URLEncoder.encode(TransferFriendsFilter(dropdownQuestionSelect.currentMulti)));
+                questionMap.put("AcceptedAnswer",dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS_ALL) ? "" : dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS) ? "false" : "true");
+                questionMap.put("SortByPriceHighToLow",dropdownQeustionMoney.current.text.toString().equals(QUESTION_ALL) ? "" : dropdownQeustionMoney.current.text.toString().equals(QUESTION_MONEY) ? "true":"false");
 
 
                 Http.request(getActivity(), API.GET_QUESTION, new Object[]{Http.getURL(questionMap)}, new Http.RequestListener<List<Question>>() {
@@ -1079,11 +1112,17 @@ public class OrderFragment extends BaseFragment  {
                     public void onSuccess(List<Question> result) {
                         super.onSuccess(result);
 
-//                        progress_bar.setVisibility(View.GONE);
+                        progress_bar.setVisibility(View.GONE);
                         if (result != null) {
                             swipeRefreshXQuestionAdapater = new SwipeRefreshXQuestionAdapater(getActivity(),result);
                             listView.setAdapter(swipeRefreshXQuestionAdapater);
-
+                            tv_empty.setVisibility(View.GONE);
+                        }
+                        else
+                        {
+                            swipeRefreshXQuestionAdapater = new SwipeRefreshXQuestionAdapater(getActivity(),result);
+                            listView.setAdapter(swipeRefreshXQuestionAdapater);
+                            tv_empty.setVisibility(View.VISIBLE);
                         }
 
                     }
@@ -1092,7 +1131,7 @@ public class OrderFragment extends BaseFragment  {
                     public void onFail(String code) {
                         super.onFail(code);
 
-//                        progress_bar.setVisibility(View.GONE);
+                        progress_bar.setVisibility(View.GONE);
                     }
                 });
             }

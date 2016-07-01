@@ -120,7 +120,7 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
                 });
 
 
-                        // 设置下拉刷新监听器
+         // 下拉刷新监听器
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
             @Override
@@ -174,7 +174,7 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
                             public void onSuccess(List<OrderDetails> result) {
                                 super.onSuccess(result);
                                 if (result != null) {
-                                    swipeRefresh.setLoading(false);
+
                                     loadMore(swipeRefreshXMyMissionAdapater, result);
                                 }
                                 swipeRefresh.setLoading(false);

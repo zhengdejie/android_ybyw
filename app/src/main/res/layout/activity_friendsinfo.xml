@@ -8,12 +8,20 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
     <View
         android:id="@+id/view_divide"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:background="@color/divide"
-        android:layout_below="@+id/title_bar"
+
     />
 
     <com.android.volley.toolbox.NetworkImageView
@@ -22,37 +30,60 @@
         android:layout_height="60dp"
         android:layout_below="@+id/view_divide"
         android:layout_margin="10dp"
-        android:src="@drawable/default_avatar"
     />
 
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="20dp"
         android:text="name"
-        android:textSize="14sp"
         android:layout_toRightOf="@+id/iv_showavatar"
         android:layout_alignTop="@+id/iv_showavatar"
+        android:textSize="16sp"
+        android:gravity="center"
         />
-    <TextView
-        android:id="@+id/tv_member"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:text="身份认证"
+    <ImageView
+        android:id="@+id/iv_gender"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:textSize="14sp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/tv_name"
         android:layout_alignTop="@+id/iv_showavatar"
+        android:src="@drawable/male"
+        />
+    <ImageView
+        android:id="@+id/iv_member"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:textSize="14sp"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/iv_gender"
+        android:layout_alignTop="@+id/iv_showavatar"
+        android:src="@drawable/idflag"
+        />
+    <TextView
+        android:id="@+id/tv_fbnum"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:text="友帮号: "
+        android:textSize="14sp"
+        android:layout_toRightOf="@+id/iv_showavatar"
+        android:layout_below="@+id/tv_name"
+        android:textColor="@color/font_gray"
+        android:gravity="center_vertical"
         />
     <TextView
         android:id="@+id/tv_nickname"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:text="昵称:nickname"
+        android:layout_height="20dp"
+        android:text="昵称: nickname"
         android:textSize="14sp"
         android:layout_toRightOf="@+id/iv_showavatar"
-        android:layout_alignBottom="@+id/iv_showavatar"
+        android:layout_below="@+id/tv_fbnum"
         android:visibility="invisible"
+        android:textColor="@color/font_gray"
+        android:gravity="center_vertical"
         />
 
     <View
@@ -209,5 +240,6 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
         />
-
+    </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

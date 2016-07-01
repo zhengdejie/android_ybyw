@@ -163,7 +163,7 @@
                 android:layout_height="20dp"
                 android:layout_below="@+id/iv_orderestimate"
                 android:textColor="@color/white"
-                android:text="好友评价"
+                android:text="交易评价"
                 android:gravity="center"/>
         </RelativeLayout>
 

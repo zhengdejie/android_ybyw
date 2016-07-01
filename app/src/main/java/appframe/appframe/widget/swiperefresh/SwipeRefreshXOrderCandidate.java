@@ -85,9 +85,23 @@ public class SwipeRefreshXOrderCandidate extends BaseAdapter {
             mHolder = (ViewHolder) convertView.getTag();
         }
         final ConfirmedOrderDetail item = confirmedOrderDetail.get(position);
-        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
-        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
-        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getReceiver().getAvatar());
+//        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+//        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
+        if(item.getReceiver().getAvatar() != null && !item.getReceiver().getAvatar().equals("")) {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getReceiver().getAvatar());
+        }
+        else
+        {
+            if(item.getReceiver().getGender().equals(context.getResources().getString(R.string.male).toString()))
+            {
+                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+            }
+            else
+            {
+                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+            }
+        }
+
 
         mHolder.tv_name.setText(item.getReceiver().getName());
         mHolder.tv_price.setText(String.valueOf(item.getBid()));

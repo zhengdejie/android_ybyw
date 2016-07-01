@@ -158,7 +158,15 @@ public class SwipeRefreshXMyQuestionAdapater extends BaseAdapter {
     public Object getItem(int position) {
         return questionDetails.get(position);
     }
+    //此方法通过activity给view的item添加值。通过notifyDataSetChanged 刷新界面
+    public  void addItems(List<Question> items ){
+        for(Question question : items)
+        {
+            questionDetails.add(question);
+        }
+        notifyDataSetChanged();
 
+    }
 
     @Override
     public long getItemId(int position) {

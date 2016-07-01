@@ -1,27 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
 
-    <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/pager"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="0dp" />
+    <!--<android.support.v4.view.ViewPager-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:id="@+id/pager"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_marginBottom="45dp"/>-->
 
-    <!--<View-->
+
+
+<!--<View-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="1dp"-->
     <!--android:background="@color/divide"-->
     <!--/>-->
 
-    <include layout="@layout/bottombar" />
+    <!--<include layout="@layout/bottombar" />-->
+
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/fl_bottom"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="80dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:background="#00000000"-->
+        <!-->-->
+
+        <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/bg_gray"/>-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="bottom"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"
+            >
+
+            <FrameLayout
+                android:id="@+id/frame_home"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/bg_gray"/>
+                <TextView
+                    android:id="@+id/tv_ubang"
+                    style="@style/tab_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableTop="@drawable/homegray"
+                    android:gravity="center"
+                    android:text="友帮"
+                    android:textSize="12sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/tab_normal_color" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frame_forum"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_weight="1.0" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/bg_gray"/>
+                <TextView
+                    android:id="@+id/tv_myorder"
+                    style="@style/tab_text_style"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:drawableTop="@drawable/ordergray"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:text="订单"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/tab_normal_color"
+                    />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                >
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/bg_gray"
+                    />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_weight="1.0" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/bg_gray"/>
+                <TextView
+                    android:id="@+id/tv_discovery"
+                    style="@style/tab_text_style"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:drawableTop="@drawable/discoverygray"
+                    android:gravity="center"
+                    android:text="发现"
+                    android:textSize="12sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/tab_normal_color" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0" >
+
+                <!--<RelativeLayout-->
+                <!--android:layout_width="0dip"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1">-->
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/bg_gray"
+                    />
+                <TextView
+                    android:id="@+id/tv_setting"
+                    style="@style/tab_text_style"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:drawableTop="@drawable/mygray"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:text="我的"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/tab_normal_color" />
+
+                <TextView
+                    android:id="@+id/tv_unread"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/aliwx_topbar_icon_new"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/aliwx_unread_text_size"
+                    android:visibility="invisible"
+                    android:layout_gravity="right|top" />
+
+                <!--</RelativeLayout>-->
+
+            </FrameLayout>
+        </LinearLayout>
+
+        <!--<FrameLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_horizontal"-->
+            <!-- -->
+            <!--android:layout_alignParentBottom="true">-->
+
+        <!--</FrameLayout>-->
 
 
 
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="45dp"/>
+    <ImageView
+        android:id="@+id/iv_center"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/homeadd2"
+        android:layout_gravity="center_horizontal|bottom" />
+</FrameLayout>
 
-</LinearLayout>
+
+

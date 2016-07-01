@@ -62,9 +62,23 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
         mHolder.tv_name.setText(item.getName());
         mHolder.tv_distance.setText(getDistance(item.getDistance()));
 
-        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
-        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
-        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+//        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
+//        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
+        if(item.getAvatar() != null && !item.getAvatar().equals("")) {
+            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+        }
+        else
+        {
+            if(item.getGender().equals(context.getResources().getString(R.string.male).toString()))
+            {
+                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+            }
+            else
+            {
+                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+            }
+        }
+//        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
         return convertView;
     }
 

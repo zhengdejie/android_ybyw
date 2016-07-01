@@ -50,7 +50,7 @@ import appframe.appframe.widget.photopicker.view.ImageBucketChooseActivity;
  */
 public class MyInfoActivity extends BaseActivity implements View.OnClickListener{
 
-    private TextView tb_title,tb_back,tv_avatar,tv_nickname,tv_shownickname,tv_sex,tv_showsex,tv_qrcode,tv_district,tv_showdistrict,tv_selfestimate,tv_showselfestimate,tv_author;
+    private TextView tb_title,tb_back,tv_avatar,tv_nickname,tv_shownickname,tv_sex,tv_showsex,tv_qrcode,tv_district,tv_showdistrict,tv_selfestimate,tv_showselfestimate;
     private com.android.volley.toolbox.NetworkImageView iv_showavatar;
     PopupWindows popupWindows;
 
@@ -85,7 +85,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         tv_showsex = (TextView)findViewById(R.id.tv_showsex);
         iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
         tv_showselfestimate = (TextView)findViewById(R.id.tv_showselfestimate);
-        tv_author = (TextView)findViewById(R.id.tv_author);
+//        tv_author = (TextView)findViewById(R.id.tv_author);
         //iv_showavatar.setDefaultImageResId(R.drawable.ic_launcher);
         tb_back.setText("我的");
         tb_title.setText("个人信息");
@@ -98,7 +98,7 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
         tv_district.setOnClickListener(this);
         tv_selfestimate.setOnClickListener(this);
         iv_showavatar.setOnClickListener(this);
-        tv_author.setOnClickListener(this);
+//        tv_author.setOnClickListener(this);
 
         tv_shownickname.setText(Auth.getCurrentUser().getName());
         tv_showsex.setText(Auth.getCurrentUser().getGender());
@@ -161,9 +161,9 @@ public class MyInfoActivity extends BaseActivity implements View.OnClickListener
                     new PopupWindows_Picture(this, tv_avatar);
                 }
                 break;
-            case R.id.tv_author:
-                startActivity(new Intent(this,CertificateActivity.class));
-                break;
+//            case R.id.tv_author:
+//                startActivity(new Intent(this,CertificateActivity.class));
+//                break;
 
         }
 

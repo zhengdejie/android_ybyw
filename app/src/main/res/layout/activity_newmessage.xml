@@ -9,34 +9,34 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/divide"
-        />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:layout_below="@+id/tv_withdraw"
+        >
 
-        <Button
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/receivemessage"
             android:gravity="left|center"
-            android:background="@color/white"
-            android:layout_weight="1"
+            android:paddingLeft="10dp"
             />
 
         <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/switch_message"
-            android:layout_weight="1"
+            android:layout_alignParentRight="true"
             android:checked="true"
-            android:background="@color/white"/>
-    </LinearLayout>
+            android:paddingRight="10dp"
+            />
+    </RelativeLayout>
 </LinearLayout>

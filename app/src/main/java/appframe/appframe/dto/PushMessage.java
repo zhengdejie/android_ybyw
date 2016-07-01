@@ -2,12 +2,14 @@ package appframe.appframe.dto;
 
 
 
+import java.io.Serializable;
+
 import appframe.appframe.utils.Http;
 
 /**
  * Created by Administrator on 2015/11/12.
  */
-public class PushMessage extends Http.BaseDto {
+public class PushMessage extends Http.BaseDto implements Serializable {
     private int Id;
     private String Title;
     private String Content ;

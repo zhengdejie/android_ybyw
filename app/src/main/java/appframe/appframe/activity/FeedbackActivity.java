@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -30,9 +32,8 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
  * Created by Administrator on 2015/11/4.
  */
 public class FeedbackActivity extends BaseActivity implements View.OnClickListener {
-    private TextView tb_title,tb_back;
+    private TextView tb_title,tb_back,bt_send,tv_contentcount;
     private EditText et_content;
-    private Button bt_send;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +46,32 @@ public class FeedbackActivity extends BaseActivity implements View.OnClickListen
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
         et_content = (EditText)findViewById(R.id.et_content);
-        et_content = (EditText)findViewById(R.id.et_content);
-        bt_send = (Button)findViewById(R.id.bt_send);
+        bt_send = (TextView)findViewById(R.id.bt_send);
+        tv_contentcount = (TextView)findViewById(R.id.tv_contentcount);
         tb_back.setText("友帮");
         tb_title.setText("帮助与反馈");
         tb_back.setOnClickListener(this);
         bt_send.setOnClickListener(this);
-
+        et_content.addTextChangedListener(contentWatcher);
     }
 
+    private TextWatcher contentWatcher = new TextWatcher(){
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            tv_contentcount.setText(String.format("%d/250",s.length()));
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     @Override
     public void onClick(View v) {

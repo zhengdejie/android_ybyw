@@ -96,8 +96,10 @@
         <!-- meta-data需要写在application中 -->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="UM9iRbTNDiD4miGO8mW0L0P4" />
-
+            android:value="INDIwhkawG8bhmrCmsbDiHl5BLTimSDv" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="c2b0a3a7e6aaa1066f8276591895db778ed7059d" />
         <activity android:name=".activity.SplashActivity" android:launchMode="singleTop" android:screenOrientation="portrait">
 
             <intent-filter>
@@ -127,7 +129,7 @@
         <activity android:name=".activity.OrderCommentActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.RelativenetActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".activity.WalletActivity"  android:screenOrientation="portrait"/>
-        <!--<activity android:name=".activity.FramedWebViewActivity" android:screenOrientation="portrait"/>-->
+        <activity android:name=".activity.FramedWebViewActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.NearByActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.EstimateActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.MyCollectActivity" android:screenOrientation="portrait"/>
@@ -167,6 +169,12 @@
         <activity android:name=".activity.MyRequireActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.QuestionMessageActivity" android:screenOrientation="portrait"/>
         <activity android:name=".activity.ExpandFriendsActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ViewPagerActivity" android:screenOrientation="portrait" android:launchMode="singleTask" />
+        <activity android:name=".activity.ComplainActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.OrderCommentAllActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.AnswerAllActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.ServiceMoreActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".activity.QuestionMoreActivity" android:screenOrientation="portrait"/>
 
         <activity android:name=".widget.photopicker.view.ImageBucketChooseActivity"  android:screenOrientation="portrait"/>
         <activity android:name=".widget.photopicker.view.ImageChooseActivity"  android:screenOrientation="portrait"/>

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import appframe.appframe.R;
 import appframe.appframe.app.API;
 import appframe.appframe.dto.AnswerDetail;
+import appframe.appframe.dto.Question;
 import appframe.appframe.dto.QuestionWithAnswers;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
@@ -33,11 +34,12 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
     private ImageView imgbtn_conversation,imgbtn_call;
     private com.android.volley.toolbox.NetworkImageView iv_avatar;
     private RatingBar rb_totalvalue;
-    private String QuestionID;
-    boolean hasAccept = false;
+//    private String QuestionID;
+//    boolean hasAccept = false;
 
     Intent intent = new Intent();
     AnswerDetail answerDetail;
+    Question question;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,12 +71,13 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
         tb_title.setText("答案");
 
         Intent intent = this.getIntent();
-        answerDetail =(AnswerDetail)intent.getSerializableExtra("AnswerDetail");
-        QuestionID = intent.getStringExtra("QuestionID");
-        hasAccept = intent.getBooleanExtra("hasAccept",false);
+        answerDetail = (AnswerDetail)intent.getSerializableExtra("AnswerDetail");
+        question = (Question)intent.getSerializableExtra("Question");
+//        QuestionID = intent.getStringExtra("QuestionID");
+//        hasAccept = intent.getBooleanExtra("hasAccept",false);
 
 
-        if(hasAccept)
+        if(question.getAcceptedAnswer() != null || question.getAsker().getId() != Auth.getCurrentUserId())
         {
             tv_accept.setVisibility(View.GONE);
         }
@@ -84,6 +87,7 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
 
         if(answerDetail.getAnswerer().getId() == Auth.getCurrentUserId())
         {
+            tv_accept.setVisibility(View.VISIBLE);
             tv_accept.setText("修改答案");
         }
 
@@ -134,7 +138,7 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if(!comment.getText().toString().equals("")) {
-                                Http.request(AnswerDetailsActivity.this, API.UPDATE_MYANSWER, new Object[]{QuestionID}, Http.map(
+                                Http.request(AnswerDetailsActivity.this, API.UPDATE_MYANSWER, new Object[]{question.getId()}, Http.map(
                                                 "Content", comment.getText().toString()),
 
                                         new Http.RequestListener<AnswerDetail>() {
@@ -166,7 +170,7 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
                     }).show();
                 }
                 else {
-                    Http.request(AnswerDetailsActivity.this, API.ACCEPT_ANSWERS, new Object[]{QuestionID, answerDetail.getId()},
+                    Http.request(AnswerDetailsActivity.this, API.ACCEPT_ANSWERS, new Object[]{question.getId(), answerDetail.getId()},
 
                             new Http.RequestListener<String>() {
                                 @Override

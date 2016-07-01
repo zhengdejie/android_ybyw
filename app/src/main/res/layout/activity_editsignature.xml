@@ -8,19 +8,56 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:text="个人说明"
+        android:layout_margin="10dp"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="@color/bg_gray"/>
     <EditText
         android:id="@+id/et_signature"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-    <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/iv_showavatar"
+        android:layout_height="80dp"
+        android:background="@drawable/editext_none"
+        android:padding="10dp"
+        android:inputType="textMultiLine"
+        android:hint=""
+        android:textSize="14sp"
+        android:maxLength="250"
+        android:gravity="top"/>
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="80dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:gravity="center_vertical"
-        />
+        android:layout_height="1sp"
+        android:background="@color/bg_gray"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:text="个人相册"
+        android:layout_margin="10dp"
+        />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="@color/bg_gray"/>
+    <GridView
+        android:id="@+id/gridview"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_margin="10dp"
+        android:horizontalSpacing="-80dp"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:verticalSpacing="5dp"
+        android:layout_below="@+id/tv_contentcount"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1sp"
+        android:background="@color/bg_gray"/>
 </LinearLayout>

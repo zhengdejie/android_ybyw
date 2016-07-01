@@ -15,16 +15,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
+import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.FriendEvaluationDetail;
 import appframe.appframe.dto.OrderComment;
+import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXFriendEstimateAdapater;
+import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 import appframe.appframe.widget.tagview.Tag;
 import appframe.appframe.widget.tagview.TagView;
@@ -35,10 +40,11 @@ import appframe.appframe.widget.tagview.TagView;
 public class FriendEstimateActivity extends BaseActivity implements View.OnClickListener {
     SwipeRefreshX swipeRefresh;
     ListView listView;
-    TextView tb_title,tb_back,tv_addtag,tb_action;
+    TextView tb_title,tb_back,tv_addtag,tb_action,tv_empty;
     EditText edit_tag;
     TagView tagView;
     String userID;
+    int page = 1;
     SwipeRefreshXFriendEstimateAdapater swipeRefreshXFriendEstimateAdapater;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,7 @@ public class FriendEstimateActivity extends BaseActivity implements View.OnClick
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_action = (TextView)findViewById(R.id.tb_action);
+        tv_empty = (TextView)findViewById(R.id.tv_empty);
         tb_back.setText("TA的口碑");
         tb_title.setText("好友评价");
         Drawable drawable = getResources().getDrawable(R.drawable.add);
@@ -72,50 +79,99 @@ public class FriendEstimateActivity extends BaseActivity implements View.OnClick
         listView = (ListView)findViewById(R.id.lv_friendestimate);
 
         getFriendEvaluation();
-//        Http.request(this, API.GET_FEVALUATION, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<List<FriendEvaluationDetail>>() {
-//            @Override
-//            public void onSuccess(List<FriendEvaluationDetail> result) {
-//                super.onSuccess(result);
-//                swipeRefreshXFriendEstimateAdapater = new SwipeRefreshXFriendEstimateAdapater(FriendEstimateActivity.this, result);
-//                listView.setAdapter(swipeRefreshXFriendEstimateAdapater);
-//
-//
-//            }
-//        });
 
-//        // 设置下拉刷新监听器
-//        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//
-//            @Override
-//            public void onRefresh() {
-//
-//                Toast.makeText(FriendEstimateActivity.this, "refresh", Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
-//        // 加载监听器
-//        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
-//
-//            @Override
-//            public void onLoad() {
-//
-//                Toast.makeText(FriendEstimateActivity.this, "load", Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
+        // 下拉刷新监听器
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+            @Override
+            public void onRefresh() {
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", "1");
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                Http.request(FriendEstimateActivity.this, API.GET_FEVALUATION, new Object[]{userID, Http.getURL(map)}, new Http.RequestListener<List<FriendEvaluationDetail>>() {
+                    @Override
+                    public void onSuccess(List<FriendEvaluationDetail> result) {
+                        super.onSuccess(result);
+                        page = 1;
+                        swipeRefresh.setRefreshing(false);
+                        swipeRefreshXFriendEstimateAdapater = new SwipeRefreshXFriendEstimateAdapater(FriendEstimateActivity.this, result);
+                        listView.setAdapter(swipeRefreshXFriendEstimateAdapater);
+                        if (result != null && result.size() != 0) {
+                            tv_empty.setVisibility(View.GONE);
+                        } else {
+                            tv_empty.setVisibility(View.VISIBLE);
+                        }
+
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setRefreshing(false);
+                    }
+                });
+
+            }
+        });
+        // 加载监听器
+        swipeRefresh.setOnLoadListener(new SwipeRefreshX.OnLoadListener() {
+
+            @Override
+            public void onLoad() {
+
+                page++;
+                Map<String, String> map = new HashMap<String, String>();
+                map.put("Page", String.valueOf(page));
+                map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                Http.request(FriendEstimateActivity.this, API.GET_FEVALUATION, new Object[]{userID, Http.getURL(map)}, new Http.RequestListener<List<FriendEvaluationDetail>>() {
+                    @Override
+                    public void onSuccess(List<FriendEvaluationDetail> result) {
+                        super.onSuccess(result);
+
+                        swipeRefresh.setLoading(false);
+                        if (result != null) {
+
+                            loadMore(swipeRefreshXFriendEstimateAdapater, result);
+                        }
+
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
+                        swipeRefresh.setLoading(false);
+                    }
+                });
+
+
+            }
+        });
     }
 
     public void getFriendEvaluation()
     {
-        Http.request(this, API.GET_FEVALUATION, new Object[]{userID}, new Http.RequestListener<List<FriendEvaluationDetail>>() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("Page", "1");
+        map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+        Http.request(this, API.GET_FEVALUATION, new Object[]{userID,Http.getURL(map)}, new Http.RequestListener<List<FriendEvaluationDetail>>() {
             @Override
             public void onSuccess(List<FriendEvaluationDetail> result) {
                 super.onSuccess(result);
                 swipeRefreshXFriendEstimateAdapater = new SwipeRefreshXFriendEstimateAdapater(FriendEstimateActivity.this, result);
                 listView.setAdapter(swipeRefreshXFriendEstimateAdapater);
+                if(result != null && result.size() != 0) {
+                    tv_empty.setVisibility(View.GONE);
+                }
+                else {
+                    tv_empty.setVisibility(View.VISIBLE);
+                }
 
             }
         });
+    }
+
+    private void loadMore(SwipeRefreshXFriendEstimateAdapater adapater, List<FriendEvaluationDetail> orderDetailses) {
+        adapater.addItems(orderDetailses);
     }
 
     @Override

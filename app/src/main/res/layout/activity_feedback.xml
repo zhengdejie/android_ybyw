@@ -8,49 +8,60 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_margin="10dp">-->
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textSize="20sp"-->
-            <!--android:text="标题:"/>-->
+
+
         <!--<EditText-->
-            <!--android:id="@+id/et_title"-->
+            <!--android:id="@+id/et_content"-->
             <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-
+            <!--android:layout_height="200dp"-->
+            <!--android:inputType="textMultiLine"-->
+            <!--android:layout_gravity="top"-->
+            <!--android:gravity="top"-->
+            <!--android:background="@drawable/shape_edittext"-->
             <!--/>-->
-    <!--</LinearLayout>-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="内容:"
-            android:layout_gravity="start"
-            />
-        <EditText
-            android:id="@+id/et_content"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:inputType="textMultiLine"
-            android:background="@drawable/shape_edittext"
-            />
-    </LinearLayout>
-    <Button
-        android:id="@+id/bt_send"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@drawable/editext_none"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:inputType="textMultiLine"
+                android:hint="描述一下您的反馈内容"
+                android:textSize="14sp"
+                android:maxLength="250"
+                android:gravity="top"/>
+            <TextView
+                android:id="@+id/tv_contentcount"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="0/250"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:textColor="@color/font_gray"
+                android:paddingRight="20dp"
+                android:layout_below="@+id/et_content"
+                android:textSize="14sp"/>
+        </RelativeLayout>
+
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="提交"/>
+        android:layout_height="40dp"
+        android:text="提交"
+        android:id="@+id/bt_send"
+        android:layout_gravity="bottom"
+        android:layout_margin="10dp"
+        android:background="@drawable/textview_clicked"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        />
 </LinearLayout>
