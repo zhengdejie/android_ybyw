@@ -181,7 +181,7 @@ public final class Utils {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(f);
-            bmp.compress(Bitmap.CompressFormat.JPEG, quality, out);
+            bmp.compress(Bitmap.CompressFormat.PNG, quality, out);
             return true;
         } catch (Exception e) {
             Log.e(TAG, "cannot save bitmap", e);
@@ -208,6 +208,24 @@ public final class Utils {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", "AppFrame " + Http.getAuthorizationToken());
             connection.setRequestProperty("Content-Type", "image/jpeg");
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+//            Log.e("Bitmap","returned");
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Exception",e.getMessage());
+            return null;
+        }
+    }
+
+    public static Bitmap getBitmapFromQINIUURL(String src) {
+        try {
+//            Log.e("src",src);
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
             connection.connect();
             InputStream input = connection.getInputStream();

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/listview_item_pressed">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -12,10 +12,16 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp">
         <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/niv_avatar"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:visibility="invisible"
+            />
+        <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="70dp"
             android:layout_height="70dp"
-
+            android:visibility="invisible"
             />
         <TextView
             android:id="@+id/tv_name"
@@ -23,19 +29,20 @@
             android:layout_height="wrap_content"
             android:text="夜黑风高"
             android:textColor="@color/font_gray"
-            android:layout_weight="2"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_toRightOf="@+id/niv_avatar"
+            android:layout_toLeftOf="@+id/tv_time"
             />
         <TextView
             android:id="@+id/tv_time"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/font_gray"
-            android:layout_marginTop="10dp"
-            android:layout_weight="2"
             android:gravity="right"
-            android:text="08-04 8:30"/>
-    </LinearLayout>
+            android:text="08-04 8:30"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,9 +52,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="这个人挺靠谱的"
-            android:layout_marginLeft="70dp"
+            android:layout_margin="10dp"
             android:layout_weight="1"
-            android:textSize="20dp"/>
+            />
         <!--<ImageView-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->

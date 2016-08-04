@@ -281,9 +281,9 @@ public class OrderSendActivity extends BaseActivity{
                                                 intent.putExtras(bundle);
                                                 startActivity(intent);
                                             } else {
-                                                finish();
-                                            }
 
+                                            }
+                                            finish();
                                         }
 
                                         @Override
@@ -351,9 +351,11 @@ public class OrderSendActivity extends BaseActivity{
                                                                         bundle.putSerializable("OrderDetails", result);
                                                                         intent.putExtras(bundle);
                                                                         startActivity(intent);
+
                                                                     } else {
-                                                                        finish();
+
                                                                     }
+                                                                    finish();
 
                                                                 }
 
@@ -488,6 +490,8 @@ public class OrderSendActivity extends BaseActivity{
             }
             if(newtag) {
                 Tag tag = new Tag(tagTitle);
+                tag.layoutColor = getResources().getColor(R.color.bg_gray);
+                tag.radius = 10f;
                 tag.isDeletable = true;
                 tagView.addTag(tag);
             }
@@ -1112,6 +1116,8 @@ public class OrderSendActivity extends BaseActivity{
         if(getIntent().getStringExtra("TagName") != null && !getIntent().getStringExtra("TagName").equals("")) {
             String tagTitle = getIntent().getStringExtra("TagName");
             Tag tag = new Tag(tagTitle);
+            tag.layoutColor = getResources().getColor(R.color.bg_gray);
+            tag.radius = 10f;
             tag.isDeletable = true;
             tagView.addTag(tag);
         }

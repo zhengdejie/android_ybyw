@@ -53,11 +53,20 @@
             android:layout_height="44dp"
             >
             <TextView
-                android:id="@+id/tv_total"
+                android:id="@+id/tv_hint"
                 style="@style/more_item_style"
                 android:layout_width="match_parent"
                 android:layout_height="44dip"
-                android:text="@string/total" />
+                android:text="asddddddddddddddddddddddddddddddddddddddddd"
+                android:layout_toLeftOf="@+id/tv_total"
+                android:textSize="12dp"/>
+            <TextView
+                android:id="@+id/tv_total"
+                style="@style/more_item_style"
+                android:layout_width="wrap_content"
+                android:layout_height="44dip"
+                android:text="@string/total"
+                android:layout_toLeftOf="@+id/tv_showtotal"/>
             <TextView
                 android:id="@+id/tv_showtotal"
                 android:layout_width="wrap_content"
@@ -74,23 +83,36 @@
             android:background="@color/divide"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:orientation="horizontal">
-            <Button
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="接受并关闭订单"
                 android:id="@+id/btn_receivedandclose"
+                android:background="@drawable/textview_clicked"
+                android:textColor="@drawable/textview_pressed"
+                android:gravity="center"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+
                 />
-            <Button
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:text="接受并保留订单"
                 android:id="@+id/btn_receivedandsave"
                 android:layout_gravity="bottom"
                 android:layout_weight="1"
+                android:background="@drawable/textview_clicked"
+                android:textColor="@drawable/textview_pressed"
+                android:gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
                 />
         </LinearLayout>
     </LinearLayout>

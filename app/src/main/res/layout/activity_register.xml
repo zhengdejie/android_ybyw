@@ -11,16 +11,16 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
-    <ImageButton
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:id="@+id/avatar"
-        android:layout_centerHorizontal="true"
-        android:scaleType="centerCrop"
-        android:cropToPadding="true"
-        android:src="@drawable/ic_launcher"
-        android:layout_below="@+id/title_bar"
-        />
+    <!--<ImageButton-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:id="@+id/avatar"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--android:cropToPadding="true"-->
+        <!--android:src="@drawable/ic_launcher"-->
+        <!--android:layout_below="@+id/title_bar"-->
+        <!--/>-->
 
     <!--<EditText-->
         <!--android:layout_width="match_parent"-->
@@ -36,7 +36,7 @@
         android:id="@+id/et_mobile"
         android:layout_gravity="center_horizontal"
         android:hint="手机号码"
-        android:layout_below="@+id/avatar"
+        android:layout_below="@+id/title_bar"
         android:background="@drawable/editext_none"
         android:paddingLeft="10dp"
         android:inputType="phone"/>
@@ -197,7 +197,53 @@
         android:background="@drawable/textview_clicked"
         android:gravity="center"
         android:textSize="20sp"
-        android:textColor="@color/white"
+        android:textColor="@drawable/textview_pressed"
         android:layout_below="@+id/tv_sex"
         />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="已有账号"
+        android:id="@+id/tv_login"
+        android:layout_gravity="bottom"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/textview_clicked"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@drawable/textview_pressed"
+        android:layout_below="@+id/ok"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tv_protocol2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="注册即表示同意我们的"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/font_gray"
+                />
+            <TextView
+                android:id="@+id/tv_protocol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="用户协议"
+                android:gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_toRightOf="@+id/tv_protocol2"
+                android:textColor="#56abe4"
+                />
+        </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>

@@ -1,8 +1,10 @@
 package appframe.appframe.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,10 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,9 +39,11 @@ import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.ConfirmedOrderDetail;
 import appframe.appframe.dto.OrderComment;
+import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.PayResult;
 import appframe.appframe.dto.OnlinePay;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
@@ -51,12 +57,16 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 
     //private ImageView img_avatar;
 //    private TextView tv_name,tv_title,tv_money,tv_time,tv_location,tv_type,tv_status,tv_content,tv_range,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,tv_moneyunit,tv_confirmorderid;
-    private TextView tb_back,tb_action,tb_title,tv_status,tv_title,tv_money,tv_location,tv_serverprovider,tv_serverreceiver,tv_time,tv_confirmorderid,tv_paymethod,tv_finish,tv_estimate;
+    private TextView tb_back,tb_action,tb_title,tv_status,tv_title,tv_money,tv_location,tv_serverprovider,tv_serverreceiver,tv_time,tv_confirmorderid,tv_paymethod,tv_finish,tv_estimate,tv_refundreason,tv_rejectreason;
 //    private ImageButton imgbtn_conversation,imgbtn_call;
     com.android.volley.toolbox.NetworkImageView iv_avatar;
+    private RelativeLayout rl_center,rl_refund,rl_reject;
 //    private Button btn_finish,btn_estimate;
     private String OrderID,Tel;
+    int MessageUserID;
     private ListView lv_ordercomment;
+    private ImageView iv_phone,iv_message;
+
     //    private LinearLayout lly_photos;
 //    private GridView gridView;
 //    private RatingBar rb_totalvalue;
@@ -171,6 +181,13 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                 {
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
+                    if(confirmedOrderDetail.getServiceReceiver().getId() == Auth.getCurrentUserId()) {
+                        bundle.putString("Estimate", "1");
+                    }
+                    else
+                    {
+                        bundle.putString("Estimate", "2");
+                    }
                     bundle.putString("ConfirmedOrderId",String.valueOf(confirmedOrderDetail.getId()));
                     intent.setClass(ConfirmOrderDetailsActivity.this, OrderCommentActivity.class);
                     intent.putExtras(bundle);
@@ -194,36 +211,73 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                 if(tv_estimate.getText() == getResources().getString(R.string.disagree))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage("是否确认拒绝退款并进入纠纷处理环节？您可能需要等待1-30天，让我们客服介入并解决")
-                            .setCancelable(false)
-                            .setPositiveButton("仍然拒绝退款",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog,
-                                                            int id) {
-                                            Http.request(ConfirmOrderDetailsActivity.this, API.REFUND_DISAGREE, new Object[]{String.valueOf(confirmedOrderDetail.getId())}, Http.map(
-                                                    "UserId", String.valueOf(Auth.getCurrentUserId())
-                                            ), new Http.RequestListener<ConfirmedOrderDetail>() {
-                                                @Override
-                                                public void onSuccess(ConfirmedOrderDetail result) {
-                                                    super.onSuccess(result);
-                                                    updateOrderStatus(result,null);
-                                                    Toast.makeText(ConfirmOrderDetailsActivity.this, "不同意退款提交成功", Toast.LENGTH_SHORT).show();
+//                    builder.setMessage("是否确认拒绝退款并进入纠纷处理环节？您可能需要等待1-30天，让我们客服介入并解决")
+//                            .setCancelable(false)
+//                            .setPositiveButton("仍然拒绝退款",
+//                                    new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog,
+//                                                            int id) {
+//                                            Http.request((Activity) context, API.REFUND_DISAGREE, new Object[]{String.valueOf(item.getId())}, Http.map(
+//                                                    "UserId", String.valueOf(Auth.getCurrentUserId())
+//                                            ), new Http.RequestListener<ConfirmedOrderDetail>() {
+//                                                @Override
+//                                                public void onSuccess(ConfirmedOrderDetail result) {
+//                                                    super.onSuccess(result);
+//
+//                                                    Toast.makeText(context, "不同意退款提交成功", Toast.LENGTH_SHORT).show();
+//
+//                                                }
+//                                            });
+//                                        }
+//                                    })
+//                            .setNegativeButton("返回",
+//                                    new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog,
+//                                                            int id) {
+//                                            dialog.dismiss();
+//                                        }
+//                                    });
+//                    AlertDialog dialog = builder.create();
+//                    if (!dialog.isShowing()){
+//                        dialog.show();
+//                    }
 
-                                                }
-                                            });
-                                        }
-                                    })
-                            .setNegativeButton("返回",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog,
-                                                            int id) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                    AlertDialog dialog = builder.create();
-                    if (!dialog.isShowing()){
-                        dialog.show();
-                    }
+                    LayoutInflater inflater =LayoutInflater.from(this);
+                    View layout = inflater.inflate(R.layout.dialog_rejectrefundreason, (ViewGroup) findViewById(R.id.dialog));
+                    final EditText comment = (EditText)layout.findViewById(R.id.et_message);
+                    builder.setTitle("是否确认拒绝退款并进入纠纷处理环节？您可能需要等待1-30天，让我们客服介入并解决").setView(
+                            layout).setPositiveButton("仍然拒绝退款", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(!comment.getText().toString().equals("")) {
+                                Http.request(ConfirmOrderDetailsActivity.this, API.REFUND_DISAGREE, new Object[]{String.valueOf(confirmedOrderDetail.getId())}, Http.map(
+                                        "UserId", String.valueOf(Auth.getCurrentUserId()),
+                                        "RejectRefundReason",comment.getText().toString()
+                                ), new Http.RequestListener<ConfirmedOrderDetail>() {
+                                    @Override
+                                    public void onSuccess(ConfirmedOrderDetail result) {
+                                        super.onSuccess(result);
+
+                                        Toast.makeText(ConfirmOrderDetailsActivity.this, "不同意退款提交成功", Toast.LENGTH_SHORT).show();
+
+
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
+                            else
+                            {
+                                Toast.makeText(ConfirmOrderDetailsActivity.this,"拒绝退款理由不能为空",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+
+
 
                 }
 
@@ -391,8 +445,65 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                     });
                 }
                 break;
+            case R.id.iv_phone:
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Tel)); //直接拨打电话android.intent.action.CALL
+                startActivity(phoneIntent);
+                break;
+            case R.id.iv_message:
+                LoginSampleHelper ls = LoginSampleHelper.getInstance();
+                String target = String.valueOf(MessageUserID);
+                intent = ls.getIMKit().getChattingActivityIntent(target);
+                startActivity(intent);
+                break;
+            case R.id.rl_center:
+                intent.setClass(ConfirmOrderDetailsActivity.this, OrderDetailsActivity.class);
+                OrderDetails orderDetails = confirmedOrderDetail.getOrder();
+
+                bundle.putSerializable("OrderDetails", orderDetails);
+                if (hasTopOrder() && orderDetails.getId() == getTopOrder().getId()) {
+                    bundle.putString("hasTopOrder", "1");
+                }
+                bundle.putString("From", "Order");
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
 
         }
+    }
+
+    //判断有没置顶单
+    protected boolean hasTopOrder()
+    {
+        SharedPreferences sp = getSharedPreferences("TOPORDER", Context.MODE_PRIVATE);
+        String OrderDetails = sp.getString("OrderDetails", null);
+        if (!TextUtils.isEmpty(OrderDetails)) {
+            OrderDetails orderDetails = new OrderDetails();
+            orderDetails = GsonHelper.getGson().fromJson(OrderDetails, OrderDetails.class);
+            return true;
+//            if(orderDetails.getType() == Type)
+//            {
+//                return true;
+//            }
+//            else {
+//                return false;
+//            }
+        }
+        else {
+            return false;
+        }
+    }
+
+    //获取置顶单子
+    protected  OrderDetails  getTopOrder()
+    {
+        OrderDetails orderDetails = new OrderDetails();
+        SharedPreferences sp = getSharedPreferences("TOPORDER", Context.MODE_PRIVATE);
+        String OrderDetails = sp.getString("OrderDetails", null);
+        if (!TextUtils.isEmpty(OrderDetails)) {
+            orderDetails = GsonHelper.getGson().fromJson(OrderDetails, OrderDetails.class);
+        }
+
+        return orderDetails;
     }
 
     public void init()
@@ -416,6 +527,11 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 //        tv_deadline = (TextView)findViewById(R.id.tv_deadline);
 //        tv_name = (TextView)findViewById(R.id.tv_name);
         lv_ordercomment = (ListView)findViewById(R.id.lv_ordercomment);
+        rl_center = (RelativeLayout)findViewById(R.id.rl_center);
+        rl_refund = (RelativeLayout)findViewById(R.id.rl_refund);
+        rl_reject = (RelativeLayout)findViewById(R.id.rl_reject);
+        tv_refundreason = (TextView)findViewById(R.id.tv_refundreason);
+        tv_rejectreason = (TextView)findViewById(R.id.tv_rejectreason);
 //        tv_comment = (TextView)findViewById(R.id.tv_comment);
 //        tv_moneyunit = (TextView)findViewById(R.id.tv_moneyunit);
 //        tv_range = (TextView)findViewById(R.id.tv_range);
@@ -430,10 +546,15 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         ll_button = (LinearLayout)findViewById(R.id.ll_button);
         tv_confirmorderid = (TextView)findViewById(R.id.tv_confirmorderid);
 
+        iv_phone = (ImageView)findViewById(R.id.iv_phone);
+        iv_message = (ImageView)findViewById(R.id.iv_message);
 
         iv_avatar.setOnClickListener(this);
         tv_finish.setOnClickListener(this);
         tv_estimate.setOnClickListener(this);
+        iv_message.setOnClickListener(this);
+        iv_phone.setOnClickListener(this);
+        rl_center.setOnClickListener(this);
 //        imgbtn_conversation.setOnClickListener(this);
 //        imgbtn_call.setOnClickListener(this);
 //        btn_finish.setOnClickListener(this);
@@ -471,6 +592,8 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         }
         else {
             tv_serverprovider.setText(confirmedOrderDetail.getServiceProvider().getName());
+            MessageUserID = confirmedOrderDetail.getServiceProvider().getId();
+            Tel = confirmedOrderDetail.getServiceProvider().getMobile() == null ? "" : confirmedOrderDetail.getServiceProvider().getMobile().toString();
         }
         if(confirmedOrderDetail.getServiceReceiver().getId() == Auth.getCurrentUserId())
         {
@@ -478,6 +601,8 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         }
         else {
             tv_serverreceiver.setText(confirmedOrderDetail.getServiceReceiver().getName());
+            MessageUserID = confirmedOrderDetail.getServiceReceiver().getId();
+            Tel = confirmedOrderDetail.getServiceReceiver().getMobile() == null ? "" : confirmedOrderDetail.getServiceReceiver().getMobile().toString();
         }
 //        if( confirmedOrderDetail.getOrder().getType() == 1 )
 //        {
@@ -489,7 +614,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 //        }
 
         tv_title.setText(confirmedOrderDetail.getOrder().getTitle().toString());
-        tv_money.setText(String.valueOf(confirmedOrderDetail.getOrder().getBounty()));
+        tv_money.setText("￥" + String.valueOf(confirmedOrderDetail.getOrder().getBounty()));
         tv_location.setText(confirmedOrderDetail.getOrder().getAddress().toString());
 //        tv_type.setText(confirmedOrderDetail.getOrder().getCategory().toString());
 //        tv_content.setText(confirmedOrderDetail.getOrder().getContent().toString());
@@ -523,6 +648,16 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         {
             iv_avatar.setDefaultImageResId(R.drawable.defaultphoto);
         }
+        if(confirmedOrderDetail.getRefundReason() != null)
+        {
+            rl_refund.setVisibility(View.VISIBLE);
+            tv_refundreason.setText(confirmedOrderDetail.getRefundReason());
+        }
+        if(confirmedOrderDetail.getRejectRefundReason() != null)
+        {
+            rl_reject.setVisibility(View.VISIBLE);
+            tv_rejectreason.setText(confirmedOrderDetail.getRejectRefundReason());
+        }
 
 //        if(confirmedOrderDetail.getOrder().getPhotos() != null && confirmedOrderDetail.getOrder().getPhotos() != "") {
 //            List<String> photoPath = new ArrayList<String>();
@@ -541,7 +676,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 //                }
 //            });
 //        }
-        Tel = confirmedOrderDetail.getOrder().getOrderer().getMobile() == null ? "" : confirmedOrderDetail.getOrder().getOrderer().getMobile().toString();
+//        Tel = confirmedOrderDetail.getOrder().getOrderer().getMobile() == null ? "" : confirmedOrderDetail.getOrder().getOrderer().getMobile().toString();
         OrderID = String.valueOf(confirmedOrderDetail.getOrder().getId());
 //        tv_range.setText(setRange(confirmedOrderDetail.getOrder().getVisibility()));
         //Log.i("OrderDetailsID--",String.valueOf(orderDetails.getId()));
@@ -608,6 +743,14 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         {
             sb.append("拒绝退款待客服解决");
         }
+        else if(confirmedOrderDetail.getStatus() == 9)
+        {
+            sb.append("待被服务方评价");
+        }
+        else if(confirmedOrderDetail.getStatus() == 10)
+        {
+            sb.append("待服务方评价");
+        }
         else if(confirmedOrderDetail.getStatus() == 11)
         {
             sb.append("待被服务方支付");
@@ -663,7 +806,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
     {
         if(from.equals(AppConfig.ORDERSTATUS_APPLY))
         {
-            if(confirmedOrderDetail.getOrder().getType() == 1 && confirmedOrderDetail.getOrder().getBossPaid() != 1) {
+            if(confirmedOrderDetail.getOrder().getType() == 1 && confirmedOrderDetail.getStatus() == 11) {
                 tv_finish.setVisibility(View.VISIBLE);
                 tv_finish.setText("支付");
             }
@@ -706,7 +849,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
             {
                 if(confirmedOrderDetail.getStatus() == 1) {
                     tv_finish.setText("催单");
-                    tv_estimate.setText(getResources().getString(R.string.service_stop));
+                    tv_estimate.setText(getResources().getString(R.string.refund_apply));
                 }
                 if(confirmedOrderDetail.getStatus() == 5) {
                     tv_finish.setText("付款");

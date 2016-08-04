@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:descendantFocusability="blocksDescendants"
     android:padding="10dp"
     >
@@ -21,6 +21,34 @@
         android:layout_marginRight="10dp"
         android:src="@drawable/maleavatar"
         android:visibility="invisible"/>
+    <TextView
+        android:id="@+id/tv_fans"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:lines="1"
+        android:ellipsize="end"
+        android:text="内容"
+        android:layout_below="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_focus"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/tv_fans"
+        android:layout_toLeftOf="@+id/tv_content"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/textview_clicked"
+        android:textColor="@drawable/textview_pressed"
+        android:text="+关注"
+        android:gravity="center"
+
+        />
+
     <TextView
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"
@@ -77,7 +105,7 @@
         android:id="@+id/tv_numofconforder"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:text="(友帮了1次)"
+        android:text="(友帮1次)"
         android:lines="1"
         android:ellipsize="end"
         android:layout_below="@+id/txt_title"
@@ -98,33 +126,35 @@
     <TextView
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:lines="1"
+        android:layout_height="40dp"
+        android:lines="2"
         android:ellipsize="end"
         android:text="内容"
         android:layout_below="@+id/tv_name"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/iv_avatar"
-        android:gravity="center_vertical"/>
+        />
 
     <GridView
         android:id="@+id/gridview"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:layout_marginTop="10dp"
-        android:horizontalSpacing="-50dp"
+        android:horizontalSpacing="10dp"
         android:numColumns="3"
         android:scrollbars="none"
         android:verticalSpacing="5dp"
         android:layout_below="@+id/tv_content"
         android:layout_toRightOf="@+id/iv_avatar"
+        android:listSelector="@android:color/transparent"
+        android:focusable="false"
         />
 
     <TextView
         android:id="@+id/txt_type"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:textSize="14sp"
+        android:textSize="10sp"
         android:gravity="center_vertical"
         android:text="我也不知道分哪类"
         android:lines="1"
@@ -138,7 +168,7 @@
         android:id="@+id/txt_location"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:textSize="14sp"
+        android:textSize="10sp"
         android:lines="1"
         android:ellipsize="end"
         android:text="地址地址地址地址地址地址地地址地址地"
@@ -146,6 +176,20 @@
         android:layout_below="@+id/gridview"
         android:layout_toRightOf="@+id/txt_type"
         android:textColor="@color/font_gray"/>
+
+    <appframe.appframe.widget.tagview.TagView
+        android:id="@+id/tv_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lineMargin="5dp"
+        app:tagMargin="3dp"
+        app:textPaddingBottom="3dp"
+        app:textPaddingLeft="10dp"
+        app:textPaddingRight="10dp"
+        app:textPaddingTop="3dp"
+        android:layout_below="@+id/txt_type"
+        android:layout_toRightOf="@+id/iv_avatar"
+        />
 
     <!--<com.android.volley.toolbox.NetworkImageView-->
         <!--android:id="@+id/iv_avatar"-->

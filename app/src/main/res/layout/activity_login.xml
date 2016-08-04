@@ -80,8 +80,22 @@
         android:background="@drawable/textview_clicked"
         android:gravity="center"
         android:textSize="20sp"
-        android:textColor="@color/white"
+        android:textColor="@drawable/textview_pressed"
         android:layout_below="@+id/btn_forgetpassword"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="注册新用户"
+        android:id="@+id/regiter"
+        android:layout_gravity="bottom"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/textview_clicked"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="@drawable/textview_pressed"
+        android:layout_below="@+id/ok"
         />
     <!--<Button-->
         <!--android:layout_width="match_parent"-->

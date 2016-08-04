@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -22,7 +21,6 @@ import java.util.Map;
 import appframe.appframe.R;
 import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
-import appframe.appframe.dto.ConfirmedOrderDetailWithFriend;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.PushMessage;
@@ -40,7 +38,7 @@ import appframe.appframe.utils.LoginSampleHelper;
 public class FriendsInfoActivity extends BaseActivity implements View.OnClickListener{
     //private ImageView img_avatar;
     private com.android.volley.toolbox.NetworkImageView iv_showavatar;
-    private TextView tb_title,tb_back,tb_action,tv_name,tv_showdistrict,tv_friendsestimate,tv_comment,tv_nickname,tv_revenue,tv_cost,btn_sendmessage,tv_questionhistory,tv_buyservice,tv_sellservice,tv_fbnum;
+    private TextView tb_title,tb_back,tb_action,tv_name,tv_showdistrict,tv_friendsestimate,tv_comment,tv_nickname,tv_revenue,tv_cost,btn_sendmessage,tv_questionhistory,tv_buyservice,tv_sellservice,tv_fbnum,tv_openservice,tv_openhelpthem,tv_focus,tv_openquestion;
     private ImageView iv_member,iv_gender;
     private RelativeLayout rl_revenue,rl_cost;
     private OrderDetails orderDetails;
@@ -49,9 +47,11 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
     private Question question,questionDetails;
     private Nearby nearby;
     private PushMessage pushMessage;
-    private String from;
-    private Intent intent = new Intent();
+    private String from,isfocus;
+    private Intent activityIntent = new Intent();
     private final  int RESULT_CODE =1;
+    private View view_divide5;
+//    TextView addoneclassfriend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +67,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_title.setText("帮友资料");
         tb_back = (TextView)findViewById(R.id.tb_back);
-        tb_back.setText("需求单");
+        tb_back.setText("返回");
         tb_back.setOnClickListener(this);
         tb_action = (TextView)findViewById(R.id.tb_action);
         iv_showavatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_showavatar);
@@ -90,10 +90,19 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         tv_fbnum = (TextView)findViewById(R.id.tv_fbnum);
         iv_member = (ImageView)findViewById(R.id.iv_member);
         iv_gender = (ImageView)findViewById(R.id.iv_gender);
+        tv_openservice = (TextView)findViewById(R.id.tv_openservice);
+        tv_openhelpthem = (TextView)findViewById(R.id.tv_openhelpthem);
+        tv_focus = (TextView)findViewById(R.id.tv_focus);
+        view_divide5 = (View)findViewById(R.id.view_divide5);
+        tv_openquestion = (TextView)findViewById(R.id.tv_openquestion);
         tv_comment.setOnClickListener(this);
         tv_questionhistory.setOnClickListener(this);
         tv_buyservice.setOnClickListener(this);
         tv_sellservice.setOnClickListener(this);
+        tv_openservice.setOnClickListener(this);
+        tv_openhelpthem.setOnClickListener(this);
+        tv_focus.setOnClickListener(this);
+        tv_openquestion.setOnClickListener(this);
 
         Intent intent = this.getIntent();
         orderDetails = (OrderDetails)intent.getSerializableExtra("OrderDetails");
@@ -147,10 +156,11 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     }
                 }
             }
+
             if(orderDetails.getOrderer().isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                tv_revenue.setText(String.valueOf(orderDetails.getOrderer().getTotalRevenue()));
+                tv_revenue.setText("￥" + String.valueOf(orderDetails.getOrderer().getTotalRevenue()));
             }
             else
             {
@@ -159,7 +169,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(orderDetails.getOrderer().isShowExpense())
             {
                 rl_cost.setVisibility(View.VISIBLE);
-                tv_cost.setText(String.valueOf(orderDetails.getOrderer().getTotalExpense()));
+                tv_cost.setText("￥" + String.valueOf(orderDetails.getOrderer().getTotalExpense()));
             }
             else
             {
@@ -224,7 +234,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(userDetail.isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                tv_revenue.setText(String.valueOf(userDetail.getTotalRevenue()));
+                tv_revenue.setText("￥" + String.valueOf(userDetail.getTotalRevenue()));
             }
             else
             {
@@ -233,7 +243,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(userDetail.isShowExpense())
             {
                 rl_cost.setVisibility(View.VISIBLE);
-                tv_cost.setText(String.valueOf(userDetail.getTotalExpense()));
+                tv_cost.setText("￥" + String.valueOf(userDetail.getTotalExpense()));
             }
             else
             {
@@ -288,7 +298,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(nearby.isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                tv_revenue.setText(String.valueOf(nearby.getTotalRevenue()));
+                tv_revenue.setText("￥" + String.valueOf(nearby.getTotalRevenue()));
             }
             else
             {
@@ -298,7 +308,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(nearby.isShowExpense())
             {
                 rl_cost.setVisibility(View.VISIBLE);
-                tv_cost.setText(String.valueOf(nearby.getTotalExpense()));
+                tv_cost.setText("￥" + String.valueOf(nearby.getTotalExpense()));
             }
             else
             {
@@ -358,7 +368,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(candidate.isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                tv_revenue.setText(String.valueOf(candidate.getTotalRevenue()));
+                tv_revenue.setText("￥" + String.valueOf(candidate.getTotalRevenue()));
             }
             else
             {
@@ -367,7 +377,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(candidate.isShowExpense())
             {
                 rl_cost.setVisibility(View.VISIBLE);
-                tv_cost.setText(String.valueOf(candidate.getTotalExpense()));
+                tv_cost.setText("￥" + String.valueOf(candidate.getTotalExpense()));
             }
             else
             {
@@ -426,7 +436,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(question.getAsker().isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                tv_revenue.setText(String.valueOf(question.getAsker().getTotalRevenue()));
+                tv_revenue.setText("￥" + String.valueOf(question.getAsker().getTotalRevenue()));
             }
             else
             {
@@ -435,7 +445,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(question.getAsker().isShowRevenue())
             {
                 rl_cost.setVisibility(View.VISIBLE);
-                tv_cost.setText(String.valueOf(question.getAsker().getTotalExpense()));
+                tv_cost.setText("￥" + String.valueOf(question.getAsker().getTotalExpense()));
             }
             else
             {
@@ -494,7 +504,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(questionDetails.getAsker().isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                tv_revenue.setText(String.valueOf(questionDetails.getAsker().getTotalRevenue()));
+                tv_revenue.setText("￥" + String.valueOf(questionDetails.getAsker().getTotalRevenue()));
             }
             else
             {
@@ -503,7 +513,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(questionDetails.getAsker().isShowRevenue())
             {
                 rl_cost.setVisibility(View.VISIBLE);
-                tv_cost.setText(String.valueOf(questionDetails.getAsker().getTotalExpense()));
+                tv_cost.setText("￥" + String.valueOf(questionDetails.getAsker().getTotalExpense()));
             }
             else
             {
@@ -562,7 +572,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(pushMessage.getSender().isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
-                tv_revenue.setText(String.valueOf(pushMessage.getSender().getTotalRevenue()));
+                tv_revenue.setText("￥" + String.valueOf(pushMessage.getSender().getTotalRevenue()));
             }
             else
             {
@@ -571,7 +581,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             if(pushMessage.getSender().isShowRevenue())
             {
                 rl_cost.setVisibility(View.VISIBLE);
-                tv_cost.setText(String.valueOf(pushMessage.getSender().getTotalExpense()));
+                tv_cost.setText("￥" + String.valueOf(pushMessage.getSender().getTotalExpense()));
             }
             else
             {
@@ -594,6 +604,8 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         if(intent.getStringExtra("From") != null) {
             from = intent.getStringExtra("From").toString();
         }
+
+        //scan
         if(intent.getStringExtra("UserID") != null) {
             String myUserID = intent.getStringExtra("UserID").toString();
             Http.request(FriendsInfoActivity.this, API.USER_PROFILE, new Object[]{myUserID}, new Http.RequestListener<UserDetail>(){
@@ -605,11 +617,64 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     if(result.getAvatar()!=null) {
                         ImageUtils.setImageUrl(iv_showavatar, result.getAvatar());
                     }
+                    else
+                    {
+                        if(result.getGender().equals(getResources().getString(R.string.male))) {
+                            iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                        }
+                        else
+                        {
+                            iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                        }
+                    }
                     tv_showdistrict.setText(result.getLocation());
 //                    UserID = String.valueOf(result.getId());
                     userBrief = result;
+
+                    if (userBrief.isShowExpense() || userBrief.isShowRevenue()) {
+                        view_divide5.setVisibility(View.VISIBLE);
+                    } else {
+                        view_divide5.setVisibility(View.GONE);
+                    }
+
+                    if(userBrief.isShowRevenue())
+                    {
+                        rl_revenue.setVisibility(View.VISIBLE);
+                        tv_revenue.setText("￥" + String.valueOf(pushMessage.getSender().getTotalRevenue()));
+                    }
+                    else
+                    {
+                        rl_revenue.setVisibility(View.GONE);
+                    }
+                    if(userBrief.isShowRevenue())
+                    {
+                        rl_cost.setVisibility(View.VISIBLE);
+                        tv_cost.setText("￥" + String.valueOf(pushMessage.getSender().getTotalExpense()));
+                    }
+                    else
+                    {
+                        rl_cost.setVisibility(View.GONE);
+                    }
                 }
             });
+        }
+        else {
+            if (userBrief.isFans()) {
+                tv_focus.setText("取消关注");
+            } else {
+                tv_focus.setText("+关注");
+            }
+
+            if (userBrief.isShowExpense() || userBrief.isShowRevenue()) {
+                view_divide5.setVisibility(View.VISIBLE);
+            } else {
+                view_divide5.setVisibility(View.GONE);
+            }
+
+        }
+        if(intent.getBooleanExtra("AddFriend",false))
+        {
+            tv_focus.setText("添加好友");
         }
     }
 
@@ -621,8 +686,8 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
 
                 LoginSampleHelper ls = LoginSampleHelper.getInstance();
                 String target = String.valueOf(userBrief.getId());// 消息接收者ID
-                intent = ls.getIMKit().getChattingActivityIntent(target);
-                startActivity(intent);
+                activityIntent = ls.getIMKit().getChattingActivityIntent(target);
+                startActivity(activityIntent);
                 break;
             case R.id.tb_back:
                 finish();
@@ -632,20 +697,20 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.tv_friendsestimate:
 
-                intent.setClass(FriendsInfoActivity.this, EstimateActivity.class);
+                activityIntent.setClass(FriendsInfoActivity.this, EstimateActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("userBrief", userBrief);
-                intent.putExtras(bundle);
+                activityIntent.putExtras(bundle);
 //                intent.putExtra("UserID",UserID);
-                startActivity(intent);
+                startActivity(activityIntent);
                 break;
             case R.id.iv_showavatar:
 
-                intent.setClass(this, AvatarZoomActivity.class);
+                activityIntent.setClass(this, AvatarZoomActivity.class);
                 if(iv_showavatar.getImageURL() != null && !iv_showavatar.getImageURL().equals("")) {
                     String[] ImageURL = iv_showavatar.getImageURL().substring(AppConfig.QINIU_HOST.length()).split("\\?");
-                    intent.putExtra("Avatar", ImageURL[0]);
-                    startActivity(intent);
+                    activityIntent.putExtra("Avatar", ImageURL[0]);
+                    startActivity(activityIntent);
                 }
 //                else
 //                {
@@ -654,39 +719,113 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
 
                 break;
             case R.id.tv_comment:
-                intent.setClass(this,EditFriendsNickNameActivity.class);
-                intent.putExtra("UserID",String.valueOf(userBrief.getId()));
+                activityIntent.setClass(this,EditFriendsNickNameActivity.class);
+                activityIntent.putExtra("UserID",String.valueOf(userBrief.getId()));
                 if(tv_nickname.getVisibility() == View.VISIBLE) {
                     String[] Name = tv_nickname.getText().toString().split(":");
-                    intent.putExtra("Name",Name[1]);
-                    intent.putExtra("FNickName", tv_name.getText().toString());
+                    activityIntent.putExtra("Name",Name[1]);
+                    activityIntent.putExtra("FNickName", tv_name.getText().toString());
                 }
                 else
                 {
-                    intent.putExtra("Name", tv_name.getText().toString());
+                    activityIntent.putExtra("Name", tv_name.getText().toString());
 
                 }
-                startActivityForResult(intent, RESULT_CODE);
+                startActivityForResult(activityIntent, RESULT_CODE);
 
                 break;
             case R.id.tv_questionhistory:
-                intent.setClass(this, MyQuestionActivity.class);
+                activityIntent.setClass(this, MyQuestionActivity.class);
                 Bundle bundleQuestion = new Bundle();
                 bundleQuestion.putSerializable("friendsinfo", userBrief);
-                intent.putExtras(bundleQuestion);
-                startActivity(intent);
+                bundleQuestion.putString("questionstatus", "2");
+                activityIntent.putExtras(bundleQuestion);
+                startActivity(activityIntent);
                 break;
             case R.id.tv_buyservice:
-                intent.setClass(this,TradeHistoryActivity.class);
-                intent.putExtra("buyservice", "2");
-                intent.putExtra("name", userBrief.getName());
-                startActivity(intent);
+                activityIntent.setClass(this,TradeBuyHistoryActivity.class);
+                activityIntent.putExtra("buyservice", "2");
+                activityIntent.putExtra("name", userBrief.getName());
+                activityIntent.putExtra("userID", String.valueOf(userBrief.getId()));
+                startActivity(activityIntent);
                 break;
             case R.id.tv_sellservice:
-                intent.setClass(this,TradeHistoryActivity.class);
-                intent.putExtra("sellservice", "1");
-                intent.putExtra("name", userBrief.getName());
-                startActivity(intent);
+                activityIntent.setClass(this,TradeSellHistoryActivity.class);
+                activityIntent.putExtra("sellservice", "1");
+                activityIntent.putExtra("name", userBrief.getName());
+                activityIntent.putExtra("userID", String.valueOf(userBrief.getId()));
+                startActivity(activityIntent);
+                break;
+
+            case R.id.tv_openservice:
+                activityIntent.setClass(this, OpenOrderActivity.class);
+                activityIntent.putExtra("name", userBrief.getName());
+                activityIntent.putExtra("userID", String.valueOf(userBrief.getId()));
+                activityIntent.putExtra("type", "2");
+                startActivity(activityIntent);
+                break;
+
+            case R.id.tv_openhelpthem:
+                activityIntent.setClass(this, OpenOrderActivity.class);
+                activityIntent.putExtra("name", userBrief.getName());
+                activityIntent.putExtra("userID", String.valueOf(userBrief.getId()));
+                activityIntent.putExtra("type", "1");
+                startActivity(activityIntent);
+                break;
+            case R.id.tv_focus:
+
+
+                if(tv_focus.getText().equals("+关注")) {
+                        Http.request(FriendsInfoActivity.this, API.ADDFANS,
+                                Http.map("Fans", String.valueOf(Auth.getCurrentUserId()),
+                                        "Celebrity", String.valueOf(userBrief.getId())),
+                                new Http.RequestListener<String>() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        super.onSuccess(result);
+                                        Toast.makeText(FriendsInfoActivity.this, "关注成功", Toast.LENGTH_SHORT).show();
+                                        tv_focus.setText("取消关注");
+                                    }
+                                });
+                    }
+                else if(tv_focus.getText().equals("取消关注"))
+                {
+                    Map<String, String> map = new HashMap<String, String>();
+                    map.put("Id", String.valueOf(userBrief.getId()));
+                    Http.request(FriendsInfoActivity.this, API.DELETEFANS,new Object[]{Http.getURL(map)},
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    Toast.makeText(FriendsInfoActivity.this, "取消关注成功", Toast.LENGTH_SHORT).show();
+                                    tv_focus.setText("+关注");
+                                }
+                            });
+                }
+                else if(tv_focus.getText().equals("添加好友"))
+                {
+                    Http.request(FriendsInfoActivity.this, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
+                            Http.map("FriendId",String.valueOf(userBrief.getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    Toast.makeText(FriendsInfoActivity.this, "已发送好友申请", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+                else
+                {
+
+                }
+                break;
+            case R.id.tv_openquestion:
+                activityIntent.setClass(this, MyQuestionActivity.class);
+                Bundle bundleques = new Bundle();
+                bundleques.putSerializable("friendsinfo", userBrief);
+                bundleques.putString("questionstatus", "1");
+                activityIntent.putExtras(bundleques);
+                startActivity(activityIntent);
                 break;
         }
     }
@@ -749,8 +888,8 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             RelativeLayout rl_whocannotseecancle = (RelativeLayout) view.findViewById(R.id.rl_whocannotseecancle);
             RelativeLayout rl_removeblacklist = (RelativeLayout) view.findViewById(R.id.rl_removeblacklist);
 
-            TextView addoneclassfriend = (TextView) view
-                    .findViewById(R.id.item_popupwindows_addoneclassfriend);
+//            TextView addoneclassfriend = (TextView) view
+//                    .findViewById(R.id.item_popupwindows_addoneclassfriend);
             TextView viewrelationnet = (TextView) view
                     .findViewById(R.id.item_popupwindows_viewrelationnet);
             TextView addblacklist = (TextView) view
@@ -774,6 +913,8 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             View view_cannotsee = (View)view.findViewById(R.id.view_popupwindows_cannotsee);
             View view_cannotseecancle = (View)view.findViewById(R.id.view_popupwindows_cannotseecancle);
             View view_removeblacklist = (View)view.findViewById(R.id.view_popupwindows_removeblacklist);
+
+//            addoneclassfriend.setText(isfocus);
 
             if(from != null && !from.equals("") && from.equals("FIRSTCLASS"))
             {
@@ -844,31 +985,61 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
 
             }
 
-            addoneclassfriend.setOnClickListener(new View.OnClickListener()
-            {
-                public void onClick(View v)
-                {
-                    Http.request(FriendsInfoActivity.this, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
-                            Http.map("FriendId",String.valueOf(userBrief.getId())),
-                            new Http.RequestListener<String>() {
-                                @Override
-                                public void onSuccess(String result) {
-                                    super.onSuccess(result);
-                                    Toast.makeText(FriendsInfoActivity.this, "已发送好友申请", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                    dismiss();
-                }
-            });
+//            addoneclassfriend.setOnClickListener(new View.OnClickListener()
+//            {
+//                public void onClick(View v)
+//                {
+////                    Http.request(FriendsInfoActivity.this, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
+////                            Http.map("FriendId",String.valueOf(userBrief.getId())),
+////                            new Http.RequestListener<String>() {
+////                                @Override
+////                                public void onSuccess(String result) {
+////                                    super.onSuccess(result);
+////                                    Toast.makeText(FriendsInfoActivity.this, "已发送好友申请", Toast.LENGTH_SHORT).show();
+////                                }
+////                            });
+//                    if(addoneclassfriend.getText().equals("+关注")) {
+//                        Http.request(FriendsInfoActivity.this, API.ADDFANS,
+//                                Http.map("Fans", String.valueOf(Auth.getCurrentUserId()),
+//                                        "Celebrity", String.valueOf(userBrief.getId())),
+//                                new Http.RequestListener<String>() {
+//                                    @Override
+//                                    public void onSuccess(String result) {
+//                                        super.onSuccess(result);
+//                                        Toast.makeText(FriendsInfoActivity.this, "关注成功", Toast.LENGTH_SHORT).show();
+//                                        addoneclassfriend.setText("取消关注");
+//                                    }
+//                                });
+//                    }
+//                    else if(addoneclassfriend.getText().equals("取消关注"))
+//                    {
+//                        Map<String, String> map = new HashMap<String, String>();
+//                        map.put("Id", String.valueOf(userBrief.getId()));
+//                        Http.request(FriendsInfoActivity.this, API.DELETEFANS,new Object[]{Http.getURL(map)},
+//                                new Http.RequestListener<String>() {
+//                                    @Override
+//                                    public void onSuccess(String result) {
+//                                        super.onSuccess(result);
+//                                        Toast.makeText(FriendsInfoActivity.this, "取消关注成功", Toast.LENGTH_SHORT).show();
+//                                        addoneclassfriend.setText("+关注");
+//                                    }
+//                                });
+//                    }
+//                    dismiss();
+//                }
+//            });
             viewrelationnet.setOnClickListener(new View.OnClickListener()
             {
                 public void onClick(View v)
                 {
                     Intent intent = new Intent();
                     intent.setClass(FriendsInfoActivity.this,RelativenetActivity.class);
-                    intent.putExtra("UserID", String.valueOf(userBrief.getId()));
-                    intent.putExtra("Avatar", iv_showavatar.getImageURL());
-                    intent.putExtra("Name", tv_name.getText());
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("userBrief", userBrief);
+                    intent.putExtras(bundle);
+//                    intent.putExtra("UserID", String.valueOf(userBrief.getId()));
+//                    intent.putExtra("Avatar", iv_showavatar.getImageURL());
+//                    intent.putExtra("Name", tv_name.getText());
                     startActivity(intent);
                     dismiss();
                 }
@@ -894,6 +1065,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 public void onClick(View v)
                 {
+                    Intent intent = new Intent();
                     Bundle bundle = new Bundle();
                     intent.setClass(FriendsInfoActivity.this, ReportActivity.class);
                     bundle.putSerializable("FriendsInfo", userBrief);

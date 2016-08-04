@@ -3,21 +3,23 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:layout_margin="10dp"
+
               android:id="@+id/dialog">
 
     <EditText
         android:id="@+id/et_message"
+        android:layout_margin="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:layout_weight="1"
         android:background="@drawable/shape_edittext"
         android:inputType="textMultiLine"
         />
     <CheckBox
         android:id="@+id/cb_anonymous"
+        android:layout_margin="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:text="匿名"
         android:checked="false"
         />

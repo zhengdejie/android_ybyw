@@ -36,6 +36,8 @@ public class UserBrief extends Http.BaseDto implements Serializable {
     public boolean ShowExpense;
     public boolean ShowConfirmedOrderHistoryAsProvider;
     public boolean ShowConfirmedOrderHistoryAsReceiver;
+    public int NumberofFans;
+    public boolean IsFans;
 
 
     public int getId() {
@@ -245,5 +247,21 @@ public class UserBrief extends Http.BaseDto implements Serializable {
 
     public void setShowConfirmedOrderHistoryAsReceiver(boolean showConfirmedOrderHistoryAsReceiver) {
         ShowConfirmedOrderHistoryAsReceiver = showConfirmedOrderHistoryAsReceiver;
+    }
+
+    public int getNumberofFans() {
+        return NumberofFans;
+    }
+
+    public void setNumberofFans(int numberofFans) {
+        NumberofFans = numberofFans;
+    }
+
+    public boolean isFans() {
+        return IsFans;
+    }
+
+    public void setIsFans(boolean isFans) {
+        IsFans = isFans;
     }
 }

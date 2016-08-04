@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -48,7 +49,8 @@ public class SwipeRefreshXUserBlock extends BaseAdapter {
                     .inflate(R.layout.swiperefreshx_userblock, null);
             mHolder = new ViewHolder();
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -57,9 +59,30 @@ public class SwipeRefreshXUserBlock extends BaseAdapter {
         }
         final UserDetail item = userDetails.get(position);
         mHolder.tv_name.setText(item.getName());
-        if(item.getAvatar()!=null) {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+
+        if(item.getGender().equals(context.getResources().getString(R.string.male).toString()))
+        {
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
         }
+        else
+        {
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
+        }
+
+        if(item.getAvatar() != null && !item.getAvatar().equals(""))
+        {
+            mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            mHolder.niv_avatar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mHolder.iv_avatar.setVisibility(View.VISIBLE);
+            mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(mHolder.niv_avatar, item.getAvatar());
+
         return convertView;
     }
 
@@ -78,7 +101,8 @@ public class SwipeRefreshXUserBlock extends BaseAdapter {
     static class ViewHolder
     {
         private TextView tv_name;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
+        private ImageView iv_avatar;
     }
 }
 

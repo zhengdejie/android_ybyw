@@ -62,7 +62,8 @@ public class AddFriendsActivity extends BaseActivity implements View.OnClickList
                     String result = data.getStringExtra("scan_result");
                     Intent intent = new Intent();
                     intent.setClass(AddFriendsActivity.this,FriendsInfoActivity.class);
-                    intent.putExtra("UserID",result.substring(9).toString());
+                    intent.putExtra("UserID", result.substring(9).toString());
+                    intent.putExtra("AddFriend", true);
                     startActivity(intent);
 //                    Http.request(HomeActivity.this, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
 //                            Http.map("FriendId",result.substring(9).toString()),

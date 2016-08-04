@@ -21,11 +21,17 @@
         android:gravity="center"
         >
         <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/niv_avatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:visibility="invisible"
+            />
+        <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="50dp"
             android:layout_height="50dp"
-
-            />
+            android:src="@drawable/maleavatar"
+            android:visibility="invisible"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -64,7 +70,8 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:gravity="center"
-            android:focusable="false"/>
+            android:focusable="false"
+            android:visibility="visible"/>
     </RelativeLayout>
 </LinearLayout>
     <!--</LinearLayout>-->

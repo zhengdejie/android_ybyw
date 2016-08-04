@@ -75,26 +75,26 @@ public class ViewPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, final int position) {
 //        return super.instantiateItem(container, position);
         ((ViewPager) container).addView(views.get(position), 0);
-        views.get(position).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(position == 3) {
-                    SharedPreferences.Editor e = context.getSharedPreferences("firstviewpager", Context.MODE_PRIVATE).edit();
-                    e.putString("viewed", "true").commit();
-                    if (Auth.isLoggedIn()) {
-                        Intent i = new Intent(context, HomeActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(i);
-                    } else {
-
-                        Intent i = new Intent(context, RegisterActivity.class);
-                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(i);
-                    }
-                }
-
-            }
-        });
+//        views.get(position).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(position == 3) {
+//                    SharedPreferences.Editor e = context.getSharedPreferences("firstviewpager", Context.MODE_PRIVATE).edit();
+//                    e.putString("viewed", "true").commit();
+//                    if (Auth.isLoggedIn()) {
+//                        Intent i = new Intent(context, HomeActivity.class);
+//                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        context.startActivity(i);
+//                    } else {
+//
+//                        Intent i = new Intent(context, RegisterActivity.class);
+//                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        context.startActivity(i);
+//                    }
+//                }
+//
+//            }
+//        });
 
         return views.get(position);
     }

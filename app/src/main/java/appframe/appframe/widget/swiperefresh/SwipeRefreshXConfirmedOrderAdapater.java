@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.OrderCommentActivity;
@@ -65,46 +67,46 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
     CompletedCountDown mc;
     String from,imgURL;
     Drawable serviceProviderDrawable,serviceReceiverDrawable;
-    private static final int SDK_PAY_FLAG = 1;
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case SDK_PAY_FLAG: {
-                    PayResult payResult = new PayResult((String) msg.obj);
-                    /**
-                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
-                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
-                     * docType=1) 建议商户依赖异步通知
-                     */
-                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
-
-                    String resultStatus = payResult.getResultStatus();
-                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
-                    if (TextUtils.equals(resultStatus, "9000")) {
-                        Toast.makeText(context, "支付成功", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // 判断resultStatus 为非"9000"则代表可能支付失败
-                        // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
-                        if (TextUtils.equals(resultStatus, "8000")) {
-                            Toast.makeText(context, "支付结果确认中", Toast.LENGTH_SHORT).show();
-
-                        } else {
-                            // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
-                            Toast.makeText(context, "支付失败", Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                    break;
-                }
-//                case SDK_CHECK_FLAG: {
-//                    Toast.makeText(PayDemoActivity.this, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
+//    private static final int SDK_PAY_FLAG = 1;
+//    private Handler mHandler = new Handler() {
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case SDK_PAY_FLAG: {
+//                    PayResult payResult = new PayResult((String) msg.obj);
+//                    /**
+//                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
+//                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
+//                     * docType=1) 建议商户依赖异步通知
+//                     */
+//                    String resultInfo = payResult.getResult();// 同步返回需要验证的信息
+//
+//                    String resultStatus = payResult.getResultStatus();
+//                    // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
+//                    if (TextUtils.equals(resultStatus, "9000")) {
+//                        Toast.makeText(context, "支付成功", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        // 判断resultStatus 为非"9000"则代表可能支付失败
+//                        // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
+//                        if (TextUtils.equals(resultStatus, "8000")) {
+//                            Toast.makeText(context, "支付结果确认中", Toast.LENGTH_SHORT).show();
+//
+//                        } else {
+//                            // 其他值就可以判断为支付失败，包括用户主动取消支付，或者系统返回的错误
+//                            Toast.makeText(context, "支付失败", Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    }
 //                    break;
 //                }
-                default:
-                    break;
-            }
-        };
-    };
+////                case SDK_CHECK_FLAG: {
+////                    Toast.makeText(PayDemoActivity.this, "检查结果为：" + msg.obj, Toast.LENGTH_SHORT).show();
+////                    break;
+////                }
+//                default:
+//                    break;
+//            }
+//        };
+//    };
 
     public SwipeRefreshXConfirmedOrderAdapater(Context context, List<ConfirmedOrderDetail> orderDetails, String from)
     {
@@ -160,6 +162,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
             mHolder.tv_finish = (TextView)convertView.findViewById(R.id.tv_finish);
             mHolder.iv_service = (ImageView)convertView.findViewById(R.id.iv_service);
             mHolder.iv_photos = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_photos);
+            mHolder.rl_button = (RelativeLayout)convertView.findViewById(R.id.rl_button);
             convertView.setTag(mHolder);
         }
         else
@@ -183,7 +186,14 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
 //        ss.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 //        mHolder.txt_bounty.setText(ss);
 //        mHolder.txt_type.setText("类别:" + item.getOrder().getCategory());
-        mHolder.txt_location.setText(item.getOrder().getAddress());
+//        mHolder.txt_location.setText(item.getOrder().getAddress());
+        if(item.getOrder().getUserLocation() != null && item.getOrder().getUserLocation().getProvince() != null && item.getOrder().getUserLocation().getCity() != null && item.getOrder().getUserLocation().getDistrict() != null) {
+            mHolder.txt_location.setText(item.getOrder().getUserLocation().getProvince() + item.getOrder().getUserLocation().getCity() + item.getOrder().getUserLocation().getDistrict());
+        }
+        else
+        {
+            mHolder.txt_location.setText("地址:未知");
+        }
         mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_countdown.setVisibility(View.GONE);
         if(item.getOrder().getType() == 2) {
@@ -339,6 +349,8 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                         mHolder.tv_showstatus.setVisibility(View.GONE);
                         mHolder.tv_finish.setText(context.getResources().getString(R.string.agree));
                         mHolder.tv_estimate.setText(context.getResources().getString(R.string.disagree));
+                        mHolder.tv_countdown.setVisibility(View.VISIBLE);
+                        mHolder.tv_countdown.setText("对方申请退款");
                     }
                     if(item.getStatus() == 8)
                     {
@@ -354,7 +366,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                     if(item.getStatus() == 1) {
                         mHolder.tv_showstatus.setVisibility(View.GONE);
                         mHolder.tv_finish.setText("催单");
-                        mHolder.tv_estimate.setText(context.getResources().getString(R.string.service_stop));
+                        mHolder.tv_estimate.setText(context.getResources().getString(R.string.refund_apply));
                     }
                     if(item.getStatus() == 5) {
                         mHolder.tv_showstatus.setVisibility(View.GONE);
@@ -444,6 +456,9 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
             case AppConfig.ORDERSTATUS_MAIN:
                 mHolder.tv_finish.setVisibility(View.GONE);
                 mHolder.tv_estimate.setVisibility(View.GONE);
+                break;
+            case AppConfig.HISTORYORDER:
+                mHolder.rl_button.setVisibility(View.GONE);
                 break;
         }
 
@@ -865,6 +880,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
         private TextView tv_time,tv_name,tv_service,txt_title,txt_location,tv_bid,txt_bounty,tv_total,tv_estimate,tv_finish,tv_showstatus,tv_countdown,tv_type;
         private ImageView iv_service, iv_avatar;
         private com.android.volley.toolbox.NetworkImageView niv_avatar,iv_photos;
+        private RelativeLayout rl_button;
     }
 
 

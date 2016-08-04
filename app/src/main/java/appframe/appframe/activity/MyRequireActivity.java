@@ -38,6 +38,12 @@ public class MyRequireActivity extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mymission);
         init();
+//        initdata();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initdata();
     }
 

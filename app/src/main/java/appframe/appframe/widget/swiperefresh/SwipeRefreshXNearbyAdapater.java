@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -50,7 +51,8 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
             mHolder = new ViewHolder();
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
             mHolder.tv_distance = (TextView) convertView.findViewById(R.id.tv_distance);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -62,23 +64,31 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
         mHolder.tv_name.setText(item.getName());
         mHolder.tv_distance.setText(getDistance(item.getDistance()));
 
-//        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
-//        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
-        if(item.getAvatar() != null && !item.getAvatar().equals("")) {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+
+        if(item.getGender().equals(context.getResources().getString(R.string.male).toString()))
+        {
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
         }
         else
         {
-            if(item.getGender().equals(context.getResources().getString(R.string.male).toString()))
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
-            }
-            else
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
-            }
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
         }
-//        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+
+        if(item.getAvatar() != null && !item.getAvatar().equals(""))
+        {
+            mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            mHolder.niv_avatar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mHolder.iv_avatar.setVisibility(View.VISIBLE);
+            mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(mHolder.niv_avatar, item.getAvatar());
+
+
         return convertView;
     }
 
@@ -157,6 +167,7 @@ public class SwipeRefreshXNearbyAdapater extends BaseAdapter {
     {
         private TextView tv_name;
         private TextView tv_distance;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
+        private ImageView iv_avatar;
     }
 }

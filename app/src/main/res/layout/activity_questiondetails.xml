@@ -414,8 +414,8 @@
             android:background="@drawable/textview_clicked"
             android:gravity="center"
             android:textSize="20sp"
-            android:textColor="@color/white"
             android:layout_marginBottom="5dp"
+            android:textColor="@drawable/textview_pressed"
             />
         <!--<Button-->
             <!--android:layout_width="match_parent"-->

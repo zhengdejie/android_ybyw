@@ -71,7 +71,8 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
         final ConfirmedOrderDetailWithFriend item = friendshops.get(position);
 //        mHolder.iv_myavatar.setDefaultImageResId(R.drawable.default_avatar);
 //        mHolder.iv_youravatar.setDefaultImageResId(R.drawable.default_avatar);
-
+        mHolder.tv_yourtitle.setVisibility(View.VISIBLE);
+        mHolder.tv_title.setVisibility(View.VISIBLE);
         if(item.getFirstDegreeFriendId() == item.getServiceProvider().getId())
         {
             mHolder.tv_myname.setText(item.getServiceProvider().getName());
@@ -112,14 +113,17 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
                 }
             }
             ImageUtils.setImageUrl(mHolder.niv_youravatar, item.getServiceReceiver().getAvatar());
+
             if(item.getFirstDegreeFriendId() == item.getPoster().getId())
             {
                 mHolder.tv_title.setText(item.getOrder().getTitle());
+                mHolder.tv_title.setVisibility(View.VISIBLE);
                 mHolder.tv_yourtitle.setVisibility(View.INVISIBLE);
             }
             else
             {
                 mHolder.tv_title.setVisibility(View.INVISIBLE);
+                mHolder.tv_yourtitle.setVisibility(View.VISIBLE);
                 mHolder.tv_yourtitle.setText(item.getOrder().getTitle());
             }
         }
@@ -145,20 +149,20 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
             mHolder.tv_myname.setText(item.getServiceReceiver().getName());
             ImageUtils.setImageUrl(mHolder.niv_myavatar, item.getServiceReceiver().getAvatar());
             if(item.getServiceProvider().getAvatar() != null && !item.getServiceProvider().getAvatar().equals("")) {
-                mHolder.iv_myavatar.setVisibility(View.INVISIBLE);
-                mHolder.niv_myavatar.setVisibility(View.VISIBLE);
+                mHolder.iv_youravatar.setVisibility(View.INVISIBLE);
+                mHolder.niv_youravatar.setVisibility(View.VISIBLE);
             }
             else
             {
-                mHolder.iv_myavatar.setVisibility(View.VISIBLE);
-                mHolder.niv_myavatar.setVisibility(View.INVISIBLE);
+                mHolder.iv_youravatar.setVisibility(View.VISIBLE);
+                mHolder.niv_youravatar.setVisibility(View.INVISIBLE);
                 if(item.getServiceProvider().getGender().equals(context.getResources().getString(R.string.male).toString()))
                 {
-                    mHolder.iv_myavatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
+                    mHolder.iv_youravatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
                 }
                 else
                 {
-                    mHolder.iv_myavatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
+                    mHolder.iv_youravatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
                 }
             }
             mHolder.tv_yourname.setText(item.getServiceProvider().getName());
@@ -167,11 +171,13 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
             if(item.getFirstDegreeFriendId() == item.getPoster().getId())
             {
                 mHolder.tv_title.setText(item.getOrder().getTitle());
+                mHolder.tv_title.setVisibility(View.VISIBLE);
                 mHolder.tv_yourtitle.setVisibility(View.INVISIBLE);
             }
             else
             {
                 mHolder.tv_title.setVisibility(View.INVISIBLE);
+                mHolder.tv_yourtitle.setVisibility(View.VISIBLE);
                 mHolder.tv_yourtitle.setText(item.getOrder().getTitle());
             }
         }

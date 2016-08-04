@@ -109,12 +109,50 @@
             />
 
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_centertwo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_below="@+id/rl_center"
+        >
+        <View
+            android:id="@+id/view4"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@color/divide"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@+id/view4">
+
+            <ImageView
+                android:id="@+id/iv_phone"
+                android:layout_weight="1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/phone"
+                android:layout_gravity="center"
+                />
+            <ImageView
+                android:id="@+id/iv_message"
+                android:layout_weight="1"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/mymessage"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+    </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:layout_below="@+id/rl_center"
+        android:layout_below="@+id/rl_centertwo"
         >
 
         <View
@@ -219,7 +257,52 @@
             android:ellipsize="end"
             />
 
-
+        <RelativeLayout
+            android:id="@+id/rl_refund"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_paymethods"
+            android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_refund"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:text="退款原因 : "
+            android:paddingLeft="5dp"
+            android:layout_margin="5dp"/>
+        <TextView
+            android:id="@+id/tv_refundreason"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_toRightOf="@+id/tv_refund"
+            android:layout_margin="5dp"
+            android:lines="1"
+            android:ellipsize="end"
+            />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/rl_reject"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_refund"
+            android:visibility="gone">
+            <TextView
+                android:id="@+id/tv_reject"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="拒绝退款原因 : "
+                android:paddingLeft="5dp"
+                android:layout_margin="5dp"/>
+            <TextView
+                android:id="@+id/tv_rejectreason"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_toRightOf="@+id/tv_reject"
+                android:layout_margin="5dp"
+                android:lines="1"
+                android:ellipsize="end"
+                />
+        </RelativeLayout>
     </RelativeLayout>
 
     <LinearLayout

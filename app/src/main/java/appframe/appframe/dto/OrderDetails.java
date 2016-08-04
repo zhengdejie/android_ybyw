@@ -36,6 +36,7 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
     private int  BossPaid;
     private String Tags;
     private double Prepay;
+    private int Recommended;
 
 
 
@@ -245,5 +246,13 @@ public class OrderDetails extends Http.BaseDto implements Serializable {
 
     public void setPrepay(double prepay) {
         Prepay = prepay;
+    }
+
+    public int getRecommended() {
+        return Recommended;
+    }
+
+    public void setRecommended(int recommended) {
+        Recommended = recommended;
     }
 }

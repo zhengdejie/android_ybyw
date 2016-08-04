@@ -23,6 +23,7 @@ public class AppConfig {
     public static final String ORDERSTATUS_APPLY = "已申请";
     public static final String ORDERSTATUS_DELETE = "delete";
 
+    public static final String HISTORYORDER = "historyconfirmorder";
     public static boolean RECEIVE_NOTIFICATION = true;
 
     //支付宝

@@ -238,7 +238,9 @@
                         app:textPaddingBottom="3dp"
                         app:textPaddingLeft="10dp"
                         app:textPaddingRight="10dp"
-                        app:textPaddingTop="3dp" />
+                        app:textPaddingTop="3dp"
+
+                        />
 
 
                 </RelativeLayout>
@@ -476,7 +478,8 @@
                     android:background="@drawable/textview_clicked"
                     android:gravity="center"
                     android:textSize="20sp"
-                    android:textColor="@color/white"
+                    android:textColor="@drawable/textview_pressed"
+
                     />
             </LinearLayout>
 

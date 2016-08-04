@@ -47,6 +47,7 @@ import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.UploadUtils;
+import appframe.appframe.utils.UriHandler;
 import appframe.appframe.utils.Utils;
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
@@ -56,10 +57,10 @@ import cn.smssdk.SMSSDK;
  */
 public class RegisterActivity extends BaseActivity implements View.OnClickListener{
     private static final int SELECT_PHOTO = 100;
-    TextView tb_back,tb_action,tb_title,tv_progress_content,tv_code,ok;
+    TextView tb_back,tb_action,tb_title,tv_progress_content,tv_code,ok,tv_protocol,tv_login;
     EditText  password, name,et_mobile,et_code;
     RadioButton rb_male,rb_female;
-    ImageButton avatar;
+//    ImageButton avatar;
     List<UserContact> contactsList = new ArrayList<UserContact>();
     LinearLayout progress_bar;
     String uploadedAvatarId;
@@ -75,6 +76,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         tb_action = (TextView)findViewById(R.id.tb_action);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tv_code = (TextView)findViewById(R.id.tv_code);
+        tv_protocol = (TextView)findViewById(R.id.tv_protocol);
+        tv_login = (TextView)findViewById(R.id.tv_login);
 //        email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
         name = (EditText)findViewById(R.id.name);
@@ -86,18 +89,19 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         tv_progress_content.setText("正在注册");
 
         ok = (TextView)findViewById(R.id.ok);
-        avatar = (ImageButton)findViewById(R.id.avatar);
+//        avatar = (ImageButton)findViewById(R.id.avatar);
 
-        tb_action.setOnClickListener(this);
-        avatar.setOnClickListener(this);
+        tv_login.setOnClickListener(this);
+//        avatar.setOnClickListener(this);
         ok.setOnClickListener(this);
         tv_code.setOnClickListener(this);
+        tv_protocol.setOnClickListener(this);
 
 
 
         tb_back.setVisibility(View.GONE);
-        tb_action.setText("登入");
-        tb_title.setText("友帮");
+//        tb_action.setText("登入");
+        tb_title.setText("注册");
 
     }
 
@@ -105,14 +109,14 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.avatar:
-                uploadedAvatarId = null;
-                Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                //Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, SELECT_PHOTO);
-                break;
+//            case R.id.avatar:
+//                uploadedAvatarId = null;
+//                Intent photoPickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+//                //Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+//
+//                photoPickerIntent.setType("image/*");
+//                startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+//                break;
             case R.id.ok:
                 if(et_mobile.getText().toString().equals("") || et_mobile.getText() == null)
                 {
@@ -208,9 +212,12 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                     Toast.makeText(this,"请填写手机号",Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case R.id.tb_action:
-                finish();
+            case R.id.tv_login:
                 startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                finish();
+                break;
+            case R.id.tv_protocol:
+                UriHandler.openWebActivity(RegisterActivity.this, "http://www.ubangwang.com/docs/zhulong_youbang_software_license_and_services_agreement.html");
                 break;
 
         }
@@ -268,40 +275,40 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-        switch(requestCode) {
-            case SELECT_PHOTO:
-                if(resultCode == RESULT_OK){
-//                    ContentResolver cr = this.getContentResolver();
-//                    Bitmap bitmap = null;
-//                    try {
-//                        bitmap = BitmapFactory.decodeStream(cr.openInputStream(imageReturnedIntent.getData()));
-//                    }
-//                    catch (FileNotFoundException e)
-//                    {
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+//        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 //
-//                    }
-                    File f = Utils.uriToFile(imageReturnedIntent.getData());
-                    Bitmap bm = Utils.getResizedBitmap(f, Utils.dpToPx(100), Utils.dpToPx(100));
-                    avatar.setImageBitmap(bm);
-//                    UploadUtils.uploadImage(f, new UploadUtils.Callback() {
-//                        @Override
-//                        public void done(String id) {
-//                            if(TextUtils.isEmpty(id)){
-//                                // 上传失败
-//                                uploadedAvatarId = null;
-//                                avatar.setImageResource(R.drawable.ic_launcher);
-//                                return;
-//                            }
-//                            uploadedAvatarId = id;
-//                        }
-//                    });
-                }
-        }
-    }
+//        switch(requestCode) {
+//            case SELECT_PHOTO:
+//                if(resultCode == RESULT_OK){
+////                    ContentResolver cr = this.getContentResolver();
+////                    Bitmap bitmap = null;
+////                    try {
+////                        bitmap = BitmapFactory.decodeStream(cr.openInputStream(imageReturnedIntent.getData()));
+////                    }
+////                    catch (FileNotFoundException e)
+////                    {
+////
+////                    }
+//                    File f = Utils.uriToFile(imageReturnedIntent.getData());
+//                    Bitmap bm = Utils.getResizedBitmap(f, Utils.dpToPx(100), Utils.dpToPx(100));
+//                    avatar.setImageBitmap(bm);
+////                    UploadUtils.uploadImage(f, new UploadUtils.Callback() {
+////                        @Override
+////                        public void done(String id) {
+////                            if(TextUtils.isEmpty(id)){
+////                                // 上传失败
+////                                uploadedAvatarId = null;
+////                                avatar.setImageResource(R.drawable.ic_launcher);
+////                                return;
+////                            }
+////                            uploadedAvatarId = id;
+////                        }
+////                    });
+//                }
+//        }
+//    }
 
 
 //    static final int MENU_LOGIN = 1;

@@ -20,6 +20,8 @@ public class ConfirmedOrderDetail extends Http.BaseDto implements Serializable {
     private UserDetail ServiceReceiver;
     private double Bid;
     private String ConfirmedOrderNumber;
+    private String RefundReason;
+    private String RejectRefundReason;
 
     public int getId() {
         return Id;
@@ -115,5 +117,21 @@ public class ConfirmedOrderDetail extends Http.BaseDto implements Serializable {
 
     public void setConfirmedOrderNumber(String confirmedOrderNumber) {
         ConfirmedOrderNumber = confirmedOrderNumber;
+    }
+
+    public String getRefundReason() {
+        return RefundReason;
+    }
+
+    public void setRefundReason(String refundReason) {
+        RefundReason = refundReason;
+    }
+
+    public String getRejectRefundReason() {
+        return RejectRefundReason;
+    }
+
+    public void setRejectRefundReason(String rejectRefundReason) {
+        RejectRefundReason = rejectRefundReason;
     }
 }

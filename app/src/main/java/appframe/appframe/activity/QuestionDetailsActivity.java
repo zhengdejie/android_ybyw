@@ -3,9 +3,13 @@ package appframe.appframe.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -220,7 +224,11 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
         tv_name.setText(question.getAsker().getName().toString());
         tv_title.setText(question.getTitle().toString());
         tv_content.setText(question.getContent().toString());
-        tv_money.setText(String.valueOf(question.getBounty()));
+        tv_money.setText("￥" + String.valueOf(question.getBounty()));
+        tv_money.setTextColor(Color.RED);
+        SpannableString ss = new SpannableString( "￥" + String.valueOf(question.getBounty()));
+        ss.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tv_money.setText(ss);
 
 //        // 下拉刷新监听器
 //        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

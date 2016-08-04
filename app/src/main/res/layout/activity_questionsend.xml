@@ -8,7 +8,10 @@
         android:id="@+id/progress_bar"
         layout="@layout/progressbar_loading"
         />
-
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading"
+        />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

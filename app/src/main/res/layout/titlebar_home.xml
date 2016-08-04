@@ -25,27 +25,31 @@
     <TextView
         android:id="@+id/tv_recommand"
         android:text="助人"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="35dp"
         android:layout_centerVertical="true"
-        android:padding="8dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:gravity="center"
         android:textSize="16sp"
         android:textColor="@color/white"
         android:layout_centerHorizontal="true"
+
         />
 
     <TextView
         android:id="@+id/tv_require"
         android:text="求助"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="35dp"
         android:layout_centerVertical="true"
-        android:padding="8dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:gravity="center"
         android:textSize="16sp"
         android:layout_toLeftOf="@id/tv_recommand"
         android:textColor="@color/white"
+
         />
 
 
@@ -53,10 +57,11 @@
     <TextView
         android:id="@+id/tv_question"
         android:text="问答"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="35dp"
         android:layout_centerVertical="true"
-        android:padding="8dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:gravity="center"
         android:textSize="16sp"
         android:layout_toRightOf="@id/tv_recommand"

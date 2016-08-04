@@ -65,6 +65,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
     public static List<ImageItem> mDataList = new ArrayList<ImageItem>();
     StringBuilder sb = new StringBuilder();
     public int upload_iamge_num = 0;
+    private LinearLayout progress_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
         mGridView = (GridView)findViewById(R.id.gridview);
         tv_titlecount = (TextView)findViewById(R.id.tv_titlecount);
         tv_contentcount = (TextView)findViewById(R.id.tv_contentcount);
+        progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
 
         edit_title.addTextChangedListener(titleWatcher);
         edit_content.addTextChangedListener(contentWatcher);
@@ -267,6 +269,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                                 Toast.makeText(QuestionSendActivity.this, "金额不能小于0.01元", Toast.LENGTH_SHORT).show();
                             }
                             else{
+                                progress_bar.setVisibility(View.VISIBLE);
                                 if (mDataList.size() == 0) {
                                     Http.request(QuestionSendActivity.this, API.POST_QUESTION, Http.map(
                                             "Title", edit_title.getText().toString(),
@@ -277,6 +280,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                                         @Override
                                         public void onSuccess(Question result) {
                                             super.onSuccess(result);
+                                            progress_bar.setVisibility(View.GONE);
                                             mDataList.clear();
                                             removeTempFromPref();
                                             Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
@@ -286,12 +290,14 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                                             bundle.putSerializable("Question", result);
                                             intent.putExtras(bundle);
                                             startActivity(intent);
+                                            finish();
 
                                         }
 
                                         @Override
                                         public void onFail(String code) {
                                             super.onFail(code);
+                                            progress_bar.setVisibility(View.GONE);
                                         }
                                     });
                                 } else {
@@ -324,6 +330,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                                                                 @Override
                                                                 public void onSuccess(Question result) {
                                                                     super.onSuccess(result);
+                                                                    progress_bar.setVisibility(View.GONE);
                                                                     mDataList.clear();
                                                                     removeTempFromPref();
                                                                     Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
@@ -339,6 +346,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                                                                 @Override
                                                                 public void onFail(String code) {
                                                                     super.onFail(code);
+                                                                    progress_bar.setVisibility(View.GONE);
                                                                 }
                                                             });
 

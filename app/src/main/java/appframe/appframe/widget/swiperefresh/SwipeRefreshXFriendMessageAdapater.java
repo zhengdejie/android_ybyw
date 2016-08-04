@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +53,8 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
             mHolder.tv_message = (TextView) convertView.findViewById(R.id.tv_message);
             mHolder.tv_accept = (TextView) convertView.findViewById(R.id.tv_accept);
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -64,21 +66,31 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
         mHolder.tv_message.setText(item.getContent());
         mHolder.tv_name.setText(item.getSender().getName());
 
-        if(item.getSender().getAvatar() != null && !item.getSender().getAvatar().equals(""))
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+
+        if(item.getSender().getGender().equals(context.getResources().getString(R.string.male).toString()))
         {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getSender().getAvatar());
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
         }
         else
         {
-            if(item.getSender().equals(context.getResources().getString(R.string.male).toString()))
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
-            }
-            else
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
-            }
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
         }
+
+        if(item.getSender().getAvatar() != null && !item.getSender().getAvatar().equals(""))
+        {
+            mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            mHolder.niv_avatar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mHolder.iv_avatar.setVisibility(View.VISIBLE);
+            mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(mHolder.niv_avatar, item.getSender().getAvatar());
+
+
         if(item.getFriendRequestAccepted() == 1)
         {
             mHolder.tv_accept.setBackgroundColor(Color.GRAY);
@@ -118,6 +130,7 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
     static class ViewHolder
     {
         private TextView tv_message,tv_accept,tv_name;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
+        private ImageView iv_avatar;
     }
 }

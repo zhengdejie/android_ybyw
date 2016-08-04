@@ -35,8 +35,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXReportAdapater;
  * Created by Administrator on 2016/3/22.
  */
 public class ReportActivity extends BaseActivity implements View.OnClickListener {
-    private TextView tb_title,tb_back;
-    private Button btn_report;
+    private TextView tb_title,tb_back,btn_report;
     private EditText et_report;
     ListView listView;
     SwipeRefreshXNearbyAdapater adapater;
@@ -57,7 +56,7 @@ public class ReportActivity extends BaseActivity implements View.OnClickListener
     }
 
     protected void init() {
-        btn_report = (Button) findViewById(R.id.btn_report);
+        btn_report = (TextView) findViewById(R.id.btn_report);
         tb_title = (TextView) findViewById(R.id.tb_title);
         tb_back = (TextView) findViewById(R.id.tb_back);
         et_report = (EditText) findViewById(R.id.et_report);
@@ -133,14 +132,14 @@ public class ReportActivity extends BaseActivity implements View.OnClickListener
                                     super.onSuccess(result);
 
 //                                listView.setAdapter(new SwipeRefreshXReportAdapater(ReportActivity.this,result));
-                                    Toast.makeText(ReportActivity.this, "投诉成功", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ReportActivity.this, "举报成功", Toast.LENGTH_SHORT).show();
                                     finish();
                                 }
                             });
                 }
                 else
                 {
-                    Toast.makeText(ReportActivity.this,"至少选择一个投诉理由",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ReportActivity.this,"至少选择一个举报理由",Toast.LENGTH_SHORT).show();
                 }
                 break;
 

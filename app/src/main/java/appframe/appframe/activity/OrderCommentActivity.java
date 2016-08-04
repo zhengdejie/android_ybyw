@@ -107,7 +107,7 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
         tb_back.setText("订单");
         tv_progress_content.setText("正在评价");
         tb_back.setOnClickListener(this);
-        Log.i("sdfsd", getIntent().getStringExtra("Estimate"));
+//        Log.i("sdfsd", getIntent().getStringExtra("Estimate"));
         if(getIntent().getStringExtra("Estimate") != null && getIntent().getStringExtra("Estimate").equals("1"))
         {
 
@@ -285,11 +285,11 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
 //                break;
             case R.id.btn_evaluate:
 
-                if(et_content.getText().toString().equals(""))
-                {
-                    Toast.makeText(OrderCommentActivity.this,"评论内容不能为空",Toast.LENGTH_SHORT).show();
-                }
-                else {
+//                if(et_content.getText().toString().equals(""))
+//                {
+//                    Toast.makeText(OrderCommentActivity.this,"评论内容不能为空",Toast.LENGTH_SHORT).show();
+//                }
+//                else {
                     progress_bar.setVisibility(View.VISIBLE);
                     if (mDataList.size() == 0) {
                         Http.request(this, API.EVALUATION_ORDER, Http.map(
@@ -374,7 +374,7 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
                             });
                         }
                     }
-                }
+//                }
                 break;
             case R.id.tb_back:
                 finish();

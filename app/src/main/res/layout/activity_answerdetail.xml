@@ -121,23 +121,23 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:id="@+id/lly_send">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:text="采纳该答案,并支付"
             android:id="@+id/tv_accept"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_gravity="bottom"
             android:background="@drawable/textview_clicked"
+            android:textColor="@drawable/textview_pressed"
             android:gravity="center"
             android:textSize="20sp"
-            android:textColor="@color/white"
             android:layout_marginBottom="5dp"
             />
 

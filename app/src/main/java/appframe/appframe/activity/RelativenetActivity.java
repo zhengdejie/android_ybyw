@@ -20,6 +20,7 @@ import java.util.Map;
 import appframe.appframe.R;
 import appframe.appframe.app.API;
 import appframe.appframe.dto.Friendship;
+import appframe.appframe.dto.UserBrief;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
@@ -34,7 +35,7 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
     private TextView tv_myname,tv_yourname,tb_title,tb_back,tv_relation;
     private com.android.volley.toolbox.NetworkImageView iv_myavatar,iv_youravatar;
     private GridView gridview;
-
+    private UserBrief userBrief;
 
 
     @Override
@@ -55,13 +56,15 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
         tb_title = (TextView) findViewById(R.id.tb_title);
         tb_back = (TextView) findViewById(R.id.tb_back);
         tb_title.setText("我和TA的关系网");
-        tb_back.setText("需求单");
+        tb_back.setText("返回");
         tb_back.setOnClickListener(this);
 
     }
 
     protected void initdata()
     {
+        Intent getIntent = this.getIntent();
+        userBrief = (UserBrief)getIntent.getSerializableExtra("userBrief");
         tv_myname.setText(Auth.getCurrentUser().getName());
         if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
             ImageUtils.setImageUrl(iv_myavatar, Auth.getCurrentUser().getAvatar());
@@ -77,13 +80,13 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
                 iv_myavatar.setDefaultImageResId(R.drawable.femaleavatar);
             }
         }
-        tv_yourname.setText(getIntent().getStringExtra("Name"));
-        if(getIntent().getStringExtra("Avatar") !=null && !getIntent().getStringExtra("Avatar").equals("")) {
-            ImageUtils.setImageUrl(iv_youravatar, getIntent().getStringExtra("Avatar"));
+        tv_yourname.setText(userBrief.getName());
+        if(userBrief.getAvatar() !=null && !userBrief.getAvatar().equals("")) {
+            ImageUtils.setImageUrl(iv_youravatar, userBrief.getAvatar());
         }
         else
         {
-            if(Auth.getCurrentUser().getGender().equals(getResources().getString(R.string.male).toString()))
+            if(userBrief.getGender().equals(getResources().getString(R.string.male).toString()))
             {
                 iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
             }
@@ -92,9 +95,9 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
                 iv_youravatar.setDefaultImageResId(R.drawable.femaleavatar);
             }
         }
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("FriendId", getIntent().getStringExtra("UserID"));
-        Http.request(RelativenetActivity.this, API.GET_RELATIONSHIP, Http.map("FriendId",getIntent().getStringExtra("UserID").toString()),
+//        Map<String, String> map = new HashMap<String, String>();
+//        map.put("FriendId", String.valueOf(userBrief.getId()));
+        Http.request(RelativenetActivity.this, API.GET_RELATIONSHIP, Http.map("FriendId",String.valueOf(userBrief.getId())),
 
                 new Http.RequestListener<Friendship>() {
                     @Override

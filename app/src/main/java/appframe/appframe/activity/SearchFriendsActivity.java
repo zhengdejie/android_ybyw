@@ -67,6 +67,7 @@ public class SearchFriendsActivity extends BaseActivity implements View.OnClickL
                 UserDetail userDetail = (UserDetail) parent.getAdapter().getItem(position);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("UserDetail", userDetail);
+                bundle.putBoolean("AddFriend",true);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

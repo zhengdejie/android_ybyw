@@ -176,11 +176,12 @@
             android:layout_height="20dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="10dp"
-            android:text="合计:"
+            android:text="价格:"
             android:layout_toLeftOf="@+id/tv_total"
             android:layout_below="@+id/divide"/>
     </RelativeLayout>
     <RelativeLayout
+        android:id="@+id/rl_button"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@+id/rl_order"
@@ -207,9 +208,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/shape_tagview"
-            android:textColor="@color/white"
-
-
+            android:textColor="@drawable/textview_pressed"
             />
         <TextView
             android:id="@+id/tv_finish"

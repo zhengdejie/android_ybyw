@@ -35,7 +35,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
  * Created by Administrator on 2016/1/28.
  */
 public class MyMissionActivity extends BaseActivity implements View.OnClickListener {
-    SwipeRefreshX swipeRefresh;
+    public static SwipeRefreshX swipeRefresh;
     ListView listView;
     TextView tb_title,tb_back,tv_empty;
     LinearLayout progress_bar;
@@ -47,6 +47,12 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mymission);
         init();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initdata();
     }
 
@@ -88,7 +94,10 @@ public class MyMissionActivity extends BaseActivity implements View.OnClickListe
 
     }
 
+    public static void initt()
+    {
 
+    }
 
     public void initdata()
     {

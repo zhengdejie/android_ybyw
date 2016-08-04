@@ -119,9 +119,15 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                         if(result != null)
                         {
                             tv_empty.setVisibility(View.GONE);
-                            if(result.getOrders() != null) {
+                            if(result.getOrders() != null && !result.getOrders().isEmpty()) {
                                 rl_service.setVisibility(View.VISIBLE);
-                                lv_mysearch.setAdapter(new SwipeRefreshXOrderAdapater(SearchActivity.this, result.getOrders(), AppConfig.ORDERSTATUS_MAIN));
+                                List<OrderDetails> orderDetailsList = new ArrayList<OrderDetails>();
+                                for(int i = 0; i < 2; i++)
+                                {
+                                    orderDetailsList.add(result.getOrders().get(i));
+                                }
+
+                                lv_mysearch.setAdapter(new SwipeRefreshXOrderAdapater(SearchActivity.this, orderDetailsList, AppConfig.ORDERSTATUS_MAIN));
                                 if(result.getOrders().size() > 2)
                                 {
                                     tv_servicenmore.setVisibility(View.VISIBLE);
@@ -136,10 +142,15 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                             {
                                 rl_service.setVisibility(View.GONE);
                             }
-                            if(result.getQuestions() != null)
+                            if(result.getQuestions() != null && !result.getQuestions().isEmpty())
                             {
                                 rl_question.setVisibility(View.VISIBLE);
-                                lv_myquestion.setAdapter(new SwipeRefreshXQuestionAdapater(SearchActivity.this,result.getQuestions()));
+                                List<Question> questionList = new ArrayList<Question>();
+                                for(int i = 0; i < 2; i++)
+                                {
+                                    questionList.add(result.getQuestions().get(i));
+                                }
+                                lv_myquestion.setAdapter(new SwipeRefreshXQuestionAdapater(SearchActivity.this,questionList));
                                 if(result.getQuestions().size() > 2)
                                 {
                                     tv_questionmore.setVisibility(View.VISIBLE);
@@ -171,6 +182,10 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
             }
             else
             {
+                rl_service.setVisibility(View.GONE);
+                rl_question.setVisibility(View.GONE);
+                tv_questionmore.setVisibility(View.GONE);
+                tv_servicenmore.setVisibility(View.GONE);
                 List<OrderDetails> result = new ArrayList<OrderDetails>();
                 lv_mysearch.setAdapter(new SwipeRefreshXOrderAdapater(SearchActivity.this, result, AppConfig.ORDERSTATUS_MAIN));
             }

@@ -97,7 +97,7 @@ public class SwipeRefreshXMyQuestionAdapater extends BaseAdapter {
 //
 //        }
         mHolder.tv_title.setText(item.getTitle());
-        mHolder.tv_bounty.setText(String.valueOf(item.getBounty()));
+        mHolder.tv_bounty.setText("￥" + String.valueOf(item.getBounty()));
 //        if(item.getType() == 1)
 //        {
 //            mHolder.txt_bounty.setTextColor(context.getResources().getColor(R.color.green));
@@ -145,6 +145,7 @@ public class SwipeRefreshXMyQuestionAdapater extends BaseAdapter {
                     public void onSuccess(String result) {
                         super.onSuccess(result);
                         Toast.makeText(context,result,Toast.LENGTH_SHORT).show();
+                        context.startActivity(new Intent(context, context.getClass()));
                     }
                 });
             }

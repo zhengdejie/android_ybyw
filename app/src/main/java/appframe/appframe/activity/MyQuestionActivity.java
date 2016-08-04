@@ -37,6 +37,7 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
     UserBrief userBrief;
     int page = 1;
     boolean getUnpaid = false;
+    String questionStatus = "";
     SwipeRefreshXMyQuestionAdapater swipeRefreshXMyQuestionAdapater;
 
     @Override
@@ -44,6 +45,12 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myquestion);
         init();
+//        initdata();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initdata();
     }
 
@@ -85,13 +92,13 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
         {
             userID = userBrief.getId();
             tb_title.setText(String.format("%s提问的",userBrief.getName()));
-            getUnpaid = false;
+            questionStatus = getIntent().getStringExtra("questionstatus");
         }
         else
         {
             userID = Auth.getCurrentUserId();
             tb_title.setText("我提问的");
-            getUnpaid = true;
+
         }
 
     }
@@ -103,7 +110,7 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
         Map<String, String> map = new HashMap<String, String>();
         map.put("Page", "1");
         map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-        map.put("GetUnpaidQuestion", String.valueOf(getUnpaid));
+        map.put("QuestionStatus", questionStatus);
         Http.request(MyQuestionActivity.this, API.GET_MYQUESTION, new Object[]{userID,Http.getURL(map)}, new Http.RequestListener<List<Question>>() {
             @Override
             public void onSuccess(List<Question> result) {
@@ -135,7 +142,7 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Page", "1");
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-                map.put("GetUnpaidQuestion", String.valueOf(getUnpaid));
+                map.put("QuestionStatus", questionStatus);
                 Http.request(MyQuestionActivity.this, API.GET_MYQUESTION, new Object[]{Auth.getCurrentUserId(), Http.getURL(map)}, new Http.RequestListener<List<Question>>() {
                     @Override
                     public void onSuccess(List<Question> result) {
@@ -170,7 +177,7 @@ public class MyQuestionActivity extends BaseActivity implements View.OnClickList
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Page", String.valueOf(page));
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-                map.put("GetUnpaidQuestion", String.valueOf(getUnpaid));
+                map.put("QuestionStatus", questionStatus);
                 Http.request(MyQuestionActivity.this, API.GET_MYQUESTION, new Object[]{Auth.getCurrentUserId(), Http.getURL(map)}, new Http.RequestListener<List<Question>>() {
                     @Override
                     public void onSuccess(List<Question> result) {

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <appframe.appframe.widget.swiperefresh.SwipeRefreshX
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar">
+
+        <ListView
+            android:id="@+id/lv_tradehistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:listSelector="@drawable/listview_item_pressed"
+            android:cacheColorHint="@android:color/transparent">
+        </ListView>
+    </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="没有相关记录"
+        android:visibility="gone"/>
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading" />
+
+</RelativeLayout>

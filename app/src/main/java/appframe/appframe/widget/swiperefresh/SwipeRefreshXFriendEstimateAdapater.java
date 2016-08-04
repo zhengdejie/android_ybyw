@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -50,7 +51,8 @@ public class SwipeRefreshXFriendEstimateAdapater extends BaseAdapter {
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
             mHolder.tv_evaluation = (TextView) convertView.findViewById(R.id.tv_evaluation);
             mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -62,9 +64,31 @@ public class SwipeRefreshXFriendEstimateAdapater extends BaseAdapter {
         mHolder.tv_name.setText(item.getPraiser().getName());
         mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_evaluation.setText(item.getPraise());
-        if(item.getPraiser().getAvatar()!=null) {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getPraiser().getAvatar());
+
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+
+        if(item.getPraiser().getGender().equals(context.getResources().getString(R.string.male).toString()))
+        {
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
         }
+        else
+        {
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
+        }
+
+        if(item.getPraiser().getAvatar() != null && !item.getPraiser().getAvatar().equals(""))
+        {
+            mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            mHolder.niv_avatar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mHolder.iv_avatar.setVisibility(View.VISIBLE);
+            mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(mHolder.niv_avatar, item.getPraiser().getAvatar());
+
 
         return convertView;
     }
@@ -90,6 +114,7 @@ public class SwipeRefreshXFriendEstimateAdapater extends BaseAdapter {
     static class ViewHolder
     {
         private TextView tv_name,tv_evaluation,tv_time;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
+        private ImageView iv_avatar;
     }
 }

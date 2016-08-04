@@ -192,7 +192,7 @@ public class FramedWebViewActivity extends BaseFrameActivity implements WebViewC
         initTabs();
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
-        tb_back.setText("关于友帮");
+        tb_back.setText("返回");
         tb_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

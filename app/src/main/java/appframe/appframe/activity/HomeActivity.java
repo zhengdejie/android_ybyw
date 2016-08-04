@@ -618,7 +618,8 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     } else {
                         Log.e("IM ERROR", "登录失败 错误码：" + errorCode + "  错误信息：" + errorMessage);
                     }
-                    IMLogin();
+//                    IMLogin();
+//                    startActivity(new Intent(HomeActivity.this, LoginActivity.class));
                 }
             });
         }

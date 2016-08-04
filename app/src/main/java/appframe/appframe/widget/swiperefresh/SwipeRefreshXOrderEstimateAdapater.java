@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -57,7 +58,8 @@ public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
             mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
 //            mHolder.ratingBar = (RatingBar) convertView.findViewById(R.id.ratingBar);
             mHolder.gridView = (GridView)convertView.findViewById(R.id.gridview);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -93,18 +95,30 @@ public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
         {
             mHolder.gridView.setVisibility(View.GONE);
         }
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+
         if(item.getUser().getGender().equals(context.getResources().getString(R.string.male).toString()))
         {
-            mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
         }
         else
         {
-            mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
         }
+
         if(item.getUser().getAvatar() != null && !item.getUser().getAvatar().equals(""))
         {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getUser().getAvatar());
+            mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            mHolder.niv_avatar.setVisibility(View.VISIBLE);
         }
+        else
+        {
+            mHolder.iv_avatar.setVisibility(View.VISIBLE);
+            mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(mHolder.niv_avatar, item.getUser().getAvatar());
+
         return convertView;
 
     }
@@ -133,7 +147,8 @@ public class SwipeRefreshXOrderEstimateAdapater extends BaseAdapter {
     {
         private TextView tv_name,tv_content,tv_time,tv_title;
 //        private RatingBar ratingBar;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
+        private ImageView iv_avatar;
         private GridView gridView;;
     }
 }

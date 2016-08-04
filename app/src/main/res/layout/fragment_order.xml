@@ -192,7 +192,7 @@
                 android:id="@+id/lv_order"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:listSelector="@drawable/listview_item_pressed"
+                android:listSelector="@color/font_gray"
                 android:cacheColorHint="@android:color/transparent"
                 >
             </ListView>

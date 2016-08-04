@@ -40,17 +40,21 @@
                 android:id="@+id/tv_bargain"
                 android:layout_below="@+id/view1"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                />
 
             <EditText
                 android:id="@+id/et_price"
-                style="@style/more_item_style"
+                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="66dp"
                 android:layout_below="@+id/view1"
                 android:layout_toRightOf="@+id/tv_bargain"
                 android:hint="价格（元）"
-                android:enabled="false"/>
+                android:focusable="false"
+                android:visibility="visible"
+                android:inputType="numberDecimal"
+                />
     <View
         android:id="@+id/view2"
         android:layout_width="match_parent"

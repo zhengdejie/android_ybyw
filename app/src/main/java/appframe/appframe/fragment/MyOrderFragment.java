@@ -51,7 +51,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
     LinearLayout progress_bar;
     SwipeRefreshX swipeRefresh;
     SwipeRefreshXConfirmedOrderAdapater swipeRefreshXConfirmedOrderAdapater;
-    String from,Status;
+    String from,Status ="3";
     int page = 1;
     Map<String, String> map = new HashMap<String, String>();;
 //    boolean require_selected =true;
@@ -224,24 +224,24 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected void onLoadData() {
-        Http.request(getActivity(), API.GET_ORDER_NUM, new Http.RequestListener<ConfirmedOrderUndoCount>() {
-            @Override
-            public void onSuccess(ConfirmedOrderUndoCount result) {
-                super.onSuccess(result);
-
-                tv_apply.setText(String.valueOf(result.getPendingCount()));
-                tv_progess.setText(String.valueOf(result.getOngoingCount()));
-                tv_done.setText(String.valueOf(result.getUnReviewedCount()));
-
-            }
-
-            @Override
-            public void onFail(String code) {
-                super.onFail(code);
-            }
-        });
-
-        tab_apply.performClick();
+//        Http.request(getActivity(), API.GET_ORDER_NUM, new Http.RequestListener<ConfirmedOrderUndoCount>() {
+//            @Override
+//            public void onSuccess(ConfirmedOrderUndoCount result) {
+//                super.onSuccess(result);
+//
+//                tv_apply.setText(String.valueOf(result.getPendingCount()));
+//                tv_progess.setText(String.valueOf(result.getOngoingCount()));
+//                tv_done.setText(String.valueOf(result.getUnReviewedCount()));
+//
+//            }
+//
+//            @Override
+//            public void onFail(String code) {
+//                super.onFail(code);
+//            }
+//        });
+//
+//        tab_apply.performClick();
 
 
     }
@@ -558,4 +558,28 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(Status.equals("0"))
+        {
+            tab_close.performClick();
+        }
+        else if(Status.equals("1"))
+        {
+            tab_progess.performClick();
+        }
+        else if(Status.equals("2"))
+        {
+            tab_done.performClick();
+        }
+        else if(Status.equals("3"))
+        {
+            tab_apply.performClick();
+        }
+        else
+        {
+
+        }
+    }
 }

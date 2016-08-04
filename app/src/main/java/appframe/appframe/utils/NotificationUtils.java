@@ -58,6 +58,7 @@ public class NotificationUtils {
         cBuilder.setContentIntent(pIntent);// 该通知要启动的Intent
 
         cBuilder.setSmallIcon(smallIcon);// 设置顶部状态栏的小图标
+        cBuilder.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(),R.drawable.logo));
         cBuilder.setTicker(ticker);// 在顶部状态栏中的提示信息
 
         cBuilder.setContentTitle(title);// 设置通知中心的标题

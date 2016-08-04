@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -58,7 +59,8 @@ public class SwipeRefreshXAnswerAdapater extends BaseAdapter {
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
             mHolder.tv_ordercomment = (TextView) convertView.findViewById(R.id.tv_ordercomment);
             mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
 
             convertView.setTag(mHolder);
         }
@@ -69,22 +71,31 @@ public class SwipeRefreshXAnswerAdapater extends BaseAdapter {
 
         final AnswerDetail item = answerDetailList.get(position);
 
-        if(item.getAnswerer().getAvatar() != null && !item.getAnswerer().getAvatar().equals(""))
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+
+        if(item.getAnswerer().getGender().equals(context.getResources().getString(R.string.male).toString()))
         {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAnswerer().getAvatar());
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
         }
         else
         {
-            if(item.getAnswerer().getGender().equals(context.getResources().getString(R.string.male)))
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
-            }
-            else
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
-            }
-
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
         }
+
+        if(item.getAnswerer().getAvatar() != null && !item.getAnswerer().getAvatar().equals(""))
+        {
+            mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            mHolder.niv_avatar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mHolder.iv_avatar.setVisibility(View.VISIBLE);
+            mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(mHolder.niv_avatar, item.getAnswerer().getAvatar());
+
+
         mHolder.tv_name.setText(item.getAnswerer().getName());
         mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_ordercomment.setText(item.getContent());
@@ -114,7 +125,8 @@ public class SwipeRefreshXAnswerAdapater extends BaseAdapter {
     static class ViewHolder
     {
         private TextView tv_name,tv_ordercomment,tv_time;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
+        private ImageView iv_avatar;
     }
 }
 

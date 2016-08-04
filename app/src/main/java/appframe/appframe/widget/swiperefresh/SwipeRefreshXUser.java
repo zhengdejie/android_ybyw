@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -49,7 +50,8 @@ public class SwipeRefreshXUser extends BaseAdapter {
                     .inflate(R.layout.swiperefreshx_user, null);
             mHolder = new ViewHolder();
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
             mHolder.tv_mobile = (TextView) convertView.findViewById(R.id.tv_mobile);
             convertView.setTag(mHolder);
         }
@@ -61,23 +63,31 @@ public class SwipeRefreshXUser extends BaseAdapter {
         mHolder.tv_name.setText(item.getName());
         mHolder.tv_mobile.setText(item.getMobile());
 
-//        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
-//        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
-//        ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
-        if(item.getAvatar() != null && !item.getAvatar().equals("")) {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAvatar());
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+
+        if(item.getGender().equals(context.getResources().getString(R.string.male).toString()))
+        {
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
         }
         else
         {
-            if(item.getGender().equals(context.getResources().getString(R.string.male).toString()))
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
-            }
-            else
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
-            }
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
         }
+
+        if(item.getAvatar() != null && !item.getAvatar().equals(""))
+        {
+            mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            mHolder.niv_avatar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mHolder.iv_avatar.setVisibility(View.VISIBLE);
+            mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(mHolder.niv_avatar, item.getAvatar());
+
+
         return convertView;
     }
 
@@ -104,7 +114,8 @@ public class SwipeRefreshXUser extends BaseAdapter {
     static class ViewHolder
     {
         private TextView tv_name,tv_mobile;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
+        private ImageView iv_avatar;
     }
 }
 

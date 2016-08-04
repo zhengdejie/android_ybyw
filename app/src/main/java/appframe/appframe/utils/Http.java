@@ -271,6 +271,7 @@ public final class Http {
                             String className = componentName.getClassName();
                             if (!className.equals("appframe.appframe.activity.LoginActivity") )
                             {
+                                Auth.login(null,null);
                                 message = "你的账号在其他地方登入过，请重新登入";
                                 context.startActivity(new Intent(context, LoginActivity.class));
                                 Toast.makeText(context,message,Toast.LENGTH_SHORT).show();

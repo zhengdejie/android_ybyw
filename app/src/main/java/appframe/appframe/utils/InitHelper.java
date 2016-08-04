@@ -8,7 +8,7 @@ import com.alibaba.wxlib.util.SysUtil;
 
 /**
  * SDK
- * 
+ *
  * @author shuheng
  */
 public class InitHelper {

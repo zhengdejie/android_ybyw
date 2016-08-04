@@ -33,6 +33,8 @@ import appframe.appframe.activity.MyMessageActivity;
 import appframe.appframe.activity.MyMissionActivity;
 import appframe.appframe.activity.MyQuestionActivity;
 import appframe.appframe.activity.MyRequireActivity;
+import appframe.appframe.activity.MyfansActivity;
+import appframe.appframe.activity.MyfocusActivity;
 import appframe.appframe.activity.PrivacyActivity;
 import appframe.appframe.activity.SettingActivity;
 import appframe.appframe.activity.WalletActivity;
@@ -54,7 +56,7 @@ import appframe.appframe.widget.sortlistview.SortListViewActivity;
  * Created by Administrator on 2015/8/8.
  */
 public class PersonFragment extends BaseFragment implements View.OnClickListener{
-    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission,tv_myestimate,tv_author,tv_question,tv_answer,tv_myhelp;
+    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission,tv_myestimate,tv_author,tv_question,tv_answer,tv_myhelp,tv_contactservice,tv_myfocus;
     public static TextView tv_unread;
     ImageView iv_sex,iv_member;
     com.android.volley.toolbox.NetworkImageView iv_avater;
@@ -178,6 +180,12 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
             case R.id.tv_setting:
                 startActivity(new Intent(getActivity(), SettingActivity.class));
                 break;
+            case R.id.tv_myfocus:
+                startActivity(new Intent(getActivity(), MyfocusActivity.class));
+                break;
+//            case R.id.tv_myfans:
+//                startActivity(new Intent(getActivity(), MyfansActivity.class));
+//                break;
             case R.id.tv_contact:
                 startActivity(new Intent(getActivity(), MyContact.class));
                 break;
@@ -235,6 +243,12 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
             case R.id.tv_answer:
                 startActivity(new Intent(getActivity(),MyAnswerActivity.class));
                 break;
+            case R.id.tv_contactservice:
+                LoginSampleHelper ls = LoginSampleHelper.getInstance();
+                String target = "3000";
+                intent = ls.getIMKit().getChattingActivityIntent(target);
+                startActivity(intent);
+                break;
         }
     }
     private  void init()
@@ -259,6 +273,9 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_question = (TextView)root.findViewById(R.id.tv_question);
         tv_answer = (TextView)root.findViewById(R.id.tv_answer);
         tv_myhelp = (TextView)root.findViewById(R.id.tv_myhelp);
+        tv_contactservice = (TextView)root.findViewById(R.id.tv_contactservice);
+        tv_myfocus = (TextView)root.findViewById(R.id.tv_myfocus);
+//        tv_myfans = (TextView)root.findViewById(R.id.tv_myfans);
 
         tv_contact.setOnClickListener(this);
         tv_collect.setOnClickListener(this);
@@ -275,6 +292,9 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_question.setOnClickListener(this);
         tv_answer.setOnClickListener(this);
         tv_myhelp.setOnClickListener(this);
+        tv_contactservice.setOnClickListener(this);
+        tv_myfocus.setOnClickListener(this);
+//        tv_myfans.setOnClickListener(this);
 
         tb_title = (TextView)root.findViewById(R.id.tb_title);
         tb_back = (TextView)root.findViewById(R.id.tb_back);

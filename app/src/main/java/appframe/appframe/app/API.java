@@ -15,6 +15,7 @@ import appframe.appframe.dto.FriendEvaluationDetail;
 import appframe.appframe.dto.Friendship;
 import appframe.appframe.dto.MessageTypeCount;
 import appframe.appframe.dto.Nearby;
+import appframe.appframe.dto.OrderCandidateDto;
 import appframe.appframe.dto.OrderCategory;
 import appframe.appframe.dto.OrderComment;
 import appframe.appframe.dto.OrderDetailAndCount;
@@ -38,7 +39,7 @@ import appframe.appframe.utils.Http;
  * Created by dashi on 15/6/11.
  */
 public final class API {
-    static String HOST = "114.55.100.9";   //42.96.152.105       //192.168.31.123        //114.55.100.9
+    static String HOST = "114.55.100.9";          //192.168.31.123        //114.55.100.9
     public static String API_BASE = "http://" + HOST + ":1337";
     public static String[] OFFICAL_HOSTS = new String[]{"localhost", HOST};
 
@@ -66,8 +67,8 @@ public final class API {
     public static final Http.API ADD_FAVORITEORDER = Http.API.postEmpty("/favoriteorder/add.json");
     public static final Http.API DELETE_FAVORITEORDER = Http.API.deleteEmpty("/favoriteorder/%s.json");
     public static final Http.API<List<ConfirmedOrderDetail>> GET_CONFIRMEDORDER = Http.API.getList("/confirmedOrder/display.json%s", ConfirmedOrderDetail.class);
-    public static final Http.API CONFIRMORDER = Http.API.postEmpty("/order/%s/confirm.json");
-    public static final Http.API<List<ConfirmedOrderDetail>> GET_CANDIDATE = Http.API.getList("/order/%s/getcandidate.json", ConfirmedOrderDetail.class);
+    public static final Http.API<OrderDetails> CONFIRMORDER = Http.API.post("/order/%s/confirm.json", OrderDetails.class);
+    public static final Http.API<OrderCandidateDto> GET_CANDIDATE = Http.API.get("/order/%s/getcandidate.json", OrderCandidateDto.class);
     public static final Http.API<Token> GetQINIUUploadToken = Http.API.get("/photos/gettoken.json", Token.class);
     public static final Http.API<List<PushMessage>> GET_PUSHMESSAGE = Http.API.getList("/pushmessage/get.json%s", PushMessage.class);
     public static final Http.API<List<ContactDetail>> GET_YBFRIEND = Http.API.getList("/contact/getybfriends.json", ContactDetail.class);
@@ -135,6 +136,9 @@ public final class API {
     public static final Http.API<AnswerDetail> UPDATE_MYANSWER = Http.API.post("/question/%s/update.json", AnswerDetail.class);
     public static final Http.API<UserDetail> OPEN_TRADEHISTORY = Http.API.post("/profile/%s/confirmedOrderHistory.json",UserDetail.class);
     public static final Http.API<List<ConfirmedOrderDetail>> GET_CONFIRMEDORDERHISTORY = Http.API.getList("/profile/%s/confirmedOrderHistory.json%s", ConfirmedOrderDetail.class);
-
-
+    public static final Http.API ADDFANS = Http.API.postEmpty("/fans/addFans.json");
+    public static final Http.API DELETEFANS = Http.API.deleteEmpty("/fans/delete.json%s");
+    public static final Http.API<List<OrderDetails>> GETOPENORDER = Http.API.getList("/order/getopenorderwithuserid.json%s", OrderDetails.class);
+    public static final Http.API<List<UserDetail>> GETALLFOCUS = Http.API.getList("/fans/getAllFocus.json%s", UserDetail.class);
+    public static final Http.API<List<UserDetail>> GETALLFANS = Http.API.getList("/fans/getAllFans.json%s", UserDetail.class);
 }

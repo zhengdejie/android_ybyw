@@ -76,7 +76,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Copyright 2016 zhulong. All Right Reserved."
+            android:text="Copyright © 2016 zhulong. All Right Reserved."
             android:gravity="center"
             />
     </LinearLayout>

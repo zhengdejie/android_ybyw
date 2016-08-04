@@ -13,78 +13,89 @@
             android:id="@+id/title_bar"
             layout="@layout/titlebar" />
     </LinearLayout>
-    <!--<ScrollView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_above="@+id/lly_send"-->
-    <!--android:layout_below="@+id/ll_tb"-->
-    <!--android:layout_margin="10dp"-->
-    <!--android:gravity="center_horizontal|center_vertical">-->
-    <!--<ListView-->
-    <!--android:id="@+id/lv_candidate"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent">-->
 
-    <!--</ListView>-->
     <ScrollView
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/lly_send"
+
         android:layout_below="@+id/ll_tb">
     <LinearLayout
         android:id="@+id/sv_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_above="@+id/lly_send"
-        android:layout_below="@+id/ll_tb"
+
         android:layout_margin="10dp">
+
         <ListView
             android:id="@+id/lv_report"
             android:layout_width="match_parent"
-            android:layout_height="300dp">
+            android:layout_height="400dp"
+            >
 
         </ListView>
+        <EditText
+            android:id="@+id/et_report"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:hint="请填写举报理由"
+            android:inputType="textMultiLine"
+            android:paddingLeft="5dp"
+            android:background="@drawable/shape_edittext"
+            android:layout_above="@+id/lly_send"
+            android:layout_margin="10dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="举报"
+            android:id="@+id/btn_report"
+            android:layout_gravity="bottom"
+            android:layout_margin="10dp"
+            android:background="@drawable/textview_clicked"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@drawable/textview_pressed"
 
-
+            />
     </LinearLayout>
     </ScrollView>
-    <EditText
-        android:id="@+id/et_report"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:hint="请填写投诉理由"
-        android:inputType="textMultiLine"
-        android:paddingLeft="5dp"
-        android:background="@drawable/shape_edittext"
-        android:layout_above="@+id/lly_send"
-        android:layout_margin="10dp"
-        />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/lly_send">
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divide"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="举报"
-                android:id="@+id/btn_report"
-                android:layout_gravity="bottom"
-                android:layout_weight="1"
-                />
+    <!--<EditText-->
+        <!--android:id="@+id/et_report"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:hint="请填写投诉理由"-->
+        <!--android:inputType="textMultiLine"-->
+        <!--android:paddingLeft="5dp"-->
+        <!--android:background="@drawable/shape_edittext"-->
+        <!--android:layout_above="@+id/lly_send"-->
+        <!--android:layout_margin="10dp"-->
+        <!--/>-->
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:id="@+id/lly_send">-->
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:background="@color/divide"/>-->
+       <!-- -->
+        <!--<TextView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:text="举报"-->
+            <!--android:id="@+id/btn_report"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_margin="10dp"-->
+            <!--android:background="@drawable/textview_clicked"-->
+            <!--android:gravity="center"-->
+            <!--android:textSize="20sp"-->
+            <!--android:textColor="@drawable/textview_pressed"-->
 
-        </LinearLayout>
-    </LinearLayout>
+            <!--/>-->
+    <!--</LinearLayout>-->
 
 </RelativeLayout>

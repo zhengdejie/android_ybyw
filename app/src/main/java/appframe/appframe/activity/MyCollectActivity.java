@@ -51,7 +51,7 @@ public class MyCollectActivity extends BaseActivity implements View.OnClickListe
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
-        tv_empty = (TextView)findViewById(R.id.tb_back);
+        tv_empty = (TextView)findViewById(R.id.tv_empty);
         lv_mycollect = (ListView)findViewById(R.id.lv_mycollect);
         tb_back.setText("我的");
         tb_title.setText("我的收藏");

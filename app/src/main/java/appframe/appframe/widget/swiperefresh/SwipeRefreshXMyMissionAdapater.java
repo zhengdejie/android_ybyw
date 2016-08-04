@@ -27,6 +27,8 @@ import appframe.appframe.R;
 import appframe.appframe.activity.AvatarZoomActivity;
 import appframe.appframe.activity.CandidateActivity;
 import appframe.appframe.activity.FriendsInfoActivity;
+import appframe.appframe.activity.MyMissionActivity;
+import appframe.appframe.activity.MyQuestionActivity;
 import appframe.appframe.activity.OrderCommentActivity;
 import appframe.appframe.activity.PayActivity;
 import appframe.appframe.app.API;
@@ -44,7 +46,7 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
     List<OrderDetails> orderDetails = new ArrayList<OrderDetails>();
-
+    String imgURL;
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
 
@@ -101,14 +103,18 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
 //            }
 //
 //        }
+        mHolder.iv_avatar.setDefaultImageResId(R.drawable.defaultphoto);
+
         if(item.getPhotos() != null && !item.getPhotos().equals(""))
         {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getPhotos().split(",")[0]);
+            imgURL = item.getPhotos().split(",")[0];
+
         }
         else
         {
-            mHolder.iv_avatar.setDefaultImageResId(R.drawable.defaultphoto);
+            imgURL = "";
         }
+        ImageUtils.setImageUrl(mHolder.iv_avatar, imgURL);
         mHolder.txt_title.setText(item.getTitle());
         if(item.getType() == 1)
         {
@@ -130,6 +136,13 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
         else
         {
             mHolder.txt_location.setText("地址:" + item.getAddress());
+            if(item.getUserLocation() != null && item.getUserLocation().getProvince() != null && item.getUserLocation().getCity() != null && item.getUserLocation().getDistrict() != null) {
+                mHolder.txt_location.setText("地址:" + item.getUserLocation().getProvince() + item.getUserLocation().getCity() + item.getUserLocation().getDistrict());
+            }
+            else
+            {
+                mHolder.txt_location.setText("地址:未知");
+            }
         }
         mHolder.tv_time.setText(item.getCreatedAt());
 
@@ -172,7 +185,14 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
             mHolder.rl_bottom.setVisibility(View.GONE);
             mHolder.tv_status.setText("已关闭");
         }
-        //保留单子却没付款
+        //保留单子却没付款  接单人没有接单成功
+        if(item.getOrderStatus().equals("2"))
+        {
+            mHolder.tv_pay.setText("保留单子付款");
+            mHolder.tv_delete.setText("取消付款");
+            mHolder.tv_status.setText("等待支付");
+        }
+        //保留单子却没付款  接单人已经接单成功
         if(item.getOrderStatus().equals("4"))
         {
             mHolder.tv_pay.setText("保留单子付款");
@@ -235,8 +255,9 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
                         @Override
                         public void onSuccess(String result) {
                             super.onSuccess(result);
-                            orderDetails.remove(item);
-                            notifyDataSetChanged();
+                            context.startActivity(new Intent(context, context.getClass()));
+//                            orderDetails.remove(item);
+//                            notifyDataSetChanged();
                         }
                     });
                 }
@@ -247,6 +268,7 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
                         @Override
                         public void onSuccess(String result) {
                             super.onSuccess(result);
+                            context.startActivity(new Intent(context, context.getClass()));
 //                                    orderDetails.remove(item);
 //                                    notifyDataSetChanged();
                         }

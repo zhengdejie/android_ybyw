@@ -84,7 +84,7 @@ public class SwipeRefreshXMyAnswerAdapater extends BaseAdapter {
 //
 //        }
         mHolder.tv_title.setText(item.getQuestion().getTitle());
-        mHolder.tv_bounty.setText(String.valueOf(item.getQuestion().getBounty()));
+        mHolder.tv_bounty.setText("￥" + String.valueOf(item.getQuestion().getBounty()));
 //        if(item.getType() == 1)
 //        {
 //            mHolder.txt_bounty.setTextColor(context.getResources().getColor(R.color.green));

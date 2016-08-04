@@ -38,8 +38,8 @@ import appframe.appframe.utils.Http;
  */
 public class PayActivity extends BaseActivity implements View.OnClickListener{
 
-    private TextView tb_title,tb_back,tv_paybyali,tv_paybyweixing,tv_paybyyb,tv_total,tv_showtotal;
-    private Button tv_pay;
+    private TextView tb_title,tb_back,tv_paybyali,tv_paybyweixing,tv_paybyyb,tv_total,tv_showtotal,tv_pay;
+//    private Button tv_pay;
     private Drawable icon;
     private int TypeofPay = 0;
     private final int AliPay = 1;
@@ -70,7 +70,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
                     if (TextUtils.equals(resultStatus, "9000")) {
                         Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(PayActivity.this, HomeActivity.class));
+//                        startActivity(new Intent(PayActivity.this, HomeActivity.class));
+                        finish();
                     } else {
                         // 判断resultStatus 为非"9000"则代表可能支付失败
                         // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
@@ -111,6 +112,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                 super.onSuccess(result);
 
                 wallet = result.getWalletTotal();
+                tv_paybyyb.setText(String.format("余额支付(%.2f元)",wallet));
+            }
+
+            @Override
+            public void onFail(String code) {
+                super.onFail(code);
             }
         });
     }
@@ -125,8 +132,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
         tv_paybyyb = (TextView)findViewById(R.id.tv_paybyyb);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
-        tv_pay = (Button)findViewById(R.id.tv_pay);
-        tb_back.setText("Back");
+        tv_pay = (TextView)findViewById(R.id.tv_pay);
+        tb_back.setText("返回");
         tb_title.setText("支付详情");
         tb_back.setOnClickListener(this);
         tv_paybyali.setOnClickListener(this);
@@ -207,7 +214,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
         StringBuilder ReceivedID = new StringBuilder();
         for(ConfirmedOrderDetail confirmedOrderDetail : confirmedOrderDetailList)
         {
-            ReceivedID.append(",").append(confirmedOrderDetail.getReceiver().getId());
+            ReceivedID.append(",").append(confirmedOrderDetail.getId());
         }
 
         return ReceivedID.deleteCharAt(0).toString();
@@ -286,12 +293,15 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                             // 必须异步调用
                                             Thread payThread = new Thread(payRunnable);
                                             payThread.start();
+
                                         }
                                         else
                                         {
                                             Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                                            finish();
 
                                         }
+
                                     }
 
 
@@ -396,6 +406,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                             Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
+
                                     }
 
                                     @Override
@@ -441,6 +452,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                     // 必须异步调用
                                     Thread payThread = new Thread(payRunnable);
                                     payThread.start();
+                                    finish();
                                 }
 
                                 @Override
@@ -454,16 +466,16 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     {
                         String ActionType = "";
                         //关闭订单
-                        if(orderPay.getOrderStatus().equals("1")) {
-                            ActionType = "3";
-                        }
-                        else if (orderPay.getOrderStatus().equals("0"))
-                        {
-                            ActionType = "5";
-                        }
+//                        if(orderPay.getOrderStatus().equals("1")) {
+//                            ActionType = "3";
+//                        }
+//                        else if (orderPay.getOrderStatus().equals("0"))
+//                        {
+//                            ActionType = "5";
+//                        }
 
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
-                                        "ActionType", ActionType,
+                                        "ActionType", orderPay.getOrderStatus().toString(),
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(orderPay.getOrderId()),
@@ -502,6 +514,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                             Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
+
                                     }
 
                                     @Override
@@ -518,13 +531,13 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     {
                         String ActionType = "";
 
-                        //关闭订单
-                        if(Candidate.getOrderStatus().equals("1")) {
-                            ActionType = "3";
-                        }
-                        else if (Candidate.getOrderStatus().equals("0"))
-                        {
+
+                        if(Candidate.getOrderStatus().equals("2")) {
                             ActionType = "5";
+                        }
+                        else if (Candidate.getOrderStatus().equals("3"))
+                        {
+                            ActionType = "3";
                         }
                         else if (Candidate.getOrderStatus().equals("4"))
                         {
@@ -539,7 +552,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(Candidate.getId()),
-                                        "CandidateId", getCandidateID(Candidate.getCandidate())),
+                                        "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate())),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -572,6 +585,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                             Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
+//                                        finish();
                                     }
 
                                     @Override
@@ -623,6 +637,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                             Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
+//                                        finish();
 
                                     }
 
@@ -675,7 +690,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                             Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
                                             finish();
                                         }
-
+//                                        finish();
                                     }
 
                                     @Override
@@ -710,7 +725,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         req.sign = result.getSign();
 
                                         api.sendReq(req);
-
+                                        finish();
                                     }
 
 
@@ -743,7 +758,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         req.sign = result.getSign();
 
                                         api.sendReq(req);
-
+                                        finish();
 
                                     }
 
@@ -776,6 +791,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         req.sign = result.getSign();
 
                                         api.sendReq(req);
+                                        finish();
                                     }
 
                                     @Override
@@ -808,6 +824,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         req.sign = result.getSign();
 
                                         api.sendReq(req);
+                                        finish();
                                     }
 
                                     @Override
@@ -822,16 +839,23 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     {
                         String ActionType = "";
                         //关闭订单
-                        if(orderPay.getOrderStatus().equals("1")) {
-                            ActionType = "3";
-                        }
-                        else if (orderPay.getOrderStatus().equals("0"))
-                        {
-                            ActionType = "5";
-                        }
-
+//                        if(orderPay.getOrderStatus().equals("3")) {
+//                            ActionType = "3";
+//                        }
+//                        else if (orderPay.getOrderStatus().equals("5"))
+//                        {
+//                            ActionType = "5";
+//                        }
+//                        else if (orderPay.getOrderStatus().equals("11"))
+//                        {
+//                            ActionType = "11";
+//                        }
+//                        else
+//                        {
+//
+//                        }
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
-                                        "ActionType", ActionType,
+                                        "ActionType", orderPay.getOrderStatus().toString(),
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(orderPay.getOrderId()),
@@ -851,6 +875,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         req.sign = result.getSign();
 
                                         api.sendReq(req);
+                                        finish();
                                     }
 
                                     @Override
@@ -867,13 +892,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     {
                         String ActionType = "";
 
-                        //关闭订单
-                        if(Candidate.getOrderStatus().equals("1")) {
-                            ActionType = "3";
-                        }
-                        else if (Candidate.getOrderStatus().equals("0"))
-                        {
+                        if(Candidate.getOrderStatus().equals("2")) {
                             ActionType = "5";
+                        }
+                        else if (Candidate.getOrderStatus().equals("3"))
+                        {
+                            ActionType = "3";
                         }
                         else if (Candidate.getOrderStatus().equals("4"))
                         {
@@ -888,7 +912,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(Candidate.getId()),
-                                        "CandidateId", getCandidateID(Candidate.getCandidate())),
+                                        "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate())),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -904,6 +928,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         req.sign = result.getSign();
 
                                         api.sendReq(req);
+                                        finish();
                                     }
 
                                     @Override
@@ -935,7 +960,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         req.sign = result.getSign();
 
                                         api.sendReq(req);
-
+                                        finish();
 
                                     }
 
@@ -968,7 +993,7 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         req.sign = result.getSign();
 
                                         api.sendReq(req);
-
+                                        finish();
 
                                     }
 
@@ -996,8 +1021,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         super.onSuccess(result);
 
                                         Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(PayActivity.this,HomeActivity.class));
-
+//                                        startActivity(new Intent(PayActivity.this, HomeActivity.class));
+                                        finish();
                                     }
 
 
@@ -1021,8 +1046,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         super.onSuccess(result);
 
                                         Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(PayActivity.this, MyMissionActivity.class));
-
+//                                        startActivity(new Intent(PayActivity.this, MyMissionActivity.class));
+                                        finish();
 
                                     }
 
@@ -1086,16 +1111,16 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     {
                         String ActionType = "";
                         //关闭订单
-                        if(orderPay.getOrderStatus().equals("1")) {
-                            ActionType = "3";
-                        }
-                        else if (orderPay.getOrderStatus().equals("0"))
-                        {
-                            ActionType = "5";
-                        }
+//                        if(orderPay.getOrderStatus().equals("1")) {
+//                            ActionType = "3";
+//                        }
+//                        else if (orderPay.getOrderStatus().equals("0"))
+//                        {
+//                            ActionType = "5";
+//                        }
 
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
-                                        "ActionType", ActionType,
+                                        "ActionType", orderPay.getOrderStatus().toString(),
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(orderPay.getOrderId()),
@@ -1106,7 +1131,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         super.onSuccess(result);
 
                                         Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(PayActivity.this, MyMissionActivity.class));
+//                                        startActivity(new Intent(PayActivity.this, MyMissionActivity.class));
+                                        finish();
                                     }
 
                                     @Override
@@ -1123,13 +1149,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     {
                         String ActionType = "";
 
-                        //关闭订单
-                        if(Candidate.getOrderStatus().equals("1")) {
-                            ActionType = "3";
-                        }
-                        else if (Candidate.getOrderStatus().equals("0"))
-                        {
+                        if(Candidate.getOrderStatus().equals("2")) {
                             ActionType = "5";
+                        }
+                        else if (Candidate.getOrderStatus().equals("3"))
+                        {
+                            ActionType = "3";
                         }
                         else if (Candidate.getOrderStatus().equals("4"))
                         {
@@ -1144,14 +1169,15 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(Candidate.getId()),
-                                        "CandidateId", getCandidateID(Candidate.getCandidate())),
+                                        "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate())),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(OnlinePay result) {
                                         super.onSuccess(result);
 
                                         Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(PayActivity.this, MyMissionActivity.class));
+//                                        startActivity(new Intent(PayActivity.this, MyMissionActivity.class));
+                                        finish();
                                     }
 
                                     @Override
@@ -1173,8 +1199,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         super.onSuccess(result);
 
                                         Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(PayActivity.this,HomeActivity.class));
-
+//                                        startActivity(new Intent(PayActivity.this, HomeActivity.class));
+                                        finish();
                                     }
 
 
@@ -1197,8 +1223,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         super.onSuccess(result);
 
                                         Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(PayActivity.this,HomeActivity.class));
-
+//                                        startActivity(new Intent(PayActivity.this, HomeActivity.class));
+                                        finish();
                                     }
 
 

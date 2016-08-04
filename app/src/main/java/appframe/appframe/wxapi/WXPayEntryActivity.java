@@ -8,7 +8,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.mobileimexternal.ui.fundamental.widget.TextViewWithWhiteShadow;
+//import com.alibaba.mobileimexternal.ui.fundamental.widget.TextViewWithWhiteShadow;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
@@ -63,7 +63,8 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 //            builder.show();
             if(resp.errCode == 0) {
                 Toast.makeText(WXPayEntryActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(WXPayEntryActivity.this, HomeActivity.class));
+//                startActivity(new Intent(WXPayEntryActivity.this, HomeActivity.class));
+                finish();
             }
         }
     }

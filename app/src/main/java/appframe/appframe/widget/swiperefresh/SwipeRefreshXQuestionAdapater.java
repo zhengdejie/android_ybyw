@@ -23,6 +23,7 @@ import java.util.List;
 import appframe.appframe.R;
 import appframe.appframe.activity.AvatarZoomActivity;
 import appframe.appframe.activity.FriendsInfoActivity;
+import appframe.appframe.activity.QuestionDetailsActivity;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.Question;
 import appframe.appframe.utils.ImageUtils;
@@ -80,7 +81,8 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
 //            mHolder.btn_candidate = (Button)convertView.findViewById(R.id.btn_candidate);
 //            mHolder.tv_time = (TextView)convertView.findViewById(R.id.tv_time);
             mHolder.tv_name = (TextView)convertView.findViewById(R.id.tv_name);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView)convertView.findViewById(R.id.iv_avatar);
             mHolder.rb_totalvalue = (RatingBar)convertView.findViewById(R.id.rb_totalvalue);
             mHolder.tv_pay = (TextView)convertView.findViewById(R.id.tv_pay);
 //            mHolder.ll_button = (LinearLayout)convertView.findViewById(R.id.ll_button);
@@ -105,12 +107,22 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
             }
             mHolder.gridView.setAdapter(new OrderDetailsGridViewAdapater(context,photoPath));
             mHolder.gridView.setVisibility(View.VISIBLE);
+            mHolder.gridView.setClickable(false);
+            mHolder.gridView.setPressed(false);
+            mHolder.gridView.setEnabled(false);
 //            mHolder.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //                @Override
 //                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+////                    Intent intent = new Intent();
+////                    intent.setClass(context, AvatarZoomActivity.class);
+////                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+////                    context.startActivity(intent);
+//
 //                    Intent intent = new Intent();
-//                    intent.setClass(context, AvatarZoomActivity.class);
-//                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+//                    intent.setClass(context, QuestionDetailsActivity.class);
+////                    Question questionDetails = (Question) parent.getAdapter().getItem(position);
+//                    bundle.putSerializable("Question", item);
+//                    intent.putExtras(bundle);
 //                    context.startActivity(intent);
 //                }
 //            });
@@ -152,25 +164,40 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
 //        }
 //        mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_name.setText("");
+
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+
         if(item.getAsker().getGender().equals(context.getResources().getString(R.string.male).toString()))
         {
-            mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
             mHolder.iv_gender.setImageDrawable(context.getResources().getDrawable(R.drawable.male));
         }
         else
         {
-            mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
             mHolder.iv_gender.setImageDrawable(context.getResources().getDrawable(R.drawable.female));
         }
+
+        if(item.getAsker().getAvatar() != null && !item.getAsker().getAvatar().equals(""))
+        {
+            mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            mHolder.niv_avatar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mHolder.iv_avatar.setVisibility(View.VISIBLE);
+            mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(mHolder.niv_avatar, item.getAsker().getAvatar());
+
+
         if (item.getAsker().getFNickName() != null && !item.getAsker().getFNickName().equals("")) {
             mHolder.tv_name.setText(item.getAsker().getFNickName());
         } else {
             mHolder.tv_name.setText(item.getAsker().getName());
         }
-        if(item.getAsker().getAvatar() != null && !item.getAsker().getAvatar().equals(""))
-        {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getAsker().getAvatar());
-        }
+
 //        if(item.getNameAnonymity() == 1)
 //        {
 //            mHolder.tv_name.setText("匿名");
@@ -423,12 +450,12 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
     {
         //        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_pay,tv_numofconforder,txt_tag;
         private TextView txt_title,txt_bounty,tv_name,tv_pay,tv_numofconforder,tv_content,tv_answerunm;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
         //        private Button btn_estimate,btn_finish,btn_candidate;
         private RatingBar rb_totalvalue;
         //        private LinearLayout ll_button;
         private GridView gridView;
-        private ImageView iv_gender;
+        private ImageView iv_gender,iv_avatar;
     }
 
 

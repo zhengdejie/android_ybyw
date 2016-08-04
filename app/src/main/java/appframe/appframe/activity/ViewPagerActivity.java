@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class ViewPagerActivity extends BaseActivity implements View.OnClickListe
     private ViewPager vp;
     private ViewPagerAdapter vpAdapter;
     private List<View> views;
+    private TextView tv_skip;
 
     //引导图片资源
     private static final int[] pics = { R.drawable.female,
@@ -59,12 +61,29 @@ public class ViewPagerActivity extends BaseActivity implements View.OnClickListe
             views.add(iv);
         }
         vp = (ViewPager) findViewById(R.id.viewpager);
+        tv_skip = (TextView) findViewById(R.id.tv_skip);
         //初始化Adapter
         vpAdapter = new ViewPagerAdapter(ViewPagerActivity.this,views);
         vp.setAdapter(vpAdapter);
         //绑定回调
         vp.setOnPageChangeListener(this);
+        tv_skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor e = getSharedPreferences("firstviewpager", Context.MODE_PRIVATE).edit();
+                e.putString("viewed", "true").commit();
+                if (Auth.isLoggedIn()) {
+                    Intent i = new Intent(ViewPagerActivity.this, HomeActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                } else {
 
+                    Intent i = new Intent(ViewPagerActivity.this, RegisterActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                }
+            }
+        });
         //初始化底部小点
         initDots();
 

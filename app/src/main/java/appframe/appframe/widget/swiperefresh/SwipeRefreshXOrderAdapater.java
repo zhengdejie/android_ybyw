@@ -3,10 +3,12 @@ package appframe.appframe.widget.swiperefresh;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,23 +22,29 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.AvatarZoomActivity;
 import appframe.appframe.activity.CandidateActivity;
 import appframe.appframe.activity.FriendsInfoActivity;
 import appframe.appframe.activity.OrderCommentActivity;
+import appframe.appframe.activity.OrderDetailsActivity;
 import appframe.appframe.activity.PayActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.ConfirmedOrderDetail;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
+import appframe.appframe.widget.tagview.Tag;
 
 /**
  * Created by Administrator on 2015/8/7.
@@ -54,7 +62,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
     String from;
     int orderType;
 //    LinearLayout ll_receiver,ll_button;
-    boolean hasTopOrder;
+    boolean hasTopOrder = false;
 
     public SwipeRefreshXOrderAdapater(Context context, List<OrderDetails> orderDetails, String from)
     {
@@ -116,6 +124,9 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
             mHolder.tv_numofconforder = (TextView)convertView.findViewById(R.id.tv_numofconforder);
             mHolder.gridView = (GridView)convertView.findViewById(R.id.gridview);
             mHolder.iv_gender = (ImageView)convertView.findViewById(R.id.iv_gender);
+            mHolder.tv_tags = (appframe.appframe.widget.tagview.TagView)convertView.findViewById(R.id.tv_tags);
+            mHolder.tv_fans = (TextView)convertView.findViewById(R.id.tv_fans);
+            mHolder.tv_focus = (TextView)convertView.findViewById(R.id.tv_focus);
             convertView.setTag(mHolder);
         }
         else
@@ -130,14 +141,30 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
             for (String photsCount : item.getPhotos().toString().split(",")) {
                 photoPath.add(photsCount);
             }
-            mHolder.gridView.setAdapter(new OrderDetailsGridViewAdapater(context,photoPath));
+            mHolder.gridView.setAdapter(new OrderDetailsGridViewAdapater(context, photoPath));
             mHolder.gridView.setVisibility(View.VISIBLE);
+            mHolder.gridView.setClickable(false);
+            mHolder.gridView.setPressed(false);
+            mHolder.gridView.setEnabled(false);
+//            mHolder.gridView.setPressed(false);
+//            mHolder.gridView.setEnabled(false);
 //            mHolder.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //                @Override
 //                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+////                    Intent intent = new Intent();
+////                    intent.setClass(context, AvatarZoomActivity.class);
+////                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+////                    context.startActivity(intent);
 //                    Intent intent = new Intent();
-//                    intent.setClass(context, AvatarZoomActivity.class);
-//                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+//                    intent.setClass(context, OrderDetailsActivity.class);
+//
+//
+//                    bundle.putSerializable("OrderDetails", item);
+//                    if (item.getId() == getTopOrder().getId()) {
+//                        bundle.putString("hasTopOrder", "1");
+//                    }
+//                    bundle.putString("From", "Order");
+//                    intent.putExtras(bundle);
 //                    context.startActivity(intent);
 //                }
 //            });
@@ -145,6 +172,22 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         else
         {
             mHolder.gridView.setVisibility(View.GONE);
+        }
+        mHolder.tv_tags.removeAllTags();
+        if(item.getTags() != null && !item.getTags().equals(""))
+        {
+//            mHolder.tv_tags.setVisibility(View.VISIBLE);
+            for(String tagTitle : item.getTags().split(","))
+            {
+                Tag tag = new Tag(tagTitle);
+                tag.layoutColor = context.getResources().getColor(R.color.bg_gray);
+                tag.radius = 10f;
+                mHolder.tv_tags.addTag(tag);
+            }
+        }
+        else
+        {
+//            mHolder.tv_tags.setVisibility(View.GONE);
         }
         mHolder.tv_content.setText(item.getContent());
         mHolder.txt_title.setText(item.getTitle());
@@ -174,8 +217,12 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         }
         else
         {
-            if(item.getUserLocation() != null) {
+            if(item.getUserLocation() != null && item.getUserLocation().getProvince() != null && item.getUserLocation().getCity() != null && item.getUserLocation().getDistrict() != null) {
                 mHolder.txt_location.setText("地址:" + item.getUserLocation().getProvince() + item.getUserLocation().getCity() + item.getUserLocation().getDistrict());
+            }
+            else
+            {
+                mHolder.txt_location.setText("地址:未知");
             }
         }
 //        mHolder.tv_time.setText(item.getCreatedAt());
@@ -239,10 +286,20 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
 //                }
 //            }
         }
-        if(orderType == 1) {
+//        if(orderType == 1) {
+//            mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalWorkerPoint());
+//        }
+//        else if(orderType==2) {
+//            mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalBossPoint());
+//        }
+//        else
+//        {
+//
+//        }
+        if(item.getType() == 1) {
             mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalWorkerPoint());
         }
-        else if(orderType==2) {
+        else if(item.getType() == 2) {
             mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalBossPoint());
         }
         else
@@ -263,7 +320,18 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         {
             mHolder.tv_pay.setText("未支付");
         }
-        mHolder.tv_numofconforder.setText(String.format("(友帮了%d次)", item.getOrderer().getCompletedNumberOfOrder()));
+        mHolder.tv_numofconforder.setText(String.format("(友帮%d次)", item.getOrderer().getCompletedNumberOfOrder()));
+        mHolder.tv_fans.setText(String.format("%d粉丝", item.getOrderer().getNumberofFans()));
+        if(item.getOrderer().isFans())
+        {
+            mHolder.tv_focus.setEnabled(false);
+            mHolder.tv_focus.setText("已关注");
+        }
+        else
+        {
+            mHolder.tv_focus.setEnabled(true);
+            mHolder.tv_focus.setText("+关注");
+        }
 //        mHolder.btn_finish.setVisibility(View.GONE);
 //        mHolder.btn_candidate.setVisibility(View.GONE);
 //        switch (from)
@@ -317,6 +385,51 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
 //        }
 
 
+        mHolder.tv_focus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mHolder.tv_focus.getText().equals("+关注"))
+                {
+                    Http.request((Activity)context, API.ADDFANS,
+                            Http.map("Fans", String.valueOf(Auth.getCurrentUserId()),
+                                    "Celebrity", String.valueOf(item.getOrderer().getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+//                                    Toast.makeText(context, "关注成功", Toast.LENGTH_SHORT).show();
+                                    mHolder.tv_focus.setEnabled(false);
+                                    mHolder.tv_focus.setText("已关注");
+                                    item.getOrderer().setIsFans(true);
+                                }
+
+                                @Override
+                                public void onFail(String code) {
+                                    super.onFail(code);
+                                }
+                            });
+                }
+//                else
+//                {
+//                    Map<String, String> map = new HashMap<String, String>();
+//                    map.put("Id", String.valueOf(item.getOrderer().getId()));
+//                    Http.request((Activity)context, API.DELETEFANS,new Object[]{Http.getURL(map)},
+//                            new Http.RequestListener<String>() {
+//                                @Override
+//                                public void onSuccess(String result) {
+//                                    super.onSuccess(result);
+////                                    Toast.makeText(FriendsInfoActivity.this, "取消关注成功", Toast.LENGTH_SHORT).show();
+//                                    mHolder.tv_focus.setText("+关注");
+//                                }
+//
+//                                @Override
+//                                public void onFail(String code) {
+//                                    super.onFail(code);
+//                                }
+//                            });
+//                }
+            }
+        });
 
         mHolder.iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -328,6 +441,15 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
             }
         });
 
+        mHolder.niv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent.setClass(context, FriendsInfoActivity.class);
+                bundle.putSerializable("OrderDetails", item);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
 
 
 //        mHolder.btn_finish.setOnClickListener(new View.OnClickListener() {
@@ -434,7 +556,8 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
 //        });
 
         if(hasTopOrder  &&  position == 0) {
-            convertView.setBackgroundColor(context.getResources().getColor(R.color.bg_gray));
+//            convertView.setBackgroundColor(context.getResources().getColor(R.color.bg_gray));
+            convertView.setBackgroundColor(Color.rgb(245,245,245));
         }
         else
         {
@@ -462,10 +585,24 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         return position;
     }
 
+    //获取置顶单子
+    protected  OrderDetails  getTopOrder()
+    {
+        OrderDetails orderDetails = new OrderDetails();
+        SharedPreferences sp = context.getSharedPreferences("TOPORDER", Context.MODE_PRIVATE);
+        String OrderDetails = sp.getString("OrderDetails", null);
+        if (!TextUtils.isEmpty(OrderDetails)) {
+            orderDetails = GsonHelper.getGson().fromJson(OrderDetails, OrderDetails.class);
+        }
+
+        return orderDetails;
+    }
+
     static class ViewHolder
     {
 //        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_pay,tv_numofconforder,txt_tag;
-        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_name,tv_pay,tv_numofconforder,tv_content;
+        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_name,tv_pay,tv_numofconforder,tv_content,tv_fans,tv_focus;
+        appframe.appframe.widget.tagview.TagView tv_tags;
         private com.android.volley.toolbox.NetworkImageView niv_avatar;
 //        private Button btn_estimate,btn_finish,btn_candidate;
         private RatingBar rb_totalvalue;

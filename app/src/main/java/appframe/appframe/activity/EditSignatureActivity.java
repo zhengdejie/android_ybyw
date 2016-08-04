@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -70,6 +72,8 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
     public static List<ImageItem> mDataList = new ArrayList<ImageItem>();
     StringBuilder sb = new StringBuilder();
     public int upload_iamge_num = 0;
+    List<File> fileList = new ArrayList<File>();
+    int count = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,25 +258,111 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
 
                     if(result.getPhotos() != null && result.getPhotos() != "") {
                         List<String> photoPath = new ArrayList<String>();
+                        Bitmap bitmap;
+                        int i = 0 ;
                         for (String photsCount : result.getPhotos().toString().split(",")) {
-                            photoPath.add(photsCount);
-                        }
-                        mGridView.setAdapter(new OrderDetailsGridViewAdapater(EditSignatureActivity.this,photoPath));
-                        mGridView.setVisibility(View.VISIBLE);
-                        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                Intent intent = new Intent();
-                                intent.setClass(EditSignatureActivity.this, AvatarZoomActivity.class);
-                                intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
-                                startActivity(intent);
+//                            photoPath.add(photsCount);
+                            i++;
+                            File file = new File(Environment.getExternalStorageDirectory()+ "/mycertifacate/",String.format("%s.jpg",i));
+                            fileList.add(file);
+                            if (!file.exists())
+                            {
+                                File vDirPath = file.getParentFile();
+                                vDirPath.mkdirs();
                             }
-                        });
+                            else
+                            {
+                                if (file.exists())
+                                {
+                                    file.delete();
+                                }
+                            }
+
+                            new ImageDownLoad().execute(ImageUtils.getImageUrl(photsCount, 70, 70, "0"),"df");
+//                            bitmap = Utils.getBitmapFromQINIUURL(ImageUtils.getImageUrl(photsCount, 70, 70));
+
+
+
+                        }
+
+
+//                        mGridView.setAdapter(new OrderDetailsGridViewAdapater(EditSignatureActivity.this,photoPath));
+//                        mGridView.setVisibility(View.VISIBLE);
+//                        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                            @Override
+//                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                                Intent intent = new Intent();
+//                                intent.setClass(EditSignatureActivity.this, AvatarZoomActivity.class);
+//                                intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+//                                startActivity(intent);
+//                            }
+//                        });
                     }
 //                    ImageUtils.setImageUrl(iv_showavatar, result.getPhotos());
                 }
             }
         });
+    }
+
+    class ImageDownLoad extends AsyncTask<String, Void, Bitmap> {
+
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+//            showImageView.setImageBitmap(null);
+//            showProgressBar();//显示进度条提示框
+
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            Bitmap b = Utils.getBitmapFromQINIUURL(params[0]);
+            return b;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            if(result!=null &&  count == 1 ){
+//                iv_positive.setImageBitmap(result);
+                Utils.saveBitmap(result, fileList.get(0), 100);
+                ImageItem item = new ImageItem();
+                item.sourcePath = fileList.get(0).getPath();
+                mDataList.add(item);
+
+//                dismissProgressBar();
+//                showImageView.setImageBitmap(result);
+            }
+            if(result!=null && count == 2 && fileList.size() >= 2){
+//                iv_positive.setImageBitmap(result);
+                Utils.saveBitmap(result, fileList.get(1), 100);
+                ImageItem item = new ImageItem();
+                item.sourcePath = fileList.get(1).getPath();
+                mDataList.add(item);
+
+//                dismissProgressBar();
+//                showImageView.setImageBitmap(result);
+            }
+            if(result!=null && count == 3 && fileList.size() == 3){
+//                iv_positive.setImageBitmap(result);
+                Utils.saveBitmap(result, fileList.get(2), 100);
+                ImageItem item = new ImageItem();
+                item.sourcePath = fileList.get(2).getPath();
+                mDataList.add(item);
+
+//                dismissProgressBar();
+//                showImageView.setImageBitmap(result);
+            }
+            count ++;
+            initView();
+        }
+
+
+
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
@@ -314,6 +404,7 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                             // 上传成功
                             mDataList.clear();
                             removeTempFromPref();
+                            Auth.updateCurrentUser(result);
                             finish();
                         }
 
@@ -355,6 +446,7 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                                                     // 上传成功
                                                     mDataList.clear();
                                                     removeTempFromPref();
+                                                    Auth.updateCurrentUser(result);
                                                     finish();
                                                 }
 

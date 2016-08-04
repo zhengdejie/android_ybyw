@@ -40,6 +40,7 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
     Intent intent = new Intent();
     AnswerDetail answerDetail;
     Question question;
+    String Tel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +77,7 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
 //        QuestionID = intent.getStringExtra("QuestionID");
 //        hasAccept = intent.getBooleanExtra("hasAccept",false);
 
+        Tel = answerDetail.getAnswerer().getMobile() == null ? "" : answerDetail.getAnswerer().getMobile().toString();
 
         if(question.getAcceptedAnswer() != null || question.getAsker().getId() != Auth.getCurrentUserId())
         {
@@ -90,6 +92,8 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
             tv_accept.setVisibility(View.VISIBLE);
             tv_accept.setText("修改答案");
         }
+
+        rb_totalvalue.setRating((float) answerDetail.getAnswerer().getTotalBossPoint());
 
         if(answerDetail.getAnswerer().getAvatar() != null && !answerDetail.getAnswerer().getAvatar().equals(""))
         {
@@ -122,7 +126,7 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
                 startActivity(intent);
                 break;
             case R.id.imgbtn_call:
-                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + answerDetail.getAnswerer().getMobile() == null ? "" : answerDetail.getAnswerer().getMobile().toString())); //直接拨打电话android.intent.action.CALL
+                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Tel)); //直接拨打电话android.intent.action.CALL
                 startActivity(phoneIntent);
                 break;
             case R.id.tv_accept:
@@ -133,7 +137,7 @@ public class AnswerDetailsActivity extends BaseActivity implements View.OnClickL
                     LayoutInflater inflater = getLayoutInflater();
                     View layout = inflater.inflate(R.layout.dialog_dispute, (ViewGroup) findViewById(R.id.dialog));
                     final EditText comment = (EditText)layout.findViewById(R.id.et_message);
-                    builder.setTitle("添加答案").setView(
+                    builder.setTitle("修改答案").setView(
                             layout).setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
@@ -30,6 +31,7 @@ public class SwipeRefreshXOrderCandidate extends BaseAdapter {
     LayoutInflater layoutInflater;
 //    CheckBox cb_candidate;
     List<ConfirmedOrderDetail> confirmedOrderDetail = new ArrayList<ConfirmedOrderDetail>();
+    boolean isshowcb = true;
 //    TextView tv_content,tv_title,tv_name;
 
     public SwipeRefreshXOrderCandidate(Context context,List<ConfirmedOrderDetail> confirmedOrderDetail)
@@ -40,6 +42,14 @@ public class SwipeRefreshXOrderCandidate extends BaseAdapter {
         //initData();
     }
 
+    public SwipeRefreshXOrderCandidate(Context context,List<ConfirmedOrderDetail> confirmedOrderDetail,boolean isshowcb)
+    {
+        this.context =context;
+        this.layoutInflater = LayoutInflater.from(context);
+        this.confirmedOrderDetail = confirmedOrderDetail;
+        this.isshowcb = isshowcb;
+        //initData();
+    }
 //    private void initData() {
 //        for (UserDetail userDetail : userDetails) {
 //            Type type = Type.UnCheck;
@@ -75,7 +85,8 @@ public class SwipeRefreshXOrderCandidate extends BaseAdapter {
             convertView = layoutInflater.inflate(R.layout.swiperefreshx_candidate, null);
             mHolder = new ViewHolder();
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
             mHolder.tv_price = (TextView) convertView.findViewById(R.id.tv_price);
             mHolder.cb_candidate = (CheckBox)convertView.findViewById(R.id.cb_candidate);
             convertView.setTag(mHolder);
@@ -87,24 +98,42 @@ public class SwipeRefreshXOrderCandidate extends BaseAdapter {
         final ConfirmedOrderDetail item = confirmedOrderDetail.get(position);
 //        mHolder.iv_avatar.setDefaultImageResId(R.drawable.default_avatar);
 //        mHolder.iv_avatar.setErrorImageResId(R.drawable.default_avatar);
-        if(item.getReceiver().getAvatar() != null && !item.getReceiver().getAvatar().equals("")) {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getReceiver().getAvatar());
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        if(item.getReceiver().getGender().equals(context.getResources().getString(R.string.male).toString()))
+        {
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
         }
         else
         {
-            if(item.getReceiver().getGender().equals(context.getResources().getString(R.string.male).toString()))
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
-            }
-            else
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
-            }
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
         }
+
+        if(item.getReceiver().getAvatar() != null && !item.getReceiver().getAvatar().equals(""))
+        {
+            mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            mHolder.niv_avatar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mHolder.iv_avatar.setVisibility(View.VISIBLE);
+            mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(mHolder.niv_avatar, item.getReceiver().getAvatar());
+
+
 
 
         mHolder.tv_name.setText(item.getReceiver().getName());
         mHolder.tv_price.setText(String.valueOf(item.getBid()));
+        if(isshowcb)
+        {
+            mHolder.cb_candidate.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mHolder.cb_candidate.setVisibility(View.INVISIBLE);
+        }
 
         mHolder.cb_candidate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -137,6 +166,7 @@ public class SwipeRefreshXOrderCandidate extends BaseAdapter {
     {
         private TextView tv_name,tv_price;
         private CheckBox cb_candidate;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
+        private ImageView iv_avatar;
     }
 }

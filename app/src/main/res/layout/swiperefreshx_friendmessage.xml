@@ -11,9 +11,17 @@
         android:layout_margin="10dp">
 
         <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/niv_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="invisible"
+            />
+
+        <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:visibility="invisible"
             />
 
         <TextView
@@ -28,6 +36,7 @@
             android:layout_toRightOf="@+id/iv_avatar"
             android:textColor="@color/font_gray"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             />
         <!--<TextView-->
             <!--android:id="@+id/tv_time"-->
@@ -52,15 +61,16 @@
             android:layout_below="@+id/tv_name"
             android:layout_toRightOf="@+id/iv_avatar"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             />
         <TextView
             android:id="@+id/tv_accept"
             android:layout_width="60dp"
             android:layout_height="30dp"
-            android:textColor="@color/white"
+            android:background="#56abe4"
+            android:textColor="@drawable/textview_pressed"
             android:text="接受"
             android:gravity="center"
-            android:background="#56abe4"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             />

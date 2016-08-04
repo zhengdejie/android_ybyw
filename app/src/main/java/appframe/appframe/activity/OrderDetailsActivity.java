@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -12,11 +13,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -56,6 +63,7 @@ import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
+import appframe.appframe.widget.tagview.Tag;
 
 /**
  * Created by Administrator on 2015/8/14.
@@ -64,10 +72,11 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 
     //private ImageView img_avatar;
     private TextView tv_name,tv_title,tv_money,tv_location,tv_type,tv_status,tv_content,tv_deadline,tv_require,tv_paymethod,tb_back,tb_action,tb_title,tv_comment,
-            tv_originalprice,tv_bargain,tv_tags;
+            tv_originalprice,tv_bargain,btn_select,btn_comment,btn_recommend;
+    appframe.appframe.widget.tagview.TagView tv_tags;
     private ImageView imgbtn_conversation,imgbtn_call;
     com.android.volley.toolbox.NetworkImageView iv_avatar;
-    private Button btn_select,btn_comment,btn_recommend;
+//    private Button btn_select,btn_comment,btn_recommend;
     private EditText et_price;
     int page = 1;
     private String OrderID,Tel, hasTopOrder, Entrance;
@@ -148,8 +157,14 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                 startActivity(intent);
                 break;
             case R.id.imgbtn_call:
-                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Tel)); //直接拨打电话android.intent.action.CALL
-                startActivity(phoneIntent);
+                if(orderDetails.getPhoneAnonymity() == 1)
+                {
+                    Toast.makeText(OrderDetailsActivity.this,"对方没提供电话号码",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Tel)); //直接拨打电话android.intent.action.CALL
+                    startActivity(phoneIntent);
+                }
 //                else
 //                {
 //                    Toast.makeText(OrderDetailsActivity.this,"该用户不是用手机注册",Toast.LENGTH_SHORT).show();
@@ -181,6 +196,8 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                     icon = getResources().getDrawable(R.drawable.ic_task_status_list_check);
                     tv_originalprice.setOnClickListener(this);
                     tv_bargain.setOnClickListener(this);
+                    et_price.setOnClickListener(this);
+                    et_price.addTextChangedListener(textWatcher);
 //                    rg_bargain.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 //                        @Override
 //                        public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -205,27 +222,55 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                     builder.setTitle("提示").setView(layout).setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Http.request(OrderDetailsActivity.this, API.ORDER_ACCEPT, new Object[]{OrderID}, Http.map("Bid",et_price.getText().toString()), new Http.RequestListener<ConfirmedOrderDetail>() {
-                                @Override
-                                public void onSuccess(ConfirmedOrderDetail result) {
-                                    super.onSuccess(result);
-                                    if(orderDetails.getType() == 1)
-                                    {
-                                        intent.setClass(OrderDetailsActivity.this, PayActivity.class);
-                                        bundle.putSerializable("ConfirmedOrderDetail", result);
-                                        intent.putExtras(bundle);
-                                        startActivity(intent);
+                            if(!et_price.getText().toString().equals("")) {
+                                if (Double.parseDouble(et_price.getText().toString()) <= 0.00) {
+                                    Toast.makeText(OrderDetailsActivity.this, "金额不能小于0.01元", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Http.request(OrderDetailsActivity.this, API.ORDER_ACCEPT, new Object[]{OrderID}, Http.map("Bid", et_price.getText().toString()), new Http.RequestListener<ConfirmedOrderDetail>() {
+                                        @Override
+                                        public void onSuccess(ConfirmedOrderDetail result) {
+                                            super.onSuccess(result);
+                                            if (orderDetails.getType() == 1) {
+                                                intent.setClass(OrderDetailsActivity.this, PayActivity.class);
+                                                bundle.putSerializable("ConfirmedOrderDetail", result);
+                                                intent.putExtras(bundle);
+                                                startActivity(intent);
 
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(OrderDetailsActivity.this,"接单成功",Toast.LENGTH_SHORT);
-                                        finish();
-                                    }
+                                            } else {
+                                                Toast.makeText(OrderDetailsActivity.this, "申请已发出,请等待单主回复", Toast.LENGTH_SHORT).show();
+//                                                try {
+//                                                    Thread.sleep(10000);
+//                                                } catch (InterruptedException e) {
+//                                                    return;
+//                                                }
+//                                                finish();
+                                            }
 
+                                        }
+                                    });
+                                    dialog.dismiss();
                                 }
-                            });
-                            dialog.dismiss();
+                            }
+                            else
+                            {
+                                Http.request(OrderDetailsActivity.this, API.ORDER_ACCEPT, new Object[]{OrderID}, new Http.RequestListener<ConfirmedOrderDetail>() {
+                                    @Override
+                                    public void onSuccess(ConfirmedOrderDetail result) {
+                                        super.onSuccess(result);
+                                        if (orderDetails.getType() == 1) {
+                                            intent.setClass(OrderDetailsActivity.this, PayActivity.class);
+                                            bundle.putSerializable("ConfirmedOrderDetail", result);
+                                            intent.putExtras(bundle);
+                                            startActivity(intent);
+
+                                        } else {
+                                            Toast.makeText(OrderDetailsActivity.this, "申请已发出,请等待单主回复", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
 
                         }
                     }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -313,14 +358,27 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
             case R.id.tv_originalprice:
                 tv_originalprice.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
                 et_price.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-                et_price.setEnabled(false);
-
+                et_price.setFocusable(false);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(et_price.getWindowToken(), 0); //强制隐藏键盘
+                et_price.setText("");
                 break;
             case R.id.tv_bargain:
                 tv_originalprice.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 et_price.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
-                et_price.setEnabled(true);
+                et_price.setFocusable(true);
+                et_price.setFocusableInTouchMode(true);
+                et_price.requestFocus();
+                et_price.requestFocusFromTouch();
 
+                break;
+            case R.id.et_price:
+                tv_originalprice.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                et_price.setCompoundDrawablesWithIntrinsicBounds(null, null, icon, null);
+                et_price.setFocusable(true);
+                et_price.setFocusableInTouchMode(true);
+                et_price.requestFocus();
+                et_price.requestFocusFromTouch();
                 break;
             case R.id.tv_comment:
                 intent.setClass(OrderDetailsActivity.this, OrderCommentAllActivity.class);
@@ -347,22 +405,22 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_action = (TextView)findViewById(R.id.tb_action);
         tb_title = (TextView)findViewById(R.id.tb_title);
-        btn_select = (Button)findViewById(R.id.btn_select);
+        btn_select = (TextView)findViewById(R.id.btn_select);
 //        tv_time = (TextView)findViewById(R.id.tv_time);
 //        tv_status = (TextView)findViewById(R.id.tv_status);
         tv_require = (TextView)findViewById(R.id.tv_require);
         tv_paymethod = (TextView)findViewById(R.id.tv_paymethod);
         tv_deadline = (TextView)findViewById(R.id.tv_deadline);
         tv_name = (TextView)findViewById(R.id.tv_name);
-        btn_comment = (Button)findViewById(R.id.btn_comment);
+        btn_comment = (TextView)findViewById(R.id.btn_comment);
         lv_ordercomment = (ListView)findViewById(R.id.lv_ordercomment);
         tv_comment = (TextView)findViewById(R.id.tv_comment);
 //        tv_moneyunit = (TextView)findViewById(R.id.tv_moneyunit);
 //        tv_range = (TextView)findViewById(R.id.tv_range);
-        btn_recommend = (Button)findViewById(R.id.btn_recommend);
+        btn_recommend = (TextView)findViewById(R.id.btn_recommend);
         iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
         rb_totalvalue = (RatingBar)findViewById(R.id.rb_totalvalue);
-        tv_tags = (TextView)findViewById(R.id.tv_tags);
+        tv_tags = (appframe.appframe.widget.tagview.TagView)findViewById(R.id.tv_tags);
 
 
         iv_avatar.setOnClickListener(this);
@@ -377,11 +435,12 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 //        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
 //                android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
-        Intent intent = this.getIntent();
-        orderDetails=(OrderDetails)intent.getSerializableExtra("OrderDetails");
+
+        Intent getintent = this.getIntent();
+        orderDetails=(OrderDetails)getintent.getSerializableExtra("OrderDetails");
         if(orderDetails == null)
         {
-            confirmedOrderDetailWithFriend = (ConfirmedOrderDetailWithFriend)intent.getSerializableExtra("ConfirmedOrderDetailWithFriend");
+            confirmedOrderDetailWithFriend = (ConfirmedOrderDetailWithFriend)getintent.getSerializableExtra("ConfirmedOrderDetailWithFriend");
             orderDetails = confirmedOrderDetailWithFriend.getOrder();
         }
 
@@ -396,9 +455,14 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         }
         else
         {
-            if(orderDetails.getUserLocation() != null) {
-                tv_location.setText(orderDetails.getUserLocation().getProvince() + orderDetails.getUserLocation().getCity() + orderDetails.getUserLocation().getDistrict());
+            if(orderDetails.getUserLocation() != null && orderDetails.getUserLocation().getProvince() != null && orderDetails.getUserLocation().getCity() != null && orderDetails.getUserLocation().getDistrict() != null) {
+                tv_location.setText("地址:" + orderDetails.getUserLocation().getProvince() + orderDetails.getUserLocation().getCity() + orderDetails.getUserLocation().getDistrict());
             }
+            else
+            {
+                tv_location.setText("地址:未知");
+            }
+
         }
 //        if( orderDetails.getType() == 1 )
 //        {
@@ -408,12 +472,12 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 //        {
 //            tv_moneyunit.setText("赏 ￥");
 //        }
-        if((intent.getStringExtra("From") != null && intent.getStringExtra("From").equals("MyOrder")) || orderDetails.getOrderer().getId() == Auth.getCurrentUserId())
+        if((getintent.getStringExtra("From") != null && getintent.getStringExtra("From").equals("MyOrder")) || orderDetails.getOrderer().getId() == Auth.getCurrentUserId())
         {
             btn_select.setText("候选接单人");
         }
-        hasTopOrder = intent.getStringExtra("hasTopOrder") == null ? null : intent.getStringExtra("hasTopOrder");
-        Entrance = intent.getStringExtra("Entrance") == null ? null : intent.getStringExtra("Entrance");
+        hasTopOrder = getintent.getStringExtra("hasTopOrder") == null ? null : getintent.getStringExtra("hasTopOrder");
+        Entrance = getintent.getStringExtra("Entrance") == null ? null : getintent.getStringExtra("Entrance");
         tv_title.setText(orderDetails.getTitle().toString());
         tv_money.setText("￥" + String.valueOf(orderDetails.getBounty()));
 
@@ -421,7 +485,18 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tv_content.setText(orderDetails.getContent().toString());
 //        tv_time.setText(orderDetails.getCreatedAt().toString());
 //        tv_status.setText(orderDetails.getOrderStatus().toString());
-        tv_tags.setText(orderDetails.getTags());
+        if(orderDetails.getTags() != null && !orderDetails.getTags().equals(""))
+        {
+            for(String tagTitle : orderDetails.getTags().split(","))
+            {
+                Tag tag = new Tag(tagTitle);
+                tag.layoutColor = getResources().getColor(R.color.bg_gray);
+                tag.radius = 10f;
+                tv_tags.addTag(tag);
+            }
+        }
+//        tv_tags.setText(orderDetails.getTags());
+
         tv_require.setText(orderDetails.getRequest() == null ? "" : orderDetails.getRequest().toString());
         tv_paymethod.setText(orderDetails.getPaymentMethod().toString());
         tv_deadline.setText(orderDetails.getDeadline().toString());
@@ -471,11 +546,16 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         if(orderDetails.getType() == 1) {
             rb_totalvalue.setRating((float)orderDetails.getOrderer().getTotalWorkerPoint());
             tb_title.setText("助人单");
+            tv_money.setTextColor(getResources().getColor(R.color.green));
         }
         if(orderDetails.getType() == 2) {
             rb_totalvalue.setRating((float) orderDetails.getOrderer().getTotalBossPoint());
             tb_title.setText("求助单");
+            tv_money.setTextColor(Color.RED);
         }
+        SpannableString ss = new SpannableString( "￥" + String.valueOf(orderDetails.getBounty()));
+        ss.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tv_money.setText(ss);
 
 
 
@@ -507,10 +587,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         tb_action.setCompoundDrawables(null, null, drawable, null);
         tb_action.setOnClickListener(this);
         tb_back.setOnClickListener(this);
-        if(orderDetails.getPhoneAnonymity() == 1)
-        {
-            imgbtn_call.setVisibility(View.INVISIBLE);
-        }
+
         Map<String, String> map = new HashMap<String, String>();
         map.put("Page", "1");
         map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
@@ -652,6 +729,45 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         return sb.deleteCharAt(0).toString();
     }
 
+    private TextWatcher textWatcher = new TextWatcher(){
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if (s.toString().contains(".")) {
+                if (s.length() - 1 - s.toString().indexOf(".") > 2) {
+                    s = s.toString().subSequence(0,
+                            s.toString().indexOf(".") + 3);
+                    et_price.setText(s);
+                    et_price.setSelection(s.length());
+                }
+            }
+            if (s.toString().trim().substring(0).equals(".")) {
+                s = "0" + s;
+                et_price.setText(s);
+                et_price.setSelection(2);
+            }
+
+            if (s.toString().startsWith("0")
+                    && s.toString().trim().length() > 1) {
+                if (!s.toString().substring(1, 2).equals(".")) {
+                    et_price.setText(s.subSequence(0, 1));
+                    et_price.setSelection(1);
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
     public void setListViewHeightBasedOnChildren(ListView listView) {
         // 获取ListView对应的Adapter
         ListAdapter listAdapter = listView.getAdapter();
@@ -786,18 +902,22 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 
                     }
                     else {
-                        SharedPreferences sp = getSharedPreferences("TOPORDER", Context.MODE_PRIVATE);
-                        String OrderDetails = sp.getString("OrderDetails", null);
-                        if (!TextUtils.isEmpty(OrderDetails))
-                        {
-                            btn_toporder.setEnabled(false);
-                        }
-                        else
-                        {
-                            SharedPreferences.Editor e = getSharedPreferences("TOPORDER", Context.MODE_PRIVATE).edit();
-                            e.putString("OrderDetails", GsonHelper.getGson().toJson(orderDetails)).commit();
-                            Toast.makeText(OrderDetailsActivity.this, "置顶成功", Toast.LENGTH_SHORT).show();
-                        }
+                        SharedPreferences.Editor e = getSharedPreferences("TOPORDER", Context.MODE_PRIVATE).edit();
+                        e.remove("OrderDetails");
+                        e.putString("OrderDetails", GsonHelper.getGson().toJson(orderDetails)).commit();
+                        Toast.makeText(OrderDetailsActivity.this, "置顶成功", Toast.LENGTH_SHORT).show();
+//                        SharedPreferences sp = getSharedPreferences("TOPORDER", Context.MODE_PRIVATE);
+//                        String OrderDetails = sp.getString("OrderDetails", null);
+//                        if (!TextUtils.isEmpty(OrderDetails))
+//                        {
+//                            btn_toporder.setEnabled(false);
+//                        }
+//                        else
+//                        {
+//                            SharedPreferences.Editor e = getSharedPreferences("TOPORDER", Context.MODE_PRIVATE).edit();
+//                            e.putString("OrderDetails", GsonHelper.getGson().toJson(orderDetails)).commit();
+//                            Toast.makeText(OrderDetailsActivity.this, "置顶成功", Toast.LENGTH_SHORT).show();
+//                        }
                     }
                     dismiss();
                 }
@@ -823,6 +943,8 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 //            });
         }
     }
+
+
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        MenuInflater inflater = this.getMenuInflater();

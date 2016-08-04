@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.igexin.sdk.PushConsts;
@@ -28,12 +29,12 @@ public class PushDemoReceiver extends BroadcastReceiver {
     static int NOTIFICATION_ID = 13565400;
     Intent intent;
     String ticker = "您有新消息";
-    int smallIcon = R.drawable.ic_launcher;
+    int smallIcon = R.drawable.logomini;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        Log.d("GetuiSdkDemo", "onReceive() action=" + bundle.getInt("action"));
+//        Log.d("GetuiSdkDemo", "onReceive() action=" + bundle.getInt("action"));
 
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
             case PushConsts.GET_MSG_DATA:
@@ -61,6 +62,12 @@ public class PushDemoReceiver extends BroadcastReceiver {
                         String[] message = data.split("/");
                         admain.normal_notification(intent, smallIcon, ticker, message[0],
                                 message[1]);
+//                        RemoteViews rv = new RemoteViews(context.getPackageName(),
+//                                R.layout.notification);
+//                        rv.setTextViewText(R.id.tv_title, message[0]);
+//                        rv.setTextViewText(R.id.tv_content, message[1]);
+//                        rv.setTextViewText(R.id.tv_time, String.valueOf(System.currentTimeMillis()));
+//                        admain.view_notification(rv,intent,smallIcon, ticker);
                         if(message[1].contains("您收到"))
                         {
                             String[] content = message[1].split("，");

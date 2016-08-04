@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.net.URLEncoder;
@@ -65,8 +66,8 @@ public class SwipeRefreshXOrderComment extends BaseAdapter {
             mHolder.tv_ordercomment = (TextView) convertView.findViewById(R.id.tv_ordercomment);
             mHolder.ib_delete = (ImageButton)convertView.findViewById(R.id.ib_delete);
             mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
-            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.iv_avatar);
-
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -77,30 +78,41 @@ public class SwipeRefreshXOrderComment extends BaseAdapter {
         final OrderComment item = orderComments.get(position);
 
 
-        if(item.getUser().getAvatar() != null && !item.getUser().getAvatar().equals(""))
+        mHolder.iv_avatar.setVisibility(View.VISIBLE);
+        mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+
+        if(item.getUser().getGender().equals(context.getResources().getString(R.string.male).toString()))
         {
-            ImageUtils.setImageUrl(mHolder.iv_avatar, item.getUser().getAvatar());
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
         }
         else
         {
-            if(item.getUser().getGender().equals(context.getResources().getString(R.string.male).toString()))
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.maleavatar);
-            }
-            else
-            {
-                mHolder.iv_avatar.setDefaultImageResId(R.drawable.femaleavatar);
-            }
-
+            mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
         }
+
+
+
+
         mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_ordercomment.setText(item.getComment());
         if(item.isAnonymity())
         {
-            mHolder.tv_name.setText("*****:");
+            mHolder.tv_name.setText("匿名:");
         }
         else {
             mHolder.tv_name.setText(item.getUser().getName() + ":");
+
+            if(item.getUser().getAvatar() != null && !item.getUser().getAvatar().equals(""))
+            {
+                mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+                mHolder.niv_avatar.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                mHolder.iv_avatar.setVisibility(View.VISIBLE);
+                mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+            }
+            ImageUtils.setImageUrl(mHolder.niv_avatar, item.getUser().getAvatar());
         }
         if(authority_delete) {
             mHolder.ib_delete.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +164,8 @@ public class SwipeRefreshXOrderComment extends BaseAdapter {
     static class ViewHolder
     {
         private TextView tv_name,tv_ordercomment,tv_time;
-        private com.android.volley.toolbox.NetworkImageView iv_avatar;
+        private com.android.volley.toolbox.NetworkImageView niv_avatar;
         private ImageButton ib_delete;
+        private ImageView iv_avatar;
     }
 }

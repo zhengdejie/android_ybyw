@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +16,7 @@ import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.dto.ContactDetail;
+import appframe.appframe.utils.ImageUtils;
 
 /**
  * Created by Administrator on 2015/11/25.
@@ -58,6 +60,8 @@ public class FirstClassAdapter extends BaseAdapter implements SectionIndexer {
             viewHolder.tv_name = (TextView) view.findViewById(R.id.tv_name);
             viewHolder.tvLetter = (TextView) view.findViewById(R.id.catalog);
             viewHolder.cb_firstclass = (CheckBox) view.findViewById(R.id.cb_firstclass);
+            viewHolder.iv_avatar = (ImageView) view.findViewById(R.id.iv_avatar);
+            viewHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) view.findViewById(R.id.niv_avatar);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -84,6 +88,31 @@ public class FirstClassAdapter extends BaseAdapter implements SectionIndexer {
             sb.append("(").append(mContent.getMobileContact().getName()).append(")");
         }
 
+        viewHolder.iv_avatar.setVisibility(View.VISIBLE);
+        viewHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        if(mContent.getUser().getGender().equals(mContext.getResources().getString(R.string.male).toString()))
+        {
+            viewHolder.iv_avatar.setImageDrawable(mContext.getResources().getDrawable(R.drawable.maleavatar));
+
+        }
+        else
+        {
+            viewHolder.iv_avatar.setImageDrawable(mContext.getResources().getDrawable(R.drawable.femaleavatar));
+
+        }
+
+        if(mContent.getUser().getAvatar() != null && !mContent.getUser().getAvatar().equals(""))
+        {
+            viewHolder.iv_avatar.setVisibility(View.INVISIBLE);
+            viewHolder.niv_avatar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            viewHolder.iv_avatar.setVisibility(View.VISIBLE);
+            viewHolder.niv_avatar.setVisibility(View.INVISIBLE);
+        }
+        ImageUtils.setImageUrl(viewHolder.niv_avatar, mContent.getUser().getAvatar());
+
         viewHolder.tv_name.setText(sb.toString());
         viewHolder.cb_firstclass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -106,6 +135,8 @@ public class FirstClassAdapter extends BaseAdapter implements SectionIndexer {
         TextView tvLetter;
         TextView tv_name;
         CheckBox cb_firstclass;
+        ImageView iv_avatar;
+        com.android.volley.toolbox.NetworkImageView niv_avatar;
     }
 
 

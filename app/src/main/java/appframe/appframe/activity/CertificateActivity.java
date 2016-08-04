@@ -113,9 +113,9 @@ public class CertificateActivity extends BaseActivity implements View.OnClickLis
 //                    iv_head.setImageBitmap(Utils.getBitmapFromURL(result.getFrontWithFaceUrl()));
                         new frontWithFaceImageDownLoad().execute(result.getFrontWithFaceUrl());
                     }
-                    progress_bar.setVisibility(View.GONE);
-                }
 
+                }
+                progress_bar.setVisibility(View.GONE);
             }
 
             @Override

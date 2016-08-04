@@ -30,8 +30,7 @@ import appframe.appframe.utils.Http;
  */
 public class FirstClassFriends extends Activity {
     private ListView sortListView;
-    private Button btn_recommand;
-    private TextView tb_title,tb_back;
+    private TextView tb_title,tb_back,btn_recommand;
     private FirstClassAdapter adapter;
     private ClearEditText mClearEditText;
     private OrderDetails orderDetails;
@@ -58,7 +57,7 @@ public class FirstClassFriends extends Activity {
 
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
-        btn_recommand = (Button)findViewById(R.id.btn_recommand);
+        btn_recommand = (TextView)findViewById(R.id.btn_recommand);
         tb_back.setText("任务");
         tb_title.setText("推荐好友");
         tb_back.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +80,7 @@ public class FirstClassFriends extends Activity {
                         public void onSuccess(String result) {
                             super.onSuccess(result);
                             Toast.makeText(FirstClassFriends.this, "推荐成功", Toast.LENGTH_SHORT).show();
-
+                            finish();
                         }
 
                         @Override

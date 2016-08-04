@@ -65,7 +65,7 @@ public class SearchTagActivity extends BaseActivity implements View.OnClickListe
                 String searchOrderTagResponse = (String) parent.getAdapter().getItem(position);
 //                Bundle bundle = new Bundle();
 //                bundle.putSerializable("SearchOrderTagResponse", searchOrderTagResponse);
-                if (position == 1) {
+                if (position == 0) {
                     intent.putExtra("TagName", searchOrderTagResponse.substring(6));
                 } else {
                     intent.putExtra("TagName", searchOrderTagResponse);

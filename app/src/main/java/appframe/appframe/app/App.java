@@ -37,7 +37,7 @@ import cn.smssdk.SMSSDK;
  */
 public class App extends Application {
     public static App instance;
-//    public final String APP_KEY = "23243435";
+    //    public final String APP_KEY = "23243435";
 //    public static YWIMKit mIMKit;
     private static Context sContext;
 

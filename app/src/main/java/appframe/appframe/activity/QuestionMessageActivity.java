@@ -23,7 +23,7 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXQuestionMessageAdapate
  * Created by Administrator on 2016/6/7.
  */
 public class QuestionMessageActivity extends BaseActivity implements View.OnClickListener{
-    private TextView tb_title,tb_back;
+    private TextView tb_title,tb_back,tv_empty;
     ListView lv_questionmessage;
 
     @Override
@@ -43,6 +43,7 @@ public class QuestionMessageActivity extends BaseActivity implements View.OnClic
     {
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
+        tv_empty = (TextView)findViewById(R.id.tv_empty);
         lv_questionmessage = (ListView)findViewById(R.id.lv_questionmessage);
         tb_back.setText("我的消息");
         tb_title.setText("问答通知");
@@ -52,7 +53,7 @@ public class QuestionMessageActivity extends BaseActivity implements View.OnClic
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PushMessage pushMessage = (PushMessage) parent.getAdapter().getItem(position);
                 Intent intent = new Intent();
-                intent.setClass(QuestionMessageActivity.this, OrderDetailsActivity.class);
+                intent.setClass(QuestionMessageActivity.this, QuestionDetailsActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("QuestionMessage", pushMessage.getObjectDetail());
                 intent.putExtras(bundle);
@@ -76,7 +77,12 @@ public class QuestionMessageActivity extends BaseActivity implements View.OnClic
                 super.onSuccess(result);
 
                 lv_questionmessage.setAdapter(new SwipeRefreshXQuestionMessageAdapater(QuestionMessageActivity.this, result));
-
+                if(result != null && result.size() != 0) {
+                    tv_empty.setVisibility(View.GONE);
+                }
+                else {
+                    tv_empty.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

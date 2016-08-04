@@ -5,11 +5,13 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -175,7 +177,25 @@ public class DropdownListView extends ScrollView {
 
         }
         if (multiSelect == 1) {
-            Button btn_ok = new Button(getContext());
+            View divider = cachedDividers.poll();
+            if (divider == null) {
+                divider = inflater.inflate(R.layout.dropdown_tab_list_divider, linearLayout, false);
+            }
+            linearLayout.addView(divider);
+
+            TextView btn_ok = new TextView(getContext());
+            //此处相当于布局文件中的Android:layout_gravity属性
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(200,100);
+            lp.gravity = Gravity.RIGHT;
+            lp.setMargins(10, 10, 10, 10);
+            btn_ok.setLayoutParams(lp);
+
+            //此处相当于布局文件中的Android：gravity属性
+            btn_ok.setGravity(Gravity.CENTER);
+//            Drawable drawable = getResources().getDrawable(R.drawable.shape_tagview);
+            btn_ok.setBackgroundResource(R.drawable.shape_tagview);
+
+
             btn_ok.setText("确定");
 
             btn_ok.setBackgroundDrawable(getResources().getDrawable(R.drawable.textview_clicked));

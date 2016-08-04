@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.mobileim.IYWLoginService;
 import com.alibaba.mobileim.YWLoginParam;
@@ -41,7 +42,7 @@ import appframe.appframe.utils.Utils;
 public class LoginActivity extends BaseActivity {
     EditText  password,et_mobile;
 //    Button ok,btn_forgetpassword;
-    TextView tb_back,tb_action,tb_title,tv_progress_content,ok,btn_forgetpassword;
+    TextView tb_back,tb_action,tb_title,tv_progress_content,ok,btn_forgetpassword,regiter;
     LinearLayout progress_bar;
 
 
@@ -53,6 +54,7 @@ public class LoginActivity extends BaseActivity {
         tb_back = (TextView)findViewById(R.id.tb_back);
         tb_action = (TextView)findViewById(R.id.tb_action);
         tb_title = (TextView)findViewById(R.id.tb_title);
+        regiter = (TextView)findViewById(R.id.regiter);
 
 //        email = (EditText)findViewById(R.id.email);
         password = (EditText)findViewById(R.id.password);
@@ -71,19 +73,29 @@ public class LoginActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                progress_bar.setVisibility(View.VISIBLE);
-                Http.request(LoginActivity.this, API.USER_LOGIN, Http.map(
+                if(et_mobile.getText().toString().equals("") || et_mobile.getText() == null)
+                {
+                    Toast.makeText(LoginActivity.this, "手机号码不能为空", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if(password.getText().toString().equals("") || password.getText() == null)
+                    {
+                        Toast.makeText(LoginActivity.this,"密码不能为空",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        progress_bar.setVisibility(View.VISIBLE);
+                        Http.request(LoginActivity.this, API.USER_LOGIN, Http.map(
 
-                        "Password", password.getText().toString(),
-                        "Mobile",et_mobile.getText().toString()
+                                "Password", password.getText().toString(),
+                                "Mobile", et_mobile.getText().toString()
 
-                ), new Http.RequestListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult result) {
-                        super.onSuccess(result);
+                        ), new Http.RequestListener<AuthResult>() {
+                            @Override
+                            public void onSuccess(AuthResult result) {
+                                super.onSuccess(result);
 
 
-                        Auth.login(result.Token, result.User);
+                                Auth.login(result.Token, result.User);
 
 //                        IYWLoginService loginService = App.mIMKit.getLoginService();
 //                        YWLoginParam loginParam = YWLoginParam.createLoginParam(String.valueOf(result.User.Id), "1");
@@ -108,31 +120,33 @@ public class LoginActivity extends BaseActivity {
 
 
 //                        // 进首页
-                        SplashActivity.startRootActivity(LoginActivity.this);
-                        progress_bar.setVisibility(View.GONE);
-                    }
+                                SplashActivity.startRootActivity(LoginActivity.this);
+                                progress_bar.setVisibility(View.GONE);
+                            }
 
-                    @Override
-                    public void onFail(String code) {
-                        super.onFail(code);
-                        progress_bar.setVisibility(View.GONE);
+                            @Override
+                            public void onFail(String code) {
+                                super.onFail(code);
+                                progress_bar.setVisibility(View.GONE);
+                            }
+                        });
                     }
-                });
+                }
             }
         });
 
         btn_forgetpassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,ForgetPasswordActivity.class));
+                startActivity(new Intent(LoginActivity.this, ForgetPasswordActivity.class));
             }
         });
 
         tb_back.setVisibility(View.GONE);
-        tb_action.setText("注册");
+//        tb_action.setText("注册");
 
-        tb_title.setText("友帮");
-        tb_action.setOnClickListener(new View.OnClickListener() {
+        tb_title.setText("登入");
+        regiter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

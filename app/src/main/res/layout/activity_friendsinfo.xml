@@ -142,12 +142,18 @@
         android:text="@string/effect"
         android:layout_below="@+id/tv_district"/>
 
-
+        <View
+            android:id="@+id/view_divide5"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/divide"
+            android:layout_below="@+id/tv_friendsestimate"
+            />
     <RelativeLayout
         android:id="@+id/rl_revenue"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:layout_below="@+id/tv_friendsestimate"
+        android:layout_below="@+id/view_divide5"
 
         >
         <TextView
@@ -163,6 +169,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
+            android:text="￥0.0"
             android:gravity="center"/>
 
 
@@ -189,18 +196,63 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
+            android:text="￥0.0"
             android:gravity="center"/>
 
 
     </RelativeLayout>
+        <TextView
+            android:id="@+id/view_divide6"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/divide"
+            android:layout_below="@+id/rl_cost"
+            android:text="进行中的"
+            android:paddingLeft="10dp"
+            android:textColor="#56abe4"
+            android:gravity="center_vertical"
+            />
+        <TextView
+            android:id="@+id/tv_openservice"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="发布的求助"
+            android:layout_below="@+id/view_divide6"/>
 
+        <TextView
+            android:id="@+id/tv_openhelpthem"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="发布的助人"
+            android:layout_below="@+id/tv_openservice"/>
+
+        <TextView
+            android:id="@+id/tv_openquestion"
+            style="@style/more_item_style"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="未解决提问"
+            android:layout_below="@+id/tv_openhelpthem"/>
+        <TextView
+            android:id="@+id/view_divide7"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:background="@color/divide"
+            android:layout_below="@+id/tv_openquestion"
+            android:text="已完成的"
+            android:paddingLeft="10dp"
+            android:textColor="#56abe4"
+            android:gravity="center_vertical"
+            />
     <TextView
         android:id="@+id/tv_buyservice"
         style="@style/more_item_style"
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:text="购买的服务"
-        android:layout_below="@+id/rl_cost"/>
+        android:layout_below="@+id/view_divide7"/>
 
     <TextView
         android:id="@+id/tv_sellservice"
@@ -215,7 +267,7 @@
         style="@style/more_item_style"
         android:layout_width="match_parent"
         android:layout_height="44dp"
-        android:text="提问记录"
+        android:text="已解决提问"
         android:layout_below="@+id/tv_sellservice"/>
 
     <View
@@ -225,21 +277,39 @@
         android:background="@color/divide"
         android:layout_below="@+id/tv_questionhistory"
         />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/view_divide4"
+            android:id="@+id/lly_send">
+            <TextView
+                android:id="@+id/tv_focus"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="+关注"
+                android:layout_weight="1"
+                android:background="@drawable/textview_clicked"
+                android:textColor="@drawable/textview_pressed"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_margin="20dp"
 
-    <TextView
-        android:id="@+id/btn_sendmessage"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:text="@string/sendmessage"
-        android:layout_below="@+id/view_divide4"
-        android:background="@drawable/textview_clicked"
-        android:textColor="@color/white"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        />
+                />
+            <TextView
+                android:id="@+id/btn_sendmessage"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/sendmessage"
+                android:layout_weight="1"
+                android:background="@drawable/textview_clicked"
+                android:textColor="@drawable/textview_pressed"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_margin="20dp"
+
+                />
+        </LinearLayout>
     </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
