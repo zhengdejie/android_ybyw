@@ -18,6 +18,8 @@ import com.baidu.location.Poi;
 import com.github.snowdream.android.util.Log;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
+//import com.umeng.socialize.PlatformConfig;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ import cn.smssdk.SMSSDK;
 /**
  * Created by dashi on 15/6/11.
  */
-public class App extends Application {
+public class App extends android.support.multidex.MultiDexApplication {
     public static App instance;
     //    public final String APP_KEY = "23243435";
 //    public static YWIMKit mIMKit;
@@ -59,35 +61,14 @@ public class App extends Application {
         ConfigCache.init(this);
 
         sContext = getApplicationContext();
-//		YWEnvManager.prepare(sContext, YWEnvType.PRE);
-        //SDK初始化
-        //LoginSampleHelper.getInstance().initSDK_Sample(this);
-        //Application.onCreate中，首先执行这部分代码, 因为，如果在":TCMSSevice"进程中，无需进行openIM和app业务的初始化，以节省内存
-        //特别注意:这段代码不能封装到其他方法中，必须在onCreate顶层代码中!
-        //以下代码固定在此处，不要改动
-        SysUtil.setApplication(this);
-        if(SysUtil.isTCMSServiceProcess(this)){
-            return;  //特别注意：此处return是退出onCreate函数，因此不能封装到其他任何方法中!
+//todo Application.onCreate中，首先执行这部分代码，以下代码固定在此处，不要改动，这里return是为了退出Application.onCreate！！！
+        if(mustRunFirstInsideApplicationOnCreate()){
+            //todo 如果在":TCMSSevice"进程中，无需进行openIM和app业务的初始化，以节省内存
+            return;
         }
-        //以上代码固定在这个位置，不要改动
 
         //初始化云旺SDK
         InitHelper.initYWSDK(this);
-
-//        //IM聊天配置
-//        YWAPI.init(this,APP_KEY);
-//        mIMKit = YWAPI.getIMKitInstance();
-//        //IM
-//        // 通知推送
-//        mIMKit.setEnableNotification(true);
-//        //开启通知栏提示
-//        mIMKit.setAppName("友问友帮");
-//        // 通知栏显示的名称
-//        mIMKit.setResId(R.drawable.aliwx_notification_bg);
-//        //开发者可以换成自定义的Icon
-//        Intent intent = mIMKit.getConversationActivityIntent();
-//        //开发者可以使用openIM提供的intent也可以使用自定义的intent
-//        mIMKit.setNotificationIntent(intent); //通知栏点击跳转
 
         Log.setEnabled(true);
         Log.setLog2ConsoleEnabled(true);
@@ -99,8 +80,20 @@ public class App extends Application {
 //        // 将该app注册到微信
         msgApi.registerApp(AppConfig.WX_APP_ID);
 
+        // SDK在统计Fragment时，需要关闭Activity自带的页面统计，
+        // 然后在每个页面中重新集成页面统计的代码(包括调用了 onResume 和 onPause 的Activity)。
+        MobclickAgent.openActivityDurationTrack(false);
+        MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
+
+//        PlatformConfig.setWeixin("wxfcdc5b3ad4fb99f4", "008ca4059daadb4395fa319ca743ac45");
+        //微信 appid appsecret
 //        Fabric.with(this, new Crashlytics());
     }
+    private boolean mustRunFirstInsideApplicationOnCreate() {
+        //必须的初始化
+        SysUtil.setApplication(this);
 
+        return SysUtil.isTCMSServiceProcess(sContext);
+    }
 
 }

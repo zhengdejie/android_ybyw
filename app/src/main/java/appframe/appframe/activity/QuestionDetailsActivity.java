@@ -25,6 +25,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -336,7 +338,7 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
         map.put("Page", "1");
         map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
 
-        Http.request(QuestionDetailsActivity.this, API.GET_ANSWERS, new Object[]{question.getId(),Http.getURL(map)},
+        Http.request(QuestionDetailsActivity.this, API.GET_ANSWERS, new Object[]{question.getId(), Http.getURL(map)},
                 new Http.RequestListener<QuestionWithAnswers>() {
                     @Override
                     public void onSuccess(QuestionWithAnswers result) {
@@ -346,13 +348,10 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
                             lv_ordercomment.setAdapter(swipeRefreshXAnswerAdapater);
 
                             setListViewHeightBasedOnChildren(lv_ordercomment);
-                            if(result.getMyAnswer() != null)
-                            {
+                            if (result.getMyAnswer() != null) {
                                 btn_comment.setText("查看我的回答");
                                 answerDetail = result.getMyAnswer();
-                            }
-                            else
-                            {
+                            } else {
                                 btn_comment.setText("添加答案");
                             }
                             tv_comment.setText(result.getQuestionDetail().getTotalAnswers() + "条回答");
@@ -366,6 +365,8 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
                         super.onFail(code);
                     }
                 });
+        MobclickAgent.onPageStart("问答详情页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
     }
 
     public void setListViewHeightBasedOnChildren(ListView listView) {
@@ -518,5 +519,13 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
                 startActivity(intentanswer);
                 break;
         }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("问答详情页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 }

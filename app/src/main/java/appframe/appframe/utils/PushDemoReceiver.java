@@ -1,5 +1,6 @@
 package appframe.appframe.utils;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,9 +14,16 @@ import android.widget.Toast;
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.PushManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import appframe.appframe.R;
 import appframe.appframe.activity.HomeActivity;
+import appframe.appframe.activity.OrderDetailsActivity;
+import appframe.appframe.app.API;
+import appframe.appframe.app.App;
 import appframe.appframe.app.AppConfig;
+import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.fragment.PersonFragment;
 
 public class PushDemoReceiver extends BroadcastReceiver {
@@ -32,7 +40,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
     int smallIcon = R.drawable.logomini;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
 //        Log.d("GetuiSdkDemo", "onReceive() action=" + bundle.getInt("action"));
 
@@ -55,19 +63,58 @@ public class PushDemoReceiver extends BroadcastReceiver {
 //                    Log.d("GetuiSdkDemo", "receiver payload : " + data);
                     //Toast.makeText(context, data, Toast.LENGTH_SHORT).show();
                     // 设置点击后启动的activity
-                    intent = new Intent(context, HomeActivity.class);
+
                     //intent.putExtra("pushmessage","push");
                     if(AppConfig.RECEIVE_NOTIFICATION) {
                         admain = new NotificationUtils(context, NOTIFICATION_ID);
-                        String[] message = data.split("/");
-                        admain.normal_notification(intent, smallIcon, ticker, message[0],
-                                message[1]);
+                        final String[] message = data.split("/");
+
 //                        RemoteViews rv = new RemoteViews(context.getPackageName(),
 //                                R.layout.notification);
 //                        rv.setTextViewText(R.id.tv_title, message[0]);
 //                        rv.setTextViewText(R.id.tv_content, message[1]);
 //                        rv.setTextViewText(R.id.tv_time, String.valueOf(System.currentTimeMillis()));
 //                        admain.view_notification(rv,intent,smallIcon, ticker);
+                        if(!message[2].equals("0"))
+                        {
+                            Intent odIntent = new Intent();
+                            Bundle odBundle = new Bundle();
+                            odIntent.setClass(context, OrderDetailsActivity.class);
+                            odBundle.putSerializable("OrderIdFromPushDemoReceiver", message[2]);
+
+                            odBundle.putString("From", "MyOrder");
+                            odIntent.putExtras(odBundle);
+                            admain.normal_notification(odIntent, smallIcon, ticker, message[0],message[1]);
+//                            Map<String, String> map = new HashMap<String, String>();
+//                            map.put("Id", message[2]);
+//                            Http.request((Activity) App.getContext(), API.GETORDERBYID, new Object[]{Http.getURL(map)},
+//
+//                                    new Http.RequestListener<OrderDetails>() {
+//                                        @Override
+//                                        public void onSuccess(OrderDetails result) {
+//                                            super.onSuccess(result);
+//                                            Intent odIntent = new Intent();
+//                                            Bundle odBundle = new Bundle();
+//                                            odIntent.setClass(context, OrderDetailsActivity.class);
+//                                            odBundle.putSerializable("OrderDetails", result);
+//
+//                                            odBundle.putString("From", "Order");
+//                                            odIntent.putExtras(odBundle);
+//                                            admain.normal_notification(odIntent, smallIcon, ticker, message[0],message[1]);
+//
+//                                        }
+//                                    });
+
+
+                        }
+                        else
+                        {
+                            intent = new Intent(context, HomeActivity.class);
+                            admain.normal_notification(intent, smallIcon, ticker, message[0],message[1]);
+                        }
+
+
+
                         if(message[1].contains("您收到"))
                         {
                             String[] content = message[1].split("，");

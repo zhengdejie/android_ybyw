@@ -32,9 +32,9 @@ public class ViewPagerActivity extends BaseActivity implements View.OnClickListe
     private TextView tv_skip;
 
     //引导图片资源
-    private static final int[] pics = { R.drawable.female,
-            R.drawable.male, R.drawable.femaleavatar,
-            R.drawable.maleavatar };
+    private static final int[] pics = { R.drawable.logo,
+            R.drawable.logo, R.drawable.logo,
+            R.drawable.logo };
 
     //底部小店图片
     private ImageView[] dots ;
@@ -85,26 +85,26 @@ public class ViewPagerActivity extends BaseActivity implements View.OnClickListe
             }
         });
         //初始化底部小点
-        initDots();
+//        initDots();
 
     }
 
-    private void initDots() {
-        LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
-
-        dots = new ImageView[pics.length];
-
-        //循环取得小点图片
-        for (int i = 0; i < pics.length; i++) {
-            dots[i] = (ImageView) ll.getChildAt(i);
-            dots[i].setEnabled(true);//都设为灰色
-            dots[i].setOnClickListener(this);
-            dots[i].setTag(i);//设置位置tag，方便取出与当前位置对应
-        }
-
-        currentIndex = 0;
-        dots[currentIndex].setEnabled(false);//设置为白色，即选中状态
-    }
+//    private void initDots() {
+//        LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
+//
+//        dots = new ImageView[pics.length];
+//
+//        //循环取得小点图片
+//        for (int i = 0; i < pics.length; i++) {
+//            dots[i] = (ImageView) ll.getChildAt(i);
+//            dots[i].setEnabled(true);//都设为灰色
+//            dots[i].setOnClickListener(this);
+//            dots[i].setTag(i);//设置位置tag，方便取出与当前位置对应
+//        }
+//
+//        currentIndex = 0;
+//        dots[currentIndex].setEnabled(false);//设置为白色，即选中状态
+//    }
 
     /**
      *设置当前的引导页
@@ -151,14 +151,14 @@ public class ViewPagerActivity extends BaseActivity implements View.OnClickListe
     @Override
     public void onPageSelected(int arg0) {
         //设置底部小点选中状态
-        setCurDot(arg0);
+//        setCurDot(arg0);
     }
 
     @Override
     public void onClick(View v) {
         int position = (Integer)v.getTag();
         setCurView(position);
-        setCurDot(position);
+//        setCurDot(position);
 //        if(position == 3) {
 //            SharedPreferences.Editor e = getSharedPreferences("firstviewpager", Context.MODE_PRIVATE).edit();
 //            e.putString("viewed", "true").commit();

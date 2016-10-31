@@ -40,7 +40,7 @@ public class UpdateAPKService extends Service{
     int requestCode = (int) SystemClock.uptimeMillis();
     private static final int FLAG = PendingIntent.FLAG_CANCEL_CURRENT;
 
-    int smallIcon = R.drawable.ic_launcher;
+    int smallIcon = R.drawable.logomini;
 
     private static final int TIMEOUT = 10 * 1000;// 超时
     private static final String down_url = AppConfig.QINIU_HOST +"app-debug.apk";

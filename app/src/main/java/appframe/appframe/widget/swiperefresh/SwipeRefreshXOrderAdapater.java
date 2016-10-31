@@ -246,7 +246,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         if(item.getNameAnonymity() == 1)
         {
             mHolder.tv_name.setText("匿名");
-
+            item.getOrderer().setName("匿名");
         }
         else {
             if (item.getOrderer().getFNickName() != null && !item.getOrderer().getFNickName().equals("")) {
@@ -298,9 +298,11 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
 //        }
         if(item.getType() == 1) {
             mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalWorkerPoint());
+            mHolder.tv_pay.setVisibility(View.GONE);
         }
         else if(item.getType() == 2) {
             mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalBossPoint());
+            mHolder.tv_pay.setVisibility(View.VISIBLE);
         }
         else
         {
@@ -322,6 +324,14 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         }
         mHolder.tv_numofconforder.setText(String.format("(友帮%d次)", item.getOrderer().getCompletedNumberOfOrder()));
         mHolder.tv_fans.setText(String.format("%d粉丝", item.getOrderer().getNumberofFans()));
+        if(item.getNameAnonymity() ==1 || item.getOrderer().getName().equals(Auth.getCurrentUser().getName()))
+        {
+            mHolder.tv_focus.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            mHolder.tv_focus.setVisibility(View.VISIBLE);
+        }
         if(item.getOrderer().isFans())
         {
             mHolder.tv_focus.setEnabled(false);
@@ -434,20 +444,28 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         mHolder.iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.setClass(context, FriendsInfoActivity.class);
-                bundle.putSerializable("OrderDetails", item);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                if(item.getNameAnonymity() == 1)
+                {}
+                else {
+                    intent.setClass(context, FriendsInfoActivity.class);
+                    bundle.putSerializable("OrderDetails", item);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
             }
         });
 
         mHolder.niv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.setClass(context, FriendsInfoActivity.class);
-                bundle.putSerializable("OrderDetails", item);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                if(item.getNameAnonymity() == 1)
+                {}
+                else {
+                    intent.setClass(context, FriendsInfoActivity.class);
+                    bundle.putSerializable("OrderDetails", item);
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
             }
         });
 

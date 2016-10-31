@@ -88,8 +88,9 @@ public class UploadUtils {
                 while(cursorPhone.moveToNext())
                 {
                     String ContactMobile = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
                     Pattern pattern = Pattern.compile("^\\d{11}$");
-                    Matcher matcher = pattern.matcher(ContactMobile);
+                    Matcher matcher = pattern.matcher(ContactMobile.replace(" ",""));
                     if(matcher.matches()) {
                         if(ContactName != null && !ContactName.equals("") && ContactMobile != null && !ContactMobile.equals("")) {
                             UserContact userContact = new UserContact(ContactName, ContactMobile);

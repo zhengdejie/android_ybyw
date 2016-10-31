@@ -17,13 +17,18 @@ import com.alibaba.mobileim.channel.LoginParam;
 import com.alibaba.mobileim.channel.constant.WXConstant;
 import com.alibaba.mobileim.channel.event.IWxCallback;
 import com.alibaba.mobileim.channel.util.YWLog;
+import com.alibaba.mobileim.fundamental.model.YWIMSmiley;
 import com.alibaba.mobileim.gingko.model.tribe.YWTribe;
 import com.alibaba.mobileim.gingko.model.tribe.YWTribeMember;
 import com.alibaba.mobileim.login.IYWConnectionListener;
 import com.alibaba.mobileim.login.YWLoginCode;
 import com.alibaba.mobileim.login.YWLoginState;
 import com.alibaba.mobileim.login.YWPwdType;
+import com.alibaba.mobileim.ui.chat.widget.YWSmilyMgr;
 import com.alibaba.mobileim.utility.IMAutoLoginInfoStoreUtil;
+import com.alibaba.tcms.env.EnvManager;
+import com.alibaba.tcms.env.TcmsEnvType;
+import com.alibaba.tcms.env.YWEnvManager;
 import com.alibaba.tcms.env.YWEnvType;
 
 import org.json.JSONObject;
@@ -97,21 +102,48 @@ public class LoginSampleHelper {
      */
     public void initSDK_Sample(Application context) {
         mApp = context;
-
-        //初始化IMKit，考虑到应用启动会自动登录的情况
+        sEnvType = YWEnvManager.getEnv(context);
+        //初始化IMKit
         final String userId = IMAutoLoginInfoStoreUtil.getLoginUserId();
         final String appkey = IMAutoLoginInfoStoreUtil.getAppkey();
-        if (!TextUtils.isEmpty(userId) && !TextUtils.isEmpty(appkey)){
-            //初始化imkit
-            LoginSampleHelper.getInstance().initIMKit(userId, appkey);
-            //通知栏相关的初始化
-            NotificationInitSampleHelper.init();
+        TcmsEnvType type = EnvManager.getInstance().getCurrentEnvType(mApp);
+        if(type==TcmsEnvType.ONLINE || type == TcmsEnvType.PRE){
+            if(TextUtils.isEmpty(appkey)) {
+                YWAPI.init(mApp, APP_KEY);
+            } else {
+                YWAPI.init(mApp, appkey);
+            }
+        }
+        else if(type==TcmsEnvType.TEST){
+//            YWAPI.aliInit(mApp, APP_KEY_TEST, AccountUtils.SITE_CNHHUPAN);
+            YWAPI.init(mApp, APP_KEY_TEST);
         }
 
-        YWAPI.init(mApp, APP_KEY);
+        if (!TextUtils.isEmpty(userId) && !TextUtils.isEmpty(appkey)){
+            LoginSampleHelper.getInstance().initIMKit(userId, appkey);
+        }
+
         //通知栏相关的初始化
         NotificationInitSampleHelper.init();
-        //initAutoLoginStateCallback();
+//        initAutoLoginStateCallback();
+
+
+        //添加自定义表情的初始化
+//        YWSmilyMgr.setSmilyInitNotify(new YWSmilyMgr.SmilyInitNotify() {
+//            @Override
+//            public void onDefaultSmilyInitOk() {
+//                //隐藏默认表情，必须在添加前调用
+////                SmilyCustomSample.hideDefaultSmiley();
+////                SmilyCustomSample.addDefaultSmiley();
+//                //如果开发者想修改顺序（把sdk默认的放在自己添加的表情后面），可以先hide默认的然后再最后添加默认的
+//                SmilyCustomSample.addNewEmojiSmiley();
+//                YWIMSmiley smiley = SmilyCustomSample.addNewImageSmiley();
+//                smiley.setIndicatorIconResId(R.drawable.aliwx_s012);
+//                SmilyCustomSample.setSmileySize(YWIMSmiley.SMILEY_TYPE_IMAGE, 60);
+//                //最后要清空通知，防止memory leak
+//                YWSmilyMgr.setSmilyInitNotify(null);
+//            }
+//        });
     }
 
     //将自动登录的状态广播出去

@@ -22,7 +22,7 @@
     <TextView
         android:id="@+id/tv_selfestimate"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
         android:padding="10dp"
         android:inputType="textMultiLine"
         android:hint=""
@@ -30,6 +30,7 @@
         android:maxLength="250"
         android:gravity="top"
         />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1sp"
@@ -55,7 +56,7 @@
         android:numColumns="3"
         android:scrollbars="none"
         android:verticalSpacing="5dp"
-        android:layout_below="@+id/tv_contentcount"/>
+        />
     <View
         android:layout_width="match_parent"
         android:layout_height="1sp"

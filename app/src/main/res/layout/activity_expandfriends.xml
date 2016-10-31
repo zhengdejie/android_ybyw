@@ -41,9 +41,7 @@
         <!--</ListView>-->
     <!--</appframe.appframe.widget.swiperefresh.SwipeRefreshX>-->
 
-    <include
-        android:id="@+id/progress_bar"
-        layout="@layout/progressbar_loading" />
+
     <TextView
         android:id="@+id/tv_empty"
         android:layout_width="match_parent"
@@ -51,4 +49,7 @@
         android:gravity="center"
         android:text="您还没有二度朋友，赶快去扩展人脉圈吧"
         android:visibility="gone"/>
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading" />
 </RelativeLayout>

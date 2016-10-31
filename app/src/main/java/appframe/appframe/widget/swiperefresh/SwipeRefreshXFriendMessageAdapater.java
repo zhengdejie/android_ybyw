@@ -126,7 +126,15 @@ public class SwipeRefreshXFriendMessageAdapater extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
+    //此方法通过activity给view的item添加值。通过notifyDataSetChanged 刷新界面
+    public  void addItems(List<PushMessage> items ){
+        for(PushMessage question : items)
+        {
+            pushMessages.add(question);
+        }
+        notifyDataSetChanged();
 
+    }
     static class ViewHolder
     {
         private TextView tv_message,tv_accept,tv_name;

@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +45,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
     private RelativeLayout rl_revenue,rl_cost;
     private OrderDetails orderDetails;
     private UserDetail userDetail,candidate;
-    private UserBrief userBrief;
+    private UserBrief userBrief,userID;
     private Question question,questionDetails;
     private Nearby nearby;
     private PushMessage pushMessage;
@@ -51,6 +53,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
     private Intent activityIntent = new Intent();
     private final  int RESULT_CODE =1;
     private View view_divide5;
+    private LinearLayout progress_bar;
 //    TextView addoneclassfriend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
     protected void init()
     {
         btn_sendmessage = (TextView)findViewById(R.id.btn_sendmessage);
+        progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
         tv_name = (TextView)findViewById(R.id.tv_name);
         tv_nickname = (TextView)findViewById(R.id.tv_nickname);
         btn_sendmessage.setOnClickListener(this);
@@ -104,6 +108,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         tv_focus.setOnClickListener(this);
         tv_openquestion.setOnClickListener(this);
 
+        progress_bar.setVisibility(View.VISIBLE);
         Intent intent = this.getIntent();
         orderDetails = (OrderDetails)intent.getSerializableExtra("OrderDetails");
         if(orderDetails != null) {
@@ -190,11 +195,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 iv_member.setVisibility(View.GONE);
             }
-//            UserID = String.valueOf(orderDetails.getOrderer().getId());
-//            AvgServicePoint = String.valueOf(orderDetails.getOrderer().getAvgServicePoint());
-//            AvgAttitudePoint = String.valueOf(orderDetails.getOrderer().getAvgAttitudePoint());
-//            AvgCharacterPoint = String.valueOf(orderDetails.getOrderer().getAvgCharacterPoint());
-//            TotalNumberOfOrder = String.valueOf(orderDetails.getOrderer().getTotalNumberOfOrder());
+            progress_bar.setVisibility(View.GONE);
         }
         userDetail =  (UserDetail)intent.getSerializableExtra("UserDetail");
         if(userDetail != null) {
@@ -264,6 +265,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             tv_showdistrict.setText(userDetail.getLocation());
 //            UserID = String.valueOf(userDetail.getId());
             userBrief = userDetail;
+            progress_bar.setVisibility(View.GONE);
         }
         nearby =  (Nearby)intent.getSerializableExtra("NearBy");
         if(nearby != null) {
@@ -326,6 +328,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 iv_member.setVisibility(View.GONE);
             }
+            progress_bar.setVisibility(View.GONE);
         }
         candidate = (UserDetail)intent.getSerializableExtra("Candidate");
         if(candidate != null) {
@@ -395,6 +398,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 iv_member.setVisibility(View.GONE);
             }
+            progress_bar.setVisibility(View.GONE);
         }
         question = (Question)intent.getSerializableExtra("Question");
         if(question != null) {
@@ -463,6 +467,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 iv_member.setVisibility(View.GONE);
             }
+            progress_bar.setVisibility(View.GONE);
         }
         questionDetails = (Question)intent.getSerializableExtra("QuestionDetails");
         if(questionDetails != null) {
@@ -531,6 +536,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 iv_member.setVisibility(View.GONE);
             }
+            progress_bar.setVisibility(View.GONE);
         }
         pushMessage = (PushMessage)intent.getSerializableExtra("PushMessage");
         if(pushMessage != null)
@@ -599,6 +605,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 iv_member.setVisibility(View.GONE);
             }
+            progress_bar.setVisibility(View.GONE);
         }
 
         if(intent.getStringExtra("From") != null) {
@@ -606,9 +613,12 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         }
 
         //scan
-        if(intent.getStringExtra("UserID") != null) {
-            String myUserID = intent.getStringExtra("UserID").toString();
-            Http.request(FriendsInfoActivity.this, API.USER_PROFILE, new Object[]{myUserID}, new Http.RequestListener<UserDetail>(){
+//        Bundle bundle = intent.getExtras();
+//        String string = bundle.getString("name");
+        userID = (UserBrief)intent.getSerializableExtra("UserID");
+        if(userID != null) {
+//            String myUserID = intent.getStringExtra("UserID").toString();
+            Http.request(FriendsInfoActivity.this, API.USER_PROFILE, new Object[]{String.valueOf(userID.getId())}, new Http.RequestListener<UserDetail>(){
                 @Override
                 public void onSuccess(UserDetail result) {
                     super.onSuccess(result);
@@ -655,6 +665,13 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     {
                         rl_cost.setVisibility(View.GONE);
                     }
+                    progress_bar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onFail(String code) {
+                    super.onFail(code);
+                    progress_bar.setVisibility(View.GONE);
                 }
             });
         }
@@ -670,9 +687,11 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             } else {
                 view_divide5.setVisibility(View.GONE);
             }
-
+            progress_bar.setVisibility(View.GONE);
         }
-        if(intent.getBooleanExtra("AddFriend",false))
+//        if(intent.getBooleanExtra("AddFriend",false))
+        Bundle bundle = intent.getExtras();
+        if(bundle.getBoolean("AddFriend"))
         {
             tv_focus.setText("添加好友");
         }
@@ -1032,15 +1051,22 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 public void onClick(View v)
                 {
-                    Intent intent = new Intent();
-                    intent.setClass(FriendsInfoActivity.this,RelativenetActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("userBrief", userBrief);
-                    intent.putExtras(bundle);
+                    if(Auth.getCurrentUserId() == userBrief.getId())
+                    {
+                        Toast.makeText(FriendsInfoActivity.this,"不能查看自己与自己的关系",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Intent intent = new Intent();
+                        intent.setClass(FriendsInfoActivity.this, RelativenetActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("userBrief", userBrief);
+                        intent.putExtras(bundle);
 //                    intent.putExtra("UserID", String.valueOf(userBrief.getId()));
 //                    intent.putExtra("Avatar", iv_showavatar.getImageURL());
 //                    intent.putExtra("Name", tv_name.getText());
-                    startActivity(intent);
+                        startActivity(intent);
+
+                    }
                     dismiss();
                 }
             });
@@ -1054,7 +1080,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                                 @Override
                                 public void onSuccess(String result) {
                                     super.onSuccess(result);
-                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FriendsInfoActivity.this, "拉黑成功", Toast.LENGTH_SHORT).show();
                                 }
                             });
                     dismiss();
@@ -1084,7 +1110,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                                 @Override
                                 public void onSuccess(String result) {
                                     super.onSuccess(result);
-                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FriendsInfoActivity.this, "屏蔽成功", Toast.LENGTH_SHORT).show();
                                 }
                             });
                     dismiss();
@@ -1100,7 +1126,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                                 @Override
                                 public void onSuccess(String result) {
                                     super.onSuccess(result);
-                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FriendsInfoActivity.this, "屏蔽成功", Toast.LENGTH_SHORT).show();
                                 }
                             });
                     dismiss();
@@ -1115,7 +1141,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                                 @Override
                                 public void onSuccess(String result) {
                                     super.onSuccess(result);
-                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FriendsInfoActivity.this, "取消屏蔽", Toast.LENGTH_SHORT).show();
                                 }
                             });
                     dismiss();
@@ -1131,7 +1157,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                                 @Override
                                 public void onSuccess(String result) {
                                     super.onSuccess(result);
-                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FriendsInfoActivity.this, "取消屏蔽", Toast.LENGTH_SHORT).show();
                                 }
                             });
                     dismiss();
@@ -1148,7 +1174,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                                 @Override
                                 public void onSuccess(String result) {
                                     super.onSuccess(result);
-                                    //Toast.makeText(FriendsInfoActivity.this, "已屏蔽该好友", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FriendsInfoActivity.this, "取消拉黑", Toast.LENGTH_SHORT).show();
                                 }
                             });
                     dismiss();
@@ -1157,6 +1183,20 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("帮友资料页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("帮友资料页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
+    }
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        MenuInflater inflater = this.getMenuInflater();

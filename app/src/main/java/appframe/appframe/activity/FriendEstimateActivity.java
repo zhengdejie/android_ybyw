@@ -15,6 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +72,14 @@ public class FriendEstimateActivity extends BaseActivity implements View.OnClick
         tb_back.setOnClickListener(this);
         tb_action.setOnClickListener(this);
         userID = getIntent().getStringExtra("UserID");
+        if(Integer.parseInt(userID) == Auth.getCurrentUserId())
+        {
+            tb_action.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            tb_action.setVisibility(View.VISIBLE);
+        }
 //        tv_addtag.setOnClickListener(this);
 
         swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
@@ -153,16 +163,15 @@ public class FriendEstimateActivity extends BaseActivity implements View.OnClick
         Map<String, String> map = new HashMap<String, String>();
         map.put("Page", "1");
         map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-        Http.request(this, API.GET_FEVALUATION, new Object[]{userID,Http.getURL(map)}, new Http.RequestListener<List<FriendEvaluationDetail>>() {
+        Http.request(this, API.GET_FEVALUATION, new Object[]{userID, Http.getURL(map)}, new Http.RequestListener<List<FriendEvaluationDetail>>() {
             @Override
             public void onSuccess(List<FriendEvaluationDetail> result) {
                 super.onSuccess(result);
                 swipeRefreshXFriendEstimateAdapater = new SwipeRefreshXFriendEstimateAdapater(FriendEstimateActivity.this, result);
                 listView.setAdapter(swipeRefreshXFriendEstimateAdapater);
-                if(result != null && result.size() != 0) {
+                if (result != null && result.size() != 0) {
                     tv_empty.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     tv_empty.setVisibility(View.VISIBLE);
                 }
 
@@ -229,5 +238,20 @@ public class FriendEstimateActivity extends BaseActivity implements View.OnClick
 //                break;
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("好友评价页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("好友评价页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 }

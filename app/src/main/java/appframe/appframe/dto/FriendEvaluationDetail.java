@@ -7,10 +7,19 @@ import appframe.appframe.utils.Http;
  */
 public class FriendEvaluationDetail extends Http.BaseDto {
 
+    public int Id;
     public UserDetail Praiser;
     public String Praise;
     public String Tags;
     public String CreatedAt;
+
+    public int getId() {
+        return Id;
+    }
+
+    public void setId(int id) {
+        Id = id;
+    }
 
     public UserDetail getPraiser() {
         return Praiser;

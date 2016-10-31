@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.Serializable;
@@ -64,7 +65,7 @@ import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
  * Created by Administrator on 2015/12/8.
  */
 public class EditSignatureActivity extends BaseActivity implements View.OnClickListener {
-    private TextView tb_title, tb_back,tb_action;
+    private TextView tb_title, tb_back,tb_action,tv_contentcount,tv_progress_content;
     private GridView mGridView;
     private EditText et_signature;
     private ImagePublishAdapter mAdapter;
@@ -73,15 +74,18 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
     StringBuilder sb = new StringBuilder();
     public int upload_iamge_num = 0;
     List<File> fileList = new ArrayList<File>();
-    int count = 1;
+    int count = 1 , photoCount = 0;
+    LinearLayout progress_bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editsignature);
         init();
-        initView();
+        progress_bar.setVisibility(View.VISIBLE);
         initData();
+        initView();
+
         inidata();
 
     }
@@ -92,24 +96,46 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
         tb_action = (TextView) findViewById(R.id.tb_action);
         et_signature = (EditText) findViewById(R.id.et_signature);
         mGridView = (GridView)findViewById(R.id.gridview);
-        tb_back.setText("我的");
-        tb_title.setText("个人签名");
+        tv_contentcount = (TextView) findViewById(R.id.tv_contentcount);
+        progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
+        tv_progress_content = (TextView)findViewById(R.id.tv_progress_content);
+        tv_progress_content.setText("正在加载");
+        tb_back.setText("个人信息");
+        tb_title.setText("自我评价");
         tb_action.setText("保存");
 
 //        tb_action.setEnabled(false);
         tb_back.setOnClickListener(this);
         tb_action.setOnClickListener(this);
 
-        et_signature.addTextChangedListener(textWatcher);
-
+        et_signature.addTextChangedListener(contentWatcher);
     }
+
+    private TextWatcher contentWatcher = new TextWatcher(){
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            tv_contentcount.setText(String.format("%d/250",s.length()));
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
     public void initView()
     {
 //        TextView titleTv  = (TextView) findViewById(R.id.title);
 //        titleTv.setText("");
 //        mGridView = (GridView) findViewById(R.id.gridview);
         mGridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
-        mAdapter = new ImagePublishAdapter(this, mDataList);
+        mAdapter = new ImagePublishAdapter(this, mDataList,false);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
@@ -180,13 +206,18 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
     {
         super.onPause();
         saveTempToPref();
+        MobclickAgent.onPageEnd("自我评价"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         notifyDataChanged(); //当在ImageZoomActivity中删除图片时，返回这里需要刷新
+        MobclickAgent.onPageStart("自我评价"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
     }
+
 
     private void notifyDataChanged()
     {
@@ -255,6 +286,7 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                 if(result!=null) {
                     et_signature.setText(result.getDescription());
                     Selection.setSelection(et_signature.getText(), et_signature.getText().length());
+                    tv_contentcount.setText(String.format("%d/250", result.getDescription().length()));
 
                     if(result.getPhotos() != null && result.getPhotos() != "") {
                         List<String> photoPath = new ArrayList<String>();
@@ -262,9 +294,10 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                         int i = 0 ;
                         for (String photsCount : result.getPhotos().toString().split(",")) {
 //                            photoPath.add(photsCount);
+                            photoCount ++;
                             i++;
-                            File file = new File(Environment.getExternalStorageDirectory()+ "/mycertifacate/",String.format("%s.jpg",i));
-                            fileList.add(file);
+                            File file = new File(Environment.getExternalStorageDirectory()+ "/mysignature/",String.format("%s.jpg",i));
+
                             if (!file.exists())
                             {
                                 File vDirPath = file.getParentFile();
@@ -277,8 +310,9 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                                     file.delete();
                                 }
                             }
-
-                            new ImageDownLoad().execute(ImageUtils.getImageUrl(photsCount, 70, 70, "0"),"df");
+                            fileList.add(file);
+//                            new ImageDownLoad().execute(ImageUtils.getImageUrl(photsCount, 70, 70, "0"),"df");
+                            new ImageDownLoad().execute(ImageUtils.getImageUrl(photsCount),"df");
 //                            bitmap = Utils.getBitmapFromQINIUURL(ImageUtils.getImageUrl(photsCount, 70, 70));
 
 
@@ -357,7 +391,12 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
 //                dismissProgressBar();
 //                showImageView.setImageBitmap(result);
             }
+            if(photoCount == count)
+            {
+                progress_bar.setVisibility(View.GONE);
+            }
             count ++;
+
             initView();
         }
 
@@ -365,23 +404,7 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
 
     }
 
-    private TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-//            tb_action.setBackgroundColor(getResources().getColor(R.color.green));
-//            tb_action.setEnabled(true);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
 
     @Override
     public void onClick(View v) {
@@ -393,6 +416,8 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.tb_action:
+                tv_progress_content.setText("正在保存");
+                progress_bar.setVisibility(View.VISIBLE);
                 if (mDataList.size() == 0) {
                     Http.request(EditSignatureActivity.this, API.POST_SELFEVALUATION, new Object[]{Auth.getCurrentUserId()}, Http.map(
                             "Description", et_signature.getText().toString(),
@@ -405,6 +430,7 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                             mDataList.clear();
                             removeTempFromPref();
                             Auth.updateCurrentUser(result);
+                            progress_bar.setVisibility(View.GONE);
                             finish();
                         }
 
@@ -447,6 +473,7 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
                                                     mDataList.clear();
                                                     removeTempFromPref();
                                                     Auth.updateCurrentUser(result);
+                                                    progress_bar.setVisibility(View.GONE);
                                                     finish();
                                                 }
 

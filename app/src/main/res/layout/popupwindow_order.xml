@@ -20,6 +20,7 @@
             android:background="@color/white" />
 
         <RelativeLayout
+            android:id="@+id/rl_viewfdinfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -31,7 +32,8 @@
                 android:layout_height="24dp"
                 android:text="@string/viewfdinfo"
                 android:textColor="@color/white"
-                android:gravity="center"/>
+                android:gravity="center"
+                />
             <!--<ImageView-->
                 <!--android:layout_width="24dp"-->
                 <!--android:layout_height="24dp"-->

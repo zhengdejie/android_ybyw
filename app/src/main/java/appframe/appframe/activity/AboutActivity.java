@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
+
 import appframe.appframe.R;
+import appframe.appframe.utils.PackageUtils;
 import appframe.appframe.utils.UriHandler;
 
 /**
@@ -14,7 +17,7 @@ import appframe.appframe.utils.UriHandler;
  */
 public class AboutActivity extends BaseActivity implements View.OnClickListener {
 
-    private TextView tb_title,tb_back,tv_score,tv_help,tv_protocol;
+    private TextView tb_title,tb_back,tv_score,tv_help,tv_protocol,tv_version;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +32,11 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
         tv_score = (TextView)findViewById(R.id.tv_score);
         tv_help = (TextView)findViewById(R.id.tv_help);
         tv_protocol = (TextView)findViewById(R.id.tv_protocol);
+        tv_version = (TextView)findViewById(R.id.tv_version);
         tb_back.setText("设置");
         tb_title.setText("关于友帮");
+        PackageUtils packageUtils = new PackageUtils(this);
+        tv_version.setText("友问友帮 " + packageUtils.getVersionName());
         tb_back.setOnClickListener(this);
         tv_score.setOnClickListener(this);
         tv_help.setOnClickListener(this);
@@ -58,5 +64,19 @@ public class AboutActivity extends BaseActivity implements View.OnClickListener 
                 UriHandler.openWebActivity(AboutActivity.this, "http://www.ubangwang.com/docs/zhulong_youbang_software_license_and_services_agreement.html");
                 break;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("关于页面"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("关于页面"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 }

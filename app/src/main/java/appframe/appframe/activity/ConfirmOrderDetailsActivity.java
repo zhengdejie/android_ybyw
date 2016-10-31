@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -446,8 +447,14 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                 }
                 break;
             case R.id.iv_phone:
-                Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Tel)); //直接拨打电话android.intent.action.CALL
-                startActivity(phoneIntent);
+                if(confirmedOrderDetail.getOrder().getPhoneAnonymity() == 1)
+                {
+                    Toast.makeText(ConfirmOrderDetailsActivity.this,"对方没提供电话号码",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent phoneIntent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Tel)); //直接拨打电话android.intent.action.CALL
+                    startActivity(phoneIntent);
+                }
                 break;
             case R.id.iv_message:
                 LoginSampleHelper ls = LoginSampleHelper.getInstance();
@@ -576,7 +583,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
             {
                 From = AppConfig.ORDERSTATUS_DONE;
             }
-            else if (confirmedOrderDetail.getStatus() == 0 || confirmedOrderDetail.getStatus() == 6)
+            else if (confirmedOrderDetail.getStatus() == 0 || confirmedOrderDetail.getStatus() == 6 || confirmedOrderDetail.getStatus() == 4 )
             {
                 From = AppConfig.ORDERSTATUS_CLOSE;
             }
@@ -591,18 +598,33 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
             tv_serverprovider.setText(confirmedOrderDetail.getServiceProvider().getName() +"(我)");
         }
         else {
-            tv_serverprovider.setText(confirmedOrderDetail.getServiceProvider().getName());
-            MessageUserID = confirmedOrderDetail.getServiceProvider().getId();
-            Tel = confirmedOrderDetail.getServiceProvider().getMobile() == null ? "" : confirmedOrderDetail.getServiceProvider().getMobile().toString();
+            if(confirmedOrderDetail.getOrder().getNameAnonymity() ==1)
+            {
+                tv_serverprovider.setText("匿名");
+                MessageUserID = confirmedOrderDetail.getServiceProvider().getId();
+                Tel = confirmedOrderDetail.getServiceProvider().getMobile() == null ? "" : confirmedOrderDetail.getServiceProvider().getMobile().toString();
+            }
+            else {
+                tv_serverprovider.setText(confirmedOrderDetail.getServiceProvider().getName());
+                MessageUserID = confirmedOrderDetail.getServiceProvider().getId();
+                Tel = confirmedOrderDetail.getServiceProvider().getMobile() == null ? "" : confirmedOrderDetail.getServiceProvider().getMobile().toString();
+            }
         }
         if(confirmedOrderDetail.getServiceReceiver().getId() == Auth.getCurrentUserId())
         {
             tv_serverreceiver.setText(confirmedOrderDetail.getServiceReceiver().getName() +"(我)");
         }
         else {
-            tv_serverreceiver.setText(confirmedOrderDetail.getServiceReceiver().getName());
-            MessageUserID = confirmedOrderDetail.getServiceReceiver().getId();
-            Tel = confirmedOrderDetail.getServiceReceiver().getMobile() == null ? "" : confirmedOrderDetail.getServiceReceiver().getMobile().toString();
+            if(confirmedOrderDetail.getOrder().getNameAnonymity() ==1)
+            {
+                tv_serverreceiver.setText("匿名");
+                MessageUserID = confirmedOrderDetail.getServiceReceiver().getId();
+                Tel = confirmedOrderDetail.getServiceReceiver().getMobile() == null ? "" : confirmedOrderDetail.getServiceReceiver().getMobile().toString();
+            } else {
+                tv_serverreceiver.setText(confirmedOrderDetail.getServiceReceiver().getName());
+                MessageUserID = confirmedOrderDetail.getServiceReceiver().getId();
+                Tel = confirmedOrderDetail.getServiceReceiver().getMobile() == null ? "" : confirmedOrderDetail.getServiceReceiver().getMobile().toString();
+            }
         }
 //        if( confirmedOrderDetail.getOrder().getType() == 1 )
 //        {
@@ -615,7 +637,13 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 
         tv_title.setText(confirmedOrderDetail.getOrder().getTitle().toString());
         tv_money.setText("￥" + String.valueOf(confirmedOrderDetail.getOrder().getBounty()));
-        tv_location.setText(confirmedOrderDetail.getOrder().getAddress().toString());
+        if(confirmedOrderDetail.getOrder().getLocationAnonymity() == 1) {
+            tv_location.setText("");
+        }
+        else
+        {
+            tv_location.setText(confirmedOrderDetail.getOrder().getAddress().toString());
+        }
 //        tv_type.setText(confirmedOrderDetail.getOrder().getCategory().toString());
 //        tv_content.setText(confirmedOrderDetail.getOrder().getContent().toString());
         tv_time.setText(confirmedOrderDetail.getOrder().getCreatedAt().toString());
@@ -720,6 +748,9 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         }
         else if(confirmedOrderDetail.getStatus() == 3) {
             sb.append("申请中");
+        }
+        else if(confirmedOrderDetail.getStatus() == 4) {
+            sb.append("取消申请");
         }
         else if(confirmedOrderDetail.getStatus() == 5)
         {
@@ -921,6 +952,20 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("订单详情页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("订单详情页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
+    }
 //    public class PopupWindows extends PopupWindow
 //    {
 //

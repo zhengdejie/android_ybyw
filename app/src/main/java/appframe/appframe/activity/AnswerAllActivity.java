@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -101,7 +102,7 @@ public class AnswerAllActivity extends BaseActivity implements View.OnClickListe
         map.put("Page", "1");
         map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
 
-        Http.request(AnswerAllActivity.this, API.GET_ANSWERS, new Object[]{question.getId(),Http.getURL(map)},
+        Http.request(AnswerAllActivity.this, API.GET_ANSWERS, new Object[]{question.getId(), Http.getURL(map)},
                 new Http.RequestListener<QuestionWithAnswers>() {
                     @Override
                     public void onSuccess(QuestionWithAnswers result) {
@@ -113,9 +114,7 @@ public class AnswerAllActivity extends BaseActivity implements View.OnClickListe
                             listView.setAdapter(swipeRefreshXAnswerAdapater);
 
 
-                        }
-                        else
-                        {
+                        } else {
                             tv_empty.setVisibility(View.VISIBLE);
                         }
 
@@ -154,9 +153,7 @@ public class AnswerAllActivity extends BaseActivity implements View.OnClickListe
                                     listView.setAdapter(swipeRefreshXAnswerAdapater);
 
 
-                                }
-                                else
-                                {
+                                } else {
                                     tv_empty.setVisibility(View.VISIBLE);
                                 }
 
@@ -224,7 +221,19 @@ public class AnswerAllActivity extends BaseActivity implements View.OnClickListe
         }
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("查看所有答案页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("查看所有答案页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
+    }
 
 }
 

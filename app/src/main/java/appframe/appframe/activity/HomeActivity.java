@@ -49,13 +49,18 @@ import com.alibaba.mobileim.tribe.IYWTribeService;
 import com.github.mrengineer13.snackbar.SnackBar;
 
 import com.igexin.sdk.PushManager;
+import com.umeng.analytics.MobclickAgent;
 
+
+import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
 import appframe.appframe.app.App;
 import appframe.appframe.dto.APKVersion;
+import appframe.appframe.dto.ContactDetail;
 import appframe.appframe.dto.MessageTypeCount;
+import appframe.appframe.dto.UserContact;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.fragment.BaseFragment;
 import appframe.appframe.fragment.DiscoveryFragment;
@@ -65,12 +70,14 @@ import appframe.appframe.fragment.PersonFragment;
 import appframe.appframe.fragment.ProfileFragment;
 import appframe.appframe.service.UpdateAPKService;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.utils.NetworkUtils;
 import appframe.appframe.utils.NotificationInitSampleHelper;
 import appframe.appframe.utils.PackageUtils;
+import appframe.appframe.utils.UploadUtils;
 import appframe.appframe.utils.Utils;
 
 /**
@@ -233,12 +240,68 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         checkUpdate();
         IMLogin();
         initConversationServiceAndListener();
-
+        gtLogin();
+        MobclickAgent.onProfileSignIn(String.valueOf(Auth.getCurrentUserId()));
+        UploadContacts();
         //initConversationServiceAndListener();
 //        if(getIntent().getStringExtra("pushmessage") != null && getIntent().getStringExtra("pushmessage").equals("push"))
 //        {
 //            tv_unread.setVisibility(View.VISIBLE);
 //        }
+    }
+
+    protected void UploadContacts()
+    {
+        Http.request(HomeActivity.this, API.GET_MOBILEFRIEND, new Http.RequestListener<List<ContactDetail>>() {
+            @Override
+            public void onSuccess(final List<ContactDetail> result) {
+                super.onSuccess(result);
+                if(result.isEmpty())
+                {
+                    // 更新通讯录，提示用户更新
+                    AlertDialog.Builder alert = new AlertDialog.Builder(HomeActivity.this);
+                    alert.setTitle("更新通讯录")
+                            .setMessage("发现您的通讯录匹配需要更新,建议立即更新通讯录.")
+                            .setPositiveButton("更新通讯录",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,
+                                                            int which) {
+
+                                            List<UserContact> contactsList = UploadUtils.uploadContact(HomeActivity.this);
+                                            Http.request(HomeActivity.this, API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
+                                                    "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
+                                                @Override
+                                                public void onSuccess(String result) {
+                                                    super.onSuccess(result);
+                                                    Toast.makeText(HomeActivity.this, "更新通讯录成功", Toast.LENGTH_SHORT).show();
+                                                }
+
+                                                @Override
+                                                public void onFail(String code) {
+                                                    super.onFail(code);
+
+                                                }
+                                            });
+                                        }
+                                    })
+                            .setNegativeButton("取消",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,
+                                                            int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                    alert.create().show();
+                }
+
+            }
+
+            @Override
+            public void onFail(String code) {
+                super.onFail(code);
+
+            }
+        });
     }
 
     @Override
@@ -252,6 +315,8 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onPageStart("主页Activity"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
         tv_unread.setVisibility(View.INVISIBLE);
         LoginSampleHelper loginHelper = LoginSampleHelper.getInstance();
         final YWIMKit imKit = loginHelper.getIMKit();
@@ -269,7 +334,8 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-
+        MobclickAgent.onPageEnd("主页Activity"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
         //在Tab栏删除会话未读消息变化的全局监听器
         mConversationService.removeTotalUnreadChangeListener(mConversationUnreadChangeListener);
         //mIMKit.getTribeService().removeTribeListener(mTribeChangedListener);
@@ -485,28 +551,28 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                 setMyorderText(false);
                 setDiscoveryText(false);
                 setSettingText(false);
-                pager.setCurrentItem(0);
+                pager.setCurrentItem(0,false);
                 break;
             case R.id.tv_myorder:
                 setUbangText(false);
                 setMyorderText(true);
                 setDiscoveryText(false);
                 setSettingText(false);
-                pager.setCurrentItem(1);
+                pager.setCurrentItem(1,false);
                 break;
             case R.id.tv_discovery:
                 setUbangText(false);
                 setMyorderText(false);
                 setDiscoveryText(true);
                 setSettingText(false);
-                pager.setCurrentItem(2);
+                pager.setCurrentItem(2,false);
                 break;
             case R.id.tv_setting:
                 setUbangText(false);
                 setMyorderText(false);
                 setDiscoveryText(false);
                 setSettingText(true);
-                pager.setCurrentItem(3);
+                pager.setCurrentItem(3,false);
                 tv_unread.setVisibility(View.INVISIBLE);
                 break;
             case R.id.iv_center:
@@ -515,21 +581,21 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         }
     }
 
-    BaseFragment getCurrentFragment() {
-        return fragments[pager.getCurrentItem() % fragments.length];
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getCurrentFragment().createOptionsMenu(menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (getCurrentFragment().onOptionsItemSelected(item)) return true;
-        return super.onOptionsItemSelected(item);
-    }
+//    BaseFragment getCurrentFragment() {
+//        return fragments[pager.getCurrentItem() % fragments.length];
+//    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getCurrentFragment().createOptionsMenu(menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (getCurrentFragment().onOptionsItemSelected(item)) return true;
+//        return super.onOptionsItemSelected(item);
+//    }
 
 //    @Override
 //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -567,6 +633,22 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
         super.onDestroy();
     }
 
+    private void gtLogin()
+    {
+        PushManager.getInstance().initialize(HomeActivity.this);
+
+        Http.request(HomeActivity.this, API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
+                "GTClientID", PushManager.getInstance().getClientid(HomeActivity.this)
+        ), new Http.RequestListener<UserDetail>() {
+            @Override
+            public void onSuccess(UserDetail result) {
+                super.onSuccess(result);
+
+
+            }
+        });
+    }
+
     private void IMLogin()
     {
         //IMCore.getLoginState
@@ -588,18 +670,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
 
                 @Override
                 public void onSuccess(Object... arg0) {
-                    PushManager.getInstance().initialize(HomeActivity.this);
-
-                    Http.request(HomeActivity.this, API.USER_PROFILE_UPDATE, new Object[]{Auth.getCurrentUserId()}, Http.map(
-                            "GTClientID", PushManager.getInstance().getClientid(HomeActivity.this)
-                    ), new Http.RequestListener<UserDetail>() {
-                        @Override
-                        public void onSuccess(UserDetail result) {
-                            super.onSuccess(result);
-
-
-                        }
-                    });
+                    gtLogin();
 
                 }
 
@@ -653,6 +724,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     SnackBar snackBar = new SnackBar(HomeActivity.this);
                     snackBar.hide();
                     IMLogin();
+                    gtLogin();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

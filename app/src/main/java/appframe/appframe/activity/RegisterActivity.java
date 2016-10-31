@@ -25,6 +25,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
+
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -174,7 +176,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                                 @Override
                                                 public void onFail(String code) {
                                                     super.onFail(code);
-                                                    Toast.makeText(RegisterActivity.this,code,Toast.LENGTH_SHORT).show();
+//                                                    Toast.makeText(RegisterActivity.this,code,Toast.LENGTH_SHORT).show();
                                                     SplashActivity.startRootActivity(RegisterActivity.this);
                                                     progress_bar.setVisibility(View.GONE);
                                                 }
@@ -273,6 +275,21 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             tv_code.setText("(" + text +"）"+ "获取验证码");
 
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("注册页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("注册页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 
 //    @Override

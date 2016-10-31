@@ -15,8 +15,15 @@ import com.alipay.sdk.app.PayTask;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
@@ -106,13 +113,13 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
 
     protected  void initdata()
     {
-        Http.request(this, API.USER_PROFILE, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<UserDetail>(){
+        Http.request(this, API.USER_PROFILE, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<UserDetail>() {
             @Override
             public void onSuccess(UserDetail result) {
                 super.onSuccess(result);
 
                 wallet = result.getWalletTotal();
-                tv_paybyyb.setText(String.format("余额支付(%.2f元)",wallet));
+                tv_paybyyb.setText(String.format("余额支付(%.2f元)", wallet));
             }
 
             @Override
@@ -262,7 +269,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "2",
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(orderDetails.getId())),
+                                        "OrderId", String.valueOf(orderDetails.getId()),
+                                        "Sign",getSign("ActionType", "2",
+                                                "PlatformType",PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(orderDetails.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -318,7 +330,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "2",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(orderDetailsPay.getId())),
+                                        "OrderId", String.valueOf(orderDetailsPay.getId()),
+                                        "Sign",getSign("ActionType", "2",
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(orderDetailsPay.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -479,7 +496,13 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(orderPay.getOrderId()),
-                                        "CandidateId", String.valueOf(orderPay.getCandidateId())),
+                                        "CandidateId", String.valueOf(orderPay.getCandidateId()),
+                                        "Sign",getSign("ActionType", orderPay.getOrderStatus().toString(),
+                                                "PlatformType",PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(orderPay.getOrderId()),
+                                                "CandidateId", String.valueOf(orderPay.getCandidateId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -552,7 +575,13 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(Candidate.getId()),
-                                        "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate())),
+                                        "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate()),
+                                        "Sign",getSign("ActionType", ActionType,
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(Candidate.getId()),
+                                                "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -601,7 +630,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "9",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(question.getId())),
+                                        "OrderId", String.valueOf(question.getId()),
+                                        "Sign",getSign("ActionType", "9",
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(question.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -654,7 +688,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "9",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(myQuestion.getId())),
+                                        "OrderId", String.valueOf(myQuestion.getId()),
+                                        "Sign",getSign("ActionType", "9",
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(myQuestion.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -709,7 +748,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "2",
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(orderDetails.getId())),
+                                        "OrderId", String.valueOf(orderDetails.getId()),
+                                        "Sign",getSign("ActionType", "2",
+                                                "PlatformType",PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(orderDetails.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -742,7 +786,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "2",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(orderDetailsPay.getId())),
+                                        "OrderId", String.valueOf(orderDetailsPay.getId()),
+                                        "Sign",getSign("ActionType", "2",
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(orderDetailsPay.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -859,7 +908,13 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(orderPay.getOrderId()),
-                                        "CandidateId", String.valueOf(orderPay.getCandidateId())),
+                                        "CandidateId", String.valueOf(orderPay.getCandidateId()),
+                                        "Sign",getSign("ActionType", orderPay.getOrderStatus().toString(),
+                                                "PlatformType",PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(orderPay.getOrderId()),
+                                                "CandidateId", String.valueOf(orderPay.getCandidateId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -912,7 +967,13 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(Candidate.getId()),
-                                        "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate())),
+                                        "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate()),
+                                        "Sign",getSign("ActionType", ActionType,
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(Candidate.getId()),
+                                                "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -944,7 +1005,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "9",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(question.getId())),
+                                        "OrderId", String.valueOf(question.getId()),
+                                        "Sign",getSign("ActionType", "9",
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(question.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -977,7 +1043,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "9",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(myQuestion.getId())),
+                                        "OrderId", String.valueOf(myQuestion.getId()),
+                                        "Sign",getSign("ActionType", "9",
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(myQuestion.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(final OnlinePay result) {
@@ -1014,7 +1085,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "2",
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(orderDetails.getId())),
+                                        "OrderId", String.valueOf(orderDetails.getId()),
+                                        "Sign",getSign("ActionType", "2",
+                                                "PlatformType",PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(orderDetails.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(OnlinePay result) {
@@ -1039,7 +1115,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "2",
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(orderDetailsPay.getId())),
+                                        "OrderId", String.valueOf(orderDetailsPay.getId()),
+                                        "Sign", getSign("ActionType", "2",
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(orderDetailsPay.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(OnlinePay result) {
@@ -1064,7 +1145,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "ConfirmedOrderId",String.valueOf(confirmedOrderDetail.getId()),
-                                        "orderId",String.valueOf(confirmedOrderDetail.getOrder().getId())),
+                                        "orderId",String.valueOf(confirmedOrderDetail.getOrder().getId())
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(OnlinePay result) {
@@ -1089,7 +1171,8 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType", PlatformType,
                                         "Amount", String.valueOf(confirmedOrderDetailPay.getBid()),
                                         "ConfirmedOrderId",String.valueOf(confirmedOrderDetailPay.getId()),
-                                        "orderId",String.valueOf(confirmedOrderDetailPay.getOrder().getId())),
+                                        "orderId",String.valueOf(confirmedOrderDetailPay.getOrder().getId())
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(OnlinePay result) {
@@ -1124,7 +1207,13 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(orderPay.getOrderId()),
-                                        "CandidateId", String.valueOf(orderPay.getCandidateId())),
+                                        "CandidateId", String.valueOf(orderPay.getCandidateId()),
+                                        "Sign",getSign("ActionType", orderPay.getOrderStatus().toString(),
+                                                "PlatformType",PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(orderPay.getOrderId()),
+                                                "CandidateId", String.valueOf(orderPay.getCandidateId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(OnlinePay result) {
@@ -1169,7 +1258,13 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "PlatformType", PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
                                         "OrderId", String.valueOf(Candidate.getId()),
-                                        "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate())),
+                                        "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate()),
+                                        "Sign",getSign("ActionType", ActionType,
+                                                "PlatformType", PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(Candidate.getId()),
+                                                "CandidateId", Candidate.getCandidate() == null ? "" : getCandidateID(Candidate.getCandidate()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(OnlinePay result) {
@@ -1192,7 +1287,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "9",
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(question.getId())),
+                                        "OrderId", String.valueOf(question.getId()),
+                                        "Sign",getSign("ActionType", "9",
+                                                "PlatformType",PlatformType,
+                                                "Amount", tv_showtotal.getText().toString(),
+                                                "OrderId", String.valueOf(question.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(OnlinePay result) {
@@ -1216,7 +1316,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                         "ActionType", "9",
                                         "PlatformType",PlatformType,
                                         "Amount", tv_showtotal.getText().toString(),
-                                        "OrderId", String.valueOf(myQuestion.getId())),
+                                        "OrderId", String.valueOf(myQuestion.getId()),
+                                        "Sign",getSign("ActionType", "9",
+                                                        "PlatformType",PlatformType,
+                                                        "Amount", tv_showtotal.getText().toString(),
+                                                        "OrderId", String.valueOf(myQuestion.getId()))
+                                ),
                                 new Http.RequestListener<OnlinePay>() {
                                     @Override
                                     public void onSuccess(OnlinePay result) {
@@ -1251,6 +1356,78 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                 break;
 
         }
+    }
+
+    protected String getSign(String ... args)
+    {
+        SortedMap<String,String> map = new TreeMap<String,String>();
+        for(int i=0;i<args.length-1;i+=2) {
+            map.put(args[i], args[i + 1]);
+        }
+        Iterator<String> iter = map.keySet().iterator();
+        StringBuilder sb = new StringBuilder();
+        String key ="";
+        while (iter.hasNext()) {
+            key = iter.next();
+            if( key != "Sign") {
+                sb.append(key);
+                sb.append("=");
+                sb.append(map.get(key));
+                sb.append("&");
+            }
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append(AppConfig.MD5_secret);
+        String re_md5 = encryptionMD5(sb.toString());
+        return re_md5;
+    }
+
+    /**
+     *
+     * @param plainText
+     *            明文
+     * @return 32位密文
+     */
+    public String encryptionMD5(String plainText) {
+        String re_md5 = new String();
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(plainText.getBytes());
+            byte b[] = md.digest();
+
+            int i;
+
+            StringBuffer buf = new StringBuffer("");
+            for (int offset = 0; offset < b.length; offset++) {
+                i = b[offset];
+                if (i < 0)
+                    i += 256;
+                if (i < 16)
+                    buf.append("0");
+                buf.append(Integer.toHexString(i));
+            }
+
+            re_md5 = buf.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return re_md5;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("支付页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("支付页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 }
 

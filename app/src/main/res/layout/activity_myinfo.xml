@@ -49,12 +49,16 @@
             android:text="@string/nickname" />
         <TextView
             android:id="@+id/tv_shownickname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
-            android:gravity="center"/>
+            android:gravity="right|center_vertical"
+            android:ellipsize="end"
+            android:singleLine="true"
+
+            />
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
@@ -72,12 +76,16 @@
             android:text="@string/sex" />
         <TextView
             android:id="@+id/tv_showsex"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
-            android:gravity="center"/>
+            android:gravity="right|center_vertical"
+            android:ellipsize="end"
+            android:singleLine="true"
+
+            />
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
@@ -124,12 +132,16 @@
             android:text="@string/district" />
         <TextView
             android:id="@+id/tv_showdistrict"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
-            android:gravity="center"/>
+            android:gravity="right|center_vertical"
+            android:ellipsize="end"
+            android:singleLine="true"
+
+            />
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
@@ -147,14 +159,16 @@
             android:text="@string/selfestimate" />
         <TextView
             android:id="@+id/tv_showselfestimate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="180dp"
+            android:layout_height="44dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:layout_centerVertical="true"
-            android:gravity="center"
+            android:gravity="right|center_vertical"
             android:ellipsize="end"
-            android:singleLine="true"/>
+            android:singleLine="true"
+
+            />
     </RelativeLayout>
     <View
         android:layout_width="match_parent"

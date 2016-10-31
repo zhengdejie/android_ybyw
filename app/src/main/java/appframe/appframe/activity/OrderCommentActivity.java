@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.Serializable;
@@ -100,9 +101,7 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
         btn_evaluate.setOnClickListener(this);
         tb_title = (TextView)findViewById(R.id.tb_title);
         tb_back = (TextView)findViewById(R.id.tb_back);
-        rb_service.setRating(5);
-        rb_attitude.setRating(5);
-        rb_personality.setRating(5);
+
         tb_title.setText("评价");
         tb_back.setText("订单");
         tv_progress_content.setText("正在评价");
@@ -110,12 +109,17 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
 //        Log.i("sdfsd", getIntent().getStringExtra("Estimate"));
         if(getIntent().getStringExtra("Estimate") != null && getIntent().getStringExtra("Estimate").equals("1"))
         {
-
+            rb_service.setRating(5);
+            rb_attitude.setRating(5);
+            rb_personality.setRating(5);
         }
         else if (getIntent().getStringExtra("Estimate") != null && getIntent().getStringExtra("Estimate").equals("2"))
         {
             ll_skill.setVisibility(View.GONE);
             ll_service.setVisibility(View.GONE);
+            rb_service.setRating(0);
+            rb_attitude.setRating(0);
+            rb_personality.setRating(5);
         }
         else
         {
@@ -176,12 +180,16 @@ public class OrderCommentActivity extends BaseActivity implements View.OnClickLi
     {
         super.onPause();
         saveTempToPref();
+        MobclickAgent.onPageEnd("评价页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         notifyDataChanged(); //当在ImageZoomActivity中删除图片时，返回这里需要刷新
+        MobclickAgent.onPageStart("评价页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
     }
 
     private void notifyDataChanged()

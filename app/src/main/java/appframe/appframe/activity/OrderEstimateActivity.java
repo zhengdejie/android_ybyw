@@ -19,6 +19,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.RadarData;
 import com.github.mikephil.charting.data.RadarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,9 +95,9 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
 
         //userID = getIntent().getStringExtra("UserID");
         userBrief = (UserBrief)getIntent().getSerializableExtra("userBrief");
-        AvgServicePoint = userBrief.getAvgServicePoint();
-        AvgAttitudePoint = userBrief.getAvgAttitudePoint();
-        AvgCharacterPoint = userBrief.getAvgCharacterPoint();
+//        AvgServicePoint = userBrief.getAvgServicePoint();
+//        AvgAttitudePoint = userBrief.getAvgAttitudePoint();
+//        AvgCharacterPoint = userBrief.getAvgCharacterPoint();
 
 
         swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
@@ -107,7 +108,7 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
 
         tv_all.performClick();
 
-        initRadarChart();
+//        initRadarChart();
 
         // 设置下拉刷新监听器
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -120,14 +121,24 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
                     @Override
                     public void onSuccess(OrderReviewDetailAndCount result) {
                         super.onSuccess(result);
-                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
-                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
-                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
-                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
-                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
-                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
-                        maxOrderReviewID = result.getCount();
-                        swipeRefresh.setRefreshing(false);
+                        if (result != null) {
+                            swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                            listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                            tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                            tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                            tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                            tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                            maxOrderReviewID = result.getCount();
+                            swipeRefresh.setRefreshing(false);
+                        }
+                        else
+                        {
+
+                            tv_all.setText("全部(0)");
+                            tv_good.setText("好评(0)");
+                            tv_medium.setText("中评(0)");
+                            tv_bad.setText("差评(0)");
+                        }
                     }
 
                     @Override
@@ -225,6 +236,7 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
             "专业熟练度", "服务态度", "诚信值"
     };
 
+
     public void setData() {
 
         int cnt = 3; // 不同的维度Party A、B、C...总个数
@@ -253,17 +265,19 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
 
         String content = "";
         if(AvgServicePoint == 0.0 && AvgAttitudePoint == 0.0 && AvgCharacterPoint == 0.0) {
-            yVals1.add(new Entry((float) 5, 0));
-            yVals1.add(new Entry((float) 5, 1));
-            yVals1.add(new Entry((float) 5, 2));
-            content = "默认分数，暂时没交易分数";
+
+            yVals1.add(new Entry((float) -1, 0));
+            yVals1.add(new Entry((float) -1, 1));
+            yVals1.add(new Entry((float) -1, 2));
+            content = "默认分数,暂时没有交易评价";
         }
         else
         {
+
             yVals1.add(new Entry((float) AvgServicePoint, 0));
             yVals1.add(new Entry((float) AvgAttitudePoint, 1));
             yVals1.add(new Entry((float) AvgCharacterPoint, 2));
-            content = "你的分数";
+            content = "评价的分数";
         }
         RadarDataSet set1 = new RadarDataSet(yVals1, content);
         // Y数据颜色设置
@@ -320,13 +334,28 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
                     @Override
                     public void onSuccess(OrderReviewDetailAndCount result) {
                         super.onSuccess(result);
-                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
-                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
-                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
-                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
-                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
-                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
-                        maxOrderReviewID = result.getCount();
+                        if(result != null) {
+                            swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                            listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                            tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                            tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                            tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                            tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                            maxOrderReviewID = result.getCount();
+                            AvgServicePoint = result.getUser().getAvgServicePoint();
+                            AvgAttitudePoint = result.getUser().getAvgAttitudePoint();
+                            AvgCharacterPoint = result.getUser().getAvgCharacterPoint();
+
+                        }
+                        else
+                        {
+
+                            tv_all.setText("全部(0)");
+                            tv_good.setText("好评(0)");
+                            tv_medium.setText("中评(0)");
+                            tv_bad.setText("差评(0)");
+                        }
+                        initRadarChart();
                     }
                 });
                 map.clear();
@@ -343,13 +372,23 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
                     @Override
                     public void onSuccess(OrderReviewDetailAndCount result) {
                         super.onSuccess(result);
-                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
-                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
-                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
-                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
-                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
-                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
-                        maxOrderReviewID = result.getCount();
+                        if(result != null) {
+                            swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                            listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                            tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                            tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                            tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                            tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                            maxOrderReviewID = result.getCount();
+                        }
+                        else
+                        {
+
+                            tv_all.setText("全部(0)");
+                            tv_good.setText("好评(0)");
+                            tv_medium.setText("中评(0)");
+                            tv_bad.setText("差评(0)");
+                        }
                     }
                 });
                 map.clear();
@@ -366,13 +405,23 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
                     @Override
                     public void onSuccess(OrderReviewDetailAndCount result) {
                         super.onSuccess(result);
-                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
-                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
-                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
-                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
-                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
-                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
-                        maxOrderReviewID = result.getCount();
+                        if(result != null) {
+                            swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                            listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                            tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                            tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                            tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                            tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                            maxOrderReviewID = result.getCount();
+                        }
+                        else
+                        {
+
+                            tv_all.setText("全部(0)");
+                            tv_good.setText("好评(0)");
+                            tv_medium.setText("中评(0)");
+                            tv_bad.setText("差评(0)");
+                        }
                     }
                 });
                 map.clear();
@@ -389,13 +438,23 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
                     @Override
                     public void onSuccess(OrderReviewDetailAndCount result) {
                         super.onSuccess(result);
-                        swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
-                        listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
-                        tv_all.setText(String.format("全部(%d)", result.getAllCount()));
-                        tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
-                        tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
-                        tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
-                        maxOrderReviewID = result.getCount();
+                        if(result != null) {
+                            swipeRefreshXOrderEstimateAdapater = new SwipeRefreshXOrderEstimateAdapater(OrderEstimateActivity.this, result.getOrderReviewDetails());
+                            listView.setAdapter(swipeRefreshXOrderEstimateAdapater);
+                            tv_all.setText(String.format("全部(%d)", result.getAllCount()));
+                            tv_good.setText(String.format("好评(%d)", result.getGoodCount()));
+                            tv_medium.setText(String.format("中评(%d)", result.getMediumCount()));
+                            tv_bad.setText(String.format("差评(%d)", result.getBadCount()));
+                            maxOrderReviewID = result.getCount();
+                        }
+                        else
+                        {
+
+                            tv_all.setText("全部(0)");
+                            tv_good.setText("好评(0)");
+                            tv_medium.setText("中评(0)");
+                            tv_bad.setText("差评(0)");
+                        }
                     }
                 });
                 map.clear();
@@ -457,4 +516,18 @@ public class OrderEstimateActivity extends BaseActivity implements View.OnClickL
         adapater.addItems(orderReviewDetails);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("查看交易评价页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("查看交易评价页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
+    }
 }

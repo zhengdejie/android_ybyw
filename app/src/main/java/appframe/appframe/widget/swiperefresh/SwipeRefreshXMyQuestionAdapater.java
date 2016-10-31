@@ -144,8 +144,13 @@ public class SwipeRefreshXMyQuestionAdapater extends BaseAdapter {
                     @Override
                     public void onSuccess(String result) {
                         super.onSuccess(result);
-                        Toast.makeText(context,result,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"取消成功",Toast.LENGTH_SHORT).show();
                         context.startActivity(new Intent(context, context.getClass()));
+                    }
+
+                    @Override
+                    public void onFail(String code) {
+                        super.onFail(code);
                     }
                 });
             }

@@ -310,6 +310,10 @@
 
                 />
         </LinearLayout>
+
     </RelativeLayout>
     </ScrollView>
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading" />
 </RelativeLayout>

@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
+
 import appframe.appframe.R;
 import appframe.appframe.com.google.zxing.BarcodeFormat;
 import appframe.appframe.com.google.zxing.MultiFormatWriter;
@@ -30,11 +32,7 @@ public class QRCodeActivity extends BaseActivity implements View.OnClickListener
         init();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-    }
 
     private  void init()
     {
@@ -127,7 +125,20 @@ public class QRCodeActivity extends BaseActivity implements View.OnClickListener
         }
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("二维码名片页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("二维码名片页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
+    }
 
 
 }

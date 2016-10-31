@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -122,7 +123,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                             if(result.getOrders() != null && !result.getOrders().isEmpty()) {
                                 rl_service.setVisibility(View.VISIBLE);
                                 List<OrderDetails> orderDetailsList = new ArrayList<OrderDetails>();
-                                for(int i = 0; i < 2; i++)
+                                for(int i = 0; i < ((result.getOrders().size() > 2) ? 2 :result.getOrders().size()); i++)
                                 {
                                     orderDetailsList.add(result.getOrders().get(i));
                                 }
@@ -146,7 +147,7 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
                             {
                                 rl_question.setVisibility(View.VISIBLE);
                                 List<Question> questionList = new ArrayList<Question>();
-                                for(int i = 0; i < 2; i++)
+                                for(int i = 0; i < ((result.getQuestions().size() > 2) ? 2 :result.getQuestions().size()); i++)
                                 {
                                     questionList.add(result.getQuestions().get(i));
                                 }
@@ -242,5 +243,20 @@ public class SearchActivity extends BaseActivity implements View.OnClickListener
         // listView.getDividerHeight()获取子项间分隔符占用的高度
         // params.height最后得到整个ListView完整显示需要的高度
         listView.setLayoutParams(params);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("搜索页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("搜索页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 }

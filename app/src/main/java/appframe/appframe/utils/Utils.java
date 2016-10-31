@@ -5,6 +5,7 @@ package appframe.appframe.utils;
  */
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -14,6 +15,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.TypedValue;
@@ -24,6 +26,7 @@ import com.alibaba.mobileim.YWLoginParam;
 import com.alibaba.mobileim.channel.event.IWxCallback;
 import com.github.snowdream.android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -119,43 +122,145 @@ public final class Utils {
     }
     @SuppressLint("NewApi")
     public static File uriToFile(Uri contentUri) {
-        String filePath = "";
-        String wholeID = DocumentsContract.getDocumentId(contentUri);
+        if(isExternalStorageDocument(contentUri)) {
+            String docId = DocumentsContract.getDocumentId(contentUri);
+            String[] split = docId.split(":");
+            String type = split[0];
 
-        // Split at colon, use second item in the array
-        String id = wholeID.split(":")[1];
-
-        String[] column = { MediaStore.Images.Media.DATA };
-
-        // where id is equal to
-        String sel = MediaStore.Images.Media._ID + "=?";
-
-        Cursor cursor = App.instance.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                column, sel, new String[]{id}, null);
-
-        int columnIndex = cursor.getColumnIndex(column[0]);
-
-        if (cursor.moveToFirst()) {
-            filePath = cursor.getString(columnIndex);
+            if ("primary".equalsIgnoreCase(type)) {
+                return new File(Environment.getExternalStorageDirectory() + "/" + split[1]);
+            }
+            return new File("");
         }
-        cursor.close();
-        return new File(filePath);
-//        if(contentUri == null) return null;
-//        if(!contentUri.getScheme().equalsIgnoreCase("content")) return new File(contentUri.getPath());
-//        Cursor cursor = null;
-//        try {
-//            String[] proj = { MediaStore.Images.Media.DATA };
-//            cursor = App.instance.getContentResolver().query(contentUri,  proj, null, null, null);
-//            cursor.moveToFirst();
-//            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        else if (isDownloadsDocument(contentUri)) {
+            String id = DocumentsContract.getDocumentId(contentUri);
+            Uri fileUri = ContentUris.withAppendedId(
+                    Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+            Cursor cursor = null;
+            final String column = "_data";
+            final String[] projection = {
+                    column
+            };
+
+            try {
+                cursor = App.instance.getContentResolver().query(fileUri, projection, null, null,
+                        null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    final int index = cursor.getColumnIndexOrThrow(column);
+                    return new File(cursor.getString(index));
+                }
+            } finally {
+                if (cursor != null)
+                    cursor.close();
+            }
+            return new File("");
+//            return getDataColumn(App.instance, fileUri, null, null);
+//            if (contentUri == null) return null;
+//            if (!contentUri.getScheme().equalsIgnoreCase("content"))
+//                return new File(contentUri.getPath());
+//            Cursor cursor = null;
+//            try {
+//                String[] proj = {MediaStore.Images.Media.DATA};
+//                cursor = App.instance.getContentResolver().query(contentUri, proj, null, null, null);
+//                cursor.moveToFirst();
+//                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 //
-//            return new File(cursor.getString(column_index));
-//        } finally {
-//            if (cursor != null) {
-//                cursor.close();
+//                return new File(cursor.getString(column_index));
+//            } finally {
+//                if (cursor != null) {
+//                    cursor.close();
+//                }
 //            }
-//        }
+        }
+        else if(isMediaDocument(contentUri))
+        {
+            String filePath = "";
+            String wholeID = DocumentsContract.getDocumentId(contentUri);
+
+            // Split at colon, use second item in the array
+            String id = wholeID.split(":")[1];
+
+            String[] column = {MediaStore.Images.Media.DATA};
+
+            // where id is equal to
+            String sel = MediaStore.Images.Media._ID + "=?";
+
+            Cursor cursor = App.instance.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    column, sel, new String[]{id}, null);
+
+            int columnIndex = cursor.getColumnIndex(column[0]);
+
+            if (cursor.moveToFirst()) {
+                filePath = cursor.getString(columnIndex);
+            }
+            cursor.close();
+            return new File(filePath);
+        }
+        else
+        {
+            return new File("");
+        }
     }
+
+    /**
+     **
+     * Get the value of the data column for this Uri. This is useful for
+     * MediaStore Uris, and other file-based ContentProviders.
+     *
+     * @param context The context.
+     * @param uri The Uri to query.
+     * @param selection (Optional) Filter used in the query.
+     * @param selectionArgs (Optional) Selection arguments used in the query.
+     * @return The value of the _data column, which is typically a file path.
+     */
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
     public static Bitmap getResizedBitmap(File imagePath, int targetW, int targetH) {
 
         // Get the dimensions of the bitmap
@@ -181,7 +286,7 @@ public final class Utils {
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(f);
-            bmp.compress(Bitmap.CompressFormat.PNG, quality, out);
+            bmp.compress(Bitmap.CompressFormat.JPEG, quality, out);
             return true;
         } catch (Exception e) {
             Log.e(TAG, "cannot save bitmap", e);
@@ -251,4 +356,20 @@ public final class Utils {
         return sb.toString();
     }
 
+    public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
+        if (needRecycle) {
+            bmp.recycle();
+        }
+
+        byte[] result = output.toByteArray();
+        try {
+            output.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
 }

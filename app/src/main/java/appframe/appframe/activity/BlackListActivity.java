@@ -7,6 +7,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +58,11 @@ public class BlackListActivity extends BaseActivity implements View.OnClickListe
             }
         });
 
+
+    }
+
+    protected void initData()
+    {
         Http.request(BlackListActivity.this, API.GET_BLACKLIST, new Object[]{String.valueOf(Auth.getCurrentUserId())}, new Http.RequestListener<List<UserDetail>>() {
             @Override
             public void onSuccess(List<UserDetail> result) {
@@ -76,6 +83,20 @@ public class BlackListActivity extends BaseActivity implements View.OnClickListe
                 break;
 
         }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+        MobclickAgent.onPageStart("黑名单页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("黑名单页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 }
 

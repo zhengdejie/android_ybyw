@@ -26,6 +26,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -56,6 +57,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -102,8 +104,8 @@ import appframe.appframe.widget.tagview.TagView;
 /**
  * Created by Administrator on 2015/8/12.
  */
-public class OrderSendActivity extends BaseActivity{
-    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_progress_content,tv_addtag,tv_title,btn_send,tv_titlecount,tv_contentcount;
+public class OrderSendActivity extends BaseActivity implements View.OnTouchListener{
+    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_progress_content,tv_addtag,tv_title,btn_send,tv_titlecount,tv_contentcount,tv_top;
     private EditText edit_title,edit_bounty,edit_content,edit_require,edit_tag;
     private Spinner spinner_category,spinner_range;
     private RadioButton radio_online,radio_offline;
@@ -146,7 +148,7 @@ public class OrderSendActivity extends BaseActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i("onCreate","savedInstanceState");
+//        Log.i("onCreate","savedInstanceState");
         setContentView(R.layout.activity_ordersend);
         init();
         initData();
@@ -395,6 +397,8 @@ public class OrderSendActivity extends BaseActivity{
         Log.i("onPause", "");
         super.onPause();
         saveTempToPref();
+        MobclickAgent.onPageEnd("发单页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 
 //    @Override
@@ -497,6 +501,8 @@ public class OrderSendActivity extends BaseActivity{
             }
         }
         notifyDataChanged(); //当在ImageZoomActivity中删除图片时，返回这里需要刷新
+        MobclickAgent.onPageStart("发单页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
     }
 
     @Override
@@ -971,6 +977,7 @@ public class OrderSendActivity extends BaseActivity{
         progress_bar = (LinearLayout)findViewById(R.id.progress_bar);
         tv_progress_content = (TextView)findViewById(R.id.tv_progress_content);
         tv_title = (TextView)findViewById(R.id.tv_title);
+        tv_top = (TextView)findViewById(R.id.tv_top);
 
         edit_content = (EditText)findViewById(R.id.edit_content);
         radio_online = (RadioButton)findViewById(R.id.radio_online);
@@ -1052,6 +1059,7 @@ public class OrderSendActivity extends BaseActivity{
             tb_title.setText("助人单");
             Type = "1";
             tv_title.setText("我能 · ");
+            tv_top.setText("您可以在【友帮】-【助人】和【我的】-【我的助人】板块里找到您发布的单子");
         }
         if(getIntent().getStringExtra("demand")!=null && getIntent().getStringExtra("demand").equals("demand"))
         {
@@ -1059,6 +1067,7 @@ public class OrderSendActivity extends BaseActivity{
             tb_title.setText("求助单");
             Type = "2";
             tv_title.setText("我要 · ");
+            tv_top.setText("您可以在【友帮】-【求助】和【我的】-【我的求助】板块里找到您发布的单子");
         }
 
         Http.request(OrderSendActivity.this, API.GET_ORDERCATEGORY, new Http.RequestListener<List<OrderCategory>>() {
@@ -1222,6 +1231,38 @@ public class OrderSendActivity extends BaseActivity{
             longitude = location.getLongitude();
             txt_location.setText(location.getProvince() + location.getCity() + location.getDistrict());
         }
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent event) {
+        //触摸的是EditText并且当前EditText可以滚动则将事件交给EditText处理；否则将事件交由其父类处理
+        if ((view.getId() == R.id.edit_content && canVerticalScroll(edit_content)))
+        {
+            view.getParent().requestDisallowInterceptTouchEvent(true);
+            if (event.getAction() == MotionEvent.ACTION_UP)
+            {
+                view.getParent().requestDisallowInterceptTouchEvent(false);
+            }
+        }
+
+        return false;
+    }
+
+    /**   * EditText竖直方向是否可以滚动   * @param editText 需要判断的EditText   * @return true：可以滚动  false：不可以滚动   */
+    private boolean canVerticalScroll(EditText editText)
+    {   //滚动的距离
+        int scrollY = editText.getScrollY();
+        //控件内容的总高度
+        int scrollRange = editText.getLayout().getHeight();
+        //控件实际显示的高度
+        int scrollExtent = editText.getHeight() - editText.getCompoundPaddingTop() -editText.getCompoundPaddingBottom();
+        //控件内容总高度与实际显示高度的差值
+        int scrollDifference = scrollRange - scrollExtent;
+        if(scrollDifference == 0)
+        {
+            return false;
+        }
+        return (scrollY > 0) || (scrollY < scrollDifference - 1);
     }
 
 }

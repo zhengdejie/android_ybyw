@@ -7,14 +7,19 @@
     <include
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
-    <ListView
-        android:id="@+id/lv_ordermessage"
+    <appframe.appframe.widget.swiperefresh.SwipeRefreshX
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/title_bar">
+        <ListView
+            android:id="@+id/lv_ordermessage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/title_bar">
 
-    </ListView>
-
+        </ListView>
+    </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
     <TextView
         android:id="@+id/tv_empty"
         android:layout_width="match_parent"
@@ -22,4 +27,7 @@
         android:gravity="center"
         android:text="暂时还没有通知"
         android:visibility="gone"/>
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading" />
 </RelativeLayout>

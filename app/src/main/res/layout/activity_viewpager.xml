@@ -16,54 +16,55 @@
         android:text="跳过"
         android:id="@+id/tv_skip"
         android:layout_alignParentRight="true"
-        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
         android:background="@drawable/textview_clicked"
         android:gravity="center"
         android:textSize="20sp"
         android:textColor="@color/white"
         />
 
-    <LinearLayout
-        android:id="@+id/ll"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24.0dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ll"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="24.0dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_centerHorizontal="true">-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dp"
-            android:src="@drawable/dot" />
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:clickable="true"-->
+            <!--android:padding="15.0dp"-->
+            <!--android:src="@drawable/dot" />-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dp"
-            android:src="@drawable/dot" />
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:clickable="true"-->
+            <!--android:padding="15.0dp"-->
+            <!--android:src="@drawable/dot" />-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dp"
-            android:src="@drawable/dot" />
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:clickable="true"-->
+            <!--android:padding="15.0dp"-->
+            <!--android:src="@drawable/dot" />-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:padding="15.0dp"
-            android:src="@drawable/dot" />
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:clickable="true"-->
+            <!--android:padding="15.0dp"-->
+            <!--android:src="@drawable/dot" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </RelativeLayout>

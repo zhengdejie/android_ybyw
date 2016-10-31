@@ -1,33 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="@color/white">
 
     <include
         android:id="@+id/title_bar"
         layout="@layout/titlebar" />
 
-    <TextView
-        android:id="@+id/tv_hcenter"
-        android:layout_width="100dp"
-        android:layout_height="0dp"
-        android:layout_centerHorizontal="true"/>
-
+    <!--<TextView-->
+        <!--android:id="@+id/tv_hcenter"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_centerHorizontal="true"/>-->
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/iv_myavatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
         android:layout_below="@+id/title_bar"
         android:layout_toLeftOf="@+id/tv_hcenter"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="4dp"
+
         />
+    <ImageView
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:layout_below="@+id/title_bar"
+        android:layout_toLeftOf="@+id/tv_hcenter"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="4dp"
+        android:background="@drawable/avatarbackgroud"
+        />
+
+
+
     <TextView
         android:id="@+id/tv_myname"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
+        android:layout_width="88dp"
+        android:layout_height="20dp"
         android:layout_below="@+id/iv_myavatar"
-        android:text="mynamesdfsdfsdfdsdsdsssssssssssssss"
+        android:textColor="#4c4c4c"
+        android:text="我"
         android:layout_alignRight="@+id/iv_myavatar"
         android:textSize="14sp"
         android:lines="1"
@@ -37,20 +55,67 @@
 
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/iv_youravatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:layout_marginBottom="10dp"
         android:layout_below="@+id/title_bar"
-        android:layout_toRightOf="@+id/tv_hcenter"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="30dp"
+        android:layout_toLeftOf="@+id/iv_youjianju"
+        android:layout_marginTop="20dp"
+
+        />
+
+    <ImageView
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@+id/title_bar"
+        android:layout_toLeftOf="@+id/iv_youjianju"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/avatarbackgroud"
+        />
+
+    <ImageView
+        android:id="@+id/iv_zuojianju"
+        android:layout_width="12dp"
+        android:layout_height="18dp"
+        android:background="@drawable/zuojiantou"
+        android:layout_toLeftOf="@+id/iv_youravatar"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginTop="56dp"
+        android:layout_marginRight="4dp"
+        android:visibility="gone"
+        />
+    <ImageView
+        android:id="@+id/iv_youjianju"
+        android:layout_width="12dp"
+        android:layout_height="18dp"
+        android:background="@drawable/youjiantou"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginTop="56dp"
+        android:layout_marginLeft="4dp"
+        android:layout_toLeftOf="@+id/view_right"
+        android:visibility="gone"
+    />
+
+    <View
+        android:id="@+id/view_right"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginTop="56dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="20dp"
+        android:layout_alignParentRight="true"
+
         />
 
     <TextView
         android:id="@+id/tv_yourname"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
+        android:layout_width="88dp"
+        android:layout_height="20dp"
         android:layout_below="@+id/iv_youravatar"
-        android:text="youname"
+        android:textColor="#4c4c4c"
+        android:text="younamesssssssssssssssssssss"
         android:layout_alignRight="@+id/iv_youravatar"
         android:textSize="14sp"
         android:lines="1"
@@ -58,58 +123,173 @@
         android:ellipsize="end"
         />
 
-    <View
-        android:layout_width="160dp"
-        android:layout_height="1dp"
-        android:background="@color/green"
-        android:layout_alignBottom="@+id/iv_myavatar"
-        android:layout_marginBottom="30dp"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/view9" />
-
     <TextView
-        android:id="@+id/tv_relation"
+        android:id="@+id/v_center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/view9"
+        android:layout_height="2dp"
+        android:background="#cddfeb"
+        android:layout_toLeftOf="@+id/iv_zuojianju"
+        android:layout_toRightOf="@+id/iv_myavatar"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginTop="64dp"
+        android:layout_marginRight="5dp"
+        android:visibility="gone"
+         />
+
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/iv_heravatar"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:layout_below="@+id/tv_yourname"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:layout_marginBottom="10dp"
         />
 
-    <View
-        android:id="@+id/view_divide"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_gray"
+    <ImageView
+        android:id="@+id/iv_backgroud"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:background="@drawable/avatarbackgroud"
+        android:layout_below="@+id/tv_yourname"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+         />
+
+    <TextView
+        android:id="@+id/tv_hername"
+        android:layout_width="88dp"
+        android:layout_height="20dp"
+        android:text="hernamesdfsdfsdfdsdsdsssssssssssssss"
+        android:textColor="#4c4c4c"
+        android:textSize="14sp"
+        android:lines="1"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:layout_below="@+id/iv_heravatar"
+        android:layout_alignRight="@+id/iv_heravatar"
+        android:layout_marginBottom="15dp"
+        android:visibility="gone"
+         />
+
+    <TextView
+        android:id="@+id/tv_onerelation"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="一度关系"
+        android:textSize="12sp"
+        android:textColor="#999999"
+        android:lines="1"
+        android:gravity="center"
+        android:ellipsize="end"
         android:layout_below="@+id/tv_myname"
-        android:layout_marginTop="10dp"/>
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        />
 
     <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:text="以下为你们的共同好友"
-        style="@style/more_item_style"
-        android:layout_below="@+id/view_divide"/>
-    <View
-        android:id="@+id/view_divide2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_gray"
-        android:layout_below="@+id/tv_title"
+        android:id="@+id/tv_tworelation"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text="二度关系"
+        android:textSize="12sp"
+        android:textColor="#999999"
+        android:lines="1"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:layout_below="@+id/tv_hername"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="gone"
         />
-    <GridView
-        android:id="@+id/gridview"
+
+    <ImageView
+        android:id="@+id/iv_questionmark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:horizontalSpacing="5dp"
-        android:numColumns="4"
-        android:scrollbars="none"
-        android:verticalSpacing="5dp"
-        android:layout_below="@+id/view_divide2"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:gravity="center">
-    </GridView>
+        android:src="@drawable/questionmark"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginTop="50dp"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/iv_oneclass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/oneclass"
+        android:layout_alignBottom="@+id/iv_myavatar"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/iv_twoclass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/twoclass"
+        android:layout_below="@+id/tv_myname"
+        android:layout_toRightOf="@+id/iv_myavatar"
+        android:visibility="gone"/>
+
+    <appframe.appframe.utils.SlashView
+        android:id="@+id/slashview"
+        android:layout_width="wrap_content"
+        android:layout_height="162dp"
+        android:layout_below="@+id/title_bar"
+        android:layout_alignLeft="@+id/iv_heravatar"
+        android:layout_alignRight="@+id/iv_youravatar"
+        android:layout_marginTop="64dp"
+        android:layout_marginRight="44dp"
+        android:layout_marginLeft="44dp"
+        android:layout_marginBottom="44dp"
+        android:visibility="gone"
+        />
+    <!--<TextView-->
+        <!--android:id="@+id/tv_relation"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_below="@+id/view9"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--/>-->
+
+    <!--<View-->
+        <!--android:id="@+id/view_divide"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/bg_gray"-->
+        <!--android:layout_below="@+id/tv_myname"-->
+        <!--android:layout_marginTop="10dp"/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_title"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="44dp"-->
+        <!--android:text="以下为你们的共同好友"-->
+        <!--style="@style/more_item_style"-->
+        <!--android:layout_below="@+id/view_divide"/>-->
+    <!--<View-->
+        <!--android:id="@+id/view_divide2"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/bg_gray"-->
+        <!--android:layout_below="@+id/tv_title"-->
+        <!--/>-->
+    <!--<GridView-->
+        <!--android:id="@+id/gridview"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:horizontalSpacing="5dp"-->
+        <!--android:numColumns="4"-->
+        <!--android:scrollbars="none"-->
+        <!--android:verticalSpacing="5dp"-->
+        <!--android:layout_below="@+id/view_divide2"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:gravity="center">-->
+    <!--</GridView>-->
 
 </RelativeLayout>

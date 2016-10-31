@@ -14,6 +14,7 @@ public class OrderReviewDetailAndCount extends Http.BaseDto {
     private int GoodCount;
     private int MediumCount;
     private int BadCount;
+    private UserBrief User;
 
     public List<OrderReviewDetail> getOrderReviewDetails() {
         return orderReviewDetails;
@@ -62,5 +63,13 @@ public class OrderReviewDetailAndCount extends Http.BaseDto {
 
     public void setBadCount(int badCount) {
         BadCount = badCount;
+    }
+
+    public UserBrief getUser() {
+        return User;
+    }
+
+    public void setUser(UserBrief user) {
+        User = user;
     }
 }

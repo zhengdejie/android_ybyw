@@ -34,4 +34,7 @@ public class AppConfig {
 
     //微信APP_ID
     public static final String WX_APP_ID = "wxfcdc5b3ad4fb99f4";
+
+    //MD5
+    public static final String MD5_secret = "%m-&^3@2/&rJ8q.HLDVLn9{bFV;kzWec-,4DY`cV_{Cc5nOl$==y]&Nj;C6*b(oN";
 }

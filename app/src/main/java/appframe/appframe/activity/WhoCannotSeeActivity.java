@@ -7,6 +7,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +60,11 @@ public class WhoCannotSeeActivity extends BaseActivity implements View.OnClickLi
             }
         });
 
+
+    }
+
+    protected void initData()
+    {
         Map<String, String> map = new HashMap<String, String>();
         map.put("Id", String.valueOf(Auth.getCurrentUserId()));
 
@@ -81,5 +88,21 @@ public class WhoCannotSeeActivity extends BaseActivity implements View.OnClickLi
                 break;
 
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+        MobclickAgent.onPageStart("查看谁不能看我发单页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("查看谁不能看我发单页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 }

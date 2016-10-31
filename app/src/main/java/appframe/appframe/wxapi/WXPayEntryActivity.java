@@ -66,6 +66,16 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 //                startActivity(new Intent(WXPayEntryActivity.this, HomeActivity.class));
                 finish();
             }
+            else if(resp.errCode == -2) {
+                Toast.makeText(WXPayEntryActivity.this, "支付取消", Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(WXPayEntryActivity.this, HomeActivity.class));
+                finish();
+            }
+            else {
+                Toast.makeText(WXPayEntryActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
+//                startActivity(new Intent(WXPayEntryActivity.this, HomeActivity.class));
+                finish();
+            }
         }
     }
 }

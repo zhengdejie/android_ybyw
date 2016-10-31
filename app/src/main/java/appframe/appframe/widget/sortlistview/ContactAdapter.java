@@ -89,30 +89,65 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer {
 //            }
             StringBuilder sb = new StringBuilder();
 
-
+            //关系为1度
             if(mContent.getType() == 1)
             {
+                //有备注名
                 if(mContent.getUser().getFNickName() !=null && !mContent.getUser().getFNickName().equals(""))
                 {
-                    //sb.append(mContent.getUser().getFNickName()).append("(").append(mContent.getUser().getName()).append(")");
-                    viewHolder.tv_name.setText(mContent.getUser().getFNickName());
+                    //有手机通讯录信息
+                    if(mContent.getMobileContact() != null && mContent.getMobileContact().getName() != null) {
+                        viewHolder.tv_name.setText(mContent.getUser().getFNickName() + "(" + (mContent.getMobileContact().getName()) + ")");
+                    }
+                    //没有手机通讯录信息
+                    else
+                    {
+                        viewHolder.tv_name.setText(mContent.getUser().getFNickName());
+                    }
                 }
+                //没有备注名
                 else
                 {
-                    viewHolder.tv_name.setText(mContent.getUser().getName());
+                    //有手机通讯录信息
+                    if(mContent.getMobileContact() != null && mContent.getMobileContact().getName() != null) {
+                        viewHolder.tv_name.setText(mContent.getUser().getName() + "(" + (mContent.getMobileContact().getName()) + ")");
+                    }
+                    //没有手机通讯录信息
+                    else
+                    {
+                        viewHolder.tv_name.setText(mContent.getUser().getName());
+                    }
                 }
                 viewHolder.tv_remark.setText("一度好友");
             }
+            //关系为2度
             else if(mContent.getType() == 2)
             {
+                //有备注名
                 if(mContent.getUser().getFNickName() !=null)
                 {
-                    //sb.append(mContent.getUser().getFNickName()).append("(").append(mContent.getUser().getName()).append(")");
-                    viewHolder.tv_name.setText(mContent.getUser().getFNickName());
+                    //有手机通讯录信息
+                    if(mContent.getMobileContact() != null && mContent.getMobileContact().getName() != null) {
+                        viewHolder.tv_name.setText(mContent.getUser().getFNickName() + "(" + (mContent.getMobileContact().getName()) + ")");
+                    }
+                    //没有手机通讯录信息
+                    else
+                    {
+                        viewHolder.tv_name.setText(mContent.getUser().getFNickName());
+                    }
                 }
+                //没有备注名
                 else
                 {
-                    viewHolder.tv_name.setText(mContent.getUser().getName());
+                    //有手机通讯录信息
+                    if(mContent.getMobileContact() != null && mContent.getMobileContact().getName() != null) {
+                        viewHolder.tv_name.setText(mContent.getUser().getName() + "(" + (mContent.getMobileContact().getName()) + ")");
+                    }
+                    //没有手机通讯录信息
+                    else
+                    {
+                        viewHolder.tv_name.setText(mContent.getUser().getName());
+                    }
                 }
                 viewHolder.tv_remark.setText("已加入友帮");
             }

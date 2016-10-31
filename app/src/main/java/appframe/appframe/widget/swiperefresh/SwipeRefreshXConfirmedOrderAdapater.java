@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -187,12 +188,16 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
 //        mHolder.txt_bounty.setText(ss);
 //        mHolder.txt_type.setText("类别:" + item.getOrder().getCategory());
 //        mHolder.txt_location.setText(item.getOrder().getAddress());
-        if(item.getOrder().getUserLocation() != null && item.getOrder().getUserLocation().getProvince() != null && item.getOrder().getUserLocation().getCity() != null && item.getOrder().getUserLocation().getDistrict() != null) {
-            mHolder.txt_location.setText(item.getOrder().getUserLocation().getProvince() + item.getOrder().getUserLocation().getCity() + item.getOrder().getUserLocation().getDistrict());
+
+        if(item.getOrder().getLocationAnonymity() == 1) {
+            mHolder.txt_location.setText("");
         }
-        else
-        {
-            mHolder.txt_location.setText("地址:未知");
+        else {
+            if (item.getOrder().getUserLocation() != null && item.getOrder().getUserLocation().getProvince() != null && item.getOrder().getUserLocation().getCity() != null && item.getOrder().getUserLocation().getDistrict() != null) {
+                mHolder.txt_location.setText(item.getOrder().getUserLocation().getProvince() + item.getOrder().getUserLocation().getCity() + item.getOrder().getUserLocation().getDistrict());
+            } else {
+                mHolder.txt_location.setText("地址:未知");
+            }
         }
         mHolder.tv_time.setText(item.getCreatedAt());
         mHolder.tv_countdown.setVisibility(View.GONE);
@@ -226,61 +231,76 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
         mHolder.iv_avatar.setVisibility(View.VISIBLE);
         mHolder.niv_avatar.setVisibility(View.INVISIBLE);
         if(item.getServiceProvider().getId() == Auth.getCurrentUserId()) {
-            if(item.getServiceReceiver().getAvatar() != null && !item.getServiceReceiver().getAvatar().equals("")) {
-                mHolder.iv_avatar.setVisibility(View.INVISIBLE);
-                mHolder.niv_avatar.setVisibility(View.VISIBLE);
-            }
-            else
+            if(item.getOrder().getNameAnonymity() == 1)
             {
+                mHolder.tv_name.setText("匿名");
+                item.getServiceReceiver().setName("匿名");
                 mHolder.iv_avatar.setVisibility(View.VISIBLE);
                 mHolder.niv_avatar.setVisibility(View.INVISIBLE);
-                if(item.getServiceReceiver().getGender().equals(context.getResources().getString(R.string.male).toString()))
-                {
+                if (item.getServiceReceiver().getGender().equals(context.getResources().getString(R.string.male).toString())) {
                     mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
-                }
-                else
-                {
+                } else {
                     mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
                 }
             }
-            ImageUtils.setImageUrl(mHolder.niv_avatar, item.getServiceReceiver().getAvatar());
-            mHolder.tv_service.setText("被服务方");
-            mHolder.iv_service.setImageDrawable(serviceReceiverDrawable);
-            if(item.getServiceReceiver().getFNickName() != null && !item.getServiceReceiver().getFNickName().equals(""))
-            {
-                mHolder.tv_name.setText(item.getServiceReceiver().getFNickName());
-            }
             else {
-                mHolder.tv_name.setText(item.getServiceReceiver().getName());
+                if (item.getServiceReceiver().getAvatar() != null && !item.getServiceReceiver().getAvatar().equals("")) {
+                    mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+                    mHolder.niv_avatar.setVisibility(View.VISIBLE);
+                } else {
+                    mHolder.iv_avatar.setVisibility(View.VISIBLE);
+                    mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+                    if (item.getServiceReceiver().getGender().equals(context.getResources().getString(R.string.male).toString())) {
+                        mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
+                    } else {
+                        mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
+                    }
+                }
+                ImageUtils.setImageUrl(mHolder.niv_avatar, item.getServiceReceiver().getAvatar());
+                mHolder.tv_service.setText("被服务方");
+                mHolder.iv_service.setImageDrawable(serviceReceiverDrawable);
+                if (item.getServiceReceiver().getFNickName() != null && !item.getServiceReceiver().getFNickName().equals("")) {
+                    mHolder.tv_name.setText(item.getServiceReceiver().getFNickName());
+                } else {
+                    mHolder.tv_name.setText(item.getServiceReceiver().getName());
+                }
             }
         }
         else {
-            if(item.getServiceProvider().getAvatar() != null && !item.getServiceProvider().getAvatar().equals("")) {
-                mHolder.iv_avatar.setVisibility(View.INVISIBLE);
-                mHolder.niv_avatar.setVisibility(View.VISIBLE);
-            }
-            else
+            if(item.getOrder().getNameAnonymity() == 1)
             {
+                mHolder.tv_name.setText("匿名");
+                item.getServiceProvider().setName("匿名");
                 mHolder.iv_avatar.setVisibility(View.VISIBLE);
                 mHolder.niv_avatar.setVisibility(View.INVISIBLE);
-                if(item.getServiceProvider().getGender().equals(context.getResources().getString(R.string.male).toString()))
-                {
+                if (item.getServiceProvider().getGender().equals(context.getResources().getString(R.string.male).toString())) {
                     mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
-                }
-                else
-                {
+                } else {
                     mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
                 }
-            }
-            ImageUtils.setImageUrl(mHolder.niv_avatar, item.getServiceProvider().getAvatar());
-            mHolder.tv_service.setText("服务方");
-            mHolder.iv_service.setImageDrawable(serviceProviderDrawable);
-            if(item.getServiceProvider().getFNickName() != null && !item.getServiceProvider().getFNickName().equals(""))
-            {
-                mHolder.tv_name.setText(item.getServiceProvider().getFNickName());
+
             }
             else {
-                mHolder.tv_name.setText(item.getServiceProvider().getName());
+                if (item.getServiceProvider().getAvatar() != null && !item.getServiceProvider().getAvatar().equals("")) {
+                    mHolder.iv_avatar.setVisibility(View.INVISIBLE);
+                    mHolder.niv_avatar.setVisibility(View.VISIBLE);
+                } else {
+                    mHolder.iv_avatar.setVisibility(View.VISIBLE);
+                    mHolder.niv_avatar.setVisibility(View.INVISIBLE);
+                    if (item.getServiceProvider().getGender().equals(context.getResources().getString(R.string.male).toString())) {
+                        mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.maleavatar));
+                    } else {
+                        mHolder.iv_avatar.setImageDrawable(context.getResources().getDrawable(R.drawable.femaleavatar));
+                    }
+                }
+                ImageUtils.setImageUrl(mHolder.niv_avatar, item.getServiceProvider().getAvatar());
+                mHolder.tv_service.setText("服务方");
+                mHolder.iv_service.setImageDrawable(serviceProviderDrawable);
+                if (item.getServiceProvider().getFNickName() != null && !item.getServiceProvider().getFNickName().equals("")) {
+                    mHolder.tv_name.setText(item.getServiceProvider().getFNickName());
+                } else {
+                    mHolder.tv_name.setText(item.getServiceProvider().getName());
+                }
             }
         }
 //        if(item.getServiceReceiver().getId() == Auth.getCurrentUserId())
@@ -760,7 +780,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
 
                     LayoutInflater inflater =LayoutInflater.from(context);
                     View layout = inflater.inflate(R.layout.dialog_confirmpayment, (ViewGroup) parent.findViewById(R.id.dialog));
-                    final RadioButton rb_share = (RadioButton)layout.findViewById(R.id.rb_share);
+                    final CheckBox rb_share = (CheckBox)layout.findViewById(R.id.rb_share);
                     builder.setTitle("是否确认付款").setView(
                             layout).setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override

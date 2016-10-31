@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class MyCollectActivity extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mycollect);
         init();
-        initData();
+
     }
     private  void init()
     {
@@ -79,16 +80,15 @@ public class MyCollectActivity extends BaseActivity implements View.OnClickListe
         Map<String, String> map = new HashMap<String, String>();
         map.put("Page", "1");
         map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-        Http.request(MyCollectActivity.this, API.GET_FAVORITEORDER, new Object[]{Http.getURL(map)},new Http.RequestListener<List<OrderDetails>>() {
+        Http.request(MyCollectActivity.this, API.GET_FAVORITEORDER, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<OrderDetails>>() {
             @Override
             public void onSuccess(List<OrderDetails> result) {
                 super.onSuccess(result);
                 swipeRefreshXOrderAdapater = new SwipeRefreshXOrderAdapater(MyCollectActivity.this, result, AppConfig.ORDERSTATUS_PROGRESS);
                 lv_mycollect.setAdapter(swipeRefreshXOrderAdapater);
-                if(result != null && result.size() != 0) {
+                if (result != null && result.size() != 0) {
                     tv_empty.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     tv_empty.setVisibility(View.VISIBLE);
                 }
             }
@@ -183,5 +183,21 @@ public class MyCollectActivity extends BaseActivity implements View.OnClickListe
                 break;
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+        MobclickAgent.onPageStart("我的收藏页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("我的收藏页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 }

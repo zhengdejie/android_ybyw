@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_photopopup"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aa000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/ll_wx"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+
+            >
+            <ImageView
+                android:id="@+id/iv_require"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/umeng_socialize_wechat"
+                android:layout_gravity="center_horizontal"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="微信好友"
+                android:textColor="@color/font_gray"
+                android:gravity="center"
+
+                />
+        </LinearLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/bg_gray"
+            />
+
+        <LinearLayout
+            android:id="@+id/ll_wxcircle"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
+            android:orientation="vertical"
+            >
+            <ImageView
+                android:id="@+id/iv_recommend"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/umeng_socialize_wxcircle"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/font_gray"
+                android:text="朋友圈"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/bg_gray"
+            />
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,14 +52,13 @@ public class SystemMessageActivity extends BaseActivity implements View.OnClickL
         map.put("Type", "3");
         Http.request(SystemMessageActivity.this, API.GET_PUSHMESSAGE, new Object[]{Http.getURL(map)}, new Http.RequestListener<List<PushMessage>>() {
             @Override
-            public void onSuccess( List<PushMessage> result) {
+            public void onSuccess(List<PushMessage> result) {
                 super.onSuccess(result);
 
                 lv_sysmessage.setAdapter(new SwipeRefreshXSystemMessageAdapater(SystemMessageActivity.this, result));
-                if(result != null && result.size() != 0) {
+                if (result != null && result.size() != 0) {
                     tv_empty.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     tv_empty.setVisibility(View.VISIBLE);
                 }
             }
@@ -75,5 +76,20 @@ public class SystemMessageActivity extends BaseActivity implements View.OnClickL
 
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("系统通知页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("系统通知页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
     }
 }

@@ -17,6 +17,7 @@ import com.alibaba.mobileim.YWIMKit;
 import com.alibaba.mobileim.conversation.IYWConversationService;
 import com.alibaba.mobileim.conversation.IYWConversationUnreadChangeListener;
 import com.github.snowdream.android.util.Log;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,12 +57,12 @@ import appframe.appframe.widget.sortlistview.SortListViewActivity;
  * Created by Administrator on 2015/8/8.
  */
 public class PersonFragment extends BaseFragment implements View.OnClickListener{
-    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission,tv_myestimate,tv_author,tv_question,tv_answer,tv_myhelp,tv_contactservice,tv_myfocus;
+    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_wallet,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission,tv_myestimate,tv_author,tv_question,tv_answer,tv_myhelp,tv_contactservice,tv_myfocus,tv_progress_content;
     public static TextView tv_unread;
     ImageView iv_sex,iv_member;
     com.android.volley.toolbox.NetworkImageView iv_avater;
     View root;
-    LinearLayout ll_person;
+    LinearLayout ll_person,progress_bar;
     List<UserContact> contactsList = new ArrayList<UserContact>();
     private IYWConversationUnreadChangeListener mConversationUnreadChangeListener;
     private Handler mHandler = new Handler(Looper.getMainLooper());
@@ -132,6 +133,8 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
                 }
             }
         });
+        MobclickAgent.onPageStart("我的页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(getActivity());          //统计时长
     }
 
     @Override
@@ -139,6 +142,8 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         super.onDestroyView();
         //在Tab栏删除会话未读消息变化的全局监听器
         mConversationService.removeTotalUnreadChangeListener(mConversationUnreadChangeListener);
+        MobclickAgent.onPageEnd("我的页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(getActivity());
     }
 
     private void initConversationServiceAndListener() {
@@ -203,19 +208,22 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
                 startActivity(new Intent(getActivity(), MyMessageActivity.class));
                 break;
             case R.id.tv_updatecontact:
+                progress_bar.setVisibility(View.VISIBLE);
                 List<UserContact> contactsList = UploadUtils.uploadContact(getActivity());
                 Http.request(getActivity(), API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
                         "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
                     @Override
                     public void onSuccess(String result) {
                         super.onSuccess(result);
-                        Toast.makeText(getActivity(), "上传通讯录成功", Toast.LENGTH_SHORT).show();
+                        progress_bar.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "更新通讯录成功", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFail(String code) {
                         super.onFail(code);
-                        Toast.makeText(getActivity(), "上传通讯录失败", Toast.LENGTH_SHORT).show();
+                        progress_bar.setVisibility(View.GONE);
+//                        Toast.makeText(getActivity(), "上传通讯录失败", Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;
@@ -275,6 +283,9 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         tv_myhelp = (TextView)root.findViewById(R.id.tv_myhelp);
         tv_contactservice = (TextView)root.findViewById(R.id.tv_contactservice);
         tv_myfocus = (TextView)root.findViewById(R.id.tv_myfocus);
+        progress_bar = (LinearLayout)root.findViewById(R.id.progress_bar);
+        tv_progress_content = (TextView)root.findViewById(R.id.tv_progress_content);
+        tv_progress_content.setText("正在更新通讯录");
 //        tv_myfans = (TextView)root.findViewById(R.id.tv_myfans);
 
         tv_contact.setOnClickListener(this);
@@ -344,5 +355,6 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
         initConversationServiceAndListener();
 
     }
+
 
 }

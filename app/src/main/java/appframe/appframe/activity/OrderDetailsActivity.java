@@ -36,8 +36,12 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,6 +63,7 @@ import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.widget.sortlistview.FirstClassFriends;
+import appframe.appframe.widget.swiperefresh.GridViewBigPictureAdapater;
 import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
@@ -75,6 +80,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
             tv_originalprice,tv_bargain,btn_select,btn_comment,btn_recommend;
     appframe.appframe.widget.tagview.TagView tv_tags;
     private ImageView imgbtn_conversation,imgbtn_call;
+    private ScrollView sv_main;
     com.android.volley.toolbox.NetworkImageView iv_avatar;
 //    private Button btn_select,btn_comment,btn_recommend;
     private EditText et_price;
@@ -90,6 +96,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
     String Bid;
+    Intent getintent;
 //    SwipeRefreshX swipeRefresh;
     SwipeRefreshXOrderComment swipeRefreshXOrderComment;
     private static final int SDK_PAY_FLAG = 1;
@@ -137,7 +144,30 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orderdetails);
-        init();
+
+//////////////////-----------来自接单通知------------------///////////////////////////////////
+        getintent = this.getIntent();
+        if(getintent.getStringExtra("OrderIdFromPushDemoReceiver") != null)
+        {
+//            Map<String, String> map = new HashMap<String, String>();
+//            map.put("Id", getintent.getStringExtra("OrderIdFromPushDemoReceiver"));
+            Http.request(this, API.GETORDERBYID, new Object[]{getintent.getStringExtra("OrderIdFromPushDemoReceiver")},
+
+                    new Http.RequestListener<OrderDetails>() {
+                        @Override
+                        public void onSuccess(OrderDetails result) {
+                            super.onSuccess(result);
+
+                            orderDetails = result;
+                            init();
+                        }
+                    });
+
+        }
+        else
+        {
+            init();
+        }
     }
 
     @Override
@@ -145,10 +175,14 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         switch (v.getId())
         {
             case R.id.iv_avatar:
-                intent.setClass(OrderDetailsActivity.this, FriendsInfoActivity.class);
-                bundle.putSerializable("OrderDetails", orderDetails);
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if(orderDetails.getNameAnonymity() == 1)
+                {}
+                else {
+                    intent.setClass(OrderDetailsActivity.this, FriendsInfoActivity.class);
+                    bundle.putSerializable("OrderDetails", orderDetails);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
                 break;
             case R.id.imgbtn_conversation:
                 LoginSampleHelper ls = LoginSampleHelper.getInstance();
@@ -175,6 +209,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                 break;
             case R.id.tb_back:
                 finish();
+                startActivity(new Intent(this,HomeActivity.class));
                 break;
             case R.id.btn_select:
                 if(btn_select.getText().equals("候选接单人"))
@@ -397,6 +432,8 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         gridView =(GridView)findViewById(R.id.gridview);
         imgbtn_conversation = (ImageView)findViewById(R.id.imgbtn_conversation);
         imgbtn_call = (ImageView)findViewById(R.id.imgbtn_call);
+        sv_main = (ScrollView)findViewById(R.id.sv_main);
+
         tv_title =(TextView)findViewById(R.id.tv_title);
         tv_money =(TextView)findViewById(R.id.tv_money);
         tv_location =(TextView)findViewById(R.id.tv_location);
@@ -436,12 +473,18 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 //                android.R.color.holo_orange_light, android.R.color.holo_red_light);
 
 
-        Intent getintent = this.getIntent();
-        orderDetails=(OrderDetails)getintent.getSerializableExtra("OrderDetails");
-        if(orderDetails == null)
+        //////////////////-----------来自接单通知------------------///////////////////////////////////
+        if(getintent.getStringExtra("OrderIdFromPushDemoReceiver") != null)
         {
-            confirmedOrderDetailWithFriend = (ConfirmedOrderDetailWithFriend)getintent.getSerializableExtra("ConfirmedOrderDetailWithFriend");
-            orderDetails = confirmedOrderDetailWithFriend.getOrder();
+            //orderDetails之前赋值过了
+        }
+        else {
+            orderDetails = (OrderDetails) getintent.getSerializableExtra("OrderDetails");
+            if (orderDetails == null) {
+                confirmedOrderDetailWithFriend = (ConfirmedOrderDetailWithFriend) getintent.getSerializableExtra("ConfirmedOrderDetailWithFriend");
+                orderDetails = confirmedOrderDetailWithFriend.getOrder();
+
+            }
         }
 
         if(orderDetails.getOrderStatus().equals("1"))
@@ -489,6 +532,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         {
             for(String tagTitle : orderDetails.getTags().split(","))
             {
+                tv_tags.setVisibility(View.VISIBLE);
                 Tag tag = new Tag(tagTitle);
                 tag.layoutColor = getResources().getColor(R.color.bg_gray);
                 tag.radius = 10f;
@@ -569,9 +613,14 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    Intent intent = new Intent();
+//                    intent.setClass(OrderDetailsActivity.this, AvatarZoomActivity.class);
+//                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+//                    startActivity(intent);
                     Intent intent = new Intent();
-                    intent.setClass(OrderDetailsActivity.this, AvatarZoomActivity.class);
-                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+                    intent.setClass(OrderDetailsActivity.this, OrderDetailsViewPager.class);
+                    intent.putExtra("Position", String.valueOf(position));
+                    intent.putExtra("PhotoPath", orderDetails.getPhotos().toString());
                     startActivity(intent);
                 }
             });
@@ -790,6 +839,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         // listView.getDividerHeight()获取子项间分隔符占用的高度
         // params.height最后得到整个ListView完整显示需要的高度
         listView.setLayoutParams(params);
+//        sv_main.fullScroll(View.FOCUS_UP);
     }
 
 
@@ -824,6 +874,17 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                     .findViewById(R.id.item_popupwindows_toporder);
             TextView btn_reportorder = (TextView) view
                     .findViewById(R.id.item_popupwindows_reportorder);
+            RelativeLayout rl_viewfdinfo = (RelativeLayout) view.findViewById(R.id.rl_viewfdinfo);
+
+            if(orderDetails.getNameAnonymity() == 1)
+            {
+                rl_viewfdinfo.setVisibility(View.GONE);
+            }
+            else
+            {
+                rl_viewfdinfo.setVisibility(View.VISIBLE);
+            }
+
             if(hasTopOrder != null && hasTopOrder.equals("1"))
             {
                 btn_toporder.setText("取消置顶");
@@ -943,7 +1004,20 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 //            });
         }
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("任务详情页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("任务详情页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
+    }
 
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {

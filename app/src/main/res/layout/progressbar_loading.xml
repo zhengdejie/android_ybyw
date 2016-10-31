@@ -9,31 +9,36 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@drawable/textview_unclicked"
-        android:layout_gravity="center"
-        android:layout_margin="50dp">
-    <ProgressBar
-        android:id="@+id/login_progress"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_centerInParent="true"
-        android:indeterminate="true"
-        android:layout_toLeftOf="@+id/tv_center"
-        />
-    <TextView
-        android:id="@+id/tv_center"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_centerInParent="true"
-        />
-    <TextView
-        android:id="@+id/tv_progress_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/loading"
-        android:layout_centerInParent="true"
-        android:layout_toRightOf="@+id/tv_center"
-        />
+        android:layout_height="match_parent"
+        >
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:background="@drawable/textview_unclicked"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true">
+            <ProgressBar
+                android:id="@+id/login_progress"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerInParent="true"
+                android:indeterminate="true"
+                android:layout_toLeftOf="@+id/tv_center"
+                android:gravity="center"
+                />
+            <TextView
+                android:id="@+id/tv_progress_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading"
+                android:layout_centerInParent="true"
+                android:layout_toRightOf="@+id/tv_center"
+                android:gravity="center"
+                android:ellipsize="end"
+                />
+        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

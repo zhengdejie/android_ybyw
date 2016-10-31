@@ -3,9 +3,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/progress_bar"
-        layout="@layout/progressbar_loading" />
+
 
     <include
         android:id="@+id/title_bar"
@@ -216,15 +214,16 @@
         android:layout_below="@+id/ok"
         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_alignParentBottom="true">-->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_alignParentBottom="true">
             <TextView
                 android:id="@+id/tv_protocol2"
                 android:layout_width="wrap_content"
@@ -233,6 +232,7 @@
                 android:gravity="center"
                 android:layout_marginBottom="10dp"
                 android:textColor="@color/font_gray"
+
                 />
             <TextView
                 android:id="@+id/tv_protocol"
@@ -245,5 +245,8 @@
                 android:textColor="#56abe4"
                 />
         </RelativeLayout>
-    </LinearLayout>
+    <!--</LinearLayout>-->
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading" />
 </RelativeLayout>

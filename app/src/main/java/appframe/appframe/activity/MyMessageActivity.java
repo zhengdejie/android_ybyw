@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.alibaba.mobileim.YWIMKit;
 import com.alibaba.mobileim.conversation.IYWConversationService;
 import com.alibaba.mobileim.conversation.IYWConversationUnreadChangeListener;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -98,20 +99,14 @@ public class MyMessageActivity extends BaseActivity implements View.OnClickListe
             public void onSuccess(List<MessageTypeCount> result) {
                 super.onSuccess(result);
 
-                for(MessageTypeCount mtc : result)
-                {
-                    if(mtc.getType() == 1 && mtc.getCount() != 0)
-                    {
+                for (MessageTypeCount mtc : result) {
+                    if (mtc.getType() == 1 && mtc.getCount() != 0) {
                         tv_omunread.setVisibility(View.VISIBLE);
                         tv_omunread.setText(String.valueOf(mtc.getCount()));
-                    }
-                    else if(mtc.getType() == 2 && mtc.getCount() != 0)
-                    {
+                    } else if (mtc.getType() == 2 && mtc.getCount() != 0) {
                         tv_fmunread.setVisibility(View.VISIBLE);
                         tv_fmunread.setText(String.valueOf(mtc.getCount()));
-                    }
-                    else if(mtc.getType() == 5 && mtc.getCount() != 0 )
-                    {
+                    } else if (mtc.getType() == 5 && mtc.getCount() != 0) {
                         tv_qmunread.setVisibility(View.VISIBLE);
                         tv_qmunread.setText(String.valueOf(mtc.getCount()));
                     }
@@ -161,6 +156,8 @@ public class MyMessageActivity extends BaseActivity implements View.OnClickListe
 
         //在Tab栏增加会话未读消息变化的全局监听器
         mConversationService.addTotalUnreadChangeListener(mConversationUnreadChangeListener);
+        MobclickAgent.onPageStart("我的消息页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
     }
 
     @Override
@@ -169,6 +166,13 @@ public class MyMessageActivity extends BaseActivity implements View.OnClickListe
         mConversationService.removeTotalUnreadChangeListener(mConversationUnreadChangeListener);
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("我的消息页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId())

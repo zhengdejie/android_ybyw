@@ -157,4 +157,7 @@ public class ImageUtils {
     public static String getImageUrl(String imageId, int w, int h,String type){
         return AppConfig.QINIU_HOST + imageId + "?imageView2/0/w/" + w + "/h/" + h;
     }
+    public static String getImageUrl(String imageId){
+        return AppConfig.QINIU_HOST + imageId + "?imageView2/1";
+    }
 }

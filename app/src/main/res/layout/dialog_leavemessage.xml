@@ -14,6 +14,7 @@
         android:layout_weight="1"
         android:background="@drawable/shape_edittext"
         android:inputType="textMultiLine"
+        android:padding="5dp"
         />
     <CheckBox
         android:id="@+id/cb_anonymous"

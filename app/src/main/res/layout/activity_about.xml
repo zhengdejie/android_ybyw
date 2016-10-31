@@ -13,9 +13,10 @@
             layout="@layout/titlebar" />
 
         <TextView
+            android:id="@+id/tv_version"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="友问友帮 1.0.0"
+
             android:gravity="center"
             android:textSize="16dp"/>
 

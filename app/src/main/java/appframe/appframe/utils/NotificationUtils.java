@@ -84,7 +84,7 @@ public class NotificationUtils {
          * Notification.DEFAULT_LIGHTS：系统默认闪光。
          * notifyBuilder.setDefaults(Notification.DEFAULT_ALL);
          */
-        cBuilder.setDefaults(Notification.DEFAULT_LIGHTS);
+        cBuilder.setDefaults(Notification.DEFAULT_ALL);
     }
 
     /**

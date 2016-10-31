@@ -39,7 +39,7 @@ import appframe.appframe.utils.Http;
  * Created by dashi on 15/6/11.
  */
 public final class API {
-    static String HOST = "114.55.100.9";          //192.168.31.123        //114.55.100.9
+    static String HOST = "114.55.100.9";          //192.168.31.123        //114.55.100.9   //测试服务器  42.96.152.105
     public static String API_BASE = "http://" + HOST + ":1337";
     public static String[] OFFICAL_HOSTS = new String[]{"localhost", HOST};
 
@@ -141,4 +141,6 @@ public final class API {
     public static final Http.API<List<OrderDetails>> GETOPENORDER = Http.API.getList("/order/getopenorderwithuserid.json%s", OrderDetails.class);
     public static final Http.API<List<UserDetail>> GETALLFOCUS = Http.API.getList("/fans/getAllFocus.json%s", UserDetail.class);
     public static final Http.API<List<UserDetail>> GETALLFANS = Http.API.getList("/fans/getAllFans.json%s", UserDetail.class);
+    public static final Http.API DELETE_FRIENDEVALUATION = Http.API.deleteEmpty("/profile/DeleteFriendsEvaluation.json%s");
+    public static final Http.API<OrderDetails> GETORDERBYID = Http.API.get("/order/%s.json", OrderDetails.class);
 }

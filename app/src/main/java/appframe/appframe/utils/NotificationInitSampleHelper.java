@@ -18,7 +18,7 @@ import appframe.appframe.R;
  */
 public class NotificationInitSampleHelper extends IMNotification {
 
-    private static boolean mNeedQuiet;
+    private static boolean mNeedQuiet = false;
     private static boolean mNeedVibrator = true;
     private static boolean mNeedSound = true;
 
@@ -30,9 +30,8 @@ public class NotificationInitSampleHelper extends IMNotification {
 		YWIMKit imKit = LoginSampleHelper.getInstance().getIMKit();
 		if (imKit != null){
 			imKit.setEnableNotification(true);//开启通知栏提示
-			imKit.setAppName("友帮");//通知栏显示的名称
-			imKit.setResId(R.drawable.logo);//通知栏icon  aliwx_notification_bg
-
+			imKit.setAppName("友问友帮");//通知栏显示的名称
+			imKit.setResId(R.drawable.logomini);//通知栏icon  aliwx_notification_bg
 
 //			Intent intent = new Intent(DemoApplication.getContext(), FragmentTabs.class);
 //			imKit.setNotificationIntent(intent); //通知栏点击跳转
