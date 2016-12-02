@@ -26,6 +26,7 @@
         android:layout_above="@+id/lly_send"
         android:layout_below="@+id/ll_tb"
         android:fillViewport="true"
+
         >
 
 
@@ -39,22 +40,20 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp">
-
-                <com.android.volley.toolbox.NetworkImageView
-                    android:id="@+id/iv_avatar"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-
-                    android:gravity="center"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
 
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="150dp"
-                    android:layout_height="25dp"
+                    android:layout_height="30dp"
                     android:text="名字"
                     android:lines="1"
                     android:ellipsize="end"
+                    android:textSize="16sp"
+                    android:gravity="center_vertical"
                     android:layout_toRightOf="@+id/iv_avatar"
                     android:layout_marginLeft="10dp"/>
 
@@ -73,30 +72,39 @@
 
                 <ImageView
                     android:id="@+id/imgbtn_call"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/phone"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="30dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_alignParentRight="true"/>
 
                 <ImageView
                     android:id="@+id/imgbtn_conversation"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/mymessage"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginBottom="10dp"
                     android:layout_below="@+id/imgbtn_call"/>
 
                 <View
-                    android:layout_width="3dp"
-                    android:layout_height="80dp"
-                    android:layout_toRightOf="@+id/tv_name"
+                    android:layout_width="1dp"
+                    android:layout_height="60dp"
+                    android:layout_toLeftOf="@+id/imgbtn_call"
                     android:background="@color/bg_gray"/>
+
+                <com.android.volley.toolbox.NetworkImageView
+                    android:id="@+id/iv_avatar"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+
+                    android:gravity="center"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
             </RelativeLayout>
 
@@ -161,6 +169,7 @@
                     app:textPaddingTop="3dp"
                     android:layout_below="@+id/tv_location"
                     android:visibility="gone"
+
                     />
                 <GridView
                     android:id="@+id/gridview"
@@ -211,19 +220,24 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:id="@+id/tv_cont"
-                    android:text="内容"
-                    android:textSize="20sp"
-                    android:lines="1"
-                    android:ellipsize="end"/>
-                <TextView
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/tv_content"
                     android:text="内容"
 
                     android:layout_below="@+id/tv_cont"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:id="@+id/tv_cont"
+                    android:text="内容"
+                    android:textSize="16sp"
+                    android:lines="1"
+                    android:ellipsize="end"
+                    android:textColor="@color/tab_pressed_color"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
 
 
             </RelativeLayout>
@@ -243,8 +257,9 @@
                     android:layout_height="40dp"
                     android:id="@+id/tv_dead"
                     android:text="截止日期"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:lines="1"
+                    android:textColor="@color/tab_pressed_color"
                     android:ellipsize="end"/>
                 <TextView
                     android:layout_width="match_parent"
@@ -253,6 +268,7 @@
                     android:text="2015-05-12 12:15:15"
                     android:lines="1"
                     android:ellipsize="end"
+
                     android:layout_below="@+id/tv_dead"/>
 
 
@@ -273,9 +289,10 @@
                     android:layout_height="40dp"
                     android:id="@+id/tv_req"
                     android:text="接单人要求"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:lines="1"
-                    android:ellipsize="end"/>
+                    android:ellipsize="end"
+                    android:textColor="@color/tab_pressed_color"/>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -298,7 +315,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:textSize="20sp"
+                android:textSize="16sp"
                 android:text="留言"
                 style="@style/more_item_style"
                 />
