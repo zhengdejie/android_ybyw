@@ -31,11 +31,14 @@
     <color name="light_blue">#87d0f2</color>
 
     <color name="blue">#56abe4</color>
-    <color name="tab_pressed_color">#35a5e7</color>
-    <color name="tab_normal_color">#bcbfc1</color>
+    <color name="tab_pressed_color">#008cee</color>
+    <color name="tab_normal_color">#4c4c4c</color>
     <color name="more_line_color">#cccccc</color>
     <color name="more_bg_nor">#ffffff</color>
     <color name="more_bg_p">#f5f5f5</color>
+
+    <color name="navi_bot_unclick">#4c4c4c</color>
+    <color name="navi_bot_click">#008cee</color>
 
     <color name="province_line_border">#C7C7C7</color>
 </resources>

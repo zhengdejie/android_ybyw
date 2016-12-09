@@ -129,6 +129,22 @@
             android:gravity="center_vertical"
             android:textColor="@color/font_gray"
             />
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/tv_content"
+            android:text="已关闭"
+            android:layout_marginTop="10dp"
+            android:lines="1"
+            android:ellipsize="end"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:textColor="@color/font_gray"
+            android:visibility="gone"
+            />
 
     </RelativeLayout>
 
@@ -137,57 +153,86 @@
         android:id="@+id/rl_bottom"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+
         android:layout_below="@+id/rl_center"
-        android:background="#F5F5F5"
-        >
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <View
 
-        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="1dp"
+            android:background="@color/bg_gray"
+            />
+        <TextView
+            android:id="@+id/tv_pay"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:text="继续支付"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/tv_delete"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/textview_clicked"
+            android:textColor="@drawable/textview_pressed"
+            android:focusable="false"
+            android:visibility="visible"
+            />
 
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                >
-                <TextView
-                    android:id="@+id/tv_pay"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="继续支付"
-                    android:focusable="false"
-                    />
-            </RelativeLayout>
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="30dp"
-                android:background="#c1c1c1"
-                android:layout_alignRight="@+id/tv_finish"
-                android:layout_gravity="center"/>
-            <RelativeLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-                <TextView
-                    android:id="@+id/tv_delete"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="取消支付"
-                    android:gravity="center"
-                    android:focusable="false"
-                    />
-            </RelativeLayout>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="80dp"
+            android:layout_height="30dp"
+            android:text="取消支付"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/textview_clicked"
+            android:textColor="@drawable/textview_pressed"
+            android:focusable="false"
+            android:visibility="visible"
+        />
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<RelativeLayout-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--&gt;-->
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_pay"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="继续支付"-->
+                    <!--android:focusable="false"-->
+                    <!--/>-->
+            <!--</RelativeLayout>-->
+            <!--<View-->
+                <!--android:layout_width="0.5dp"-->
+                <!--android:layout_height="30dp"-->
+                <!--android:background="#c1c1c1"-->
+                <!--android:layout_alignRight="@+id/tv_finish"-->
+                <!--android:layout_gravity="center"/>-->
+            <!--<RelativeLayout-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1">-->
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_delete"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:text="取消支付"-->
+                    <!--android:gravity="center"-->
+                    <!--android:focusable="false"-->
+                    <!--/>-->
+            <!--</RelativeLayout>-->
+        <!--</LinearLayout>-->
     </RelativeLayout>
 
-    <RelativeLayout
 
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/rl_bottom"
-        android:background="@color/bg_gray"
-        android:layout_marginTop="5dp">
-    </RelativeLayout>
 </RelativeLayout>

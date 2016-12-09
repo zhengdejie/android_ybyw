@@ -18,8 +18,8 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_require"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
                 android:src="@drawable/helporder"
                 android:layout_margin="10dp"
@@ -39,8 +39,8 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_recommend"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_margin="10dp"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/serviceorder"/>
@@ -59,8 +59,8 @@
             android:layout_weight="1">
             <ImageView
                 android:id="@+id/iv_question"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_margin="10dp"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/questionorder"/>
@@ -80,14 +80,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="20dp">
 
 
         <ImageView
             android:id="@+id/iv_center"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_marginBottom="20dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="15dp"
             android:layout_gravity="center"
             android:src="@drawable/homecancel" />
     </LinearLayout>

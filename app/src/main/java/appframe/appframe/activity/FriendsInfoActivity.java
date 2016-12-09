@@ -162,6 +162,15 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                 }
             }
 
+            if(orderDetails.getOrderer().getGender().equals(getResources().getString(R.string.male)))
+            {
+                iv_gender.setImageResource(R.drawable.male);
+            }
+            else
+            {
+                iv_gender.setImageResource(R.drawable.female);
+            }
+
             if(orderDetails.getOrderer().isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
@@ -232,6 +241,16 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     iv_gender.setImageResource(R.drawable.female);
                 }
             }
+
+            if(userDetail.getGender().equals(getResources().getString(R.string.male)))
+            {
+                iv_gender.setImageResource(R.drawable.male);
+            }
+            else
+            {
+                iv_gender.setImageResource(R.drawable.female);
+            }
+
             if(userDetail.isShowRevenue())
             {
                 rl_revenue.setVisibility(View.VISIBLE);
@@ -285,6 +304,14 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
                     iv_gender.setImageResource(R.drawable.female);
                 }
+            }
+            if(nearby.getGender().equals(getResources().getString(R.string.male)))
+            {
+                iv_gender.setImageResource(R.drawable.male);
+            }
+            else
+            {
+                iv_gender.setImageResource(R.drawable.female);
             }
             if (nearby.getYBAccount() != null && !nearby.getYBAccount().equals("")) {
                 tv_fbnum.setText("友帮号: " + nearby.getYBAccount());
@@ -366,6 +393,14 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     iv_gender.setImageResource(R.drawable.female);
                 }
             }
+            if(candidate.getGender().equals(getResources().getString(R.string.male)))
+            {
+                iv_gender.setImageResource(R.drawable.male);
+            }
+            else
+            {
+                iv_gender.setImageResource(R.drawable.female);
+            }
             tv_showdistrict.setText(candidate.getLocation());
             userBrief = candidate;
             if(candidate.isShowRevenue())
@@ -434,6 +469,14 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
                     iv_gender.setImageResource(R.drawable.female);
                 }
+            }
+            if(question.getAsker().getGender().equals(getResources().getString(R.string.male)))
+            {
+                iv_gender.setImageResource(R.drawable.male);
+            }
+            else
+            {
+                iv_gender.setImageResource(R.drawable.female);
             }
             tv_showdistrict.setText(question.getAsker().getLocation());
             userBrief = question.getAsker();
@@ -504,6 +547,14 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     iv_gender.setImageResource(R.drawable.female);
                 }
             }
+            if(questionDetails.getAsker().getGender().equals(getResources().getString(R.string.male)))
+            {
+                iv_gender.setImageResource(R.drawable.male);
+            }
+            else
+            {
+                iv_gender.setImageResource(R.drawable.female);
+            }
             tv_showdistrict.setText(questionDetails.getAsker().getLocation());
             userBrief = questionDetails.getAsker();
             if(questionDetails.getAsker().isShowRevenue())
@@ -573,6 +624,14 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                     iv_gender.setImageResource(R.drawable.female);
                 }
             }
+            if(pushMessage.getSender().getGender().equals(getResources().getString(R.string.male)))
+            {
+                iv_gender.setImageResource(R.drawable.male);
+            }
+            else
+            {
+                iv_gender.setImageResource(R.drawable.female);
+            }
             tv_showdistrict.setText(pushMessage.getSender().getLocation());
             userBrief = pushMessage.getSender();
             if(pushMessage.getSender().isShowRevenue())
@@ -636,6 +695,13 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
                         {
                             iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
                         }
+                    }
+                    if(result.getGender().equals(getResources().getString(R.string.male))) {
+                        iv_gender.setImageResource(R.drawable.male);
+                    }
+                    else
+                    {
+                        iv_gender.setImageResource(R.drawable.female);
                     }
                     tv_showdistrict.setText(result.getLocation());
 //                    UserID = String.valueOf(result.getId());

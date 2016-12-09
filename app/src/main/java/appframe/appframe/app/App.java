@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.alibaba.mobileim.YWAPI;
 import com.alibaba.mobileim.YWIMKit;
+import com.alibaba.mobileim.aop.AdviceBinder;
+import com.alibaba.mobileim.aop.PointCutEnum;
 import com.alibaba.wxlib.util.SysUtil;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -25,6 +27,7 @@ import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.ChattingOperationCustomSample;
 import appframe.appframe.utils.ConfigCache;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.InitHelper;
@@ -70,6 +73,7 @@ public class App extends android.support.multidex.MultiDexApplication {
         //初始化云旺SDK
         InitHelper.initYWSDK(this);
 
+        AdviceBinder.bindAdvice(PointCutEnum.CHATTING_FRAGMENT_POINTCUT, ChattingOperationCustomSample.class);
         Log.setEnabled(true);
         Log.setLog2ConsoleEnabled(true);
 

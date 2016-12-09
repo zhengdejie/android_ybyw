@@ -41,6 +41,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.mobileim.aop.Advice;
+import com.alibaba.mobileim.aop.Pointcut;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
@@ -58,6 +60,7 @@ import appframe.appframe.dto.OrderComment;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.PayResult;
 import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.ChattingOperationCustomSample;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
@@ -187,7 +190,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
             case R.id.imgbtn_conversation:
                 LoginSampleHelper ls = LoginSampleHelper.getInstance();
                 String target = String.valueOf(orderDetails.getOrderer().getId());
-                intent = ls.getIMKit().getChattingActivityIntent(target);
+                intent = ls.getIMKit().getChattingActivityIntent(target,LoginSampleHelper.APP_KEY);
                 startActivity(intent);
                 break;
             case R.id.imgbtn_call:
@@ -209,7 +212,10 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                 break;
             case R.id.tb_back:
                 finish();
-                startActivity(new Intent(this,HomeActivity.class));
+                /////////接单通知走这里/////////////////
+                if(getintent.getStringExtra("OrderIdFromPushDemoReceiver") != null) {
+                    startActivity(new Intent(this, HomeActivity.class));
+                }
                 break;
             case R.id.btn_select:
                 if(btn_select.getText().equals("候选接单人"))

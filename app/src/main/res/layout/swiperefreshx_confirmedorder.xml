@@ -207,7 +207,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/shape_tagview"
+            android:background="@drawable/textview_clicked"
             android:textColor="@drawable/textview_pressed"
             />
         <TextView
@@ -219,8 +219,8 @@
             android:layout_toLeftOf="@+id/tv_estimate"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/shape_tagview"
-            android:textColor="@color/white"
+            android:background="@drawable/textview_clicked"
+            android:textColor="@drawable/textview_pressed"
             android:visibility="gone"
             />
         <TextView

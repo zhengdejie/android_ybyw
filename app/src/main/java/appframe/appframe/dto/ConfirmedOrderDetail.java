@@ -67,6 +67,11 @@ public class ConfirmedOrderDetail extends Http.BaseDto implements Serializable {
         return CompleteDate;
     }
 
+    public String getCompleteDatewithouttime()
+    {
+        return CompleteDate.split(" ")[0];
+    }
+
     public void setCompleteDate(String completeDate) {
         CompleteDate = completeDate;
     }

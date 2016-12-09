@@ -19,7 +19,7 @@
         android:id="@+id/bottomLine"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="#FF3BBD79"
+        android:background="#008cee"
         android:layout_alignParentBottom="true"
         android:visibility="visible"
         />

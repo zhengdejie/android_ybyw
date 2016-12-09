@@ -58,6 +58,8 @@ import java.util.Map;
 
 import appframe.appframe.activity.LoginActivity;
 
+import static android.R.string.no;
+
 /**
  * Created by dashi on 15/6/10.
  */
@@ -277,6 +279,10 @@ public final class Http {
                                 Toast.makeText(context,message,Toast.LENGTH_SHORT).show();
                             }
                         }
+
+                    }
+                    else if(message.equals("no authorization header"))
+                    {
 
                     }
                     else

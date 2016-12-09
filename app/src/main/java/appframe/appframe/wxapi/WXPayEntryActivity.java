@@ -18,8 +18,12 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.HomeActivity;
+import appframe.appframe.activity.OrderSendActivity;
+import appframe.appframe.activity.PayActivity;
+import appframe.appframe.activity.QuestionSendActivity;
 import appframe.appframe.app.App;
 import appframe.appframe.app.AppConfig;
+import appframe.appframe.utils.Utils;
 
 /**
  * Created by Administrator on 2016/3/28.
@@ -62,6 +66,12 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 //            builder.setMessage(getString(R.string.pay_result_callback_msg, String.valueOf(resp.errCode)));
 //            builder.show();
             if(resp.errCode == 0) {
+                if(OrderSendActivity.instance != null) {
+                    OrderSendActivity.instance.finish();
+                }
+                if(QuestionSendActivity.instance != null) {
+                    QuestionSendActivity.instance.finish();
+                }
                 Toast.makeText(WXPayEntryActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
 //                startActivity(new Intent(WXPayEntryActivity.this, HomeActivity.class));
                 finish();

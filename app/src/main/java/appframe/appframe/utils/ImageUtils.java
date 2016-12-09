@@ -12,6 +12,7 @@ import com.android.volley.toolbox.Volley;
 
 import appframe.appframe.app.App;
 import appframe.appframe.app.AppConfig;
+import uk.co.senab.photoview.PhotoView;
 
 /**
  * Created by dashi on 15/6/21.
@@ -111,6 +112,7 @@ public class ImageUtils {
         niv.setImageUrl(getImageUrl(imageId, width, height), ImageUtils.getImageLoader());
     }
 
+    //type == 0   按控件尺寸显示图片   1  原图
     public static void setImageUrl(NetworkImageView niv, String imageId, String type){
         DisplayMetrics displayMetrics = niv.getContext().getResources()
                 .getDisplayMetrics();
@@ -147,9 +149,16 @@ public class ImageUtils {
         {
             height = displayMetrics.heightPixels;
         }
-
-        niv.setImageUrl(getImageUrl(imageId, width, height,"0"), ImageUtils.getImageLoader());
+        if(type.equals("0")) {
+            niv.setImageUrl(getImageUrl(imageId, width, height, "0"), ImageUtils.getImageLoader());
+        }
+        else
+        {
+            niv.setImageUrl(getImageUrl(imageId), ImageUtils.getImageLoader());
+        }
     }
+
+
 
     public static String getImageUrl(String imageId, int w, int h){
         return AppConfig.QINIU_HOST + imageId + "?imageView2/1/w/" + w + "/h/" + h;

@@ -238,14 +238,14 @@
                     <appframe.appframe.widget.tagview.TagView
                         android:id="@+id/tagview"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:paddingLeft="20dp"
                         android:layout_toRightOf="@+id/tv_tag"
                         app:lineMargin="5dp"
                         app:tagMargin="3dp"
                         app:textPaddingBottom="3dp"
-                        app:textPaddingLeft="10dp"
-                        app:textPaddingRight="10dp"
+                        app:textPaddingLeft="5dp"
+                        app:textPaddingRight="5dp"
                         app:textPaddingTop="3dp"
 
                         />
@@ -262,9 +262,9 @@
                     android:ellipsize="marquee"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:drawableLeft="@drawable/ic_add_black_24dp"
+
                     android:paddingLeft="20dp"
-                    android:text="添加标签"/>
+                    android:text="+添加标签"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -476,6 +476,44 @@
 
                 </RelativeLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/bg_gray"
+                    />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/edit_require"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="@drawable/editext_none"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:inputType="textMultiLine"
+                        android:hint="描述一下对接单人的要求,让对接跟高效"
+                        android:textSize="14sp"
+                        android:maxLength="250"
+                        android:gravity="top"/>
+                    <TextView
+                        android:id="@+id/tv_requirecount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:text="0/250"
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:textColor="@color/font_gray"
+                        android:paddingRight="20dp"
+                        android:layout_below="@+id/edit_require"
+                        android:textSize="14sp"/>
+
+                </RelativeLayout>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -494,20 +532,7 @@
 
         </ScrollView>
 
-        <EditText
-            android:id="@+id/edit_content2"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@drawable/editext_none"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:inputType="textMultiLine"
-            android:hint="描述一下您的服务,让大家更感兴趣"
-            android:textSize="14sp"
-            android:maxLength="250"
-            android:gravity="top"/>
+
 
     </RelativeLayout>
 

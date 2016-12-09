@@ -125,7 +125,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
             mHolder.gridView = (GridView)convertView.findViewById(R.id.gridview);
             mHolder.iv_gender = (ImageView)convertView.findViewById(R.id.iv_gender);
             mHolder.tv_tags = (appframe.appframe.widget.tagview.TagView)convertView.findViewById(R.id.tv_tags);
-            mHolder.tv_fans = (TextView)convertView.findViewById(R.id.tv_fans);
+//            mHolder.tv_fans = (TextView)convertView.findViewById(R.id.tv_fans);
             mHolder.tv_focus = (TextView)convertView.findViewById(R.id.tv_focus);
             convertView.setTag(mHolder);
         }
@@ -298,7 +298,7 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
 //        }
         if(item.getType() == 1) {
             mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalWorkerPoint());
-            mHolder.tv_pay.setVisibility(View.GONE);
+            mHolder.tv_pay.setVisibility(View.INVISIBLE);
         }
         else if(item.getType() == 2) {
             mHolder.rb_totalvalue.setRating((float) item.getOrderer().getTotalBossPoint());
@@ -320,10 +320,11 @@ public class SwipeRefreshXOrderAdapater extends BaseAdapter {
         }
         else
         {
-            mHolder.tv_pay.setText("未支付");
+            mHolder.tv_pay.setVisibility(View.INVISIBLE);
+//            mHolder.tv_pay.setText("未支付");
         }
-        mHolder.tv_numofconforder.setText(String.format("(友帮%d次)", item.getOrderer().getCompletedNumberOfOrder()));
-        mHolder.tv_fans.setText(String.format("%d粉丝", item.getOrderer().getNumberofFans()));
+        mHolder.tv_numofconforder.setText(String.format("%d次友帮|%d粉丝", item.getOrderer().getCompletedNumberOfOrder(),item.getOrderer().getNumberofFans()));
+//        mHolder.tv_fans.setText(String.format("%d粉丝", item.getOrderer().getNumberofFans()));
         if(item.getNameAnonymity() ==1 || item.getOrderer().getName().equals(Auth.getCurrentUser().getName()))
         {
             mHolder.tv_focus.setVisibility(View.INVISIBLE);

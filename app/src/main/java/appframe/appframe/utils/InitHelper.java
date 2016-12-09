@@ -31,7 +31,8 @@ public class InitHelper {
 			// ------[todo step2]-------------
 			//SDK初始化
 			LoginSampleHelper.getInstance().initSDK_Sample(application);
-
+			//自定义头像和昵称回调初始化(如果不需要自定义头像和昵称，则可以省去)
+			UserProfileSampleHelper.initProfileCallback();
 			//后期将使用Override的方式进行集中配置，请参照YWSDKGlobalConfigSample
 			YWAPI.enableSDKLogOutput(true);
 

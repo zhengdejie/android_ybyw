@@ -32,9 +32,9 @@ public class ViewPagerActivity extends BaseActivity implements View.OnClickListe
     private TextView tv_skip;
 
     //引导图片资源
-    private static final int[] pics = { R.drawable.logo,
-            R.drawable.logo, R.drawable.logo,
-            R.drawable.logo };
+    private static final int[] pics = { R.drawable.navigationone,
+            R.drawable.navigationtwo, R.drawable.navigationthree,
+            R.drawable.navigationfour };
 
     //底部小店图片
     private ImageView[] dots ;

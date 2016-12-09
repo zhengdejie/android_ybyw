@@ -332,7 +332,15 @@ public class EditSignatureActivity extends BaseActivity implements View.OnClickL
 //                            }
 //                        });
                     }
+                    else
+                    {
+                        progress_bar.setVisibility(View.GONE);
+                    }
 //                    ImageUtils.setImageUrl(iv_showavatar, result.getPhotos());
+                }
+                else
+                {
+                    progress_bar.setVisibility(View.GONE);
                 }
             }
         });

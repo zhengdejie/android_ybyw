@@ -1,5 +1,6 @@
 package appframe.appframe.activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Service;
 import android.app.TimePickerDialog;
@@ -105,7 +106,7 @@ import appframe.appframe.widget.tagview.TagView;
  * Created by Administrator on 2015/8/12.
  */
 public class OrderSendActivity extends BaseActivity implements View.OnTouchListener{
-    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_progress_content,tv_addtag,tv_title,btn_send,tv_titlecount,tv_contentcount,tv_top;
+    private TextView txt_deadlinedate,txt_deadlinetime,txt_location,tb_back,tb_title,tv_progress_content,tv_addtag,tv_title,btn_send,tv_titlecount,tv_contentcount,tv_top,tv_requirecount;
     private EditText edit_title,edit_bounty,edit_content,edit_require,edit_tag;
     private Spinner spinner_category,spinner_range;
     private RadioButton radio_online,radio_offline;
@@ -144,12 +145,14 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
     public UserLocation userLocation = new UserLocation();
+    public static Activity instance = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        Log.i("onCreate","savedInstanceState");
         setContentView(R.layout.activity_ordersend);
+        instance = this;
         init();
         initData();
         initView();
@@ -244,6 +247,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                                 Toast.makeText(OrderSendActivity.this, "金额不能小于0.01元", Toast.LENGTH_SHORT).show();
                             }
                             else {
+                                tag.delete( 0, sb.length() );
                                 progress_bar.setVisibility(View.VISIBLE);
                                 for (Tag tags : tagView.getTags()) {
                                     tag.append("," + tags.text);
@@ -266,26 +270,26 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                                             "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
                                             "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
                                             "Photos", "",
-//                                        "Request", edit_require.getText().toString(),
+                                            "Request", edit_require.getText().toString(),
                                             "Type", Type,
                                             "Tags", tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
                                     ), new Http.RequestListener<OrderDetails>() {
                                         @Override
                                         public void onSuccess(OrderDetails result) {
                                             super.onSuccess(result);
-                                            Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
+//                                            Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
                                             progress_bar.setVisibility(View.GONE);
-                                            removeTempFromPref();
-                                            mDataList.clear();
+//                                            removeTempFromPref();
+//                                            mDataList.clear();
                                             if (radio_online.isChecked() == true && Type.equals("2")) {
                                                 intent.setClass(OrderSendActivity.this, PayActivity.class);
                                                 bundle.putSerializable("OrderDetails", result);
                                                 intent.putExtras(bundle);
                                                 startActivity(intent);
                                             } else {
-
+                                                finish();
                                             }
-                                            finish();
+//                                            finish();
                                         }
 
                                         @Override
@@ -317,6 +321,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                                                             return;
                                                         }
                                                         upload_iamge_num++;
+                                                        sb.delete( 0, sb.length() );
                                                         sb.append(",").append(id);
                                                         if (upload_iamge_num == mDataList.size()) {
                                                             Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
@@ -336,7 +341,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                                                                     "LocationAnonymity", checkBox_donotshowlocation.isChecked() ? "1" : "0",
                                                                     "PhoneAnonymity", checkBox_donotshowphonenum.isChecked() ? "1" : "0",
                                                                     "Photos", sb.deleteCharAt(0).toString(),
-//                                                                "Request", edit_require.getText().toString(),
+                                                                    "Request", edit_require.getText().toString(),
                                                                     "Type", Type,
                                                                     "Tags", tag.length() == 0 ? "" : tag.deleteCharAt(0).toString()
                                                             ), new Http.RequestListener<OrderDetails>() {
@@ -344,10 +349,10 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                                                                 public void onSuccess(OrderDetails result) {
                                                                     super.onSuccess(result);
                                                                     progress_bar.setVisibility(View.GONE);
-                                                                    Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
+//                                                                    Toast.makeText(OrderSendActivity.this, "发单成功", Toast.LENGTH_SHORT).show();
                                                                     upload_iamge_num = 0;
-                                                                    removeTempFromPref();
-                                                                    mDataList.clear();
+//                                                                    removeTempFromPref();
+//                                                                    mDataList.clear();
                                                                     if (radio_online.isChecked() == true && Type.equals("2")) {
                                                                         intent.setClass(OrderSendActivity.this, PayActivity.class);
                                                                         bundle.putSerializable("OrderDetails", result);
@@ -355,9 +360,9 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                                                                         startActivity(intent);
 
                                                                     } else {
-
+                                                                        finish();
                                                                     }
-                                                                    finish();
+//                                                                    finish();
 
                                                                 }
 
@@ -394,7 +399,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
 
     protected void onPause()
     {
-        Log.i("onPause", "");
+
         super.onPause();
         saveTempToPref();
         MobclickAgent.onPageEnd("发单页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
@@ -480,7 +485,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
 
     @Override
     protected void onResume()
-    {Log.i("onResume","");
+    {
         super.onResume();
         if(getIntent().getStringExtra("TagName") != null && !getIntent().getStringExtra("TagName").equals("")) {
             String tagTitle = getIntent().getStringExtra("TagName");
@@ -499,6 +504,10 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                 tag.isDeletable = true;
                 tagView.addTag(tag);
             }
+            else
+            {
+//                Toast.makeText(OrderSendActivity.this,"已存在重复标签,请重新添加",Toast.LENGTH_SHORT).show();
+            }
         }
         notifyDataChanged(); //当在ImageZoomActivity中删除图片时，返回这里需要刷新
         MobclickAgent.onPageStart("发单页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
@@ -508,9 +517,10 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("onDestroy","");
+
         removeTempFromPref();
         mDataList.clear();
+        instance = null;
     }
 
     private void notifyDataChanged()
@@ -885,6 +895,24 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
         startActivityForResult(intent, PHOTO_RESOULT);
     }
 
+    private TextWatcher requireWatcher = new TextWatcher(){
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            tv_requirecount.setText(String.format("%d/250",s.length()));
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
+
     private TextWatcher contentWatcher = new TextWatcher(){
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -971,6 +999,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
         tb_title = (TextView)findViewById(R.id.tb_title);
         tv_titlecount = (TextView)findViewById(R.id.tv_titlecount);
         tv_contentcount = (TextView)findViewById(R.id.tv_contentcount);
+        tv_requirecount = (TextView)findViewById(R.id.tv_requirecount);
 //        iv_avatar = (com.android.volley.toolbox.NetworkImageView)findViewById(R.id.iv_avatar);
 //        tv_name = (TextView)findViewById(R.id.tv_name);
         rb_totalvalue = (RatingBar)findViewById(R.id.rb_totalvalue);
@@ -980,6 +1009,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
         tv_top = (TextView)findViewById(R.id.tv_top);
 
         edit_content = (EditText)findViewById(R.id.edit_content);
+        edit_require = (EditText)findViewById(R.id.edit_require);
         radio_online = (RadioButton)findViewById(R.id.radio_online);
         radio_offline = (RadioButton)findViewById(R.id.radio_offline);
         checkBox_anonymous = (CheckBox)findViewById(R.id.checkBox_anonymous);
@@ -999,6 +1029,18 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
         edit_bounty.addTextChangedListener(textWatcher);
         edit_title.addTextChangedListener(titleWatcher);
         edit_content.addTextChangedListener(contentWatcher);
+        edit_content.setOnTouchListener(this);
+        edit_require.addTextChangedListener(requireWatcher);
+        edit_require.setOnTouchListener(this);
+        txt_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //百度地图定位
+                BaiduLocation baiduLocation = new BaiduLocation(getApplicationContext(),new MyLocationListener());
+                baiduLocation.setOption();
+                baiduLocation.mLocationClient.start();
+            }
+        });
 //        tv_name.setText(Auth.getCurrentUser().getName());
 //        rb_totalvalue.setRating(Auth.getCurrentUser().getTotalPoint());
 
@@ -1243,6 +1285,18 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
             {
                 view.getParent().requestDisallowInterceptTouchEvent(false);
             }
+        }
+        else if ((view.getId() == R.id.edit_require && canVerticalScroll(edit_require)))
+        {
+            view.getParent().requestDisallowInterceptTouchEvent(true);
+            if (event.getAction() == MotionEvent.ACTION_UP)
+            {
+                view.getParent().requestDisallowInterceptTouchEvent(false);
+            }
+        }
+        else
+        {
+
         }
 
         return false;

@@ -39,6 +39,7 @@ import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Arith;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.Utils;
 
 /**
  * Created by Administrator on 2016/2/18.
@@ -76,6 +77,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                     String resultStatus = payResult.getResultStatus();
                     // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
                     if (TextUtils.equals(resultStatus, "9000")) {
+                        if(OrderSendActivity.instance != null) {
+                            OrderSendActivity.instance.finish();
+                        }
+                        if(QuestionSendActivity.instance != null) {
+                            QuestionSendActivity.instance.finish();
+                        }
                         Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
 //                        startActivity(new Intent(PayActivity.this, HomeActivity.class));
                         finish();
@@ -294,10 +301,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                                     PayTask alipay = new PayTask(PayActivity.this);
                                                     // 调用支付接口，获取支付结果
                                                     String resultInfo = alipay.pay(result.getSign(), true);
-
+//                                                    Bundle bundle = new Bundle();
+//                                                    bundle.putString("orderDetails","orderDetails");
                                                     Message msg = new Message();
                                                     msg.what = SDK_PAY_FLAG;
                                                     msg.obj = resultInfo;
+//                                                    msg.setData(bundle);
                                                     mHandler.sendMessage(msg);
                                                 }
                                             };
@@ -1095,7 +1104,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                     @Override
                                     public void onSuccess(OnlinePay result) {
                                         super.onSuccess(result);
-
+                                        if(OrderSendActivity.instance != null) {
+                                            OrderSendActivity.instance.finish();
+                                        }
+                                        if(QuestionSendActivity.instance != null) {
+                                            QuestionSendActivity.instance.finish();
+                                        }
                                         Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
 //                                        startActivity(new Intent(PayActivity.this, HomeActivity.class));
                                         finish();
@@ -1297,7 +1311,12 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                                     @Override
                                     public void onSuccess(OnlinePay result) {
                                         super.onSuccess(result);
-
+                                        if(OrderSendActivity.instance != null) {
+                                            OrderSendActivity.instance.finish();
+                                        }
+                                        if(QuestionSendActivity.instance != null) {
+                                            QuestionSendActivity.instance.finish();
+                                        }
                                         Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
 //                                        startActivity(new Intent(PayActivity.this, HomeActivity.class));
                                         finish();

@@ -1,5 +1,6 @@
 package appframe.appframe.widget.swiperefresh;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -24,9 +25,14 @@ import appframe.appframe.R;
 import appframe.appframe.activity.AvatarZoomActivity;
 import appframe.appframe.activity.FriendsInfoActivity;
 import appframe.appframe.activity.QuestionDetailsActivity;
+import appframe.appframe.app.API;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.Question;
+import appframe.appframe.utils.Auth;
+import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
+
+import static appframe.appframe.R.id.tv_focus;
 
 /**
  * Created by Administrator on 2016/5/18.
@@ -89,6 +95,7 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
             mHolder.tv_numofconforder = (TextView)convertView.findViewById(R.id.tv_numofconforder);
             mHolder.gridView = (GridView)convertView.findViewById(R.id.gridview);
             mHolder.iv_gender = (ImageView)convertView.findViewById(R.id.iv_gender);
+            mHolder.tv_focus = (TextView)convertView.findViewById(R.id.tv_focus);
 
             convertView.setTag(mHolder);
         }
@@ -247,7 +254,27 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
         {
             mHolder.tv_pay.setText("悬赏中");
         }
-        mHolder.tv_numofconforder.setText(String.format("(友帮了%d次)", item.getAsker().getCompletedNumberOfOrder()));
+//        mHolder.tv_numofconforder.setText(String.format("(友帮了%d次)", item.getAsker().getCompletedNumberOfOrder()));
+        mHolder.tv_numofconforder.setText(String.format("%d次友帮|%d粉丝", item.getAsker().getCompletedNumberOfOrder(),item.getAsker().getNumberofFans()));
+
+        if( item.getAsker().getName().equals(Auth.getCurrentUser().getName()))
+        {
+            mHolder.tv_focus.setVisibility(View.INVISIBLE);
+        }
+        else
+        {
+            mHolder.tv_focus.setVisibility(View.VISIBLE);
+        }
+        if(item.getAsker().isFans())
+        {
+            mHolder.tv_focus.setEnabled(false);
+            mHolder.tv_focus.setText("已关注");
+        }
+        else
+        {
+            mHolder.tv_focus.setEnabled(true);
+            mHolder.tv_focus.setText("+关注");
+        }
 //        mHolder.btn_finish.setVisibility(View.GONE);
 //        mHolder.btn_candidate.setVisibility(View.GONE);
 //        switch (from)
@@ -299,7 +326,51 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
 //                mHolder.ll_button.setVisibility(View.GONE);
 //                break;
 //        }
+        mHolder.tv_focus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mHolder.tv_focus.getText().equals("+关注"))
+                {
+                    Http.request((Activity)context, API.ADDFANS,
+                            Http.map("Fans", String.valueOf(Auth.getCurrentUserId()),
+                                    "Celebrity", String.valueOf(item.getAsker().getId())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+//                                    Toast.makeText(context, "关注成功", Toast.LENGTH_SHORT).show();
+                                    mHolder.tv_focus.setEnabled(false);
+                                    mHolder.tv_focus.setText("已关注");
+                                    item.getAsker().setIsFans(true);
+                                }
 
+                                @Override
+                                public void onFail(String code) {
+                                    super.onFail(code);
+                                }
+                            });
+                }
+//                else
+//                {
+//                    Map<String, String> map = new HashMap<String, String>();
+//                    map.put("Id", String.valueOf(item.getOrderer().getId()));
+//                    Http.request((Activity)context, API.DELETEFANS,new Object[]{Http.getURL(map)},
+//                            new Http.RequestListener<String>() {
+//                                @Override
+//                                public void onSuccess(String result) {
+//                                    super.onSuccess(result);
+////                                    Toast.makeText(FriendsInfoActivity.this, "取消关注成功", Toast.LENGTH_SHORT).show();
+//                                    mHolder.tv_focus.setText("+关注");
+//                                }
+//
+//                                @Override
+//                                public void onFail(String code) {
+//                                    super.onFail(code);
+//                                }
+//                            });
+//                }
+            }
+        });
 
 
         mHolder.iv_avatar.setOnClickListener(new View.OnClickListener() {
@@ -449,7 +520,7 @@ public class SwipeRefreshXQuestionAdapater extends BaseAdapter {
     static class ViewHolder
     {
         //        private TextView txt_title,txt_bounty,txt_type,txt_location,tv_time,tv_name,tv_pay,tv_numofconforder,txt_tag;
-        private TextView txt_title,txt_bounty,tv_name,tv_pay,tv_numofconforder,tv_content,tv_answerunm;
+        private TextView txt_title,txt_bounty,tv_name,tv_pay,tv_numofconforder,tv_content,tv_answerunm,tv_focus;
         private com.android.volley.toolbox.NetworkImageView niv_avatar;
         //        private Button btn_estimate,btn_finish,btn_candidate;
         private RatingBar rb_totalvalue;

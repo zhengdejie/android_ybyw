@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -66,11 +67,21 @@ public class SearchTagActivity extends BaseActivity implements View.OnClickListe
 //                Bundle bundle = new Bundle();
 //                bundle.putSerializable("SearchOrderTagResponse", searchOrderTagResponse);
                 if (position == 0) {
-                    intent.putExtra("TagName", searchOrderTagResponse.substring(6));
+                    if(searchOrderTagResponse.substring(6).length() > 5)
+                    {
+                        Toast.makeText(SearchTagActivity.this,"标签字数不能超过5个字符",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        intent.putExtra("TagName", searchOrderTagResponse.substring(6));
+                        startActivity(intent);
+                    }
+
                 } else {
                     intent.putExtra("TagName", searchOrderTagResponse);
+                    startActivity(intent);
                 }
-                startActivity(intent);
+
             }
         });
         et_search.addTextChangedListener(textWatcher);

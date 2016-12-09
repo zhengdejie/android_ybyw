@@ -135,8 +135,8 @@ public class OrderFragment extends BaseFragment  {
     private static final int ID_SELECT_OFFLINE = 154;
     private static final int ID_SELECT_ONLINE = 155;
 //    private static final String SELECT_ALL = "筛选";
-    private static final String SELECT_FIRST = "一度朋友";
-    private static final String SELECT_SECOND = "二度朋友";
+    private static final String SELECT_FIRST = "一度好友";
+    private static final String SELECT_SECOND = "二度好友";
     private static final String SELECT_BOTH = "陌生人";
     private static final String SELECT_OFFLINE = "线下支付";
     private static final String SELECT_ONLINE = "线上支付";
@@ -163,8 +163,8 @@ public class OrderFragment extends BaseFragment  {
     private static final int ID_QUESTION_SELECT_BOTH = 303;
 
 
-    private static final String QUESTION_SELECT_FIRST = "一度朋友";
-    private static final String QUESTION_SELECT_SECOND = "二度朋友";
+    private static final String QUESTION_SELECT_FIRST = "一度好友";
+    private static final String QUESTION_SELECT_SECOND = "二度好友";
     private static final String QUESTION_SELECT_BOTH = "陌生人";
 
 
@@ -238,7 +238,7 @@ public class OrderFragment extends BaseFragment  {
     protected String TransferFriendsFilter(List<DropdownItemObject> DDIO)
     {
         StringBuilder friendsFilter = new StringBuilder();
-        for(DropdownItemObject currentMulti : dropdownSelect.currentMulti)
+        for(DropdownItemObject currentMulti : dropdownSelect.storedMulti)
         {
             if(currentMulti.id == ID_SELECT_FIRST) {
                 friendsFilter.append("," + currentMulti.text);
@@ -261,7 +261,7 @@ public class OrderFragment extends BaseFragment  {
     protected String TransferQuestionFriendsFilter(List<DropdownItemObject> DDIO)
     {
         StringBuilder friendsFilter = new StringBuilder();
-        for(DropdownItemObject currentMulti : dropdownQuestionSelect.currentMulti)
+        for(DropdownItemObject currentMulti : dropdownQuestionSelect.storedMulti)
         {
             if(currentMulti.id == ID_QUESTION_SELECT_FIRST) {
                 friendsFilter.append("," + currentMulti.text);
@@ -284,7 +284,7 @@ public class OrderFragment extends BaseFragment  {
     protected String TransferPaymentFilter(List<DropdownItemObject> DDIO)
     {
         StringBuilder paymentMethodFilter = new StringBuilder();
-        for(DropdownItemObject currentMulti : dropdownSelect.currentMulti)
+        for(DropdownItemObject currentMulti : dropdownSelect.storedMulti)
         {
             if(currentMulti.id == ID_SELECT_OFFLINE) {
                 paymentMethodFilter.append("," + currentMulti.text);
@@ -427,6 +427,9 @@ public class OrderFragment extends BaseFragment  {
         tv_require.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                dropdownSelect.currentMulti.clear();
+                dropdownSelect.storedMulti.clear();
                 dropdownButtonsController.hide();
                 tabs.setVisibility(View.VISIBLE);
                 question_tabs.setVisibility(View.GONE);
@@ -448,8 +451,8 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Category", dropdownType.current == null ? "" : dropdownType.current.text.toString().equals("全部分类") ? "" : String.valueOf(dropdownType.current.id)); //URLEncoder.encode(dropdownType.current.text.toString())
                 map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
-                map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
-                map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+                map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
+                map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
                 map.put("lantitude", String.valueOf(latitude));
                 map.put("longtitude", String.valueOf(longitude));
 
@@ -506,6 +509,9 @@ public class OrderFragment extends BaseFragment  {
         tv_recommand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                dropdownSelect.currentMulti.clear();
+                dropdownSelect.storedMulti.clear();
                 dropdownButtonsController.hide();
                 tabs.setVisibility(View.VISIBLE);
                 question_tabs.setVisibility(View.GONE);
@@ -527,8 +533,8 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Category", dropdownType.current == null ? "" : dropdownType.current.text.toString().equals("全部分类") ? "" :String.valueOf(dropdownType.current.id));
                 map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
-                map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
-                map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+                map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
+                map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
                 map.put("lantitude", String.valueOf(latitude));
                 map.put("longtitude", String.valueOf(longitude));
 
@@ -585,6 +591,9 @@ public class OrderFragment extends BaseFragment  {
         tv_question.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                dropdownQuestionSelect.currentMulti.clear();
+                dropdownQuestionSelect.storedMulti.clear();
                 dropdownButtonsController.hide();
                 tabs.setVisibility(View.GONE);
                 question_tabs.setVisibility(View.VISIBLE);
@@ -602,7 +611,7 @@ public class OrderFragment extends BaseFragment  {
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("Page", "1");
                 map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-                map.put("FriendShip",URLEncoder.encode(TransferQuestionFriendsFilter(dropdownQuestionSelect.currentMulti)));
+                map.put("FriendShip",URLEncoder.encode(TransferQuestionFriendsFilter(dropdownQuestionSelect.storedMulti)));
                 map.put("AcceptedAnswer",dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS_ALL) ? "" : dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS) ? "false" : "true");
                 map.put("SortByPriceHighToLow",dropdownQeustionMoney.current.text.toString().equals(QUESTION_ALL) ? "" : dropdownQeustionMoney.current.text.toString().equals(QUESTION_MONEY) ? "false":"true");
 
@@ -681,7 +690,7 @@ public class OrderFragment extends BaseFragment  {
                     Map<String, String> map = new HashMap<String, String>();
                     map.put("Page", "1");
                     map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-                    map.put("FriendShip",URLEncoder.encode(TransferFriendsFilter(dropdownQuestionSelect.currentMulti)));
+                    map.put("FriendShip",URLEncoder.encode(TransferFriendsFilter(dropdownQuestionSelect.storedMulti)));
                     map.put("AcceptedAnswer",dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS_ALL) ? "" : dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS) ? "false" : "true");
                     map.put("SortByPriceHighToLow",dropdownQeustionMoney.current.text.toString().equals(QUESTION_ALL) ? "" : dropdownQeustionMoney.current.text.toString().equals(QUESTION_MONEY) ? "false":"true");
 
@@ -720,8 +729,8 @@ public class OrderFragment extends BaseFragment  {
                     map.put("Category", dropdownType.current == null ? "" : dropdownType.current.text.toString().equals(TYPE_ALL) ? "" : String.valueOf(dropdownType.current.id));
                     map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
                     map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
-                    map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
-                    map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+                    map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
+                    map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
                     map.put("lantitude", String.valueOf(latitude));
                     map.put("longtitude", String.valueOf(longitude));
 
@@ -784,7 +793,7 @@ public class OrderFragment extends BaseFragment  {
                     Map<String, String> map = new HashMap<String, String>();
                     map.put("Page", String.valueOf(Page));
                     map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-                    map.put("FriendShip",URLEncoder.encode(TransferFriendsFilter(dropdownQuestionSelect.currentMulti)));
+                    map.put("FriendShip",URLEncoder.encode(TransferFriendsFilter(dropdownQuestionSelect.storedMulti)));
                     map.put("AcceptedAnswer",dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS_ALL) ? "" : dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS) ? "false" : "true");
                     map.put("SortByPriceHighToLow",dropdownQeustionMoney.current.text.toString().equals(QUESTION_ALL) ? "" : dropdownQeustionMoney.current.text.toString().equals(QUESTION_MONEY) ? "false":"true");
 
@@ -818,8 +827,8 @@ public class OrderFragment extends BaseFragment  {
                     map.put("Category", dropdownType.current == null ? "" : dropdownType.current.text.toString().equals("全部分类") ? "" : String.valueOf(dropdownType.current.id));
                     map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
                     map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
-                    map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
-                    map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+                    map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
+                    map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
                     map.put("lantitude", String.valueOf(latitude));
                     map.put("longtitude", String.valueOf(longitude));
                     map.put("orderCount", String.valueOf(OrderCount));
@@ -974,6 +983,10 @@ public class OrderFragment extends BaseFragment  {
                 mask.startAnimation(dropdown_mask_out);
             }
             currentDropdownList = null;
+            dropdownSelect.currentMulti.clear();
+            dropdownQuestionSelect.currentMulti.clear();
+            dropdownSelect.flushMultiStored();
+            dropdownQuestionSelect.flushMultiStored();
         }
 
         @Override
@@ -984,8 +997,8 @@ public class OrderFragment extends BaseFragment  {
             map.put("Category", dropdownType.current== null ? "" : dropdownType.current.text.toString().equals("全部分类") ? "" :String.valueOf(dropdownType.current.id));
             map.put("OrderBy", String.valueOf(TransferOrderBy(dropdownMulti.current.text)));
             map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
-            map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.currentMulti)));
-            map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.currentMulti)));
+            map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
+            map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
             map.put("lantitude", String.valueOf(latitude));
             map.put("longtitude", String.valueOf(longitude));
             map.put("Page", "1");
@@ -1226,7 +1239,7 @@ public class OrderFragment extends BaseFragment  {
                 Map<String, String> questionMap = new HashMap<String, String>();
                 questionMap.put("Page", "1");
                 questionMap.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-                questionMap.put("FriendShip",URLEncoder.encode(TransferFriendsFilter(dropdownQuestionSelect.currentMulti)));
+                questionMap.put("FriendShip",URLEncoder.encode(TransferFriendsFilter(dropdownQuestionSelect.storedMulti)));
                 questionMap.put("AcceptedAnswer",dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS_ALL) ? "" : dropdownQuestionStatus.current.text.toString().equals(QUESTION_STATUS) ? "false" : "true");
                 questionMap.put("SortByPriceHighToLow",dropdownQeustionMoney.current.text.toString().equals(QUESTION_ALL) ? "" : dropdownQeustionMoney.current.text.toString().equals(QUESTION_MONEY) ? "true":"false");
 

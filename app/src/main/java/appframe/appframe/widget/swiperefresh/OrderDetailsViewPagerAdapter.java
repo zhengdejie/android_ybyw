@@ -70,6 +70,7 @@ public class OrderDetailsViewPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, final int position) {
 //        return super.instantiateItem(container, position);
         ((ViewPager) container).addView(views.get(position), 0);
+
         views.get(position).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,12 +3,20 @@ package appframe.appframe.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.FloatMath;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +26,10 @@ import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.widget.swiperefresh.OrderDetailsViewPagerAdapter;
 import appframe.appframe.widget.swiperefresh.ViewPagerAdapter;
+import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
+
+import static android.R.attr.mode;
 
 /**
  * Created by Administrator on 2016-09-19.
@@ -40,6 +52,7 @@ public class OrderDetailsViewPager extends BaseActivity implements View.OnClickL
     //记录当前选中位置
     private int currentIndex;
 
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,16 +61,29 @@ public class OrderDetailsViewPager extends BaseActivity implements View.OnClickL
         getIntent = this.getIntent();
         views = new ArrayList<View>();
 
-        LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
 
         //初始化引导图片列表
 
         for (String photsCount : getIntent.getStringExtra("PhotoPath").toString().split(","))
         {
-            com.android.volley.toolbox.NetworkImageView iv = new com.android.volley.toolbox.NetworkImageView(this);
+            appframe.appframe.utils.PhotoView iv = new appframe.appframe.utils.PhotoView(this);
+//            com.android.volley.toolbox.NetworkImageView iv = new com.android.volley.toolbox.NetworkImageView(this);
             iv.setLayoutParams(mParams);
-            ImageUtils.setImageUrl(iv, photsCount);
+            ImageUtils.setImageUrl(iv, photsCount,"1");
+            iv.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+
+                @Override
+                public void onPhotoTap(View arg0, float arg1, float arg2) {
+                    finish();
+                }
+
+                @Override
+                public void onOutsidePhotoTap() {
+                    finish();
+                }
+            });
             views.add(iv);
         }
 
@@ -74,7 +100,9 @@ public class OrderDetailsViewPager extends BaseActivity implements View.OnClickL
 
     }
 
-//    private void initDots() {
+
+
+    //    private void initDots() {
 //        LinearLayout ll = (LinearLayout) findViewById(R.id.ll);
 //
 //        dots = new ImageView[pics.length];
@@ -90,6 +118,7 @@ public class OrderDetailsViewPager extends BaseActivity implements View.OnClickL
 //        currentIndex = 0;
 //        dots[currentIndex].setEnabled(false);//设置为白色，即选中状态
 //    }
+
 
     /**
      *设置当前的引导页

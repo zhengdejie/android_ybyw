@@ -5,12 +5,15 @@ package appframe.appframe.utils;
  */
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,6 +39,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,6 +51,8 @@ import appframe.appframe.activity.SplashActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.App;
 import appframe.appframe.dto.UserLocation;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 public final class Utils {
     static final String TAG = "Utils";
@@ -372,4 +380,24 @@ public final class Utils {
 
         return result;
     }
+
+//    public static List<ActivityManager.RunningTaskInfo> getActivities(Context ctx) {
+//        ActivityManager am = (ActivityManager) ctx.getSystemService(ACTIVITY_SERVICE);
+//        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(10);
+//        return list;
+//    }
+//
+//    public static boolean hasOrderSendActivity(Context ctx)
+//    {
+//        for(ActivityManager.RunningTaskInfo info : getActivities(ctx))
+//        {
+//
+//            if(info.baseActivity.getClassName().equals("appframe.appframe.activity.OrderSendActivity"))
+//            {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
 }

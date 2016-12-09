@@ -14,7 +14,8 @@ import appframe.appframe.utils.ImageUtils;
  */
 public class AvatarZoomActivity extends BaseActivity implements View.OnClickListener {
 
-    private com.android.volley.toolbox.NetworkImageView iv_showavatar;
+//    private com.android.volley.toolbox.NetworkImageView iv_showavatar;
+    private appframe.appframe.utils.MatrixImageView iv_showavatar;
     private RelativeLayout rl_avatarzoom;
 
     @Override
@@ -25,20 +26,20 @@ public class AvatarZoomActivity extends BaseActivity implements View.OnClickList
     }
     protected  void init() {
         rl_avatarzoom = (RelativeLayout) findViewById(R.id.rl_avatarzoom);
-        iv_showavatar = (com.android.volley.toolbox.NetworkImageView) findViewById(R.id.iv_showavatar);
+        iv_showavatar = (appframe.appframe.utils.MatrixImageView) findViewById(R.id.iv_showavatar);
         if (getIntent().getStringExtra("Avatar") != null && !getIntent().getStringExtra("Avatar").toString().equals("")) {
             ImageUtils.setImageUrl(iv_showavatar, getIntent().getStringExtra("Avatar").toString(), "0");
         }
-        rl_avatarzoom.setOnClickListener(this);
+//        iv_showavatar.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId())
         {
-            case R.id.rl_avatarzoom:
-                finish();
-                break;
+//            case R.id.iv_showavatar:
+//                finish();
+//                break;
         }
     }
 }

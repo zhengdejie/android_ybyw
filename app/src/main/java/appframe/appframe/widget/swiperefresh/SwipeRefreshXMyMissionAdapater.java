@@ -1,7 +1,9 @@
 package appframe.appframe.widget.swiperefresh;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -161,6 +163,8 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
         }
         else
         {
+//            mHolder.tv_pay.setEnabled(true);
+//            mHolder.tv_pay.setText("修改");
             mHolder.tv_status.setText("等待接单");
         }
 
@@ -237,6 +241,13 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
                     intent.putExtras(bundle);
                     context.startActivity(intent);
                 }
+//                else if(mHolder.tv_pay.getText().equals("修改"))
+//                {
+//                    intent.setClass(context, PayActivity.class);
+//                    bundle.putSerializable("Candidate", item);
+//                    intent.putExtras(bundle);
+//                    context.startActivity(intent);
+//                }
                 else
                 {
                     intent.setClass(context, CandidateActivity.class);
@@ -251,15 +262,28 @@ public class SwipeRefreshXMyMissionAdapater extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if(mHolder.tv_delete.getText().equals("删除")) {
-                    Http.request((Activity) context, API.CLOSE_ORDER, Http.map("Id", String.valueOf(item.getId())), new Http.RequestListener<String>() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("提示").setMessage("确认关闭任务,如果已经付款,款项会被退回到您的钱包").setPositiveButton("确认", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onSuccess(String result) {
-                            super.onSuccess(result);
-                            context.startActivity(new Intent(context, context.getClass()));
+                        public void onClick(DialogInterface dialog, int which) {
+                            Http.request((Activity) context, API.CLOSE_ORDER, Http.map("Id", String.valueOf(item.getId())), new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    context.startActivity(new Intent(context, context.getClass()));
 //                            orderDetails.remove(item);
 //                            notifyDataSetChanged();
+                                }
+                            });
+                            dialog.dismiss();
                         }
-                    });
+                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+
                 }
 
                 else

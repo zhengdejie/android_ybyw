@@ -179,7 +179,9 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                     @Override
                     public void onFail(String code) {
                         super.onFail(code);
-
+                        tv_apply.setText("0");
+                        tv_progess.setText("0");
+                        tv_done.setText("0");
                     }
                 });
 

@@ -32,13 +32,14 @@
 
     <TextView
         android:id="@+id/tb_action"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="10dp"
         android:textColor="@color/white"
-        android:gravity="center"
+        android:gravity="center_vertical"
+        android:padding="10dp"
         />
 
     <View

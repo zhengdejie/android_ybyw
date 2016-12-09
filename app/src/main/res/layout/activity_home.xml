@@ -58,7 +58,8 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/bg_gray"/>
+                    android:background="@color/more_bg_p"/>
+
                 <TextView
                     android:id="@+id/tv_ubang"
                     style="@style/tab_text_style"
@@ -82,7 +83,8 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/bg_gray"/>
+                    android:background="@color/more_bg_p"/>
+
                 <TextView
                     android:id="@+id/tv_myorder"
                     style="@style/tab_text_style"
@@ -105,7 +107,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/bg_gray"
+                    android:background="@color/more_bg_p"
                     />
             </FrameLayout>
 
@@ -118,7 +120,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/bg_gray"/>
+                    android:background="@color/more_bg_p"/>
                 <TextView
                     android:id="@+id/tv_discovery"
                     style="@style/tab_text_style"
@@ -145,7 +147,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/bg_gray"
+                    android:background="@color/more_bg_p"
                     />
                 <TextView
                     android:id="@+id/tv_setting"
@@ -196,10 +198,10 @@
         android:layout_marginBottom="45dp"/>
     <ImageView
         android:id="@+id/iv_center"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/homeadd2"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/homeadd"
         android:layout_gravity="center_horizontal|bottom" />
 </FrameLayout>
 

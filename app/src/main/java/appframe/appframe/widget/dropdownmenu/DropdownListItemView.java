@@ -27,6 +27,7 @@ public class DropdownListItemView extends TextView {
         setText(text);
         if (checked){
 //            setTextColor(Color.rgb(56, 171, 228));
+//            setTextColor(getResources().getColor(R.color.green));
             Drawable icon = getResources().getDrawable(R.drawable.ic_task_status_list_check);
             setCompoundDrawablesWithIntrinsicBounds(null,null,icon,null);
 //            Drawable icon = getResources().getDrawable(R.drawable.shape_tagview);

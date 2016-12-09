@@ -1,5 +1,6 @@
 package appframe.appframe.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -67,11 +68,14 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
     StringBuilder sb = new StringBuilder();
     public int upload_iamge_num = 0;
     private LinearLayout progress_bar;
+    public static Activity instance = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questionsend);
+        instance = this;
         init();
         initView();
         initData();
@@ -202,6 +206,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
         super.onDestroy();
         removeTempFromPref();
         mDataList.clear();
+        instance = null;
     }
 
     private void initData()
@@ -286,16 +291,16 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                                         public void onSuccess(Question result) {
                                             super.onSuccess(result);
                                             progress_bar.setVisibility(View.GONE);
-                                            mDataList.clear();
-                                            removeTempFromPref();
-                                            Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
+//                                            mDataList.clear();
+//                                            removeTempFromPref();
+//                                            Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent();
                                             Bundle bundle = new Bundle();
                                             intent.setClass(QuestionSendActivity.this, PayActivity.class);
                                             bundle.putSerializable("Question", result);
                                             intent.putExtras(bundle);
                                             startActivity(intent);
-                                            finish();
+//                                            finish();
 
                                         }
 
@@ -336,9 +341,9 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                                                                 public void onSuccess(Question result) {
                                                                     super.onSuccess(result);
                                                                     progress_bar.setVisibility(View.GONE);
-                                                                    mDataList.clear();
-                                                                    removeTempFromPref();
-                                                                    Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
+//                                                                    mDataList.clear();
+//                                                                    removeTempFromPref();
+//                                                                    Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
                                                                     Intent intent = new Intent();
                                                                     Bundle bundle = new Bundle();
                                                                     intent.setClass(QuestionSendActivity.this, PayActivity.class);

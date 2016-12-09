@@ -1,5 +1,6 @@
 package appframe.appframe.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -36,6 +38,8 @@ import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.Utils;
+
+import static appframe.appframe.R.id.et_price;
 
 /**
  * Created by dashi on 15/6/21.
@@ -94,7 +98,8 @@ public class LoginActivity extends BaseActivity {
                             @Override
                             public void onSuccess(AuthResult result) {
                                 super.onSuccess(result);
-
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(password.getWindowToken(), 0); //强制隐藏键盘
 
                                 Auth.login(result.Token, result.User);
 

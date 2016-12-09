@@ -27,6 +27,10 @@ import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.Question;
 import appframe.appframe.utils.Http;
 
+import static appframe.appframe.R.id.tv_delete;
+import static appframe.appframe.R.id.tv_pay;
+import static appframe.appframe.R.id.tv_status;
+
 /**
  * Created by Administrator on 2016/5/23.
  */
@@ -70,8 +74,9 @@ public class SwipeRefreshXMyQuestionAdapater extends BaseAdapter {
             mHolder.tv_content = (TextView)convertView.findViewById(R.id.tv_content);
             mHolder.tv_time = (TextView)convertView.findViewById(R.id.tv_time);
 //            mHolder.iv_avatar = (com.android.volley.toolbox.NetworkImageView)convertView.findViewById(R.id.iv_avatar);
-            mHolder.tv_pay = (TextView)convertView.findViewById(R.id.tv_pay);
-            mHolder.tv_delete = (TextView)convertView.findViewById(R.id.tv_delete);
+            mHolder.tv_pay = (TextView)convertView.findViewById(tv_pay);
+            mHolder.tv_delete = (TextView)convertView.findViewById(tv_delete);
+            mHolder.tv_status = (TextView)convertView.findViewById(tv_status);
             mHolder.rl_bottom = (RelativeLayout)convertView.findViewById(R.id.rl_bottom);
 
 
@@ -84,7 +89,25 @@ public class SwipeRefreshXMyQuestionAdapater extends BaseAdapter {
         convertView.setBackgroundResource(R.drawable.listview_item_pressed);
         final Question item = questionDetails.get(position);
 
-        if(item.getStatus() != 1)
+        if(item.getStatus() == 1)
+        {
+            mHolder.rl_bottom.setVisibility(View.VISIBLE);
+            mHolder.tv_delete.setText("取消支付");
+            mHolder.tv_status.setVisibility(View.GONE);
+        }
+        else if (item.getStatus() == 2)
+        {
+            mHolder.rl_bottom.setVisibility(View.VISIBLE);
+            mHolder.tv_pay.setVisibility(View.GONE);
+            mHolder.tv_delete.setText("取消提问");
+            mHolder.tv_status.setVisibility(View.GONE);
+        }
+        else if(item.getStatus() == 4)
+        {
+            mHolder.tv_status.setVisibility(View.VISIBLE);
+            mHolder.rl_bottom.setVisibility(View.GONE);
+        }
+        else
         {
             mHolder.rl_bottom.setVisibility(View.GONE);
         }
@@ -181,7 +204,7 @@ public class SwipeRefreshXMyQuestionAdapater extends BaseAdapter {
 
     static class ViewHolder
     {
-        private TextView tv_title,tv_content,tv_bounty,tv_time,tv_pay,tv_delete;
+        private TextView tv_title,tv_content,tv_bounty,tv_time,tv_pay,tv_delete,tv_status;
         private RelativeLayout rl_bottom;
 //        private com.android.volley.toolbox.NetworkImageView iv_avatar;
 

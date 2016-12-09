@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -159,6 +160,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                     public void onSuccess(AuthResult result) {
                                         super.onSuccess(result);
                                         try {
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.hideSoftInputFromWindow(password.getWindowToken(), 0); //强制隐藏键盘
 
                                             contactsList = UploadUtils.uploadContact(RegisterActivity.this);
                                             Auth.login(result.Token, result.User);

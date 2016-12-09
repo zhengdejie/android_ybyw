@@ -72,7 +72,7 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
 //        mHolder.iv_myavatar.setDefaultImageResId(R.drawable.default_avatar);
 //        mHolder.iv_youravatar.setDefaultImageResId(R.drawable.default_avatar);
         mHolder.tv_yourtitle.setVisibility(View.VISIBLE);
-        mHolder.tv_title.setVisibility(View.VISIBLE);
+//        mHolder.tv_title.setVisibility(View.VISIBLE);
         if(item.getFirstDegreeFriendId() == item.getServiceProvider().getId())
         {
             mHolder.tv_myname.setText(item.getServiceProvider().getName());
@@ -116,13 +116,15 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
 
             if(item.getFirstDegreeFriendId() == item.getPoster().getId())
             {
-                mHolder.tv_title.setText(item.getOrder().getTitle());
-                mHolder.tv_title.setVisibility(View.VISIBLE);
+                mHolder.tv_title.setText("发布了求助 " + item.getOrder().getTitle() +", 被以下用户接受");
+//                mHolder.tv_title.setVisibility(View.VISIBLE);
                 mHolder.tv_yourtitle.setVisibility(View.INVISIBLE);
             }
             else
             {
-                mHolder.tv_title.setVisibility(View.INVISIBLE);
+//                mHolder.tv_title.setVisibility(View.INVISIBLE);
+                mHolder.tv_title.setText("服务了以下用户");
+//                mHolder.tv_title.setVisibility(View.VISIBLE);
                 mHolder.tv_yourtitle.setVisibility(View.VISIBLE);
                 mHolder.tv_yourtitle.setText(item.getOrder().getTitle());
             }
@@ -170,13 +172,14 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
 
             if(item.getFirstDegreeFriendId() == item.getPoster().getId())
             {
-                mHolder.tv_title.setText(item.getOrder().getTitle());
-                mHolder.tv_title.setVisibility(View.VISIBLE);
+                mHolder.tv_title.setText("发布了求助 " + item.getOrder().getTitle() +", 被以下用户接受");
+//                mHolder.tv_title.setVisibility(View.VISIBLE);
                 mHolder.tv_yourtitle.setVisibility(View.INVISIBLE);
             }
             else
             {
-                mHolder.tv_title.setVisibility(View.INVISIBLE);
+//                mHolder.tv_title.setVisibility(View.INVISIBLE);
+                mHolder.tv_title.setText("服务了以下用户");
                 mHolder.tv_yourtitle.setVisibility(View.VISIBLE);
                 mHolder.tv_yourtitle.setText(item.getOrder().getTitle());
             }
@@ -186,7 +189,7 @@ public class SwipeRefreshXFriendShopsAdapater extends BaseAdapter {
 
         }
 
-        mHolder.tv_time.setText(item.getCompleteDate());
+        mHolder.tv_time.setText(item.getCompleteDatewithouttime());
 
         return convertView;
 

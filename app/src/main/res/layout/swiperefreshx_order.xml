@@ -9,50 +9,50 @@
     <!--android:background="@drawable/listview_item_pressed"-->
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/niv_avatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginRight="10dp"
         android:visibility="invisible"
         />
     <ImageView
         android:id="@+id/iv_avatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginRight="10dp"
         android:src="@drawable/maleavatar"
         android:visibility="invisible"/>
-    <TextView
-        android:id="@+id/tv_fans"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:lines="1"
-        android:ellipsize="end"
-        android:text="内容"
-        android:layout_below="@+id/iv_avatar"
-        android:layout_toLeftOf="@+id/tv_content"
-        android:layout_marginTop="10dp"
-        android:gravity="center_horizontal"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"/>
+    <!--<TextView-->
+        <!--android:id="@+id/tv_fans"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:lines="1"-->
+        <!--android:ellipsize="end"-->
+        <!--android:text="粉丝"-->
+        <!--android:layout_below="@+id/iv_avatar"-->
+        <!--android:layout_toLeftOf="@+id/tv_content"-->
+        <!--android:layout_marginTop="10dp"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:layout_marginRight="10dp"-->
+        <!--android:layout_marginBottom="10dp"/>-->
 
     <TextView
         android:id="@+id/tv_focus"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_below="@+id/tv_fans"
+        android:layout_below="@+id/rb_totalvalue"
         android:layout_toLeftOf="@+id/tv_content"
         android:layout_marginRight="10dp"
         android:background="@drawable/textview_clicked"
         android:textColor="@drawable/textview_pressed"
         android:text="+关注"
         android:gravity="center"
-
+        android:textSize="12sp"
         />
 
     <TextView
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="30dp"
         android:textSize="16sp"
         android:text="标题标题标题标"
         android:lines="1"
@@ -60,7 +60,7 @@
         android:layout_toRightOf="@+id/iv_avatar"
         android:layout_toLeftOf="@+id/txt_bounty"
         android:layout_alignTop="@+id/iv_avatar" />
-    
+
     <TextView
         android:id="@+id/txt_bounty"
         android:layout_width="wrap_content"
@@ -78,7 +78,7 @@
         android:src="@drawable/male"/>
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="60dp"
+        android:layout_width="100dp"
         android:layout_height="20dp"
         android:text="名字名字名字名字名字名字名字名字名字名字"
         android:layout_below="@+id/txt_title"
@@ -86,54 +86,62 @@
         android:gravity="center_vertical"
         android:lines="1"
         android:ellipsize="end"
+
         />
 
     <RatingBar
         android:id="@+id/rb_totalvalue"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:gravity="center_vertical"
+        android:layout_width="50dp"
+        android:layout_height="10dp"
         android:numStars="5"
         android:isIndicator="true"
-        style="?android:attr/ratingBarStyleSmall"
-        android:layout_below="@+id/txt_title"
-        android:layout_toRightOf="@+id/tv_name"
+        style="@style/myRatingBar"
+        android:layout_below="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
         />
 
 
     <TextView
         android:id="@+id/tv_numofconforder"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:text="(友帮1次)"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:text="0次友帮|0粉丝"
         android:lines="1"
         android:ellipsize="end"
-        android:layout_below="@+id/txt_title"
-        android:layout_toRightOf="@+id/rb_totalvalue"
+        android:layout_below="@+id/tv_pay"
+        android:textSize="12sp"
         android:gravity="center_vertical"
+        android:layout_alignParentRight="true"
         android:textColor="@color/font_gray"/>
 
     <TextView
         android:id="@+id/tv_pay"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
+        android:layout_height="15dp"
         android:layout_alignParentRight="true"
         android:text="已付"
+        android:textSize="12sp"
         android:layout_below="@+id/txt_bounty"
         android:textColor="@color/font_gray"
         android:gravity="center_vertical"
+
         />
 
     <TextView
         android:id="@+id/tv_content"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:lines="2"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
         android:ellipsize="end"
-        android:text="内容"
+        android:text="内内容内容内内内容内容内容内容容内内容内容内容内容容内内容内容内容内容容内内容内容内容内容容容内容容"
         android:layout_below="@+id/tv_name"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_pay"
         />
 
     <GridView
@@ -147,6 +155,7 @@
         android:verticalSpacing="5dp"
         android:layout_below="@+id/tv_content"
         android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_pay"
         android:listSelector="@android:color/transparent"
         android:focusable="false"
         />

@@ -19,6 +19,8 @@ import java.util.List;
 
 import appframe.appframe.R;
 
+import static appframe.appframe.R.id.textView;
+
 /**
  * Created by Administrator on 2015/5/28.
  */
@@ -28,6 +30,8 @@ public class DropdownListView extends ScrollView {
     public DropdownItemObject current;
 
     public List<DropdownItemObject> currentMulti = new ArrayList<DropdownItemObject>();
+
+    public List<DropdownItemObject> storedMulti = new ArrayList<DropdownItemObject>();
 
     List<? extends DropdownItemObject> list;
 
@@ -64,7 +68,9 @@ public class DropdownListView extends ScrollView {
                 boolean checked = data == current;
                 String suffix = data.getSuffix();
                 itemView.bind(TextUtils.isEmpty(suffix) ? data.text : data.text + suffix, checked);
-                if (checked) button.setText(data.text);
+                if (checked) {
+                    button.setText(data.text);
+                }
             }
 
         }
@@ -89,12 +95,45 @@ public class DropdownListView extends ScrollView {
                 }
                 //boolean checked = data == current;
                 String suffix = data.getSuffix();
+
                 itemView.bind(TextUtils.isEmpty(suffix) ? data.text : data.text + suffix, checked);
                 button.setText("筛选");
             }
 
         }
     }
+
+    public void flushMultiStored() {
+        for (int i = 0, n = linearLayout.getChildCount(); i < n; i++) {
+            View view = linearLayout.getChildAt(i);
+            if (view instanceof DropdownListItemView) {
+                DropdownListItemView itemView = (DropdownListItemView) view;
+                DropdownItemObject data = (DropdownItemObject) itemView.getTag();
+                if (data == null) {
+                    return;
+                }
+                boolean checked = false;
+                for(DropdownItemObject ddio : storedMulti)
+                {
+                    if( data == ddio)
+                    {
+                        checked = true;
+                    }
+                }
+                //boolean checked = data == current;
+                if(checked)
+                {
+                    currentMulti.add(data);
+                }
+                String suffix = data.getSuffix();
+                itemView.bind(TextUtils.isEmpty(suffix) ? data.text : data.text + suffix, checked);
+                button.setText("筛选");
+            }
+
+        }
+    }
+
+
 
     public void bind(List<? extends DropdownItemObject> list,
                      DropdownButton button,
@@ -147,6 +186,7 @@ public class DropdownListView extends ScrollView {
                             container.onSelectionChanged(DropdownListView.this);
                         }
                     } else {
+
                         if (currentMulti.size() == 0) {
                             currentMulti.add(data);
                         } else {
@@ -202,6 +242,8 @@ public class DropdownListView extends ScrollView {
             btn_ok.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    storedMulti.clear();
+                    storedMulti.addAll(currentMulti);
                     container.hide();
                     container.onSelectionChanged(DropdownListView.this);
                 }
