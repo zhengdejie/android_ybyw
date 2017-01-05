@@ -73,6 +73,9 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
 import appframe.appframe.widget.tagview.Tag;
 
+import static android.R.attr.text;
+import static android.R.attr.type;
+
 /**
  * Created by Administrator on 2015/8/14.
  */
@@ -328,66 +331,7 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
 //                startActivity(new Intent(this,OrderEstimateActivity.class));
 //                break;
             case R.id.btn_comment:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                //final EditText comment = new EditText(this);
-                LayoutInflater inflater = getLayoutInflater();
-                View layout = inflater.inflate(R.layout.dialog_leavemessage, (ViewGroup) findViewById(R.id.dialog));
-                final EditText comment = (EditText)layout.findViewById(R.id.et_message);
-                final CheckBox cb_anonymous = (CheckBox)layout.findViewById(R.id.cb_anonymous);
-                builder.setTitle("留言").setView(
-                        layout).setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(!comment.getText().toString().equals("")) {
-                            Http.request(OrderDetailsActivity.this, API.ORDER_MAKECOOMENT, new Object[]{OrderID}, Http.map(
-                                            "Commentator", String.valueOf(Auth.getCurrentUserId()),
-                                            "Comment", comment.getText().toString(),
-                                            "Anonymity", String.valueOf(cb_anonymous.isChecked())),
-                                    new Http.RequestListener<String>() {
-                                        @Override
-                                        public void onSuccess(String result) {
-                                            super.onSuccess(result);
-                                            Map<String, String> map = new HashMap<String, String>();
-                                            map.put("Page", "1");
-                                            map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
-                                            Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID,Http.getURL(map)},
-                                                    new Http.RequestListener<CommentDetailResponseDto>() {
-                                                        @Override
-                                                        public void onSuccess(CommentDetailResponseDto result) {
-                                                            super.onSuccess(result);
-                                                            if(result!=null) {
-                                                                if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
-                                                                    swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), true);
-                                                                    lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
-                                                                } else {
-                                                                    swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), false);
-                                                                    lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
-                                                                }
-                                                                setListViewHeightBasedOnChildren(lv_ordercomment);
-                                                                tv_comment.setText(String.format("留言%d条 (点击查看全部)", result.getTotalCount()));
-                                                            }
-                                                            else
-                                                            {
-                                                                tv_comment.setText("留言0条 (点击查看全部)");
-                                                            }
-                                                        }
-                                                    });
-
-                                        }
-                                    });
-                            dialog.dismiss();
-                        }
-                        else
-                        {
-                            Toast.makeText(OrderDetailsActivity.this,"评论不能为空",Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+                makeComment(0,"");
                 break;
             case R.id.btn_recommend:
                 intent.setClass(OrderDetailsActivity.this, FirstClassFriends.class);
@@ -429,6 +373,77 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
                 startActivity(intent);
                 break;
         }
+    }
+
+    // type = 0 默认留言 type = 1 @留言
+    public void makeComment(int type,String name)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //final EditText comment = new EditText(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.dialog_leavemessage, (ViewGroup) findViewById(R.id.dialog));
+        final EditText comment = (EditText)layout.findViewById(R.id.et_message);
+        final CheckBox cb_anonymous = (CheckBox)layout.findViewById(R.id.cb_anonymous);
+        if(type == 1)
+        {
+            String atName = String.format("@%s ",name);
+            comment.setText(atName);
+            comment.setSelection(atName.length());
+        }
+        builder.setTitle("留言").setView(
+                layout).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(!comment.getText().toString().equals("")) {
+                    Http.request(OrderDetailsActivity.this, API.ORDER_MAKECOOMENT, new Object[]{OrderID}, Http.map(
+                            "Commentator", String.valueOf(Auth.getCurrentUserId()),
+                            "Comment", comment.getText().toString(),
+                            "Anonymity", String.valueOf(cb_anonymous.isChecked())),
+                            new Http.RequestListener<String>() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    super.onSuccess(result);
+                                    Map<String, String> map = new HashMap<String, String>();
+                                    map.put("Page", "1");
+                                    map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
+                                    Http.request(OrderDetailsActivity.this, API.ORDER_GETCOOMENT, new Object[]{OrderID,Http.getURL(map)},
+                                            new Http.RequestListener<CommentDetailResponseDto>() {
+                                                @Override
+                                                public void onSuccess(CommentDetailResponseDto result) {
+                                                    super.onSuccess(result);
+                                                    if(result!=null) {
+                                                        if (Auth.getCurrentUserId() == orderDetails.getOrderer().getId()) {
+                                                            swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), true);
+                                                            lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+                                                        } else {
+                                                            swipeRefreshXOrderComment = new SwipeRefreshXOrderComment(OrderDetailsActivity.this, result.getList(), String.valueOf(Auth.getCurrentUserId()), false);
+                                                            lv_ordercomment.setAdapter(swipeRefreshXOrderComment);
+                                                        }
+                                                        setListViewHeightBasedOnChildren(lv_ordercomment);
+                                                        tv_comment.setText(String.format("留言%d条 (点击查看全部)", result.getTotalCount()));
+                                                    }
+                                                    else
+                                                    {
+                                                        tv_comment.setText("留言0条 (点击查看全部)");
+                                                    }
+                                                }
+                                            });
+
+                                }
+                            });
+                    dialog.dismiss();
+                }
+                else
+                {
+                    Toast.makeText(OrderDetailsActivity.this,"评论不能为空",Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     public void init()
@@ -473,6 +488,20 @@ public class OrderDetailsActivity extends BaseActivity implements View.OnClickLi
         btn_comment.setOnClickListener(this);
         btn_recommend.setOnClickListener(this);
         tv_comment.setOnClickListener(this);
+
+        lv_ordercomment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                OrderComment oc = (OrderComment)parent.getAdapter().getItem(position);
+                if(oc.isAnonymity()) {
+                    makeComment(1, "匿名");
+                }
+                else
+                {
+                    makeComment(1, oc.getUser().getName());
+                }
+            }
+        });
 //        swipeRefresh = (SwipeRefreshX)findViewById(R.id.swipeRefresh);
 //
 //        swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,

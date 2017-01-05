@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-
               android:id="@+id/dialog">
 
     <EditText
         android:id="@+id/et_message"
-        android:layout_margin="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="30dp"
-        android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/shape_edittext"
         android:inputType="textMultiLine"
-        android:padding="5dp"
+        android:padding="10dp"
+        android:hint="请输入留言内容"
+        android:textSize="14sp"
+        android:gravity="start"
         />
     <CheckBox
         android:id="@+id/cb_anonymous"
-        android:layout_margin="10dp"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:text="匿名"
+        android:text="匿名留言"
+        android:textSize="14sp"
         android:checked="false"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/et_message"
+        android:layout_alignParentRight="true"
         />
-</LinearLayout>
+</RelativeLayout>

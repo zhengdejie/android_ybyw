@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <appframe.appframe.widget.sortlistview.ClearEditText
+        android:id="@+id/filter_edit"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:drawableLeft="@drawable/search_bar_icon_normal"
+        android:hint="请输入城市名或拼音查询"
+        android:singleLine="true"
+        android:textSize="14sp"
+        android:layout_below="@+id/title_bar"
+        android:background="@drawable/city_search_bg"
+        />
+
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="@color/bg_gray"-->
+        <!--android:layout_below="@+id/filter_edit"/>-->
+
+    <ListView
+        android:id="@+id/country_lvcountry"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:divider="@null"
+        android:layout_below="@+id/filter_edit"/>
+
+    <appframe.appframe.widget.sortlistview.SideBar
+        android:id="@+id/sidrbar"
+        android:layout_width="30dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/filter_edit"/>
+
+</RelativeLayout>

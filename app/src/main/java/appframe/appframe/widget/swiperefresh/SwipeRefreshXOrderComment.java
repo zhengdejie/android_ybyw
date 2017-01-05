@@ -2,6 +2,8 @@ package appframe.appframe.widget.swiperefresh;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.FriendsInfoActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.OrderComment;
@@ -25,6 +28,9 @@ import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 
+import static appframe.appframe.R.id.iv_avatar;
+import static appframe.appframe.R.id.niv_avatar;
+
 /**
  * Created by Administrator on 2015/11/4.
  */
@@ -32,6 +38,8 @@ public class SwipeRefreshXOrderComment extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
     List<OrderComment> orderComments = new ArrayList<OrderComment>();
+    Intent intent = new Intent();
+    Bundle bundle = new Bundle();
 //    TextView tv_name,tv_ordercomment,tv_time;
 //    ImageButton ib_delete;
     String userID;
@@ -66,8 +74,8 @@ public class SwipeRefreshXOrderComment extends BaseAdapter {
             mHolder.tv_ordercomment = (TextView) convertView.findViewById(R.id.tv_ordercomment);
             mHolder.ib_delete = (ImageButton)convertView.findViewById(R.id.ib_delete);
             mHolder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
-            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
-            mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
+            mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(niv_avatar);
+            mHolder.iv_avatar = (ImageView) convertView.findViewById(iv_avatar);
             convertView.setTag(mHolder);
         }
         else
@@ -140,6 +148,36 @@ public class SwipeRefreshXOrderComment extends BaseAdapter {
         {
             mHolder.ib_delete.setVisibility(View.GONE);
         }
+
+        mHolder.iv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(item.isAnonymity())
+                {}
+                else {
+                    intent.setClass(context, FriendsInfoActivity.class);
+                    bundle.putSerializable("UserDetail", item.getUser());
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+            }
+        });
+
+        mHolder.niv_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(item.isAnonymity())
+                {}
+                else {
+                    intent.setClass(context, FriendsInfoActivity.class);
+                    bundle.putSerializable("UserDetail", item.getUser());
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+                }
+            }
+        });
+
+
         return convertView;
     }
 

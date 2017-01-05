@@ -93,7 +93,7 @@ public class UploadUtils {
                     Matcher matcher = pattern.matcher(ContactMobile.replace(" ",""));
                     if(matcher.matches()) {
                         if(ContactName != null && !ContactName.equals("") && ContactMobile != null && !ContactMobile.equals("")) {
-                            UserContact userContact = new UserContact(ContactName, ContactMobile);
+                            UserContact userContact = new UserContact(ContactName, ContactMobile.replace(" ",""));
                             contactsList.add(userContact);
                         }
                     }

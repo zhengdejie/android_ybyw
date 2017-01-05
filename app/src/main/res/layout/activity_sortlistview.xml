@@ -8,22 +8,29 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar_order" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:background="@color/divide"
-        />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:background="@color/divide"-->
+        <!--/>-->
 
     <appframe.appframe.widget.sortlistview.ClearEditText
         android:id="@+id/filter_edit"
-        android:layout_marginTop="5dip"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
         android:drawableLeft="@drawable/search_bar_icon_normal"
         android:hint="请输入关键字"
         android:singleLine="true"
         android:textSize="14sp"
+        android:background="@drawable/city_search_bg"
         />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"/>
 
     <FrameLayout
         android:layout_width="fill_parent"

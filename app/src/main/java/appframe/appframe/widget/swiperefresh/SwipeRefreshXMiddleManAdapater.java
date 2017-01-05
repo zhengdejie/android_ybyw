@@ -17,23 +17,23 @@ import java.util.List;
 import appframe.appframe.R;
 import appframe.appframe.activity.FriendsInfoActivity;
 import appframe.appframe.app.API;
-import appframe.appframe.dto.Nearby;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;
 
 /**
- * Created by Administrator on 2016/6/12.
+ * Created by Administrator on 2016-12-29.
  */
-public class SwipeRefreshXExpandFriendsAdapater extends BaseAdapter {
+
+public class SwipeRefreshXMiddleManAdapater extends BaseAdapter {
     Context context;
     LayoutInflater layoutInflater;
     List<UserDetail> userDetails;
     Intent intent = new Intent();
     Bundle bundle = new Bundle();
 
-    public SwipeRefreshXExpandFriendsAdapater(Context context,List<UserDetail> userDetails)
+    public SwipeRefreshXMiddleManAdapater(Context context,List<UserDetail> userDetails)
     {
         this.context =context;
         this.layoutInflater = LayoutInflater.from(context);
@@ -50,41 +50,26 @@ public class SwipeRefreshXExpandFriendsAdapater extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final ViewHolder mHolder;
+        final SwipeRefreshXMiddleManAdapater.ViewHolder mHolder;
 
         if (convertView == null)
         {
             convertView = layoutInflater
-                    .inflate(R.layout.swiperefreshx_expandfriends, null);
-            mHolder = new ViewHolder();
+                    .inflate(R.layout.swiperefreshx_middleman, null);
+            mHolder = new SwipeRefreshXMiddleManAdapater.ViewHolder();
             mHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-            mHolder.tv_add = (TextView) convertView.findViewById(R.id.tv_add);
             mHolder.niv_avatar = (com.android.volley.toolbox.NetworkImageView) convertView.findViewById(R.id.niv_avatar);
             mHolder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
             convertView.setTag(mHolder);
         }
         else
         {
-            mHolder = (ViewHolder) convertView.getTag();
+            mHolder = (SwipeRefreshXMiddleManAdapater.ViewHolder) convertView.getTag();
         }
 
         final UserDetail item = userDetails.get(position);
         mHolder.tv_name.setText(item.getName());
 
-        mHolder.tv_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Http.request((Activity) context, API.ADD_FDF, new Object[]{Auth.getCurrentUserId()},
-                        Http.map("FriendId", String.valueOf(item.getId())),
-                        new Http.RequestListener<String>() {
-                            @Override
-                            public void onSuccess(String result) {
-                                super.onSuccess(result);
-                                Toast.makeText(context, "已发送好友申请", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            }
-        });
 
         mHolder.iv_avatar.setVisibility(View.VISIBLE);
         mHolder.niv_avatar.setVisibility(View.INVISIBLE);
@@ -156,9 +141,8 @@ public class SwipeRefreshXExpandFriendsAdapater extends BaseAdapter {
 
     static class ViewHolder
     {
-        private TextView tv_name,tv_add;
+        private TextView tv_name;
         private com.android.volley.toolbox.NetworkImageView niv_avatar;
         private ImageView iv_avatar;
     }
 }
-

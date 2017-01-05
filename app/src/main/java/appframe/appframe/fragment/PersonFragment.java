@@ -139,12 +139,14 @@ public class PersonFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onPause() {
-        super.onDestroyView();
+        super.onPause();
         //在Tab栏删除会话未读消息变化的全局监听器
         mConversationService.removeTotalUnreadChangeListener(mConversationUnreadChangeListener);
         MobclickAgent.onPageEnd("我的页"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
         MobclickAgent.onPause(getActivity());
     }
+
+
 
     private void initConversationServiceAndListener() {
         mConversationUnreadChangeListener = new IYWConversationUnreadChangeListener() {

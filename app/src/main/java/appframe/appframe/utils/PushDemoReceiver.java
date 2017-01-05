@@ -18,8 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import appframe.appframe.R;
+import appframe.appframe.activity.ConfirmOrderDetailsActivity;
+import appframe.appframe.activity.FriendMessageActivity;
 import appframe.appframe.activity.HomeActivity;
 import appframe.appframe.activity.OrderDetailsActivity;
+import appframe.appframe.activity.QuestionDetailsActivity;
 import appframe.appframe.app.API;
 import appframe.appframe.app.App;
 import appframe.appframe.app.AppConfig;
@@ -75,37 +78,56 @@ public class PushDemoReceiver extends BroadcastReceiver {
 //                        rv.setTextViewText(R.id.tv_content, message[1]);
 //                        rv.setTextViewText(R.id.tv_time, String.valueOf(System.currentTimeMillis()));
 //                        admain.view_notification(rv,intent,smallIcon, ticker);
-                        if(!message[2].equals("0"))
+                        //任务推送
+                        if(message[4].equals("4")) {
+                            if (!message[2].equals("0")) {
+                                Intent odIntent = new Intent();
+                                Bundle odBundle = new Bundle();
+                                odIntent.setClass(context, OrderDetailsActivity.class);
+                                odBundle.putSerializable("OrderIdFromPushDemoReceiver", message[2]);
+
+                                odBundle.putString("From", "MyOrder");
+                                odIntent.putExtras(odBundle);
+                                admain.normal_notification(odIntent, smallIcon, ticker, message[0], message[1]);
+
+                            }
+                        }
+                        //订单推送
+                        else if(message[4].equals("1"))
                         {
-                            Intent odIntent = new Intent();
-                            Bundle odBundle = new Bundle();
-                            odIntent.setClass(context, OrderDetailsActivity.class);
-                            odBundle.putSerializable("OrderIdFromPushDemoReceiver", message[2]);
+                            if (!message[3].equals("0")) {
+                                Intent odIntent = new Intent();
+                                Bundle odBundle = new Bundle();
+                                odIntent.setClass(context, ConfirmOrderDetailsActivity.class);
+                                odBundle.putSerializable("ConfirmOrderIdFromPushDemoReceiver", message[3]);
 
-                            odBundle.putString("From", "MyOrder");
-                            odIntent.putExtras(odBundle);
-                            admain.normal_notification(odIntent, smallIcon, ticker, message[0],message[1]);
-//                            Map<String, String> map = new HashMap<String, String>();
-//                            map.put("Id", message[2]);
-//                            Http.request((Activity) App.getContext(), API.GETORDERBYID, new Object[]{Http.getURL(map)},
-//
-//                                    new Http.RequestListener<OrderDetails>() {
-//                                        @Override
-//                                        public void onSuccess(OrderDetails result) {
-//                                            super.onSuccess(result);
-//                                            Intent odIntent = new Intent();
-//                                            Bundle odBundle = new Bundle();
-//                                            odIntent.setClass(context, OrderDetailsActivity.class);
-//                                            odBundle.putSerializable("OrderDetails", result);
-//
-//                                            odBundle.putString("From", "Order");
-//                                            odIntent.putExtras(odBundle);
-//                                            admain.normal_notification(odIntent, smallIcon, ticker, message[0],message[1]);
-//
-//                                        }
-//                                    });
+                                odIntent.putExtras(odBundle);
+                                admain.normal_notification(odIntent, smallIcon, ticker, message[0], message[1]);
+                            }
+                        }
+                        //好友推送
+                        else if(message[4].equals("2"))
+                        {
+                            intent = new Intent(context, FriendMessageActivity.class);
+                            admain.normal_notification(intent, smallIcon, ticker, message[0],message[1]);
+                        }
+                        //系统推送
+                        else if(message[4].equals("3"))
+                        {
 
+                        }
+                        //问答推送
+                        else if(message[4].equals("5"))
+                        {
+                            if (!message[5].equals("0")) {
+                                Intent odIntent = new Intent();
+                                Bundle odBundle = new Bundle();
+                                odIntent.setClass(context, QuestionDetailsActivity.class);
+                                odBundle.putSerializable("QuestionIdFromPushDemoReceiver", message[5]);
 
+                                odIntent.putExtras(odBundle);
+                                admain.normal_notification(odIntent, smallIcon, ticker, message[0], message[1]);
+                            }
                         }
                         else
                         {

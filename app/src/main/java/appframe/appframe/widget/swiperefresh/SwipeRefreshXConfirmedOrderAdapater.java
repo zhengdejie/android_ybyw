@@ -378,7 +378,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                         mHolder.tv_estimate.setVisibility(View.GONE);
 //                        mHolder.ll_button.setVisibility(View.GONE);
                         mHolder.tv_showstatus.setVisibility(View.VISIBLE);
-                        mHolder.tv_showstatus.setText("已拒绝退款申请，客服正在处理中，请耐心等待");
+                        mHolder.tv_showstatus.setText("已发送拒绝退款申请，客服正在处理中，请耐心等待");
                     }
                 }
                 if(item.getServiceReceiver().getId() == Auth.getCurrentUserId())
@@ -428,19 +428,18 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                         mHolder.tv_estimate.setVisibility(View.GONE);
 //                        mHolder.ll_button.setVisibility(View.GONE);
                         mHolder.tv_showstatus.setVisibility(View.VISIBLE);
-                        mHolder.tv_showstatus.setText("已发送退款申请，等待对方确认");
+                        mHolder.tv_showstatus.setText("对方拒绝退款，客服正在处理中，请耐心等待");
                     }
                     if(item.getStatus() == 8)
                     {
-                        mHolder.tv_showstatus.setVisibility(View.GONE);
+//                        mHolder.tv_showstatus.setVisibility(View.GONE);
+//                        mHolder.tv_finish.setVisibility(View.GONE);
+//                        mHolder.tv_estimate.setVisibility(View.VISIBLE);
+//                        mHolder.tv_estimate.setText(context.getResources().getString(R.string.dispute));
                         mHolder.tv_finish.setVisibility(View.GONE);
-                        mHolder.tv_estimate.setVisibility(View.VISIBLE);
-                        mHolder.tv_estimate.setText(context.getResources().getString(R.string.dispute));
-//                        mHolder.btn_finish.setVisibility(View.GONE);
-//                        mHolder.btn_estimate.setVisibility(View.GONE);
-//                        mHolder.ll_button.setVisibility(View.GONE);
-//                        mHolder.tv_showstatus.setVisibility(View.VISIBLE);
-//                        mHolder.tv_showstatus.setText("对方拒绝退款申请，客服正在处理中，请耐心等待");
+                        mHolder.tv_estimate.setVisibility(View.GONE);
+                        mHolder.tv_showstatus.setVisibility(View.VISIBLE);
+                        mHolder.tv_showstatus.setText("已拒绝退款申请，客服正在处理中，请耐心等待");
                     }
 
                 }
@@ -466,6 +465,15 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
             case AppConfig.ORDERSTATUS_CLOSE:
                 mHolder.tv_finish.setVisibility(View.GONE);
                 mHolder.tv_estimate.setVisibility(View.GONE);
+                mHolder.tv_showstatus.setVisibility(View.VISIBLE);
+                if(item.getStatus() == 0)
+                {
+                    mHolder.tv_showstatus.setText("交易中途终止");
+                }
+                else
+                {
+                    mHolder.tv_showstatus.setText("交易完成");
+                }
 //                mHolder.ll_buttotton.setVisibility(View.GONE);
                 break;
             case AppConfig.ORDERSTATUS_DELETE:
@@ -640,7 +648,7 @@ public class SwipeRefreshXConfirmedOrderAdapater extends BaseAdapter {
                                 @Override
                                 public void onSuccess(String result) {
                                     super.onSuccess(result);
-                                    MyOrderFragment.tab_progess.performClick();
+                                    MyOrderFragment.tab_close.performClick();
                                 }
                             });
                 }

@@ -45,7 +45,7 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
     private RelativeLayout rl_revenue,rl_cost;
     private OrderDetails orderDetails;
     private UserDetail userDetail,candidate;
-    private UserBrief userBrief,userID;
+    private UserBrief userBrief,userID,Relativenet;
     private Question question,questionDetails;
     private Nearby nearby;
     private PushMessage pushMessage;
@@ -204,6 +204,86 @@ public class FriendsInfoActivity extends BaseActivity implements View.OnClickLis
             {
                 iv_member.setVisibility(View.GONE);
             }
+            progress_bar.setVisibility(View.GONE);
+        }
+        Relativenet =  (UserBrief)intent.getSerializableExtra("Relativenet");
+        if(Relativenet != null) {
+
+            if(Relativenet.getFNickName() != null && !Relativenet.getFNickName().equals(""))
+            {
+                tv_name.setText(Relativenet.getFNickName());
+                tv_nickname.setText("昵称:"+Relativenet.getName());
+                tv_nickname.setVisibility(View.VISIBLE);
+            }
+            else {
+                tv_name.setText(Relativenet.getName());
+            }
+            if (Relativenet.getYBAccount() != null && !Relativenet.getYBAccount().equals("")) {
+                tv_fbnum.setText("友帮号: " + Relativenet.getYBAccount());
+            }
+            else
+            {
+                tv_fbnum.setText("友帮号: " );
+            }
+            if(Relativenet.getAvatar()!=null) {
+                ImageUtils.setImageUrl(iv_showavatar, Relativenet.getAvatar());
+            }
+            else
+            {
+                if(Relativenet.getGender().equals(getResources().getString(R.string.male)))
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.maleavatar);
+                    iv_gender.setImageResource(R.drawable.male);
+                }
+                else
+                {
+                    iv_showavatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_gender.setImageResource(R.drawable.female);
+                }
+            }
+
+            if(Relativenet.getGender().equals(getResources().getString(R.string.male)))
+            {
+                iv_gender.setImageResource(R.drawable.male);
+            }
+            else
+            {
+                iv_gender.setImageResource(R.drawable.female);
+            }
+
+            if(Relativenet.isShowRevenue())
+            {
+                rl_revenue.setVisibility(View.VISIBLE);
+                tv_revenue.setText("￥" + String.valueOf(Relativenet.getTotalRevenue()));
+            }
+            else
+            {
+                rl_revenue.setVisibility(View.GONE);
+            }
+            if(Relativenet.isShowExpense())
+            {
+                rl_cost.setVisibility(View.VISIBLE);
+                tv_cost.setText("￥" + String.valueOf(Relativenet.getTotalExpense()));
+            }
+            else
+            {
+                rl_cost.setVisibility(View.GONE);
+            }
+            if(Relativenet.getMember() == 1)
+            {
+                iv_member.setImageResource(R.drawable.idflag);
+            }
+            else if(Relativenet.getMember() == 2)
+            {
+                iv_member.setImageResource(R.drawable.shopflag);
+            }
+            else
+            {
+                iv_member.setVisibility(View.GONE);
+            }
+            tv_showdistrict.setText(Relativenet.getLocation());
+//            UserID = String.valueOf(userDetail.getId());
+            userBrief = Relativenet;
             progress_bar.setVisibility(View.GONE);
         }
         userDetail =  (UserDetail)intent.getSerializableExtra("UserDetail");

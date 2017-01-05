@@ -75,7 +75,8 @@
         android:layout_height="20dp"
         android:layout_below="@+id/txt_title"
         android:layout_toRightOf="@+id/iv_avatar"
-        android:src="@drawable/male"/>
+        android:src="@drawable/male"
+        android:layout_marginRight="5dp"/>
     <TextView
         android:id="@+id/tv_name"
         android:layout_width="100dp"

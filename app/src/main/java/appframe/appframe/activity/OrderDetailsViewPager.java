@@ -42,9 +42,9 @@ public class OrderDetailsViewPager extends BaseActivity implements View.OnClickL
     private Intent getIntent;
 
     //引导图片资源
-    private static final int[] pics = { R.drawable.navigationone,
-            R.drawable.navigationtwo, R.drawable.navigationthree,
-            R.drawable.navigationfour };
+//    private static final int[] pics = { R.drawable.navigationone,
+//            R.drawable.navigationtwo, R.drawable.navigationthree,
+//            R.drawable.navigationfour };
 
     //底部小店图片
     private ImageView[] dots ;
@@ -123,29 +123,29 @@ public class OrderDetailsViewPager extends BaseActivity implements View.OnClickL
     /**
      *设置当前的引导页
      */
-    private void setCurView(int position)
-    {
-        if (position < 0 || position >= pics.length) {
-            return;
-        }
-
-        vp.setCurrentItem(position);
-    }
+//    private void setCurView(int position)
+//    {
+//        if (position < 0 || position >= pics.length) {
+//            return;
+//        }
+//
+//        vp.setCurrentItem(position);
+//    }
 
     /**
      *这只当前引导小点的选中
      */
-    private void setCurDot(int positon)
-    {
-        if (positon < 0 || positon > pics.length - 1 || currentIndex == positon) {
-            return;
-        }
-
-        dots[positon].setEnabled(false);
-        dots[currentIndex].setEnabled(true);
-
-        currentIndex = positon;
-    }
+//    private void setCurDot(int positon)
+//    {
+//        if (positon < 0 || positon > pics.length - 1 || currentIndex == positon) {
+//            return;
+//        }
+//
+//        dots[positon].setEnabled(false);
+//        dots[currentIndex].setEnabled(true);
+//
+//        currentIndex = positon;
+//    }
 
     //当滑动状态改变时调用
     @Override

@@ -134,6 +134,8 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
     private Calendar dateAndTime = Calendar.getInstance(Locale.CHINA);
     BDLocation bdLocation = new BDLocation();
 
+
+
     private GridView mGridView;
     private ImagePublishAdapter mAdapter;
     //private TextView sendTv;
@@ -247,7 +249,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                                 Toast.makeText(OrderSendActivity.this, "金额不能小于0.01元", Toast.LENGTH_SHORT).show();
                             }
                             else {
-                                tag.delete( 0, sb.length() );
+                                tag.delete( 0, tag.length() );
                                 progress_bar.setVisibility(View.VISIBLE);
                                 for (Tag tags : tagView.getTags()) {
                                     tag.append("," + tags.text);
@@ -302,7 +304,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                                 } else {
                                     //boolean success = false ;
 //                                Log.i("mDataList", String.valueOf(mDataList.size()));
-
+                                    sb.delete( 0, sb.length() );
                                     for (ImageItem dl : mDataList) {
 
 
@@ -321,7 +323,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
                                                             return;
                                                         }
                                                         upload_iamge_num++;
-                                                        sb.delete( 0, sb.length() );
+
                                                         sb.append(",").append(id);
                                                         if (upload_iamge_num == mDataList.size()) {
                                                             Http.request(OrderSendActivity.this, API.ORDER_SEND, Http.map(
@@ -1035,6 +1037,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
         txt_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                txt_location.setText("正在定位");
                 //百度地图定位
                 BaiduLocation baiduLocation = new BaiduLocation(getApplicationContext(),new MyLocationListener());
                 baiduLocation.setOption();

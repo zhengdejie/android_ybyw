@@ -1,7 +1,9 @@
 package appframe.appframe.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -43,7 +45,9 @@ import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.AddFriendsActivity;
+import appframe.appframe.activity.CityPickerActivity;
 import appframe.appframe.activity.FeedbackActivity;
+import appframe.appframe.activity.HomeActivity;
 import appframe.appframe.activity.OrderDetailsActivity;
 import appframe.appframe.activity.OrderSendActivity;
 import appframe.appframe.activity.QuestionDetailsActivity;
@@ -55,11 +59,13 @@ import appframe.appframe.dto.OrderCategory;
 import appframe.appframe.dto.OrderDetailAndCount;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.Question;
+import appframe.appframe.dto.UserContact;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.BaiduLocation;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
+import appframe.appframe.utils.UploadUtils;
 import appframe.appframe.widget.dropdownmenu.DropdownButton;
 import appframe.appframe.widget.dropdownmenu.DropdownItemObject;
 import appframe.appframe.widget.dropdownmenu.DropdownListView;
@@ -69,6 +75,8 @@ import appframe.appframe.widget.photopicker.view.ImageBucketChooseActivity;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXQuestionAdapater;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by dashi on 15/6/20.
@@ -81,6 +89,8 @@ public class OrderFragment extends BaseFragment  {
     String locationCity;
     double latitude =0.0, longitude = 0.0;
     int OrderCount = 0;
+    String savedCity;
+    int firstLocation =1;
     //全部分类
     private static final int ID_TYPE_ALL = 0;
 //    private static final int ID_TYPE_CLOSE = 1;
@@ -167,7 +177,7 @@ public class OrderFragment extends BaseFragment  {
     private static final String QUESTION_SELECT_SECOND = "二度好友";
     private static final String QUESTION_SELECT_BOTH = "陌生人";
 
-
+    private static final int REQUEST_CODE_PICK_CITY = 533;
     public static final int SCAN_CODE = 1;
     BDLocation bdLocation = new BDLocation();
     int Type = 2, Page =1;  //1=老板单， 2=打工单
@@ -180,7 +190,8 @@ public class OrderFragment extends BaseFragment  {
     SwipeRefreshXQuestionAdapater swipeRefreshXQuestionAdapater;
     Animation dropdown_in, dropdown_out, dropdown_mask_out;
     View root;
-    TextView tv_back,tv_action,tv_require,tv_recommand,tv_question,tv_empty;
+    TextView tv_city,tv_action,tv_require,tv_recommand,tv_question,tv_empty;
+    RelativeLayout rl_city;
 //    Button tv_require,tv_recommand;
     public OrderDetails topOrderDetails;
 
@@ -383,28 +394,42 @@ public class OrderFragment extends BaseFragment  {
 
 
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        switch (requestCode) {
-//            case SCAN_CODE:
-//                TextView scanResult = (TextView) root.findViewById(R.id.txt_scanresult);
-//                if (resultCode == getActivity().RESULT_OK) {
-//                    String result = data.getStringExtra("scan_result");
-//                    scanResult.setText(result);
-//                } else if (resultCode == getActivity().RESULT_CANCELED) {
-//                    scanResult.setText("扫描出错");
-//                }
-//                break;
-//            default:
-//                break;
-//        }
-//    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_PICK_CITY && resultCode == RESULT_OK){
+            if (data != null){
+                String city = data.getStringExtra(CityPickerActivity.KEY_PICKED_CITY);
+                tv_city.setText(city);
+                SharedPreferences.Editor e = getActivity().getSharedPreferences("Location", Context.MODE_PRIVATE).edit();
+                e.remove("City");
+                e.putString("City", city).commit();
+                if(Type == 1)
+                {
+                    tv_recommand.performClick();
+
+                }
+                else if(Type == 2)
+                {
+                    tv_require.performClick();
+                }
+                else if(Type == 3)
+                {
+                    tv_question.performClick();
+                }
+                else
+                {
+
+                }
+            }
+        }
+    }
 
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_order,null);
 
-//        tv_back = (TextView)root.findViewById(R.id.tv_back);
+        tv_city = (TextView)root.findViewById(R.id.tv_city);
+        rl_city = (RelativeLayout) root.findViewById(R.id.rl_city);
         tv_require = (TextView)root.findViewById(R.id.tv_require);
         tv_recommand = (TextView)root.findViewById(R.id.tv_recommand);
         tv_empty = (TextView)root.findViewById(R.id.tv_empty);
@@ -414,9 +439,23 @@ public class OrderFragment extends BaseFragment  {
         tabs = (LinearLayout)root.findViewById(R.id.tabs);
         question_tabs = (LinearLayout)root.findViewById(R.id.question_tabs);
 
+        SharedPreferences sp = getActivity().getSharedPreferences("Location", Context.MODE_PRIVATE);
+        savedCity = sp.getString("City", null);
+        if (!TextUtils.isEmpty(savedCity)) {
+            tv_city.setText(savedCity);
+        }
+
         BaiduLocation baiduLocation = new BaiduLocation(getActivity(),new MyLocationListener());
         baiduLocation.setOption();
         baiduLocation.mLocationClient.start();
+
+        rl_city.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(getActivity(), CityPickerActivity.class),
+                        REQUEST_CODE_PICK_CITY);
+            }
+        });
 
         tv_action.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -433,6 +472,7 @@ public class OrderFragment extends BaseFragment  {
                 dropdownButtonsController.hide();
                 tabs.setVisibility(View.VISIBLE);
                 question_tabs.setVisibility(View.GONE);
+                tv_empty.setVisibility(View.GONE);
                 progress_bar.setVisibility(View.VISIBLE);
                 tv_empty.setText("现在还没有人发单，您快去发一单吧");
                 listView.setAdapter(null);
@@ -453,6 +493,7 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                 map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
                 map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
+                map.put("City",URLEncoder.encode(String.valueOf(tv_city.getText())));
                 map.put("lantitude", String.valueOf(latitude));
                 map.put("longtitude", String.valueOf(longitude));
 
@@ -515,6 +556,7 @@ public class OrderFragment extends BaseFragment  {
                 dropdownButtonsController.hide();
                 tabs.setVisibility(View.VISIBLE);
                 question_tabs.setVisibility(View.GONE);
+                tv_empty.setVisibility(View.GONE);
                 progress_bar.setVisibility(View.VISIBLE);
                 tv_empty.setText("现在还没有人发单，您快去发一单吧");
                 listView.setAdapter(null);
@@ -535,6 +577,7 @@ public class OrderFragment extends BaseFragment  {
                 map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                 map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
                 map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
+                map.put("City",URLEncoder.encode(String.valueOf(tv_city.getText())));
                 map.put("lantitude", String.valueOf(latitude));
                 map.put("longtitude", String.valueOf(longitude));
 
@@ -597,6 +640,7 @@ public class OrderFragment extends BaseFragment  {
                 dropdownButtonsController.hide();
                 tabs.setVisibility(View.GONE);
                 question_tabs.setVisibility(View.VISIBLE);
+                tv_empty.setVisibility(View.GONE);
                 progress_bar.setVisibility(View.VISIBLE);
                 tv_empty.setText("现在还没有人提问，您快去提个问吧");
                 listView.setAdapter(null);
@@ -731,6 +775,7 @@ public class OrderFragment extends BaseFragment  {
                     map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                     map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
                     map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
+                    map.put("City",URLEncoder.encode(String.valueOf(tv_city.getText())));
                     map.put("lantitude", String.valueOf(latitude));
                     map.put("longtitude", String.valueOf(longitude));
 
@@ -829,6 +874,7 @@ public class OrderFragment extends BaseFragment  {
                     map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
                     map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
                     map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
+                    map.put("City",URLEncoder.encode(String.valueOf(tv_city.getText())));
                     map.put("lantitude", String.valueOf(latitude));
                     map.put("longtitude", String.valueOf(longitude));
                     map.put("orderCount", String.valueOf(OrderCount));
@@ -992,6 +1038,7 @@ public class OrderFragment extends BaseFragment  {
         @Override
         public void onSelectionChanged(DropdownListView view) {
             listView.setAdapter(null);
+            tv_empty.setVisibility(View.GONE);
             progress_bar.setVisibility(View.VISIBLE);
             Map<String, String> map = new HashMap<String, String>();
             map.put("Category", dropdownType.current== null ? "" : dropdownType.current.text.toString().equals("全部分类") ? "" :String.valueOf(dropdownType.current.id));
@@ -999,6 +1046,7 @@ public class OrderFragment extends BaseFragment  {
             map.put("Bounty", String.valueOf(TransferMoney(dropdownMoney.current.text)));
             map.put("FriendsFilter", URLEncoder.encode(TransferFriendsFilter(dropdownSelect.storedMulti)));
             map.put("PaymentMethodFilter", URLEncoder.encode(TransferPaymentFilter(dropdownSelect.storedMulti)));
+            map.put("City",URLEncoder.encode(String.valueOf(tv_city.getText())));
             map.put("lantitude", String.valueOf(latitude));
             map.put("longtitude", String.valueOf(longitude));
             map.put("Page", "1");
@@ -1596,9 +1644,65 @@ public class OrderFragment extends BaseFragment  {
         @Override
         public void onReceiveLocation(BDLocation location) {
 
-            locationCity = location.getAddrStr();
+            locationCity = location.getCity() ;
             latitude = location.getLatitude();
             longitude = location.getLongitude();
+
+            //如果获取到城市
+            if(locationCity != null) {
+//                String compareCity = locationCity;
+
+                if(locationCity.substring(locationCity.length() -1 ).equals("市"))
+                {
+                    locationCity = locationCity.substring(0,locationCity.length() -1);
+                }
+
+                if(!locationCity.equals(tv_city.getText()))
+                {
+                    if(firstLocation == 1) {
+                        firstLocation ++;
+                        // 定位与选择不同，提示用户切换
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+                        alert.setTitle("定位通知")
+                                .setMessage(String.format("当前定位城市为%s,是否切换", locationCity))
+                                .setPositiveButton("切换",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,
+                                                                int which) {
+                                                SharedPreferences.Editor e = getActivity().getSharedPreferences("Location", Context.MODE_PRIVATE).edit();
+                                                e.remove("City");
+                                                e.putString("City", locationCity).commit();
+                                                tv_city.setText(locationCity);
+                                                if (Type == 1) {
+                                                    tv_recommand.performClick();
+
+                                                } else if (Type == 2) {
+                                                    tv_require.performClick();
+                                                } else if (Type == 3) {
+                                                    tv_question.performClick();
+                                                } else {
+
+                                                }
+                                            }
+                                        })
+                                .setNegativeButton("取消",
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,
+                                                                int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                        alert.create().show();
+                    }
+                }
+
+
+
+            }
+            else
+            {
+                tv_city.setText("杭州");
+            }
         }
     }
 
@@ -1614,23 +1718,23 @@ public class OrderFragment extends BaseFragment  {
             hasnotTopAdapater.notifyDataSetChanged();
         }
 
-//        if(Type == 1)
-//        {
-//            tv_recommand.performClick();
-//
-//        }
-//        else if(Type == 2)
-//        {
-//            tv_require.performClick();
-//        }
-//        else if(Type == 3)
-//        {
-//            tv_question.performClick();
-//        }
-//        else
-//        {
-//
-//        }
+        if(Type == 1)
+        {
+            tv_recommand.performClick();
+
+        }
+        else if(Type == 2)
+        {
+            tv_require.performClick();
+        }
+        else if(Type == 3)
+        {
+            tv_question.performClick();
+        }
+        else
+        {
+
+        }
     }
 
     @Override

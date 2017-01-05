@@ -14,8 +14,8 @@ android {
         applicationId "appframe.appframe"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 2
-        versionName "2.0"
+        versionCode 5
+        versionName "1.7"
         multiDexEnabled = true
         manifestPlaceholders = [
                 GETUI_APP_ID    : "UEoNhMDOwA8XSVe3YQPNW1",

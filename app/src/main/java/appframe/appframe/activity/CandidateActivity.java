@@ -250,6 +250,7 @@ public class CandidateActivity extends BaseActivity implements View.OnClickListe
                                     @Override
                                     public void onSuccess(OrderDetails result) {
                                         super.onSuccess(result);
+                                        //金额不够
                                         if (getTotal() > bounty && paymentMethod.equals("线上支付")) {
                                             OrderPay orderPay = new OrderPay();
                                             orderPay.setOrderId(orderID);
@@ -260,6 +261,12 @@ public class CandidateActivity extends BaseActivity implements View.OnClickListe
                                             bundle.putSerializable("OrderPay", orderPay);
                                             intent.putExtras(bundle);
                                             startActivity(intent);
+                                        }
+                                        //金额足够
+                                        else
+                                        {
+//                                            Toast.makeText(CandidateActivity.this,"您已选择对方为您服务",Toast.LENGTH_SHORT).show();
+                                            finish();
                                         }
                                     }
 

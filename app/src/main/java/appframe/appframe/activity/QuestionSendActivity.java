@@ -311,6 +311,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
                                         }
                                     });
                                 } else {
+                                    sb.delete( 0, sb.length() );
                                     for (ImageItem dl : mDataList) {
 
 
@@ -344,6 +345,7 @@ public class QuestionSendActivity extends BaseActivity implements View.OnClickLi
 //                                                                    mDataList.clear();
 //                                                                    removeTempFromPref();
 //                                                                    Toast.makeText(QuestionSendActivity.this, "提问成功", Toast.LENGTH_SHORT).show();
+                                                                    upload_iamge_num = 0;
                                                                     Intent intent = new Intent();
                                                                     Bundle bundle = new Bundle();
                                                                     intent.setClass(QuestionSendActivity.this, PayActivity.class);

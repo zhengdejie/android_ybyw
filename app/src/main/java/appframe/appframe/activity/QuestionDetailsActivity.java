@@ -79,7 +79,27 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_questiondetails);
-        init();
+        if(this.getIntent().getStringExtra("QuestionIdFromPushDemoReceiver") != null)
+        {
+//            Map<String, String> map = new HashMap<String, String>();
+//            map.put("Id", getintent.getStringExtra("OrderIdFromPushDemoReceiver"));
+            Http.request(this, API.GET_QUESTIONBYID, new Object[]{this.getIntent().getStringExtra("QuestionIdFromPushDemoReceiver")},
+
+                    new Http.RequestListener<QuestionWithAnswers>() {
+                        @Override
+                        public void onSuccess(QuestionWithAnswers result) {
+                            super.onSuccess(result);
+
+                            question = result.getQuestionDetail();
+                            init();
+                        }
+                    });
+
+        }
+        else
+        {
+            init();
+        }
     }
 
     private void init()
@@ -139,23 +159,25 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
             }
         });
 
-        Intent getintent = this.getIntent();
-        if(getintent.getSerializableExtra("Question") != null)
+        if(this.getIntent().getStringExtra("QuestionIdFromPushDemoReceiver") != null)
         {
-            question = (Question) getintent.getSerializableExtra("Question");
-
+            //orderDetails之前赋值过了
         }
-        if(getintent.getSerializableExtra("MyAnswer") != null)
-        {
-            question = (Question) getintent.getSerializableExtra("MyAnswer");
+        else {
+            Intent getintent = this.getIntent();
+            if (getintent.getSerializableExtra("Question") != null) {
+                question = (Question) getintent.getSerializableExtra("Question");
 
+            }
+            if (getintent.getSerializableExtra("MyAnswer") != null) {
+                question = (Question) getintent.getSerializableExtra("MyAnswer");
+
+            }
+            if (getintent.getSerializableExtra("QuestionMessage") != null) {
+                question = (Question) getintent.getSerializableExtra("QuestionMessage");
+
+            }
         }
-        if(getintent.getSerializableExtra("QuestionMessage") != null)
-        {
-            question = (Question) getintent.getSerializableExtra("QuestionMessage");
-
-        }
-
         if(question.getPhotos() != null && question.getPhotos() != "") {
             List<String> photoPath = new ArrayList<String>();
             for (String photsCount : question.getPhotos().toString().split(",")) {
@@ -167,8 +189,11 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     Intent intent = new Intent();
-                    intent.setClass(QuestionDetailsActivity.this, AvatarZoomActivity.class);
-                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+//                    intent.setClass(QuestionDetailsActivity.this, AvatarZoomActivity.class);
+//                    intent.putExtra("Avatar", (String)parent.getAdapter().getItem(position));
+                    intent.setClass(QuestionDetailsActivity.this, OrderDetailsViewPager.class);
+                    intent.putExtra("Position", String.valueOf(position));
+                    intent.putExtra("PhotoPath", question.getPhotos().toString());
                     startActivity(intent);
                 }
             });
@@ -232,6 +257,7 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
         ss.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tv_money.setText(ss);
 
+        getAnswer();
 //        // 下拉刷新监听器
 //        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 //
@@ -330,10 +356,9 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
     private void loadMore(SwipeRefreshXAnswerAdapater adapater, List<AnswerDetail> orderDetailses) {
         adapater.addItems(orderDetailses);
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
 
+    private void getAnswer()
+    {
         Map<String, String> map = new HashMap<String, String>();
         map.put("Page", "1");
         map.put("Size", String.valueOf(AppConfig.ORDER_SIZE));
@@ -365,6 +390,13 @@ public class QuestionDetailsActivity extends BaseActivity implements View.OnClic
                         super.onFail(code);
                     }
                 });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
         MobclickAgent.onPageStart("问答详情页"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
         MobclickAgent.onResume(this);          //统计时长
     }

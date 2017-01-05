@@ -1,5 +1,6 @@
 package appframe.appframe.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
@@ -43,6 +45,8 @@ import appframe.appframe.dto.OrderComment;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.PayResult;
 import appframe.appframe.dto.OnlinePay;
+import appframe.appframe.dto.Question;
+import appframe.appframe.fragment.MyOrderFragment;
 import appframe.appframe.utils.Auth;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
@@ -50,6 +54,8 @@ import appframe.appframe.utils.ImageUtils;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.widget.swiperefresh.OrderDetailsGridViewAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderComment;
+
+import static appframe.appframe.R.layout.item;
 
 /**
  * Created by Administrator on 2016/1/29.
@@ -121,7 +127,28 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmorderdetails);
-        init();
+        if(this.getIntent().getStringExtra("ConfirmOrderIdFromPushDemoReceiver") != null)
+        {
+//            Map<String, String> map = new HashMap<String, String>();
+//            map.put("Id", getintent.getStringExtra("OrderIdFromPushDemoReceiver"));
+            Http.request(this, API.GET_CONFIRMEDORDERBYID, new Object[]{this.getIntent().getStringExtra("ConfirmOrderIdFromPushDemoReceiver")},
+
+                    new Http.RequestListener<ConfirmedOrderDetail>() {
+                        @Override
+                        public void onSuccess(ConfirmedOrderDetail result) {
+                            super.onSuccess(result);
+
+                            confirmedOrderDetail = result;
+                            init();
+                        }
+                    });
+
+        }
+        else
+        {
+            init();
+        }
+
     }
 
     @Override
@@ -168,7 +195,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                                 @Override
                                 public void onSuccess(ConfirmedOrderDetail result) {
                                     super.onSuccess(result);
-
+                                    updateOrderStatus(result,AppConfig.ORDERSTATUS_APPLY);
                                 }
 
                                 @Override
@@ -196,17 +223,53 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                 }
                 if(tv_estimate.getText() == getResources().getString(R.string.refund_apply))
                 {
-                    Http.request(this, API.REJECT_PAYMENT, new Object[]{String.valueOf(confirmedOrderDetail.getId())}, Http.map(
-                            "UserId", String.valueOf(Auth.getCurrentUserId())
-                    ), new Http.RequestListener<ConfirmedOrderDetail>() {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ConfirmOrderDetailsActivity.this);
+                    LayoutInflater inflater =LayoutInflater.from(ConfirmOrderDetailsActivity.this);
+                    View layout = inflater.inflate(R.layout.dialog_rejectrefundreason, (ViewGroup) findViewById(R.id.dialog));
+                    final EditText comment = (EditText)layout.findViewById(R.id.et_message);
+                    builder.setTitle("请填写退款理由").setView(
+                            layout).setPositiveButton("提交", new DialogInterface.OnClickListener() {
                         @Override
-                        public void onSuccess(ConfirmedOrderDetail result) {
-                            super.onSuccess(result);
-                            updateOrderStatus(result,null);
-                            Toast.makeText(ConfirmOrderDetailsActivity.this, "申请退款提交成功", Toast.LENGTH_SHORT).show();
+                        public void onClick(DialogInterface dialog, int which) {
+                            if(!comment.getText().toString().equals("")) {
+                                Http.request(ConfirmOrderDetailsActivity.this, API.REJECT_PAYMENT, new Object[]{String.valueOf(confirmedOrderDetail.getId())}, Http.map(
+                                        "UserId", String.valueOf(Auth.getCurrentUserId()),
+                                        "RefundReason",comment.getText().toString()
 
+                                ), new Http.RequestListener<ConfirmedOrderDetail>() {
+                                    @Override
+                                    public void onSuccess(ConfirmedOrderDetail result) {
+                                        super.onSuccess(result);
+                                        updateOrderStatus(result,AppConfig.ORDERSTATUS_PROGRESS);
+                                        Toast.makeText(ConfirmOrderDetailsActivity.this, "申请退款提交成功", Toast.LENGTH_SHORT).show();
+//                                        MyOrderFragment.tab_progess.performClick();
+                                    }
+                                });
+                                dialog.dismiss();
+                            }
+                            else
+                            {
+                                Toast.makeText(ConfirmOrderDetailsActivity.this,"退款理由不能为空",Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    });
+                    }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+
+//                    Http.request(this, API.REJECT_PAYMENT, new Object[]{String.valueOf(confirmedOrderDetail.getId())}, Http.map(
+//                            "UserId", String.valueOf(Auth.getCurrentUserId())
+//                    ), new Http.RequestListener<ConfirmedOrderDetail>() {
+//                        @Override
+//                        public void onSuccess(ConfirmedOrderDetail result) {
+//                            super.onSuccess(result);
+//                            updateOrderStatus(result,null);
+//                            Toast.makeText(ConfirmOrderDetailsActivity.this, "申请退款提交成功", Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    });
                 }
 
                 if(tv_estimate.getText() == getResources().getString(R.string.disagree))
@@ -258,7 +321,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                                     @Override
                                     public void onSuccess(ConfirmedOrderDetail result) {
                                         super.onSuccess(result);
-
+                                        updateOrderStatus(result,AppConfig.ORDERSTATUS_PROGRESS);
                                         Toast.makeText(ConfirmOrderDetailsActivity.this, "不同意退款提交成功", Toast.LENGTH_SHORT).show();
 
 
@@ -284,25 +347,35 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 
                 if(tv_estimate.getText() == getResources().getString(R.string.service_stop))
                 {
-                    Http.request(ConfirmOrderDetailsActivity.this, API.CHANGE_STATUS, new Object[]{String.valueOf(confirmedOrderDetail.getId())},
-                            Http.map("Status", "0"), new Http.RequestListener<ConfirmedOrderDetail>() {
+                    Http.request(ConfirmOrderDetailsActivity.this, API.ORDER_CLOSE,
+                            Http.map("ConfirmedOrderId", String.valueOf(confirmedOrderDetail.getId()),
+                                    "UserId",String.valueOf(Auth.getCurrentUserId())),
+                            new Http.RequestListener<String>() {
                                 @Override
-                                public void onSuccess(ConfirmedOrderDetail result) {
+                                public void onSuccess(String result) {
                                     super.onSuccess(result);
-                                    updateOrderStatus(result,null);
+                                    updateOrderStatus(null,AppConfig.ORDERSTATUS_CLOSE);
                                 }
                             });
+//                    Http.request(ConfirmOrderDetailsActivity.this, API.CHANGE_STATUS, new Object[]{String.valueOf(confirmedOrderDetail.getId())},
+//                            Http.map("Status", "0"), new Http.RequestListener<ConfirmedOrderDetail>() {
+//                                @Override
+//                                public void onSuccess(ConfirmedOrderDetail result) {
+//                                    super.onSuccess(result);
+//                                    updateOrderStatus(result,null);
+//                                }
+//                            });
                 }
-                if(tv_estimate.getText() == getResources().getString(R.string.delete))
-                {
-                    Http.request(ConfirmOrderDetailsActivity.this, API.CLOSE_ORDER, Http.map("Id", String.valueOf(confirmedOrderDetail.getId())), new Http.RequestListener<String>() {
-                        @Override
-                        public void onSuccess(String result) {
-                            super.onSuccess(result);
-
-                        }
-                    });
-                }
+//                if(tv_estimate.getText() == getResources().getString(R.string.delete))
+//                {
+//                    Http.request(ConfirmOrderDetailsActivity.this, API.CLOSE_ORDER, Http.map("Id", String.valueOf(confirmedOrderDetail.getId())), new Http.RequestListener<String>() {
+//                        @Override
+//                        public void onSuccess(String result) {
+//                            super.onSuccess(result);
+//
+//                        }
+//                    });
+//                }
                 if(tv_estimate.getText() == getResources().getString(R.string.dispute))
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -319,6 +392,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                                     @Override
                                     public void onSuccess(String result) {
                                         super.onSuccess(result);
+//                                        updateOrderStatus(result,AppConfig.ORDERSTATUS_PROGRESS);
                                         Toast.makeText(ConfirmOrderDetailsActivity.this, "申诉成功", Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -398,7 +472,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                         @Override
                         public void onSuccess(ConfirmedOrderDetail result) {
                             super.onSuccess(result);
-                            updateOrderStatus(result,null);
+                            updateOrderStatus(result,AppConfig.ORDERSTATUS_PROGRESS);
                             Toast.makeText(ConfirmOrderDetailsActivity.this, "完成提交成功", Toast.LENGTH_SHORT).show();
 
                         }
@@ -419,17 +493,47 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                 }
                 if(tv_finish.getText() == "付款")
                 {
-                    Http.request(ConfirmOrderDetailsActivity.this, API.ORDER_CONFIRMCOMPLETE,new Object[]{String.valueOf(confirmedOrderDetail.getId())}, Http.map(
-                            "UserId", String.valueOf(Auth.getCurrentUserId())
-                    ), new Http.RequestListener<ConfirmedOrderDetail>() {
-                        @Override
-                        public void onSuccess(ConfirmedOrderDetail result) {
-                            super.onSuccess(result);
-                            updateOrderStatus(result,null);
-                            Toast.makeText(ConfirmOrderDetailsActivity.this, "确认完成", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ConfirmOrderDetailsActivity.this);
 
+                    LayoutInflater inflater =LayoutInflater.from(ConfirmOrderDetailsActivity.this);
+                    View layout = inflater.inflate(R.layout.dialog_confirmpayment, (ViewGroup)findViewById(R.id.dialog));
+                    final CheckBox rb_share = (CheckBox)layout.findViewById(R.id.rb_share);
+                    builder.setTitle("是否确认付款").setView(
+                            layout).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            Http.request(ConfirmOrderDetailsActivity.this, API.ORDER_CONFIRMCOMPLETE,new Object[]{String.valueOf(confirmedOrderDetail.getId())}, Http.map(
+                                    "UserId", String.valueOf(Auth.getCurrentUserId()),
+                                    "ShareRecord",String.valueOf(rb_share.isChecked())
+                            ), new Http.RequestListener<ConfirmedOrderDetail>() {
+                                @Override
+                                public void onSuccess(ConfirmedOrderDetail result) {
+                                    super.onSuccess(result);
+                                    updateOrderStatus(result,AppConfig.ORDERSTATUS_DONE);
+                                    Toast.makeText(ConfirmOrderDetailsActivity.this, "确认完成", Toast.LENGTH_SHORT).show();
+
+                                }
+                            });
+                            dialog.dismiss();
                         }
-                    });
+                    }).setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).show();
+//                    Http.request(ConfirmOrderDetailsActivity.this, API.ORDER_CONFIRMCOMPLETE,new Object[]{String.valueOf(confirmedOrderDetail.getId())}, Http.map(
+//                            "UserId", String.valueOf(Auth.getCurrentUserId())
+//                    ), new Http.RequestListener<ConfirmedOrderDetail>() {
+//                        @Override
+//                        public void onSuccess(ConfirmedOrderDetail result) {
+//                            super.onSuccess(result);
+//                            updateOrderStatus(result,null);
+//                            Toast.makeText(ConfirmOrderDetailsActivity.this, "确认完成", Toast.LENGTH_SHORT).show();
+//
+//                        }
+//                    });
                 }
                 if(tv_finish.getText() == getResources().getString(R.string.agree))
                 {
@@ -439,7 +543,7 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                         @Override
                         public void onSuccess(ConfirmedOrderDetail result) {
                             super.onSuccess(result);
-                            updateOrderStatus(result,null);
+                            updateOrderStatus(result,AppConfig.ORDERSTATUS_PROGRESS);
                             Toast.makeText(ConfirmOrderDetailsActivity.this, "您已同意退款", Toast.LENGTH_SHORT).show();
 
                         }
@@ -567,9 +671,15 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
 //        btn_finish.setOnClickListener(this);
 //        btn_estimate.setOnClickListener(this);
 
-        Intent intent = this.getIntent();
-        confirmedOrderDetail=(ConfirmedOrderDetail)intent.getSerializableExtra("ConfirmOrderDetails");
-        From = intent.getStringExtra("From");
+        if(this.getIntent().getStringExtra("ConfirmOrderIdFromPushDemoReceiver") != null)
+        {
+            //orderDetails之前赋值过了
+        }
+        else {
+            Intent intent = this.getIntent();
+            confirmedOrderDetail = (ConfirmedOrderDetail) intent.getSerializableExtra("ConfirmOrderDetails");
+        }
+        From = this.getIntent().getStringExtra("From");
         if(From == null)
         {
             if(confirmedOrderDetail.getStatus() == 3 || confirmedOrderDetail.getStatus() == 11) {
@@ -924,13 +1034,11 @@ public class ConfirmOrderDetailsActivity extends BaseActivity implements View.On
                 if(confirmedOrderDetail.getStatus() == 8)
                 {
                     tv_finish.setVisibility(View.GONE);
-                    tv_estimate.setVisibility(View.VISIBLE);
-                    tv_estimate.setText(getResources().getString(R.string.dispute));
-//                        mHolder.btn_finish.setVisibility(View.GONE);
-//                        mHolder.btn_estimate.setVisibility(View.GONE);
-//                        mHolder.ll_button.setVisibility(View.GONE);
-//                        mHolder.tv_showstatus.setVisibility(View.VISIBLE);
-//                        mHolder.tv_showstatus.setText("对方拒绝退款申请，客服正在处理中，请耐心等待");
+                    tv_estimate.setVisibility(View.GONE);
+//                    tv_finish.setVisibility(View.GONE);
+//                    tv_estimate.setVisibility(View.VISIBLE);
+//                    tv_estimate.setText(getResources().getString(R.string.dispute));
+
                 }
 
             }

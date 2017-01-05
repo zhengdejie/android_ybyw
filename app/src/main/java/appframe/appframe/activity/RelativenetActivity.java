@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 
@@ -144,18 +145,22 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
                                 iv_zuojianju.setVisibility(View.VISIBLE);
                             }
                             tv_yourname.setText(middleMan.get(0).getName());
-                            if(middleMan.get(0).getAvatar() !=null && !middleMan.get(0).getAvatar().equals("")) {
-                                ImageUtils.setImageUrl(iv_youravatar, middleMan.get(0).getAvatar());
-                            }
-                            else
+                            //没注册的用户
+                            if(middleMan.get(0).getId() == 0 )
                             {
-                                if(middleMan.get(0).getGender().equals(getResources().getString(R.string.male).toString()))
-                                {
-                                    iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
-                                }
-                                else
-                                {
-                                    iv_youravatar.setDefaultImageResId(R.drawable.femaleavatar);
+                                iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
+                            }
+                            //已注册的用户
+                            else {
+                                if (middleMan.get(0).getAvatar() != null && !middleMan.get(0).getAvatar().equals("")) {
+                                    ImageUtils.setImageUrl(iv_youravatar, middleMan.get(0).getAvatar());
+                                } else {
+
+                                    if (middleMan.get(0).getGender().equals(getResources().getString(R.string.male).toString())) {
+                                        iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
+                                    } else {
+                                        iv_youravatar.setDefaultImageResId(R.drawable.femaleavatar);
+                                    }
                                 }
                             }
 
@@ -226,18 +231,21 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
                 currentMiddle = ((currentMiddle + 1) > (middleMan.size() - 1 )) ? 0 : (currentMiddle + 1);
 
                 tv_yourname.setText(middleMan.get(currentMiddle).getName());
-                if(middleMan.get(currentMiddle).getAvatar() !=null && !middleMan.get(currentMiddle).getAvatar().equals("")) {
-                    ImageUtils.setImageUrl(iv_youravatar, middleMan.get(currentMiddle).getAvatar());
-                }
-                else
+                //未注册
+                if(middleMan.get(currentMiddle).getId() == 0)
                 {
-                    if(middleMan.get(currentMiddle).getGender().equals(getResources().getString(R.string.male).toString()))
-                    {
-                        iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
-                    }
-                    else
-                    {
-                        iv_youravatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
+                }
+                //已注册
+                else {
+                    if (middleMan.get(currentMiddle).getAvatar() != null && !middleMan.get(currentMiddle).getAvatar().equals("")) {
+                        ImageUtils.setImageUrl(iv_youravatar, middleMan.get(currentMiddle).getAvatar());
+                    } else {
+                        if (middleMan.get(currentMiddle).getGender().equals(getResources().getString(R.string.male).toString())) {
+                            iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
+                        } else {
+                            iv_youravatar.setDefaultImageResId(R.drawable.femaleavatar);
+                        }
                     }
                 }
                 tv_tworelation.setText(String.format("您和Ta是二度关系,你们的中间人是%s",middleMan.get(currentMiddle).getName()));
@@ -246,18 +254,21 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
                 currentMiddle = ((currentMiddle - 1) < 0 ) ? middleMan.size() - 1 : (currentMiddle - 1);
 
                 tv_yourname.setText(middleMan.get(currentMiddle).getName());
-                if(middleMan.get(currentMiddle).getAvatar() !=null && !middleMan.get(currentMiddle).getAvatar().equals("")) {
-                    ImageUtils.setImageUrl(iv_youravatar, middleMan.get(currentMiddle).getAvatar());
-                }
-                else
+                //未注册
+                if(middleMan.get(currentMiddle).getId() == 0)
                 {
-                    if(middleMan.get(currentMiddle).getGender().equals(getResources().getString(R.string.male).toString()))
-                    {
-                        iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
-                    }
-                    else
-                    {
-                        iv_youravatar.setDefaultImageResId(R.drawable.femaleavatar);
+                    iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
+                }
+                //已注册
+                else {
+                    if (middleMan.get(currentMiddle).getAvatar() != null && !middleMan.get(currentMiddle).getAvatar().equals("")) {
+                        ImageUtils.setImageUrl(iv_youravatar, middleMan.get(currentMiddle).getAvatar());
+                    } else {
+                        if (middleMan.get(currentMiddle).getGender().equals(getResources().getString(R.string.male).toString())) {
+                            iv_youravatar.setDefaultImageResId(R.drawable.maleavatar);
+                        } else {
+                            iv_youravatar.setDefaultImageResId(R.drawable.femaleavatar);
+                        }
                     }
                 }
                 tv_tworelation.setText(String.format("您和Ta是二度关系,你们的中间人是%s",middleMan.get(currentMiddle).getName()));
@@ -278,17 +289,23 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
                 {
                     intent.setClass(RelativenetActivity.this, FriendsInfoActivity.class);
                     bundle.clear();
-                    bundle.putSerializable("UserDetail", userBrief);
+                    bundle.putSerializable("Relativenet", userBrief);
                     intent.replaceExtras(bundle);
                     startActivity(intent);
                 }
                 else if (relationShip ==2 )
                 {
-                    intent.setClass(RelativenetActivity.this, FriendsInfoActivity.class);
-                    bundle.clear();
-                    bundle.putSerializable("UserDetail", middleMan.get(currentMiddle));
-                    intent.replaceExtras(bundle);
-                    startActivity(intent);
+                    if(middleMan.get(currentMiddle).getId() == 0 )
+                    {
+                        Toast.makeText(this,"该用户还未注册,快去邀请他吧",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        intent.setClass(RelativenetActivity.this, FriendsInfoActivity.class);
+                        bundle.clear();
+                        bundle.putSerializable("UserDetail", middleMan.get(currentMiddle));
+                        intent.replaceExtras(bundle);
+                        startActivity(intent);
+                    }
                 }
                 else
                 {
@@ -298,7 +315,7 @@ public class RelativenetActivity extends BaseActivity implements View.OnClickLis
             case R.id.iv_heravatar:
                 intent.setClass(RelativenetActivity.this, FriendsInfoActivity.class);
                 bundle.clear();
-                bundle.putSerializable("UserDetail", userBrief);
+                bundle.putSerializable("Relativenet", userBrief);
                 intent.replaceExtras(bundle);
                 startActivity(intent);
                 break;

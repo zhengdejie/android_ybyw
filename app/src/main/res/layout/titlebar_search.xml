@@ -18,6 +18,7 @@
         android:text=""
         android:drawableLeft="@drawable/ic_ab_back_holo_light_am"/>
 
+
     <EditText
         android:id="@+id/et_search"
         android:layout_width="match_parent"

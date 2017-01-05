@@ -17,12 +17,59 @@
             layout="@layout/titlebar" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/lly_send">
+        <!--<Button-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="留言"-->
+            <!--android:id="@+id/btn_comment"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_weight="4"-->
+            <!--/>-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="添加答案"
+            android:id="@+id/btn_comment"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/textview_clicked"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:layout_marginBottom="5dp"
+            android:textColor="@drawable/textview_pressed"
+            />
+        <!--<Button-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="我要接单"-->
+            <!--android:id="@+id/btn_select"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_weight="3"-->
+            <!--/>-->
+        <!--<Button-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="推荐朋友接单"-->
+            <!--android:id="@+id/btn_recommend"-->
+            <!--android:layout_gravity="bottom"-->
+            <!--android:layout_weight="3"-->
+            <!--/>-->
+
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/lly_send"
         android:layout_below="@+id/ll_tb"
-        >
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
 
         <LinearLayout
@@ -33,22 +80,27 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_margin="10dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
 
                 <com.android.volley.toolbox.NetworkImageView
                     android:id="@+id/iv_avatar"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:gravity="center_vertical"/>
 
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="150dp"
-                    android:layout_height="25dp"
+                    android:layout_height="30dp"
                     android:text="名字"
                     android:lines="1"
                     android:ellipsize="end"
+                    android:textSize="16sp"
+                    android:gravity="center_vertical"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/iv_avatar"/>
 
@@ -67,29 +119,29 @@
 
                 <ImageView
                     android:id="@+id/imgbtn_call"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/phone"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="30dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_alignParentRight="true"/>
 
                 <ImageView
                     android:id="@+id/imgbtn_conversation"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/mymessage"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginBottom="10dp"
+
                     android:layout_below="@+id/imgbtn_call"/>
 
                 <View
-                    android:layout_width="3dp"
-                    android:layout_height="100dp"
-                    android:layout_toRightOf="@+id/tv_name"
+                    android:layout_width="1dp"
+                    android:layout_height="60dp"
+                    android:layout_toLeftOf="@+id/imgbtn_call"
                     android:background="@color/bg_gray"/>
 
             </RelativeLayout>
@@ -388,54 +440,6 @@
             <!--</ScrollView>-->
         </LinearLayout>
     </ScrollView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/lly_send">
-        <!--<Button-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="留言"-->
-            <!--android:id="@+id/btn_comment"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:layout_weight="4"-->
-            <!--/>-->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="添加答案"
-            android:id="@+id/btn_comment"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/textview_clicked"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:layout_marginBottom="5dp"
-            android:textColor="@drawable/textview_pressed"
-            />
-        <!--<Button-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="我要接单"-->
-            <!--android:id="@+id/btn_select"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:layout_weight="3"-->
-            <!--/>-->
-        <!--<Button-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="推荐朋友接单"-->
-            <!--android:id="@+id/btn_recommend"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:layout_weight="3"-->
-            <!--/>-->
-
-    </LinearLayout>
-
 
 
 </RelativeLayout>

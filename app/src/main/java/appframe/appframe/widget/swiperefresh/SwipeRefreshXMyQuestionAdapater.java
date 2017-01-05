@@ -92,6 +92,7 @@ public class SwipeRefreshXMyQuestionAdapater extends BaseAdapter {
         if(item.getStatus() == 1)
         {
             mHolder.rl_bottom.setVisibility(View.VISIBLE);
+            mHolder.tv_pay.setVisibility(View.VISIBLE);
             mHolder.tv_delete.setText("取消支付");
             mHolder.tv_status.setVisibility(View.GONE);
         }
@@ -109,6 +110,7 @@ public class SwipeRefreshXMyQuestionAdapater extends BaseAdapter {
         }
         else
         {
+            mHolder.tv_status.setVisibility(View.GONE);
             mHolder.rl_bottom.setVisibility(View.GONE);
         }
 

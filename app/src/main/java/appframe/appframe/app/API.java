@@ -143,4 +143,6 @@ public final class API {
     public static final Http.API<List<UserDetail>> GETALLFANS = Http.API.getList("/fans/getAllFans.json%s", UserDetail.class);
     public static final Http.API DELETE_FRIENDEVALUATION = Http.API.deleteEmpty("/profile/DeleteFriendsEvaluation.json%s");
     public static final Http.API<OrderDetails> GETORDERBYID = Http.API.get("/order/%s.json", OrderDetails.class);
+    public static final Http.API<QuestionWithAnswers> GET_QUESTIONBYID = Http.API.get("/question/%s.json", QuestionWithAnswers.class);
+    public static final Http.API<ConfirmedOrderDetail> GET_CONFIRMEDORDERBYID = Http.API.get("/confirmedOrder/%s.json", ConfirmedOrderDetail.class);
 }

@@ -31,51 +31,62 @@
         android:layout_below="@+id/view_divide"
         android:layout_margin="10dp"
     />
-
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:text="name"
-        android:layout_toRightOf="@+id/iv_showavatar"
-        android:layout_alignTop="@+id/iv_showavatar"
-        android:textSize="16sp"
-        android:gravity="center"
-        />
-    <ImageView
-        android:id="@+id/iv_gender"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:textSize="14sp"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/tv_name"
-        android:layout_alignTop="@+id/iv_showavatar"
-        android:src="@drawable/male"
-        />
-    <ImageView
-        android:id="@+id/iv_member"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:textSize="14sp"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/iv_gender"
-        android:layout_alignTop="@+id/iv_showavatar"
-        android:src="@drawable/idflag"
-        />
+        <LinearLayout
+            android:id="@+id/ll_name"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:orientation="horizontal"
+            android:layout_toRightOf="@+id/iv_showavatar"
+            android:layout_alignTop="@+id/iv_showavatar">
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="gg"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                android:maxWidth="150dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                />
+            <ImageView
+                android:id="@+id/iv_gender"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/tv_name"
+                android:layout_alignTop="@+id/iv_showavatar"
+                android:src="@drawable/male"
+                android:layout_gravity="center_vertical"
+                />
+            <ImageView
+                android:id="@+id/iv_member"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical"
+                android:layout_toRightOf="@+id/iv_gender"
+                android:layout_alignTop="@+id/iv_showavatar"
+                android:src="@drawable/idflag"
+                />
+        </LinearLayout>
     <TextView
         android:id="@+id/tv_fbnum"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:text="友帮号: "
         android:textSize="14sp"
         android:layout_toRightOf="@+id/iv_showavatar"
-        android:layout_below="@+id/tv_name"
+        android:layout_below="@+id/ll_name"
         android:textColor="@color/font_gray"
         android:gravity="center_vertical"
+        android:maxWidth="150dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         />
     <TextView
         android:id="@+id/tv_nickname"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:text="昵称: nickname"
         android:textSize="14sp"
@@ -84,6 +95,9 @@
         android:visibility="invisible"
         android:textColor="@color/font_gray"
         android:gravity="center_vertical"
+        android:maxWidth="150dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         />
 
     <View
