@@ -64,9 +64,12 @@ import appframe.appframe.dto.UserContact;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.fragment.BaseFragment;
 import appframe.appframe.fragment.DiscoveryFragment;
+import appframe.appframe.fragment.GuideFragment;
+import appframe.appframe.fragment.IndexFragment;
 import appframe.appframe.fragment.MyOrderFragment;
 import appframe.appframe.fragment.OrderFragment;
 import appframe.appframe.fragment.PersonFragment;
+import appframe.appframe.fragment.PersonalFragment;
 import appframe.appframe.fragment.ProfileFragment;
 import appframe.appframe.service.UpdateAPKService;
 import appframe.appframe.utils.Auth;
@@ -173,10 +176,12 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
 //        };
 
         fragments = new BaseFragment[]{
-                new OrderFragment(),
+                new IndexFragment(),
+//                new OrderFragment(),
                 new MyOrderFragment(),
                 new DiscoveryFragment(),
-                new PersonFragment()
+//                new GuideFragment(),
+                new PersonalFragment()
         };
 
         pager = (ViewPager) findViewById(R.id.pager);

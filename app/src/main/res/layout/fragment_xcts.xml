@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="异国相亲配对\n带给您无与伦比的遗留已过相亲体验"
+            android:gravity="center"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="“五星”旅游品质：“五星”酒店，“五星”饮食， “五星”服务，“五星”安排！献给追求舒适的您！\n全程无忧，精致行程，只玩最好，免去一切琐碎烦恼！\n※	魅惑俄罗斯，带给您都市，古迹，文化，历史，海岸，美食360°全方位乐趣！"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="14sp"
+            android:textColor="#666666"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/pic_date_one"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="异国相亲：相亲相到国外去，娶个外国老婆回家！\n靶场打枪：体验一把纯爷们该干的事情，端起枪横扫四方！\n前苏联海军基地： 看军舰，上潜艇，看看前苏联这个曾经的帝国最后的辉煌！\n游艇出海：在私人游艇上相亲这绝对是你一生难忘的经历！\n【酒店住宿】：精选全程入住当地最好酒店！\n【餐饮安排】：舌尖上的一次美食之旅，土豪的餐标！！！\n【出发时间】：2017年5月20日\n【报名人数】：限定在18人内，报满即止！\n【行程费用】：45000元人民币每人"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="14sp"
+            android:textColor="#666666"/>
+    </LinearLayout>
+
+</RelativeLayout>

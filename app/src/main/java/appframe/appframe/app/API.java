@@ -26,12 +26,16 @@ import appframe.appframe.dto.PhotoResponse;
 import appframe.appframe.dto.PushMessage;
 import appframe.appframe.dto.Question;
 import appframe.appframe.dto.QuestionWithAnswers;
+import appframe.appframe.dto.Recommend;
+import appframe.appframe.dto.RecommendOrder;
+import appframe.appframe.dto.RecommendOrderQuestion;
 import appframe.appframe.dto.ReportCategory;
 import appframe.appframe.dto.SearchOrderTagResponse;
 import appframe.appframe.dto.SearchResult;
 import appframe.appframe.dto.SelfEvaluationDetail;
 import appframe.appframe.dto.OnlinePay;
 import appframe.appframe.dto.Token;
+import appframe.appframe.dto.UserAskQuestion;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Http;
 
@@ -145,4 +149,11 @@ public final class API {
     public static final Http.API<OrderDetails> GETORDERBYID = Http.API.get("/order/%s.json", OrderDetails.class);
     public static final Http.API<QuestionWithAnswers> GET_QUESTIONBYID = Http.API.get("/question/%s.json", QuestionWithAnswers.class);
     public static final Http.API<ConfirmedOrderDetail> GET_CONFIRMEDORDERBYID = Http.API.get("/confirmedOrder/%s.json", ConfirmedOrderDetail.class);
+    public static final Http.API<List<Recommend>> GET_ALLRECOMMENDATION = Http.API.getList("/recommend/all.json", Recommend.class);
+    public static final Http.API<List<RecommendOrder>> GET_RECOMMENDORDERBYID = Http.API.getList("/recommendorder/%s.json", RecommendOrder.class);
+    public static final Http.API<List<RecommendOrderQuestion>> GET_RECOMMENDORDERQUESTIONBYID = Http.API.getList("/recommendorderquestion/%s.json", RecommendOrderQuestion.class);
+    public static final Http.API<List<UserAskQuestion>> GET_QUESTIONBYASKUSERID = Http.API.getList("/useraskquestion/ask/%s.json", UserAskQuestion.class);
+    public static final Http.API<List<UserAskQuestion>> GET_QUESTIONBYANSWERUSERID = Http.API.getList("/useraskquestion/answer/%s.json", UserAskQuestion.class);
+    public static final Http.API USERASKQUESTION = Http.API.postEmpty("/useraskquestion.json");
+    public static final Http.API USERANSWERQUESTION = Http.API.postEmpty("/useranswerquestion.json");
 }

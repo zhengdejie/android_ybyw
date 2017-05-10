@@ -41,13 +41,13 @@ import java.util.List;
 final class LoadPackagesAsyncTask extends AsyncTask<Object,Object,List<AppInfo>> {
 
   private static final String[] PKG_PREFIX_WHITELIST = {
-      "com.google.android.apps.",
+          "com.google.android.apps.",
   };
   private static final String[] PKG_PREFIX_BLACKLIST = {
-      "com.android.",
-      "android",
-      "com.google.android.",
-      "com.htc",
+          "com.android.",
+          "android",
+          "com.google.android.",
+          "com.htc",
   };
 
   private final ListActivity activity;
@@ -65,7 +65,7 @@ final class LoadPackagesAsyncTask extends AsyncTask<Object,Object,List<AppInfo>>
       String packageName = appInfo.packageName;
       if (!isHidden(packageName)) {
         CharSequence label = appInfo.loadLabel(packageManager);
-        Drawable icon = appInfo.loadIcon(packageManager);        
+        Drawable icon = appInfo.loadIcon(packageManager);
         if (label != null) {
           labelsPackages.add(new AppInfo(packageName, label.toString(), icon));
         }
@@ -93,11 +93,11 @@ final class LoadPackagesAsyncTask extends AsyncTask<Object,Object,List<AppInfo>>
   }
 
   @Override
-  protected void onPostExecute(final List<AppInfo> results) {    
-    ListAdapter listAdapter = new ArrayAdapter<AppInfo>(activity, 
-                                                        R.layout.app_picker_list_item, 
-                                                        R.id.app_picker_list_item_label, 
-                                                        results) {
+  protected void onPostExecute(final List<AppInfo> results) {
+    ListAdapter listAdapter = new ArrayAdapter<AppInfo>(activity,
+            R.layout.app_picker_list_item,
+            R.id.app_picker_list_item_label,
+            results) {
       @Override
       public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);

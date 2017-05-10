@@ -54,10 +54,10 @@ public final class AppPickerActivity extends ListActivity {
       String packageName = ((AppInfo) adapter.getItem(position)).getPackageName();
       Intent intent = new Intent();
       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-      intent.putExtra(Browser.BookmarkColumns.URL, "market://details?id=" + packageName);
+      intent.putExtra("url", "market://details?id=" + packageName); // Browser.BookmarkColumns.URL
       setResult(RESULT_OK, intent);
     } else {
-      setResult(RESULT_CANCELED);      
+      setResult(RESULT_CANCELED);
     }
     finish();
   }

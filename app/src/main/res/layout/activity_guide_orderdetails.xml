@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:descendantFocusability="blocksDescendants"
+    >
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <ScrollView
+        android:id="@+id/sv_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar"
+        android:fillViewport="true"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/rl_top"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
+
+                <ImageView
+                    android:id="@+id/iv_backgroud"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/city_blur"
+                    />
+
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+
+                    <appframe.appframe.utils.CircleImageViewCustomer
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/civ_avatar"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_centerHorizontal="true"
+                        />
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:text="Name"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/civ_avatar"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        />
+                    <RatingBar
+                        android:id="@+id/rb_totalvalue"
+                        android:layout_width="50dp"
+                        android:layout_height="10dp"
+                        android:numStars="5"
+                        android:isIndicator="true"
+                        style="@style/myRatingBar"
+                        android:layout_below="@+id/tv_name"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:id="@+id/tv_introduction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:text="Introduction"
+                        android:layout_below="@+id/rb_totalvalue"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        />
+                    <TextView
+                        android:id="@+id/tv_focus"
+                        android:layout_width="40dp"
+                        android:layout_height="20dp"
+                        android:layout_alignTop="@+id/tv_name"
+                        android:layout_marginRight="60dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/focus_backgroud"
+                        android:textColor="@color/white"
+                        android:text="+关注"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:layout_toLeftOf="@+id/rb_totalvalue"
+
+                        />
+
+                    <ImageView
+                        android:id="@+id/iv_message"
+                        android:layout_width="40dp"
+                        android:layout_height="20dp"
+                        android:layout_alignTop="@+id/tv_name"
+                        android:layout_marginLeft="60dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/recommend_message_default"
+                        android:gravity="center"
+                        android:layout_toRightOf="@+id/rb_totalvalue"
+                        />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_servicecontent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_top"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp">
+
+                <ImageView
+                    android:id="@+id/iv_servicecontent"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/recommend_service"
+                    android:gravity="center"/>
+                <TextView
+                    android:id="@+id/tv_servicecontenttitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="服务内容"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/iv_servicecontent"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/tv_servicecontent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="主要咨询"
+                    android:layout_below="@+id/tv_servicecontenttitle"
+                    android:layout_marginTop="10dp"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_workpic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_servicecontent"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp">
+
+                <ImageView
+                    android:id="@+id/iv_workpicicon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/recommend_photo"
+                    android:gravity="center"/>
+                <TextView
+                    android:id="@+id/tv_workpic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="工作照片"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/iv_workpicicon"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    />
+                <ImageView
+                    android:id="@+id/iv_workpic"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_below="@+id/tv_workpic"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:background="@drawable/city"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_personality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_workpic"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp">
+
+                <TextView
+                    android:id="@+id/tv_personality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="dfddddfddddddfdddddddfddddddfddddddfddddddfdddddfddddddfddddddfddddddfddddddfddddddfddddddfddddddfddddddd"
+                    android:textSize="16sp"
+                    android:gravity="left"
+                    android:lineSpacingExtra="5dp"
+                    android:maxLines="3"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_selfestimate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_personality"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp">
+
+                <ImageView
+                    android:id="@+id/iv_selfestimate"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/recommend_self_assessment"
+                    android:gravity="center"/>
+                <TextView
+                    android:id="@+id/tv_selfestimatetitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="自我评价"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/iv_selfestimate"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/tv_selfestimate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="主要咨主要咨询主要咨询主要咨询主要咨询主要咨询主要咨询主要咨询主要咨询主要咨询主要咨询主要咨询主要咨询主要咨询主要咨询询"
+                    android:layout_below="@+id/tv_selfestimatetitle"
+                    android:layout_marginTop="10dp"
+                    />
+                
+                <ImageView
+                    android:id="@+id/iv_separate"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_below="@+id/tv_selfestimate"
+                    android:background="@drawable/common_question"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_selfestimate"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:padding="10dp"
+                android:background="@color/black">
+
+                <ImageView
+                    android:id="@+id/iv_question"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/recommend_question"
+                    android:gravity="center"/>
+                <TextView
+                    android:id="@+id/tv_question"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="常见问题"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/iv_question"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    />
+
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_question"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                >
+
+                    <ListView
+                        android:id="@+id/lv_question"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        >
+                    </ListView>
+
+                </RelativeLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

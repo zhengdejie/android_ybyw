@@ -60,7 +60,7 @@ public class XmlParserHandler extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName)
             throws SAXException {
-        // ����������ǵ�ʱ�򣬻�����������
+        // ����������ǵ�ʱ�򣬻����������
         if (qName.equals("district")) {
             cityModel.getDistrictList().add(districtModel);
         } else if (qName.equals("city")) {

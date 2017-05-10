@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_title"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_below="@+id/id_stickynavlayout_topview">
+
+    <TextView
+        android:id="@+id/tv_help"
+        android:text="助人"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:layout_centerHorizontal="true"
+        android:padding="10dp"
+        />
+
+    <TextView
+        android:id="@+id/tv_recommand"
+        android:text="求助"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="60dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:layout_toLeftOf="@id/tv_help"
+        android:textColor="@color/black"
+        />
+
+    <TextView
+        android:id="@+id/tv_travel"
+        android:text="问答"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:layout_toRightOf="@id/tv_help"
+        android:textColor="@color/black"
+        />
+
+    <View
+        android:id="@+id/v_recommand"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:background="@color/blue"
+        android:layout_below="@+id/tv_help"
+        android:layout_alignRight="@+id/tv_recommand"
+        android:layout_alignLeft="@+id/tv_recommand" />
+
+    <View
+        android:id="@+id/v_help"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:background="@color/blue"
+        android:layout_below="@+id/tv_help"
+        android:layout_alignRight="@+id/tv_help"
+        android:layout_alignLeft="@+id/tv_help"
+        android:visibility="visible"/>
+
+    <View
+        android:id="@+id/v_travel"
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:background="@color/blue"
+        android:layout_below="@+id/tv_help"
+        android:layout_alignRight="@+id/tv_travel"
+        android:layout_alignLeft="@+id/tv_travel"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/v_recommand"
+        />
+
+</RelativeLayout>

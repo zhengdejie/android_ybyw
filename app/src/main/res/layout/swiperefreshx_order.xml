@@ -47,6 +47,7 @@
         android:text="+关注"
         android:gravity="center"
         android:textSize="12sp"
+
         />
 
     <TextView

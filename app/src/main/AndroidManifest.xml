@@ -1,102 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="appframe.appframe" >
+    package="appframe.appframe">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <!-- GPS定位权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
     <uses-permission android:name="android.permission.READ_LOGS" />
-
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <!--<uses-feature android:name="android.hardware.camera" />-->
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- <uses-feature android:name="android.hardware.camera" /> -->
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
-
-
-    <uses-permission android:name="android.permission.FLASHLIGHT"/>
-
-    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"/>
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="com.android.browser.permission.READ_HISTORY_BOOKMARKS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <!-- 支持个推3.0 电子围栏功能 -->
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <!-- 支持个推3.0 电子围栏功能 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-
     <!-- Don't require camera, as this requires a rear camera. This allows it to work on the Nexus 7 -->
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
     <!-- TODO replace above two with next line after Android 4.2 -->
     <!-- <uses-feature android:name="android.hardware.camera.any"/> -->
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera.flash" android:required="false"/>
-    <uses-feature android:name="android.hardware.screen.landscape"/>
-    <uses-feature android:name="android.hardware.wifi" android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
+    <uses-feature android:name="android.hardware.screen.landscape" />
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
     <!-- This excludes Google TV, which is unfortunately included by virtue of not requiring a camera -->
-    <uses-feature android:name="android.hardware.touchscreen"/>
+    <uses-feature android:name="android.hardware.touchscreen" />
     <!-- ...........................................友盟................................................. -->
-    <!--<uses-permission android:name="android.permission.SET_DEBUG_APP" />-->
-    <!--<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />-->
-    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
-    <!--<uses-permission android:name="android.permission.USE_CREDENTIALS" />-->
-    <!--<uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />-->
+    <!-- <uses-permission android:name="android.permission.SET_DEBUG_APP" /> -->
+    <!-- <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> -->
+    <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS" /> -->
+    <!-- <uses-permission android:name="android.permission.USE_CREDENTIALS" /> -->
+    <!-- <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" /> -->
 
-    <supports-screens android:xlargeScreens="true"
-                      android:largeScreens="true"
-                      android:normalScreens="true"
-                      android:smallScreens="true"
-                      android:anyDensity="true"/>
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:xlargeScreens="true" />
 
     <application
-
-        android:allowBackup="true"
         android:name=".app.App"
+        android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-
+        android:theme="@style/AppTheme">
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote" >
+            android:process=":remote">
             <intent-filter>
-                <action android:name="com.baidu.location.service_v2.2" >
-                </action>
+                <action android:name="com.baidu.location.service_v2.2"></action>
             </intent-filter>
         </service>
+        <service android:name=".service.UpdateAPKService"></service>
 
-        <service android:name=".service.UpdateAPKService">
-        </service>
+        <!-- <receiver -->
+        <!-- android:name=".broadcast.ConnectionChangeReceiver" -->
+        <!-- android:label="NetworkConnection" > -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE" /> -->
 
 
-        <!--<receiver-->
-            <!--android:name=".broadcast.ConnectionChangeReceiver"-->
-            <!--android:label="NetworkConnection" >-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
 
-            <!--</intent-filter>-->
-        <!--</receiver>-->
 
         <!-- meta-data需要写在application中 -->
         <meta-data
@@ -105,128 +104,359 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="c2b0a3a7e6aaa1066f8276591895db778ed7059d" />
-        <activity android:name=".activity.SplashActivity" android:launchMode="singleTop" android:screenOrientation="portrait">
 
+        <activity
+            android:name=".activity.SplashActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.HomeActivity" android:launchMode="singleTop" android:screenOrientation="portrait" />
-        <activity android:name=".activity.LoginActivity" android:label="登入"  android:launchMode="singleTask" android:windowSoftInputMode="stateHidden" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.RegisterActivity" android:label="注册"   android:launchMode="singleTask" android:windowSoftInputMode="stateHidden" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OrderSendActivity" android:launchMode="singleTask"   android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".activity.OrderDetailsActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.MyInfoActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.PrivacyActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.AboutActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.AccountActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.NewMessageActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.SettingActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.WhoCannotSeeActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.CannotSeeActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.BlackListActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.FriendsInfoActivity"  android:screenOrientation="portrait" />
-        <activity android:name=".activity.SelfEstimateActivity" android:launchMode="singleTop"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.FriendEstimateActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OrderEstimateActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OrderCommentActivity"  android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".activity.RelativenetActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.WalletActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".activity.FramedWebViewActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.NearByActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.EstimateActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.MyCollectActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.SearchActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.FeedbackActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.CandidateActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.MyMessageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.SystemMessageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OrderMessageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.FriendMessageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.EditNickNameActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.QRCodeActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.CitySelectActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.CitySelectBaseActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.EditSignatureActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
-        <activity android:name=".activity.AvatarZoomActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.ModifyPasswordActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.SearchFriendsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.AddFriendsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.EditFriendsNickNameActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.MyMissionActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
-        <activity android:name=".activity.ConfirmOrderDetailsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.PayActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
-        <activity android:name=".activity.TopupActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.WithdrawActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.SearchTagActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.ReportActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.ForgetPasswordActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.CertificateActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".wxapi.WXPayEntryActivity" android:screenOrientation="portrait" android:exported="true" android:launchMode="singleTop" />
-        <activity android:name=".activity.QuestionSendActivity" android:launchMode="singleTask"   android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".activity.QuestionDetailsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.AnswerDetailsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.MyQuestionActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
-        <activity android:name=".activity.MyAnswerActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
-        <activity android:name=".activity.TradeBuyHistoryActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
-        <activity android:name=".activity.TradeSellHistoryActivity" android:screenOrientation="portrait" android:launchMode="singleTask"/>
-        <activity android:name=".activity.MyRequireActivity" android:screenOrientation="portrait" android:launchMode="singleTop"/>
-        <activity android:name=".activity.QuestionMessageActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.ExpandFriendsActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.ViewPagerActivity" android:screenOrientation="portrait" android:launchMode="singleTask" />
-        <activity android:name=".activity.ComplainActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OrderCommentAllActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.AnswerAllActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.ServiceMoreActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.QuestionMoreActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".activity.OpenOrderActivity" android:screenOrientation="portrait" android:launchMode="singleTask" />
-        <activity android:name=".activity.MyfocusActivity" android:screenOrientation="portrait" android:launchMode="singleTask" />
-        <activity android:name=".activity.MyfansActivity" android:screenOrientation="portrait" android:launchMode="singleTask" />
-        <activity android:name=".activity.OrderDetailsViewPager" android:screenOrientation="portrait" android:launchMode="singleTask" />
-        <activity android:name=".activity.CityPickerActivity" android:screenOrientation="portrait" android:launchMode="singleTop" android:windowSoftInputMode="stateHidden|adjustPan" />
-        <activity android:name=".activity.MiddleActivity" android:screenOrientation="portrait" android:launchMode="singleTask" />
+        <activity
+            android:name=".activity.HomeActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:label="登入"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:label="注册"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.OrderSendActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.OrderDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MyInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.PrivacyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.NewMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WhoCannotSeeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CannotSeeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.BlackListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.FriendsInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SelfEstimateActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.FriendEstimateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OrderEstimateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OrderCommentActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.RelativenetActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WalletActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.FramedWebViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.NearByActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.EstimateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MyCollectActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.FeedbackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CandidateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MyMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SystemMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OrderMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.FriendMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.EditNickNameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.QRCodeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CitySelectActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CitySelectBaseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.EditSignatureActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AvatarZoomActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ModifyPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SearchFriendsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AddFriendsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.EditFriendsNickNameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MyMissionActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ConfirmOrderDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.PayActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.TopupActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.WithdrawActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SearchTagActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ReportActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ForgetPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CertificateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.QuestionSendActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.QuestionDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AnswerDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MyQuestionActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MyAnswerActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.TradeBuyHistoryActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.TradeSellHistoryActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MyRequireActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.QuestionMessageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ExpandFriendsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ViewPagerActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ComplainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OrderCommentAllActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.AnswerAllActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.ServiceMoreActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.QuestionMoreActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OpenOrderActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MyfocusActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.MyfansActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.OrderDetailsViewPager"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.CityPickerActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name=".activity.MiddleActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.GuideOrderActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.GuideOrderDetailsActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.GuideOrderAskActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.GuideOrderQuestionActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.MembershipActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activity.DateActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
 
-        <activity android:name=".widget.photopicker.view.ImageBucketChooseActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".widget.photopicker.view.ImageChooseActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".widget.photopicker.view.ImageZoomActivity"  android:screenOrientation="portrait"/>
-        <activity android:name=".widget.sortlistview.SortListViewActivity"  android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".widget.sortlistview.MyContact" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
-        <activity android:name=".widget.sortlistview.FirstClassFriends" android:screenOrientation="portrait" android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".widget.photopicker.view.ImageBucketChooseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".widget.photopicker.view.ImageChooseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".widget.photopicker.view.ImageZoomActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".widget.sortlistview.SortListViewActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".widget.sortlistview.MyContact"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".widget.sortlistview.FirstClassFriends"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+
+
 
         <!-- ...........................................友盟................................................. -->
 
-        <meta-data android:value="57e1fa9b67e58ecdea003aa3" android:name="UMENG_APPKEY"></meta-data>
-        <meta-data android:value="Wandoujia" android:name="UMENG_CHANNEL"/>
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="57e1fa9b67e58ecdea003aa3" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Wandoujia" />
 
         <!-- ...........................................微信分享平台................................................. -->
         <activity
             android:name=".wxapi.WXEntryActivity"
-            android:label="@string/app_name"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
         <!-- ...........................................MOB短信验证................................................. -->
         <activity
             android:name="com.mob.tools.MobUIShell"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <!-- ...........................................MOB短信验证................................................. -->
+
 
         <!-- ...........................................支付宝................................................. -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind" >
-        </activity>
+            android:screenOrientation="behind"></activity>
         <activity
             android:name="com.alipay.sdk.auth.AuthActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind" >
-        </activity>
+            android:screenOrientation="behind"></activity>
         <!-- ...........................................支付宝................................................. -->
 
 
@@ -247,105 +477,141 @@
         <!-- ...........................................zxing................................................. -->
         <!-- ................................................................................................. -->
         <!-- ................................................................................................. -->
-        <activity android:name=".com.google.zxing.client.android.CaptureActivity"
+        <activity
+            android:name=".com.google.zxing.client.android.CaptureActivity"
+            android:clearTaskOnLaunch="true"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:stateNotNeeded="true"
+            android:theme="@style/CaptureTheme"
+            android:windowSoftInputMode="stateAlwaysHidden">
 
-                  android:configChanges="orientation|keyboardHidden"
-                  android:screenOrientation="portrait"
-                  android:clearTaskOnLaunch="true"
-                  android:stateNotNeeded="true"
-                  android:theme="@style/CaptureTheme"
-                  android:windowSoftInputMode="stateAlwaysHidden">
-
-            <!--android:screenOrientation="sensorLandscape"-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN"/>-->
-                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
+            <!-- android:screenOrientation="sensorLandscape" -->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN"/> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+            <!-- </intent-filter> -->
             <intent-filter>
-                <action android:name="com.google.zxing.client.android.SCAN"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.google.zxing.client.android.SCAN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <!-- Allow web apps to launch Barcode Scanner by linking to http://zxing.appspot.com/scan. -->
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="http" android:host="zxing.appspot.com" android:path="/scan"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="zxing.appspot.com"
+                    android:path="/scan"
+                    android:scheme="http" />
             </intent-filter>
             <!-- We also support a Google Product Search URL. -->
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="http" android:host="www.google.com" android:path="/m/products/scan"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.google.com"
+                    android:path="/m/products/scan"
+                    android:scheme="http" />
             </intent-filter>
             <!-- And the UK version. -->
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="http" android:host="www.google.co.uk" android:path="/m/products/scan"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="www.google.co.uk"
+                    android:path="/m/products/scan"
+                    android:scheme="http" />
             </intent-filter>
             <!-- Support zxing://scan/?... like iPhone app -->
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="zxing" android:host="scan" android:path="/"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="scan"
+                    android:path="/"
+                    android:scheme="zxing" />
             </intent-filter>
         </activity>
-        <activity android:name=".com.google.zxing.client.android.PreferencesActivity"
-                  android:label="@string/preferences_name"
-                  android:stateNotNeeded="true"/>
-        <activity android:name=".com.google.zxing.client.android.encode.EncodeActivity"
-                  android:stateNotNeeded="true">
+        <activity
+            android:name=".com.google.zxing.client.android.PreferencesActivity"
+            android:label="@string/preferences_name"
+            android:stateNotNeeded="true" />
+        <activity
+            android:name=".com.google.zxing.client.android.encode.EncodeActivity"
+            android:stateNotNeeded="true">
             <intent-filter>
-                <action android:name="com.google.zxing.client.android.ENCODE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.google.zxing.client.android.ENCODE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <!-- This allows us to handle the Share button in Contacts. -->
             <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/x-vcard"/>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/x-vcard" />
             </intent-filter>
             <!-- This allows us to handle sharing any plain text . -->
             <intent-filter>
-                <action android:name="android.intent.action.SEND"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:mimeType="text/plain"/>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".com.google.zxing.client.android.book.SearchBookContentsActivity"
-                  android:label="@string/sbc_name"
-                  android:stateNotNeeded="true"
-                  android:screenOrientation="sensorLandscape">
+        <activity
+            android:name=".com.google.zxing.client.android.book.SearchBookContentsActivity"
+            android:label="@string/sbc_name"
+            android:screenOrientation="sensorLandscape"
+            android:stateNotNeeded="true">
             <intent-filter>
-                <action android:name="com.google.zxing.client.android.SEARCH_BOOK_CONTENTS"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.google.zxing.client.android.SEARCH_BOOK_CONTENTS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".com.google.zxing.client.android.share.ShareActivity"
-                  android:stateNotNeeded="true"
-                  android:screenOrientation="user">
+        <activity
+            android:name=".com.google.zxing.client.android.share.ShareActivity"
+            android:screenOrientation="user"
+            android:stateNotNeeded="true">
             <intent-filter>
-                <action android:name="com.google.zxing.client.android.SHARE"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.google.zxing.client.android.SHARE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".com.google.zxing.client.android.history.HistoryActivity"
-                  android:label="@string/history_title"
-                  android:stateNotNeeded="true"/>
-        <activity android:name=".com.google.zxing.client.android.share.BookmarkPickerActivity"
-                  android:label="@string/bookmark_picker_name"
-                  android:stateNotNeeded="true"/>
-        <activity android:name="com.google.zxing.client.android.share.AppPickerActivity"
-                  android:label="@string/app_picker_name"
-                  android:stateNotNeeded="true"/>
-        <activity android:name=".com.google.zxing.client.android.HelpActivity"
-                  android:label="@string/menu_help"
-                  android:screenOrientation="user"
-                  android:stateNotNeeded="true"/>
+        <activity
+            android:name=".com.google.zxing.client.android.history.HistoryActivity"
+            android:label="@string/history_title"
+            android:stateNotNeeded="true" />
+        <activity
+            android:name=".com.google.zxing.client.android.share.BookmarkPickerActivity"
+            android:label="@string/bookmark_picker_name"
+            android:stateNotNeeded="true" />
+        <activity
+            android:name="com.google.zxing.client.android.share.AppPickerActivity"
+            android:label="@string/app_picker_name"
+            android:stateNotNeeded="true" />
+        <activity
+            android:name=".com.google.zxing.client.android.HelpActivity"
+            android:label="@string/menu_help"
+            android:screenOrientation="user"
+            android:stateNotNeeded="true" />
 
     </application>
 

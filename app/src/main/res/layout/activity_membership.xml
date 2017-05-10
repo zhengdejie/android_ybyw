@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <TextView
+        android:id="@+id/tv_membership"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar"
+        android:text="在引导消费板块中可以看到有关公检法的一系列问题在引导消费板块中可以看到有关公检法的一系列问题在引导消费板块中可以看到有关公检法的一系列问题"
+        android:padding="10dp"
+        android:textColor="#808080"/>
+
+    <TextView
+        android:id="@+id/tv_membershipcategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_membership"
+        android:text=""
+        android:padding="10dp"/>
+
+
+</RelativeLayout>

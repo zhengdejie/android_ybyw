@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/listview_item_pressed">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="夜黑风高"
+            android:layout_toRightOf="@+id/niv_avatar"
+            android:layout_marginLeft="10dp"
+            android:layout_toLeftOf="@+id/tv_accept"
+            android:gravity="center_vertical"
+            />
+        <TextView
+            android:id="@+id/tv_view"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/workingyear_backgroud"
+            android:textColor="#75c9ff"
+            android:text="查看"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            />
+        <!--<TextView-->
+        <!--android:id="@+id/tv_mobile"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="25dp"-->
+        <!--android:text="夜黑风高"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_alignBottom="@+id/niv_avatar"-->
+        <!--android:layout_toRightOf="@+id/niv_avatar"-->
+        <!--android:layout_toEndOf="@+id/niv_avatar" />-->
+
+
+    </RelativeLayout>
+
+</LinearLayout>

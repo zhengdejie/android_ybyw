@@ -16,6 +16,7 @@
 
 package appframe.appframe.com.google.zxing.client.android.share;
 
+import android.os.Build;
 import android.provider.ContactsContract;
 import appframe.appframe.com.google.zxing.BarcodeFormat;
 import appframe.appframe.com.google.zxing.client.android.Contents;
@@ -121,7 +122,12 @@ public final class ShareActivity extends Activity {
     setContentView(R.layout.share);
 
     findViewById(R.id.share_contact_button).setOnClickListener(contactListener);
-    findViewById(R.id.share_bookmark_button).setOnClickListener(bookmarkListener);
+    if (Build.VERSION.SDK_INT >= 23) { // Marshmallow / 6.0
+      // Can't access bookmarks in 6.0+
+      findViewById(R.id.share_bookmark_button).setEnabled(false);
+    } else {
+      findViewById(R.id.share_bookmark_button).setOnClickListener(bookmarkListener);
+    }
     findViewById(R.id.share_app_button).setOnClickListener(appListener);
     clipboardButton = findViewById(R.id.share_clipboard_button);
     clipboardButton.setOnClickListener(clipboardListener);
@@ -140,7 +146,7 @@ public final class ShareActivity extends Activity {
       switch (requestCode) {
         case PICK_BOOKMARK:
         case PICK_APP:
-          showTextAsBarcode(intent.getStringExtra(Browser.BookmarkColumns.URL));
+          showTextAsBarcode(intent.getStringExtra("url")); // Browser.BookmarkColumns.URL
           break;
         case PICK_CONTACT:
           // Data field is content://contacts/people/984
@@ -212,10 +218,10 @@ public final class ShareActivity extends Activity {
 
     if (hasPhone) {
       Cursor phonesCursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                           null,
-                                           ContactsContract.CommonDataKinds.Phone.CONTACT_ID + '=' + id,
-                                           null,
-                                           null);
+              null,
+              ContactsContract.CommonDataKinds.Phone.CONTACT_ID + '=' + id,
+              null,
+              null);
       if (phonesCursor != null) {
         try {
           int foundPhone = 0;
@@ -237,15 +243,15 @@ public final class ShareActivity extends Activity {
     }
 
     Cursor methodsCursor = resolver.query(ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_URI,
-                                          null,
-                                          ContactsContract.CommonDataKinds.StructuredPostal.CONTACT_ID + '=' + id,
-                                          null,
-                                          null);
+            null,
+            ContactsContract.CommonDataKinds.StructuredPostal.CONTACT_ID + '=' + id,
+            null,
+            null);
     if (methodsCursor != null) {
       try {
         if (methodsCursor.moveToNext()) {
           String data = methodsCursor.getString(
-              methodsCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS));
+                  methodsCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.FORMATTED_ADDRESS));
           if (data != null && !data.isEmpty()) {
             bundle.putString(ContactsContract.Intents.Insert.POSTAL, massageContactData(data));
           }
@@ -256,10 +262,10 @@ public final class ShareActivity extends Activity {
     }
 
     Cursor emailCursor = resolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                                        null,
-                                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + '=' + id,
-                                        null,
-                                        null);
+            null,
+            ContactsContract.CommonDataKinds.Email.CONTACT_ID + '=' + id,
+            null,
+            null);
     if (emailCursor != null) {
       try {
         int foundEmail = 0;

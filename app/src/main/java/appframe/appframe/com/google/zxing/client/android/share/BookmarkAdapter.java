@@ -27,6 +27,8 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
  * A custom adapter designed to fetch bookmarks from a cursor. Before Honeycomb we used
  * SimpleCursorAdapter, but it assumes the existence of an _id column, and the bookmark schema was
@@ -37,22 +39,21 @@ import android.widget.TextView;
  */
 final class BookmarkAdapter extends BaseAdapter {
   private final Context context;
-  private final Cursor cursor;
+  private final List<String[]> titleURLs;
 
-  BookmarkAdapter(Context context, Cursor cursor) {
+  BookmarkAdapter(Context context, List<String[]> titleURLs) {
     this.context = context;
-    this.cursor = cursor;
+    this.titleURLs = titleURLs;
   }
 
   @Override
   public int getCount() {
-    return cursor.getCount();
+    return titleURLs.size();
   }
 
   @Override
   public Object getItem(int index) {
-    // Not used, so no point in retrieving it.
-    return null;
+    return titleURLs.get(index);
   }
 
   @Override
@@ -69,14 +70,9 @@ final class BookmarkAdapter extends BaseAdapter {
       LayoutInflater factory = LayoutInflater.from(context);
       layout = factory.inflate(R.layout.bookmark_picker_list_item, viewGroup, false);
     }
-
-    if (!cursor.isClosed()) {
-      cursor.moveToPosition(index);
-      CharSequence title = cursor.getString(BookmarkPickerActivity.TITLE_COLUMN);
-      ((TextView) layout.findViewById(R.id.bookmark_title)).setText(title);
-      CharSequence url = cursor.getString(BookmarkPickerActivity.URL_COLUMN);
-      ((TextView) layout.findViewById(R.id.bookmark_url)).setText(url);
-    } // Otherwise... just don't update as the object is shutting down
+    String[] titleURL = titleURLs.get(index);
+    ((TextView) layout.findViewById(R.id.bookmark_title)).setText(titleURL[0]);
+    ((TextView) layout.findViewById(R.id.bookmark_url)).setText(titleURL[1]);
     return layout;
   }
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <EditText
+        android:id="@+id/et_ask"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@+id/title_bar"
+        android:padding="10dp"
+        android:hint="请在这里输入您想咨询达人的问题......"
+        android:gravity="left"
+        android:maxLines="6"
+        android:ellipsize="end"
+        android:background="@color/white"/>
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/et_ask"
+        />
+
+    <TextView
+        android:id="@+id/tv_ok"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/view1"
+        android:background="@drawable/workingyear_backgroud"
+        android:textColor="#75c9ff"
+        android:text="确定"
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:padding="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"/>
+
+    <include
+        android:id="@+id/success_result"
+        layout="@layout/success_result"
+        />
+
+</RelativeLayout>

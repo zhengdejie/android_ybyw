@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/parent_ll"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <appframe.appframe.widget.hoverscrollview.HoverScrollView
+        android:id="@+id/hoversv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="40dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:id="@+id/ll_top"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:scaleType="center"
+                    android:src="@drawable/pic_date_top"/>
+
+                <include
+                    android:id="@+id/rl_title"
+                    layout="@layout/russia_index" />
+                <!--<com.viewpagerindicator.TabPageIndicator-->
+                    <!--android:id="@+id/indicator"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--/>-->
+
+                <appframe.appframe.widget.CustomerViewPager.WrapContentHeightViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+
+                    />
+
+            </LinearLayout>
+
+            <include
+                android:id="@+id/rl_top"
+                layout="@layout/russia_index" />
+            <!--<com.viewpagerindicator.TabPageIndicator-->
+                <!--android:id="@+id/indicatortop"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_width="match_parent"-->
+                <!--/>-->
+
+        </FrameLayout>
+
+    </appframe.appframe.widget.hoverscrollview.HoverScrollView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/lly_send">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="咨询"
+            android:id="@+id/btn_ask"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:background="@drawable/textview_clicked"
+            android:textColor="@drawable/textview_pressed"
+            android:gravity="center"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/white">
+        </View>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:text="支付报名"
+            android:id="@+id/btn_enroll"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:background="@drawable/textview_clicked"
+            android:textColor="@drawable/textview_pressed"
+            android:gravity="center"
+            />
+    </LinearLayout>
+</RelativeLayout>

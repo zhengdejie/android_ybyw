@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+
+    <RelativeLayout
+        android:id="@+id/rl_image"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        >
+
+        <ImageView
+            android:id="@+id/iv_backgroud"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/city"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            >
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TitTitleTitlitleTitlssele"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textSize="24sp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="90dp"
+                android:textColor="@color/white"
+                />
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <appframe.appframe.utils.CircleImageViewCustomer
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/civ_avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="95dp"
+        android:layout_marginRight="20dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/rl_image"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:id="@+id/rl_name">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="zdjddddddd"
+                android:gravity="center"
+                android:maxLength="8"
+                android:layout_marginRight="10dp"
+                android:textSize="20sp"/>
+            <TextView
+                android:id="@+id/tv_workingage"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:text="工：10年"
+                android:layout_toRightOf="@+id/tv_name"
+                android:gravity="center"
+                android:layout_marginRight="10dp"
+                android:padding="4dp"
+                android:background="@drawable/workingyear_backgroud"/>
+            <ImageView
+                android:id="@+id/iv_sex"
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/male"
+                android:layout_toRightOf="@+id/tv_workingage"
+                android:gravity="center"
+                android:layout_marginRight="10dp"/>
+            <!--<ImageView-->
+                <!--android:id="@+id/iv_honor"-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:src="@drawable/recommend_medal"-->
+                <!--android:layout_toRightOf="@+id/iv_sex"/>-->
+
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/tv_position"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:text="职位："
+            android:layout_below="@+id/rl_name"
+            android:maxLines="1"
+            android:gravity="center"/>
+
+    </RelativeLayout>
+</RelativeLayout>
