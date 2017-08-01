@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_photopopup"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#80999999">
+
+    <LinearLayout
+        android:id="@+id/ll_popup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:background="#80999999">
+
+            <TextView
+                android:id="@+id/tv_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="关闭"
+                android:gravity="left|center_vertical"/>
+
+            <TextView
+                android:id="@+id/tv_finish"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="完成"
+                android:textColor="@color/blue"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="时间"
+            android:layout_margin="20dp"
+            android:textColor="@color/font_666"
+            android:textSize="12sp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="20dp">
+
+            <CheckBox
+                android:id="@+id/cb_morning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="上午08:00-12:00"
+                android:textSize="14sp"
+                android:textColor="@color/font_999"/>
+
+            <CheckBox
+                android:id="@+id/cb_lunch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="我请导游吃午餐"
+                android:textSize="14sp"
+                android:textColor="@color/font_999"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            >
+
+            <CheckBox
+                android:id="@+id/cb_evening"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="下午14:00-18:00"
+                android:textSize="14sp"
+                android:textColor="@color/font_999"/>
+
+            <CheckBox
+                android:id="@+id/cb_supper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="我请导游吃晚餐"
+                android:textSize="14sp"
+                android:textColor="@color/font_999"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

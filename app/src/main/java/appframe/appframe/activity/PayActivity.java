@@ -12,9 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
-import com.tencent.mm.sdk.modelpay.PayReq;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
 import java.security.MessageDigest;
@@ -22,6 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -30,11 +32,15 @@ import appframe.appframe.app.API;
 import appframe.appframe.app.App;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.dto.ConfirmedOrderDetail;
+import appframe.appframe.dto.GuideTourOrder;
+import appframe.appframe.dto.MRussianTour;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.OrderPay;
 import appframe.appframe.dto.PayResult;
 import appframe.appframe.dto.OnlinePay;
 import appframe.appframe.dto.Question;
+import appframe.appframe.dto.RussianPay;
+import appframe.appframe.dto.RussianTour;
 import appframe.appframe.dto.UserDetail;
 import appframe.appframe.utils.Arith;
 import appframe.appframe.utils.Auth;
@@ -57,7 +63,10 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
     private String PlatformType = "";
     private double wallet = 0.0;
     private IWXAPI api;
+    private RussianTour russianTour;
+    private MRussianTour mRussianTour;
 
+    GuideTourOrder guideTourOrder;
     OrderDetails orderDetails,orderDetailsPay,Candidate;
     ConfirmedOrderDetail confirmedOrderDetail,confirmedOrderDetailPay;
     OrderPay orderPay;
@@ -68,12 +77,9 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                 case SDK_PAY_FLAG: {
                     PayResult payResult = new PayResult((String) msg.obj);
                     /**
-                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
-                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
-                     * docType=1) 建议商户依赖异步通知
+                     对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
                      */
                     String resultInfo = payResult.getResult();// 同步返回需要验证的信息
-
                     String resultStatus = payResult.getResultStatus();
                     // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
                     if (TextUtils.equals(resultStatus, "9000")) {
@@ -83,10 +89,24 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                         if(QuestionSendActivity.instance != null) {
                             QuestionSendActivity.instance.finish();
                         }
+                        if(TourOrderSendActivity.instance !=null)
+                        {
+                            TourOrderSendActivity.instance.finish();
+                        }
+                        if(TourPersonDetailsActivity.instance !=null)
+                        {
+                            TourPersonDetailsActivity.instance.finish();
+                        }
+                        if(TourOrderDetailsActivity.instance !=null)
+                        {
+                            TourOrderDetailsActivity.instance.finish();
+                        }
                         Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
 //                        startActivity(new Intent(PayActivity.this, HomeActivity.class));
                         finish();
                     } else {
+                        Bundle b = msg.getData();
+                        String From = b.getString("From");
                         // 判断resultStatus 为非"9000"则代表可能支付失败
                         // "8000"代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
                         if (TextUtils.equals(resultStatus, "8000")) {
@@ -97,6 +117,49 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                             Toast.makeText(PayActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
 
                         }
+
+//                        if(From.equals("Russian"))
+//                        {
+//                            Http.request(PayActivity.this, API.RUSSIANTOURPREPAYFAIL, new Object[]{String.valueOf(mRussianTour.getTourId())}, Http.map(
+//                                    "PaymentMethod","ALIPAY"
+//
+//                                    ),
+//                                    new Http.RequestListener<RussianPay>() {
+//                                        @Override
+//                                        public void onSuccess(final RussianPay result) {
+//                                            super.onSuccess(result);
+//
+//
+//                                        }
+//
+//
+//                                        @Override
+//                                        public void onFail(String code) {
+//                                            super.onFail(code);
+//                                        }
+//                                    });
+//                        }
+//                        else if(From.equals("MYRussian"))
+//                        {
+//                            Http.request(PayActivity.this, API.RUSSIANTOURPREPAYFAIL, new Object[]{String.valueOf(russianTour.getId())}, Http.map(
+//                                    "PaymentMethod","ALIPAY"
+//
+//                                    ),
+//                                    new Http.RequestListener<RussianPay>() {
+//                                        @Override
+//                                        public void onSuccess(final RussianPay result) {
+//                                            super.onSuccess(result);
+//
+//
+//                                        }
+//
+//
+//                                        @Override
+//                                        public void onFail(String code) {
+//                                            super.onFail(code);
+//                                        }
+//                                    });
+//                        }
                     }
                     break;
                 }
@@ -162,6 +225,9 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
         confirmedOrderDetailPay = (ConfirmedOrderDetail)getIntent().getSerializableExtra("ConfirmedOrderDetailPay");
         question = (Question)getIntent().getSerializableExtra("Question");
         myQuestion = (Question)getIntent().getSerializableExtra("MyQuestion");
+        russianTour = (RussianTour)getIntent().getSerializableExtra("RussianTour");
+        mRussianTour = (MRussianTour)getIntent().getSerializableExtra("MRussianTour");
+        guideTourOrder = (GuideTourOrder)getIntent().getSerializableExtra("GuideTourOrder");
 
         orderPay = (OrderPay)getIntent().getSerializableExtra("OrderPay");
         if(orderDetails != null) {
@@ -193,6 +259,19 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
         {
             tv_showtotal.setText(String.valueOf(myQuestion.getBounty()));
         }
+        if(russianTour != null)
+        {
+            tv_showtotal.setText(String.valueOf(russianTour.getApplicationDeposit()));
+        }
+        if(mRussianTour != null)
+        {
+            tv_showtotal.setText(String.valueOf(mRussianTour.getApplicationDeposit()));
+        }
+        if(guideTourOrder != null)
+        {
+            tv_showtotal.setText(String.valueOf(guideTourOrder.getGuide().getHourlyRatePrice() * guideTourOrder.getHours()));
+        }
+
 
         if(Candidate != null) {
             double Amount = 0.0;
@@ -269,6 +348,171 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                 if(TypeofPay == AliPay)
                 {
                     PlatformType = "1";
+                    //乐游预约支付
+                    if(guideTourOrder != null) {
+
+                        Http.request(PayActivity.this, API.GUIDEPREPAY, new Object[]{String.valueOf(guideTourOrder.getId())}, Http.map(
+                                "PaymentMethod","ALIPAY"
+                                ),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+                                        /**
+                                         * 完整的符合支付宝参数规范的订单信息
+                                         */
+
+                                        if (result != null) {
+
+                                            Runnable payRunnable = new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    // 构造PayTask 对象
+                                                    PayTask alipay = new PayTask(PayActivity.this);
+                                                    // 调用支付接口，获取支付结果
+                                                    String resultInfo = alipay.pay(result.getSign(), true);
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putString("From","GuideTourOrder");
+                                                    Message msg = new Message();
+                                                    msg.what = SDK_PAY_FLAG;
+                                                    msg.obj = resultInfo;
+                                                    msg.setData(bundle);
+                                                    mHandler.sendMessage(msg);
+                                                }
+                                            };
+
+                                            // 必须异步调用
+                                            Thread payThread = new Thread(payRunnable);
+                                            payThread.start();
+
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                                            finish();
+
+                                        }
+
+                                    }
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+
+                    //俄罗斯继续支付
+                    if(mRussianTour != null) {
+                        Http.request(PayActivity.this, API.RUSSIANTOURPREPAY, new Object[]{String.valueOf(mRussianTour.getTourId())}, Http.map(
+                                "PaymentMethod","ALIPAY"
+                                ),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+                                        /**
+                                         * 完整的符合支付宝参数规范的订单信息
+                                         */
+
+                                        if (result != null) {
+
+                                            Runnable payRunnable = new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    // 构造PayTask 对象
+                                                    PayTask alipay = new PayTask(PayActivity.this);
+                                                    // 调用支付接口，获取支付结果
+                                                    String resultInfo = alipay.pay(result.getSign(), true);
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putString("From","MYRussian");
+                                                    Message msg = new Message();
+                                                    msg.what = SDK_PAY_FLAG;
+                                                    msg.obj = resultInfo;
+                                                    msg.setData(bundle);
+                                                    mHandler.sendMessage(msg);
+                                                }
+                                            };
+
+                                            // 必须异步调用
+                                            Thread payThread = new Thread(payRunnable);
+                                            payThread.start();
+
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                                            finish();
+
+                                        }
+
+                                    }
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+
+                    //俄罗斯报名支付
+                    if(russianTour != null) {
+                        Http.request(PayActivity.this, API.RUSSIANTOURPREPAY, new Object[]{String.valueOf(russianTour.getId())}, Http.map(
+                                "PaymentMethod","ALIPAY"
+                                ),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+                                        /**
+                                         * 完整的符合支付宝参数规范的订单信息
+                                         */
+
+                                        if (result != null) {
+
+                                            Runnable payRunnable = new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    // 构造PayTask 对象
+                                                    PayTask alipay = new PayTask(PayActivity.this);
+                                                    // 调用支付接口，获取支付结果
+                                                    String resultInfo = alipay.pay(result.getSign(), true);
+                                                    Bundle bundle = new Bundle();
+                                                    bundle.putString("From","Russian");
+                                                    Message msg = new Message();
+                                                    msg.what = SDK_PAY_FLAG;
+                                                    msg.obj = resultInfo;
+                                                    msg.setData(bundle);
+                                                    mHandler.sendMessage(msg);
+                                                }
+                                            };
+
+                                            // 必须异步调用
+                                            Thread payThread = new Thread(payRunnable);
+                                            payThread.start();
+
+                                        }
+                                        else
+                                        {
+                                            Toast.makeText(PayActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
+                                            finish();
+
+                                        }
+
+                                    }
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
 
                     //发单支付
                     if(orderDetails != null) {
@@ -751,6 +995,101 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                 else if(TypeofPay == WeixingPay)
                 {
                     PlatformType = "2";
+
+                    //乐游预约支付
+                    if(guideTourOrder != null) {
+                        Http.request(PayActivity.this, API.GUIDEPREPAY, new Object[]{String.valueOf(guideTourOrder.getId())}, Http.map(
+                                "PaymentMethod","WXPAY"
+                                ),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+                                        PayReq req = new PayReq();
+                                        req.appId = result.getAppid();
+                                        req.partnerId	= result.getPartnerid();
+                                        req.prepayId = result.getPrepayid();
+                                        req.nonceStr = result.getNoncestr();
+                                        req.timeStamp	= result.getTimestamp();
+                                        req.packageValue = result.getPackage();
+                                        req.sign = result.getSign();
+
+                                        api.sendReq(req);
+                                        finish();
+                                    }
+
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+
+                    //俄罗斯继续支付
+                    if(mRussianTour != null) {
+                        Http.request(PayActivity.this, API.RUSSIANTOURPREPAY, new Object[]{String.valueOf(mRussianTour.getTourId())}, Http.map(
+                                "PaymentMethod","WXPAY"
+                                ),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+                                        PayReq req = new PayReq();
+                                        req.appId = result.getAppid();
+                                        req.partnerId	= result.getPartnerid();
+                                        req.prepayId = result.getPrepayid();
+                                        req.nonceStr = result.getNoncestr();
+                                        req.timeStamp	= result.getTimestamp();
+                                        req.packageValue = result.getPackage();
+                                        req.sign = result.getSign();
+
+                                        api.sendReq(req);
+                                        finish();
+                                    }
+
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+
+
+                    //俄罗斯报名支付
+                    if(russianTour != null) {
+                        Http.request(PayActivity.this, API.RUSSIANTOURPREPAY, new Object[]{String.valueOf(russianTour.getId())}, Http.map(
+                                "PaymentMethod","WXPAY"
+                                ),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+                                        PayReq req = new PayReq();
+                                        req.appId = result.getAppid();
+                                        req.partnerId	= result.getPartnerid();
+                                        req.prepayId = result.getPrepayid();
+                                        req.nonceStr = result.getNoncestr();
+                                        req.timeStamp	= result.getTimestamp();
+                                        req.packageValue = result.getPackage();
+                                        req.sign = result.getSign();
+
+                                        api.sendReq(req);
+                                        finish();
+                                    }
+
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+
                     //发单支付
                     if(orderDetails != null) {
                         Http.request(PayActivity.this, API.ORDERPAY, Http.map(
@@ -1087,6 +1426,97 @@ public class PayActivity extends BaseActivity implements View.OnClickListener{
                 else if(TypeofPay == YBPay)
                 {
                     PlatformType = "3";
+
+                    //乐游预约支付
+                    if(guideTourOrder != null) {
+
+                        Http.request(PayActivity.this, API.GUIDEPREPAY, new Object[]{String.valueOf(guideTourOrder.getId())}, Http.map(
+                                "PaymentMethod","BALANCE"
+                                ),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+
+                                        if(TourOrderSendActivity.instance !=null)
+                                        {
+                                            TourOrderSendActivity.instance.finish();
+                                        }
+                                        if(TourPersonDetailsActivity.instance !=null)
+                                        {
+                                            TourPersonDetailsActivity.instance.finish();
+                                        }
+                                        if(TourOrderDetailsActivity.instance !=null)
+                                        {
+                                            TourOrderDetailsActivity.instance.finish();
+                                        }
+
+                                        Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
+                                        finish();
+
+                                    }
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+
+                    //俄罗斯继续支付
+                    if(mRussianTour != null) {
+                        Http.request(PayActivity.this, API.RUSSIANTOURPREPAY, new Object[]{String.valueOf(mRussianTour.getTourId())}, Http.map(
+                                "PaymentMethod","BALANCE"
+                                ),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+
+                                        Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
+                                        finish();
+
+                                    }
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
+
+                    //俄罗斯报名支付
+                    if(russianTour != null) {
+                        Http.request(PayActivity.this, API.RUSSIANTOURPREPAY, new Object[]{String.valueOf(russianTour.getId())}, Http.map(
+                                "PaymentMethod","BALANCE"
+                                ),
+                                new Http.RequestListener<OnlinePay>() {
+                                    @Override
+                                    public void onSuccess(final OnlinePay result) {
+                                        super.onSuccess(result);
+                                        if(TourOrderSendActivity.instance !=null)
+                                        {
+                                            TourOrderSendActivity.instance.finish();
+                                        }
+                                        if(TourPersonDetailsActivity.instance !=null)
+                                        {
+                                            TourPersonDetailsActivity.instance.finish();
+                                        }
+
+                                        Toast.makeText(PayActivity.this,"支付成功",Toast.LENGTH_SHORT).show();
+                                        finish();
+
+                                    }
+
+
+                                    @Override
+                                    public void onFail(String code) {
+                                        super.onFail(code);
+                                    }
+                                });
+                    }
 
                     //发单支付
                     if(orderDetails != null) {

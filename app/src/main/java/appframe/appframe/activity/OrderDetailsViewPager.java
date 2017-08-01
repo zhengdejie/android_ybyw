@@ -84,6 +84,12 @@ public class OrderDetailsViewPager extends BaseActivity implements View.OnClickL
                     finish();
                 }
             });
+            iv.setOnScaleChangeListener(new PhotoViewAttacher.OnScaleChangeListener() {
+                @Override
+                public void onScaleChange(float scaleFactor, float focusX, float focusY) {
+
+                }
+            });
             views.add(iv);
         }
 

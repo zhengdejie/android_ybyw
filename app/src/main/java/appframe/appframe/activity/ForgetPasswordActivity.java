@@ -119,8 +119,8 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
                 tv_code.setEnabled(false);
                 mc = new MyCount(60000, 1000);
                 mc.start();
-//                SMSSDK.registerEventHandler(eh); //注册短信回调
-//                SMSSDK.getVerificationCode("86", et_mobile.getText().toString());
+                SMSSDK.registerEventHandler(eh); //注册短信回调
+                SMSSDK.getVerificationCode("86", et_mobile.getText().toString());
                 break;
         }
 
@@ -131,21 +131,30 @@ public class ForgetPasswordActivity extends BaseActivity implements View.OnClick
         @Override
         public void afterEvent(int event, int result, Object data) {
 
-            if (result == SMSSDK.RESULT_COMPLETE) {
-                //回调完成
-                if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                    //提交验证码成功
-                }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
-                    //获取验证码成功
-//                    SMSSDK.submitVerificationCode("86",et_mobile.getText().toString(),et_code.getText().toString());
-                }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
-                    //返回支持发送验证码的国家列表
-//                    HashMap<String,Object> phoneMap = (HashMap<String, Object>) data;
-//                    String country = (String) phoneMap.get("country");
-
+//            if (result == SMSSDK.RESULT_COMPLETE) {
+//                //回调完成
+//                if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+//                    //提交验证码成功
+//                }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+//                    //获取验证码成功
+////                    SMSSDK.submitVerificationCode("86",et_mobile.getText().toString(),et_code.getText().toString());
+//                }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+//                    //返回支持发送验证码的国家列表
+////                    HashMap<String,Object> phoneMap = (HashMap<String, Object>) data;
+////                    String country = (String) phoneMap.get("country");
+//
+//                }
+//            }else{
+//                ((Throwable)data).printStackTrace();
+//            }
+            if (data instanceof Throwable) {
+                Throwable throwable = (Throwable)data;
+                String msg = throwable.getMessage();
+                Toast.makeText(ForgetPasswordActivity.this, msg, Toast.LENGTH_SHORT).show();
+            } else {
+                if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                    // 处理你自己的逻辑
                 }
-            }else{
-                ((Throwable)data).printStackTrace();
             }
         }
     };

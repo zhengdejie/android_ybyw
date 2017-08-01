@@ -3,6 +3,7 @@ package appframe.appframe.activity;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,4 +23,15 @@ public class BaseActivity extends Activity {
         return mi;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("Tag","BaseActivity......onDestroy");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("Tag","BaseActivity......onStop");
+    }
 }

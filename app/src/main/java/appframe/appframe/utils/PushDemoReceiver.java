@@ -70,7 +70,15 @@ public class PushDemoReceiver extends BroadcastReceiver {
                     //intent.putExtra("pushmessage","push");
                     if(AppConfig.RECEIVE_NOTIFICATION) {
                         admain = new NotificationUtils(context, NOTIFICATION_ID);
-                        final String[] message = data.split("/");
+
+                        if(data.contains("{1}"))
+                        {
+                            String[] openImMessage = data.split(":");
+                            Intent odIntent = new Intent(context, HomeActivity.class);
+                            admain.normal_notification(odIntent, smallIcon, ticker, openImMessage[1], openImMessage[2]);
+                        }
+                        else {
+                            final String[] message = data.split("/");
 
 //                        RemoteViews rv = new RemoteViews(context.getPackageName(),
 //                                R.layout.notification);
@@ -78,82 +86,79 @@ public class PushDemoReceiver extends BroadcastReceiver {
 //                        rv.setTextViewText(R.id.tv_content, message[1]);
 //                        rv.setTextViewText(R.id.tv_time, String.valueOf(System.currentTimeMillis()));
 //                        admain.view_notification(rv,intent,smallIcon, ticker);
-                        //任务推送
-                        if(message[4].equals("4")) {
-                            if (!message[2].equals("0")) {
-                                Intent odIntent = new Intent();
-                                Bundle odBundle = new Bundle();
-                                odIntent.setClass(context, OrderDetailsActivity.class);
-                                odBundle.putSerializable("OrderIdFromPushDemoReceiver", message[2]);
+                            //任务推送
+                            if (message[4].equals("4")) {
+                                if (!message[2].equals("0")) {
+                                    Intent odIntent = new Intent();
+                                    Bundle odBundle = new Bundle();
+                                    odIntent.setClass(context, OrderDetailsActivity.class);
+                                    odBundle.putSerializable("OrderIdFromPushDemoReceiver", message[2]);
 
-                                odBundle.putString("From", "MyOrder");
-                                odIntent.putExtras(odBundle);
-                                admain.normal_notification(odIntent, smallIcon, ticker, message[0], message[1]);
+                                    odBundle.putString("From", "MyOrder");
+                                    odIntent.putExtras(odBundle);
+                                    admain.normal_notification(odIntent, smallIcon, ticker, message[0], message[1]);
+
+                                }
+                            }
+                            //订单推送
+                            else if (message[4].equals("1")) {
+                                if (!message[3].equals("0")) {
+                                    Intent odIntent = new Intent();
+                                    Bundle odBundle = new Bundle();
+                                    odIntent.setClass(context, ConfirmOrderDetailsActivity.class);
+                                    odBundle.putSerializable("ConfirmOrderIdFromPushDemoReceiver", message[3]);
+
+                                    odIntent.putExtras(odBundle);
+                                    admain.normal_notification(odIntent, smallIcon, ticker, message[0], message[1]);
+                                }
+                            }
+                            //好友推送
+                            else if (message[4].equals("2")) {
+                                intent = new Intent(context, FriendMessageActivity.class);
+                                admain.normal_notification(intent, smallIcon, ticker, message[0], message[1]);
+                            }
+                            //系统推送
+                            else if (message[4].equals("3")) {
+
+                            }
+                            //问答推送
+                            else if (message[4].equals("5")) {
+                                if (!message[5].equals("0")) {
+                                    Intent odIntent = new Intent();
+                                    Bundle odBundle = new Bundle();
+                                    odIntent.setClass(context, QuestionDetailsActivity.class);
+                                    odBundle.putSerializable("QuestionIdFromPushDemoReceiver", message[5]);
+
+                                    odIntent.putExtras(odBundle);
+                                    admain.normal_notification(odIntent, smallIcon, ticker, message[0], message[1]);
+                                }
+                            } else {
+                                intent = new Intent(context, HomeActivity.class);
+                                admain.normal_notification(intent, smallIcon, ticker, message[0], message[1]);
+                            }
+
+                            if(message[1].contains("您收到"))
+                            {
+                                String[] content = message[1].split("，");
+                                Toast toast = Toast.makeText(context, content[1], Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.CENTER, 0, 0);
+                                toast.show();
 
                             }
                         }
-                        //订单推送
-                        else if(message[4].equals("1"))
-                        {
-                            if (!message[3].equals("0")) {
-                                Intent odIntent = new Intent();
-                                Bundle odBundle = new Bundle();
-                                odIntent.setClass(context, ConfirmOrderDetailsActivity.class);
-                                odBundle.putSerializable("ConfirmOrderIdFromPushDemoReceiver", message[3]);
-
-                                odIntent.putExtras(odBundle);
-                                admain.normal_notification(odIntent, smallIcon, ticker, message[0], message[1]);
-                            }
-                        }
-                        //好友推送
-                        else if(message[4].equals("2"))
-                        {
-                            intent = new Intent(context, FriendMessageActivity.class);
-                            admain.normal_notification(intent, smallIcon, ticker, message[0],message[1]);
-                        }
-                        //系统推送
-                        else if(message[4].equals("3"))
-                        {
-
-                        }
-                        //问答推送
-                        else if(message[4].equals("5"))
-                        {
-                            if (!message[5].equals("0")) {
-                                Intent odIntent = new Intent();
-                                Bundle odBundle = new Bundle();
-                                odIntent.setClass(context, QuestionDetailsActivity.class);
-                                odBundle.putSerializable("QuestionIdFromPushDemoReceiver", message[5]);
-
-                                odIntent.putExtras(odBundle);
-                                admain.normal_notification(odIntent, smallIcon, ticker, message[0], message[1]);
-                            }
-                        }
-                        else
-                        {
-                            intent = new Intent(context, HomeActivity.class);
-                            admain.normal_notification(intent, smallIcon, ticker, message[0],message[1]);
-                        }
 
 
 
-                        if(message[1].contains("您收到"))
-                        {
-                            String[] content = message[1].split("，");
-                            Toast toast = Toast.makeText(context, content[1], Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.CENTER, 0, 0);
-                            toast.show();
 
-                        }
                     }
 //                    payloadData.append(data);
 //                    payloadData.append("\n");
                     if(HomeActivity.tv_unread != null) {
                         HomeActivity.tv_unread.setVisibility(View.VISIBLE);
                     }
-                    if(PersonFragment.tv_unread != null) {
-                        PersonFragment.tv_unread.setVisibility(View.VISIBLE);
-                    }
+//                    if(PersonFragment.tv_unread != null) {
+//                        PersonFragment.tv_unread.setVisibility(View.VISIBLE);
+//                    }
 
                 }
                 break;

@@ -6,6 +6,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,13 +43,15 @@ import appframe.appframe.widget.swiperefresh.SwipeRefreshX;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXConfirmedOrderAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXMyMissionAdapater;
 import appframe.appframe.widget.swiperefresh.SwipeRefreshXOrderAdapater;
+import it.neokree.materialtabs.MaterialTab;
+import it.neokree.materialtabs.MaterialTabListener;
 
 /**
  * Created by Administrator on 2015/8/8.
  */
-public class MyOrderFragment extends BaseFragment implements View.OnClickListener{
+public class MyOrderFragment extends BaseFragment implements View.OnClickListener, MaterialTabListener {
     ListView proListView;
-    TextView tb_title,tb_back,tv_apply,tv_progess,tv_done,tv_empty;
+    TextView tb_title,tb_back,tv_apply,tv_progess,tv_done;
     public static TextView tab_progess,tab_done,tab_close,tab_apply;
     View root,bottomLine_progress,bottomLine_done,bottomLine_close,bottomLine_apply;
     LinearLayout tabtop;
@@ -54,16 +60,103 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
     SwipeRefreshXConfirmedOrderAdapater swipeRefreshXConfirmedOrderAdapater;
     String from,Status ="3";
     int page = 1;
-    Map<String, String> map = new HashMap<String, String>();;
+    Map<String, String> map = new HashMap<String, String>();
+    it.neokree.materialtabs.MaterialTabHost tabHost;
+    android.support.v4.view.ViewPager pager;
+//    appframe.appframe.widget.CustomerViewPager.WrapContentHeightViewPager pager;
+    ViewPagerAdapter adapter;
+    private List<String> titleList;//viewpager的标题
+    BaseFragment[] fragments;
 //    boolean require_selected =true;
 
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_myorder, null);
         init();
+        initViewPager();
         return root;
     }
 
+    @Override
+    public void onTabSelected(MaterialTab tab) {
+        pager.setCurrentItem(tab.getPosition());
+    }
+
+    @Override
+    public void onTabReselected(MaterialTab tab) {
+
+    }
+
+    @Override
+    public void onTabUnselected(MaterialTab tab) {
+
+    }
+
+    private void initViewPager()
+    {
+
+        // init view pager
+        titleList = new ArrayList<String>();// 每个页面的Title数据
+        titleList.add("友途");
+        titleList.add("友帮");
+        titleList.add("俄罗斯心动之旅");
+
+        fragments = new BaseFragment[]{
+
+                new TourFragment(),
+                new MainOrderFragment(),
+                new RussianTravelFragment()
+
+
+        };
+
+        adapter = new ViewPagerAdapter(getChildFragmentManager());
+        pager.setOffscreenPageLimit(3);
+        pager.setAdapter(adapter);
+        pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                // when user do a swipe the selected tab change
+                tabHost.setSelectedNavigationItem(position);
+                pager.setCurrentItem(position,false);
+            }
+        });
+
+        // insert all tabs from pagerAdapter data
+        for (int i = 0; i < adapter.getCount(); i++) {
+            tabHost.addTab(
+                    tabHost.newTab()
+                            .setText(adapter.getPageTitle(i))
+                            .setTabListener(this)
+            );
+
+        }
+
+
+    }
+
+    private class ViewPagerAdapter extends FragmentStatePagerAdapter {
+
+        public ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+
+        }
+
+        public Fragment getItem(int num) {
+            return fragments[num];
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titleList.get(position);
+        }
+
+    }
 
     public void init()
     {
@@ -75,9 +168,11 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
         tb_back = (TextView) root.findViewById(R.id.tb_back);
         tb_title = (TextView) root.findViewById(R.id.tb_title);
         tv_apply = (TextView) root.findViewById(R.id.tv_apply);
-        tv_empty = (TextView) root.findViewById(R.id.tv_empty);
+//        tv_empty = (TextView) root.findViewById(R.id.tv_empty);
         tv_progess = (TextView) root.findViewById(R.id.tv_progess);
         tv_done = (TextView) root.findViewById(R.id.tv_done);
+        tabHost = (it.neokree.materialtabs.MaterialTabHost) root.findViewById(R.id.tabHost);
+        pager = (android.support.v4.view.ViewPager) root.findViewById(R.id.pager);
         swipeRefresh = (SwipeRefreshX)root.findViewById(R.id.swipeRefresh);
         swipeRefresh.setColorSchemeResources(android.R.color.holo_blue_bright, android.R.color.holo_green_light,
                 android.R.color.holo_orange_light, android.R.color.holo_red_light);
@@ -149,11 +244,11 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                         progress_bar.setVisibility(View.GONE);
                         swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, from);
                         proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
-                        if (result != null && result.size() != 0) {
-                            tv_empty.setVisibility(View.GONE);
-                        } else {
-                            tv_empty.setVisibility(View.VISIBLE);
-                        }
+//                        if (result != null && result.size() != 0) {
+//                            tv_empty.setVisibility(View.GONE);
+//                        } else {
+//                            tv_empty.setVisibility(View.VISIBLE);
+//                        }
 
                     }
 
@@ -288,6 +383,7 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
 //
 //                break;
             case R.id.tab_apply:
+                pager.setCurrentItem(0,false);
                 map.clear();
                 setTabApply(true);
                 setTabPrgess(false);
@@ -308,12 +404,12 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                         progress_bar.setVisibility(View.GONE);
                         swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_APPLY);
                         proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
-                        if(result != null && result.size() != 0) {
-                            tv_empty.setVisibility(View.GONE);
-                        }
-                        else {
-                            tv_empty.setVisibility(View.VISIBLE);
-                        }
+//                        if(result != null && result.size() != 0) {
+//                            tv_empty.setVisibility(View.GONE);
+//                        }
+//                        else {
+//                            tv_empty.setVisibility(View.VISIBLE);
+//                        }
 
                     }
 
@@ -364,12 +460,12 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                         progress_bar.setVisibility(View.GONE);
                         swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_PROGRESS);
                         proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
-                        if(result != null && result.size() != 0) {
-                            tv_empty.setVisibility(View.GONE);
-                        }
-                        else {
-                            tv_empty.setVisibility(View.VISIBLE);
-                        }
+//                        if(result != null && result.size() != 0) {
+//                            tv_empty.setVisibility(View.GONE);
+//                        }
+//                        else {
+//                            tv_empty.setVisibility(View.VISIBLE);
+//                        }
 
                     }
 
@@ -419,12 +515,12 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                         progress_bar.setVisibility(View.GONE);
                         swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_DONE);
                         proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
-                        if(result != null && result.size() != 0) {
-                            tv_empty.setVisibility(View.GONE);
-                        }
-                        else {
-                            tv_empty.setVisibility(View.VISIBLE);
-                        }
+//                        if(result != null && result.size() != 0) {
+//                            tv_empty.setVisibility(View.GONE);
+//                        }
+//                        else {
+//                            tv_empty.setVisibility(View.VISIBLE);
+//                        }
 
                     }
 
@@ -474,12 +570,12 @@ public class MyOrderFragment extends BaseFragment implements View.OnClickListene
                         progress_bar.setVisibility(View.GONE);
                         swipeRefreshXConfirmedOrderAdapater = new SwipeRefreshXConfirmedOrderAdapater(getActivity(), result, AppConfig.ORDERSTATUS_CLOSE);
                         proListView.setAdapter(swipeRefreshXConfirmedOrderAdapater);
-                        if(result != null && result.size() != 0) {
-                            tv_empty.setVisibility(View.GONE);
-                        }
-                        else {
-                            tv_empty.setVisibility(View.VISIBLE);
-                        }
+//                        if(result != null && result.size() != 0) {
+//                            tv_empty.setVisibility(View.GONE);
+//                        }
+//                        else {
+//                            tv_empty.setVisibility(View.VISIBLE);
+//                        }
 
                     }
 

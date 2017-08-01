@@ -9,18 +9,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.alibaba.mobileimexternal.ui.fundamental.widget.TextViewWithWhiteShadow;
-import com.tencent.mm.sdk.constants.ConstantsAPI;
-import com.tencent.mm.sdk.modelbase.BaseReq;
-import com.tencent.mm.sdk.modelbase.BaseResp;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+
+import com.tencent.mm.opensdk.constants.ConstantsAPI;
+import com.tencent.mm.opensdk.modelbase.BaseReq;
+import com.tencent.mm.opensdk.modelbase.BaseResp;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import appframe.appframe.R;
 import appframe.appframe.activity.HomeActivity;
 import appframe.appframe.activity.OrderSendActivity;
 import appframe.appframe.activity.PayActivity;
 import appframe.appframe.activity.QuestionSendActivity;
+import appframe.appframe.activity.TourOrderDetailsActivity;
+import appframe.appframe.activity.TourOrderSendActivity;
+import appframe.appframe.activity.TourPersonDetailsActivity;
 import appframe.appframe.app.App;
 import appframe.appframe.app.AppConfig;
 import appframe.appframe.utils.Utils;
@@ -71,6 +76,18 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
                 }
                 if(QuestionSendActivity.instance != null) {
                     QuestionSendActivity.instance.finish();
+                }
+                if(TourOrderSendActivity.instance !=null)
+                {
+                    TourOrderSendActivity.instance.finish();
+                }
+                if(TourPersonDetailsActivity.instance !=null)
+                {
+                    TourPersonDetailsActivity.instance.finish();
+                }
+                if(TourOrderDetailsActivity.instance !=null)
+                {
+                    TourOrderDetailsActivity.instance.finish();
                 }
                 Toast.makeText(WXPayEntryActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
 //                startActivity(new Intent(WXPayEntryActivity.this, HomeActivity.class));

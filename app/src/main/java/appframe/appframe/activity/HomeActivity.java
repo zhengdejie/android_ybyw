@@ -18,6 +18,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -66,7 +67,9 @@ import appframe.appframe.fragment.BaseFragment;
 import appframe.appframe.fragment.DiscoveryFragment;
 import appframe.appframe.fragment.GuideFragment;
 import appframe.appframe.fragment.IndexFragment;
+import appframe.appframe.fragment.IndexFragmentNew;
 import appframe.appframe.fragment.MyOrderFragment;
+import appframe.appframe.fragment.MymessageFragment;
 import appframe.appframe.fragment.OrderFragment;
 import appframe.appframe.fragment.PersonFragment;
 import appframe.appframe.fragment.PersonalFragment;
@@ -176,10 +179,10 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
 //        };
 
         fragments = new BaseFragment[]{
-                new IndexFragment(),
+                new IndexFragmentNew(),
 //                new OrderFragment(),
                 new MyOrderFragment(),
-                new DiscoveryFragment(),
+                new MymessageFragment(),
 //                new GuideFragment(),
                 new PersonalFragment()
         };
@@ -254,6 +257,15 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
 //            tv_unread.setVisibility(View.VISIBLE);
 //        }
     }
+
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        Fragment currentFragment = new IndexFragment();
+//        if(currentFragment instanceof IOnFocusListenable) {
+//            ((IOnFocusListenable) currentFragment).onWindowFocusChanged(hasFocus);
+//        }
+//    }
 
     protected void UploadContacts()
     {
@@ -443,6 +455,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
     private void setUbangText(boolean isSelected) {
         Drawable drawable = null;
         if (isSelected) {
+
             tv_ubang.setTextColor(getResources().getColor(
                     R.color.tab_pressed_color));
             if (tv_ubang_Pressed == null) {
@@ -500,7 +513,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_pressed_color));
             if (tv_discovery_Pressed == null) {
                 tv_discovery_Pressed = getResources().getDrawable(
-                        R.drawable.discovery);
+                        R.drawable.my_ic_news);
             }
             drawable = tv_discovery_Pressed;
         } else {
@@ -508,7 +521,7 @@ public class HomeActivity extends BaseFrameActivity implements View.OnClickListe
                     R.color.tab_normal_color));
             if (tv_discovery_Normal == null) {
                 tv_discovery_Normal = getResources().getDrawable(
-                        R.drawable.discoverygray);
+                        R.drawable.my_ic_newsgray);
             }
             drawable = tv_discovery_Normal;
         }

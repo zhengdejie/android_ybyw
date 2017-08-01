@@ -12,10 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
-import com.tencent.mm.sdk.modelpay.PayReq;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+import com.tencent.mm.opensdk.modelpay.PayReq;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.Map;
 
 import appframe.appframe.R;
 import appframe.appframe.app.API;
@@ -39,13 +42,11 @@ public class TopupActivity extends BaseActivity implements View.OnClickListener 
             switch (msg.what) {
                 case SDK_PAY_FLAG: {
                     PayResult payResult = new PayResult((String) msg.obj);
+//                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
                     /**
-                     * 同步返回的结果必须放置到服务端进行验证（验证的规则请看https://doc.open.alipay.com/doc2/
-                     * detail.htm?spm=0.0.0.0.xdvAU6&treeId=59&articleId=103665&
-                     * docType=1) 建议商户依赖异步通知
+                     对于支付结果，请商户依赖服务端的异步通知结果。同步通知结果，仅作为支付结束的通知。
                      */
                     String resultInfo = payResult.getResult();// 同步返回需要验证的信息
-
                     String resultStatus = payResult.getResultStatus();
                     // 判断resultStatus 为“9000”则代表支付成功，具体状态码代表含义可参考接口文档
                     if (TextUtils.equals(resultStatus, "9000")) {
@@ -177,6 +178,13 @@ public class TopupActivity extends BaseActivity implements View.OnClickListener 
                                         msg.what = SDK_PAY_FLAG;
                                         msg.obj = resultInfo;
                                         mHandler.sendMessage(msg);
+//                                        PayTask alipay = new PayTask(TopupActivity.this);
+//                                        Map<String, String> aliresult = alipay.payV2(result.getSign(),true);
+//
+//                                        Message msg = new Message();
+//                                        msg.what = SDK_PAY_FLAG;
+//                                        msg.obj = aliresult;
+//                                        mHandler.sendMessage(msg);
                                     }
                                 };
 

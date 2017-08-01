@@ -18,8 +18,11 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.Poi;
 //import com.crashlytics.android.Crashlytics;
 import com.github.snowdream.android.util.Log;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+import com.mob.MobSDK;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 //import com.umeng.socialize.PlatformConfig;
 
@@ -27,8 +30,9 @@ import java.util.List;
 
 import appframe.appframe.R;
 import appframe.appframe.utils.Auth;
-import appframe.appframe.utils.ChattingOperationCustomSample;
+//import appframe.appframe.utils.ChattingOperationCustomSample;
 import appframe.appframe.utils.ConfigCache;
+import appframe.appframe.utils.ConversationListUICustomSample;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.InitHelper;
 import appframe.appframe.utils.LoginSampleHelper;
@@ -73,16 +77,18 @@ public class App extends android.support.multidex.MultiDexApplication {
         //初始化云旺SDK
         InitHelper.initYWSDK(this);
 
-        AdviceBinder.bindAdvice(PointCutEnum.CHATTING_FRAGMENT_POINTCUT, ChattingOperationCustomSample.class);
+//        AdviceBinder.bindAdvice(PointCutEnum.CONVERSATION_FRAGMENT_UI_POINTCUT, ConversationListUICustomSample.class);
+//        AdviceBinder.bindAdvice(PointCutEnum.CHATTING_FRAGMENT_POINTCUT, ChattingOperationCustomSample.class);
         Log.setEnabled(true);
         Log.setLog2ConsoleEnabled(true);
 
-        SMSSDK.initSDK(this, "1098959928c6e", "7028d351c316b5bd360232ae00e67efb");
+//        SMSSDK.initSDK(this, "1098959928c6e", "7028d351c316b5bd360232ae00e67efb");
+        MobSDK.init(this, "1098959928c6e", "7028d351c316b5bd360232ae00e67efb");
 
-        msgApi = WXAPIFactory.createWXAPI(this, null);
-//
+        msgApi = WXAPIFactory.createWXAPI(this, AppConfig.WX_APP_ID,false);
+
 //        // 将该app注册到微信
-        msgApi.registerApp(AppConfig.WX_APP_ID);
+//        msgApi.registerApp(AppConfig.WX_APP_ID);
 
         // SDK在统计Fragment时，需要关闭Activity自带的页面统计，
         // 然后在每个页面中重新集成页面统计的代码(包括调用了 onResume 和 onPause 的Activity)。
@@ -100,4 +106,22 @@ public class App extends android.support.multidex.MultiDexApplication {
         return SysUtil.isTCMSServiceProcess(sContext);
     }
 
+    @Override
+    public void onTerminate() {
+        // 程序终止的时候执行
+        Log.d("TAG", "onTerminate");
+        super.onTerminate();
+    }
+    @Override
+    public void onLowMemory() {
+        // 低内存的时候执行
+        Log.d("TAG", "onLowMemory");
+        super.onLowMemory();
+    }
+    @Override
+    public void onTrimMemory(int level) {
+        // 程序在内存清理的时候执行
+        Log.d("TAG", "onTrimMemory");
+        super.onTrimMemory(level);
+    }
 }

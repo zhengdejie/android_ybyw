@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--<include-->
+    <!--android:id="@+id/title_bar"-->
+    <!--layout="@layout/titlebar_order" />-->
+    <!--<include-->
+        <!--android:id="@+id/title_bar"-->
+        <!--layout="@layout/titlebar" />-->
+
+    <LinearLayout
+        android:id="@+id/tabtop"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:baselineAligned="false"
+        android:background="@color/white"
+        android:layout_below="@+id/title_bar"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_apply"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="申请中"
+
+                android:textColor="@color/font_black_content" />
+            <TextView
+                android:id="@+id/tv_apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+
+                android:background="@drawable/aliwx_unread_hint"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/aliwx_unread_text_size"
+                android:visibility="visible"
+                android:gravity="center"/>
+            <!--<View-->
+            <!--android:layout_width="0.5dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#dddddd"-->
+            <!--android:layout_alignRight="@+id/tab_apply"/>-->
+            <View
+                android:id="@+id/bottomLine_apply"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#56abe4"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_progess"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="进行中"
+                android:textColor="@color/font_black_content" />
+            <TextView
+                android:id="@+id/tv_progess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/aliwx_unread_hint"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/aliwx_unread_text_size"
+                android:visibility="visible"
+                android:gravity="center"/>
+            <!--<View-->
+            <!--android:layout_width="0.5dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#dddddd"-->
+            <!--android:layout_alignRight="@+id/tab_progess"/>-->
+            <View
+                android:id="@+id/bottomLine_progress"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#56abe4"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                />
+            <!--<TextView-->
+            <!--android:id="@+id/unread"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_marginRight="20dp"-->
+            <!--android:background="@drawable/aliwx_unread_hint"-->
+            <!--android:gravity="center"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:textSize="@dimen/aliwx_unread_text_size"-->
+            <!--android:visibility="invisible" />-->
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_done"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="待评价"
+                android:textColor="@color/font_black_content" />
+            <TextView
+                android:id="@+id/tv_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/aliwx_unread_hint"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/aliwx_unread_text_size"
+                android:visibility="visible"
+                android:gravity="center"/>
+            <!--<View-->
+            <!--android:layout_width="0.5dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#dddddd"-->
+            <!--android:layout_alignRight="@+id/tab_done"/>-->
+            <View
+                android:id="@+id/bottomLine_done"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#56abe4"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_close"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="已关闭"
+                android:textColor="@color/font_black_content" />
+            <View
+                android:id="@+id/bottomLine_close"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#56abe4"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                />
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+    <appframe.appframe.widget.swiperefresh.SwipeRefreshX
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabtop"
+        android:visibility="visible">
+
+        <ListView
+            android:id="@+id/proListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@color/white"
+            >
+        </ListView>
+    </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="没有相关订单"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading"
+        android:visibility="gone"/>
+
+
+</RelativeLayout>

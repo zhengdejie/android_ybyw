@@ -9,8 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
+//import com.baidu.location.BDLocation;
+//import com.baidu.location.BDLocationListener;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;

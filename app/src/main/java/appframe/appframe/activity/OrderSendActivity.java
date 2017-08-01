@@ -1,13 +1,16 @@
 package appframe.appframe.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Service;
 import android.app.TimePickerDialog;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -18,10 +21,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.provider.MediaStore;
+import android.support.v4.BuildConfig;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -129,7 +136,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
     private boolean fileupload_success = false ;
     Gson gson = new Gson();
     //获取日期格式器对象
-    SimpleDateFormat fmtDate = new SimpleDateFormat("yy-MM-dd");
+    SimpleDateFormat fmtDate = new SimpleDateFormat("yyyy-MM-dd");
     SimpleDateFormat fmtTime = new SimpleDateFormat("HH:mm");
     private Calendar dateAndTime = Calendar.getInstance(Locale.CHINA);
     BDLocation bdLocation = new BDLocation();
@@ -739,6 +746,7 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
 
     public void takePhoto()
     {
+
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         File vFile = new File(Environment.getExternalStorageDirectory()
@@ -757,8 +765,15 @@ public class OrderSendActivity extends BaseActivity implements View.OnTouchListe
             }
         }
         path = vFile.getPath();
-        Uri cameraUri = Uri.fromFile(vFile);
-        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri);
+//        Uri cameraUri = Uri.fromFile(vFile);
+        Uri fileUri = null;
+        if (Build.VERSION.SDK_INT >= 24) {
+            fileUri = FileProvider.getUriForFile(this, "appframe.appframe.android7.fileprovider", vFile);
+        } else {
+            fileUri = Uri.fromFile(vFile);
+        }
+
+        openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(openCameraIntent, TAKE_PICTURE);
     }
 

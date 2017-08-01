@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="green" type="color">#FF3BBD79</item>
+    <color name="black_p50">#7f000000</color>
+    <color name="gray_e7e7e7">#e7e7e7</color>
+    <color name="b_c_fafafa">#fafafa</color>
+    <color name="blue_4285f4">#4285f4</color>
+    <color name="black_5a626d">#5a626d</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="comment_divider">#cccccc</color>
+
+    <color name="green" type="color">#FF3BBD79</color>
     <color name="font_black_content">#222222</color>
     <color name="stand_bg">#fff6f6f6</color>
     <color name="divide">#ffe4e4e4</color>
@@ -8,6 +19,10 @@
     <color name="font_black_6">#ff666666</color>
     <color name="white">#ffffffff</color>
     <color name="font_gray">#999999</color>
+    <!--<color name="font_f5f5">#F5F5F5</color>-->
+    <color name="font_333">#333333</color>
+    <color name="font_666">#666666</color>
+    <color name="font_999">#999999</color>
 
     <color name="contents_text">#ff000000</color>
     <color name="encode_view">#ffffffff</color>
@@ -55,4 +70,6 @@
     <color name="cp_gray_deep">#5c5c5c</color>
     <color name="cp_alpha_gray">#CC646464</color>
     <color name="cp_theme_gray">#646464</color>
+
+    <color name="order_price_color_red">#FF4273</color>
 </resources>

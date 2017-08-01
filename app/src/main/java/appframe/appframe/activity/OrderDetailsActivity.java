@@ -60,7 +60,7 @@ import appframe.appframe.dto.OrderComment;
 import appframe.appframe.dto.OrderDetails;
 import appframe.appframe.dto.PayResult;
 import appframe.appframe.utils.Auth;
-import appframe.appframe.utils.ChattingOperationCustomSample;
+//import appframe.appframe.utils.ChattingOperationCustomSample;
 import appframe.appframe.utils.GsonHelper;
 import appframe.appframe.utils.Http;
 import appframe.appframe.utils.ImageUtils;

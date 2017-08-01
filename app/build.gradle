@@ -14,8 +14,8 @@ android {
         applicationId "appframe.appframe"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 5
-        versionName "1.7"
+        versionCode 10
+        versionName "2.2"
         multiDexEnabled = true
         manifestPlaceholders = [
                 GETUI_APP_ID    : "UEoNhMDOwA8XSVe3YQPNW1",
@@ -27,11 +27,15 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt','proguard-rules.pro'
         }
 
     }
-
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
     // Other stuffs
     dexOptions {
         javaMaxHeapSize "8g"
@@ -45,6 +49,7 @@ repositories {
     }
     maven { url "https://jitpack.io" }
 //    maven { url 'https://maven.fabric.io/public' }
+    maven { url "http://repo.baichuan-android.taobao.com/content/groups/BaichuanRepositories/" }
     flatDir {
         dirs 'libs'
     }
@@ -54,7 +59,7 @@ repositories {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //    compile 'com.android.support:support-v4:22.1.1'
-//    compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
+    //    compile 'fr.avianey.com.viewpagerindicator:library:2.4.1@aar'
     compile('org.apache.httpcomponents:httpmime:4.+') {
         exclude module: "httpclient"
     }
@@ -65,13 +70,14 @@ dependencies {
         useLibrary 'org.apache.http.legacy'
     }
     //IM
+
     //compile project(':OneSDK')
     //Chart
     //个推
     //compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/alipaySingle-20160120.jar')
-    compile name: 'SMSSDK-2.0.2', ext: 'aar'
-    compile name: 'SMSSDKGUI-2.0.2', ext: 'aar'
+    compile name: 'SMSSDK-3.0.0', ext: 'aar'
+    compile name: 'SMSSDKGUI-3.0.0', ext: 'aar'
+
     //    compile files('libs/libammsdk.jar')
     //圆形图标
     //图片选择
@@ -84,7 +90,7 @@ dependencies {
     //    compile files('libs/BaiduLBS_Android.jar')
     //    compile files('libs/MobCommons-2016.0303.1229.jar')
     //    compile files('libs/MobTools-2016.0303.1229.jar')
-    compile project(':wx')
+//    compile project(':wx')
     //友盟app统计
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:recyclerview-v7:24.0.+'
@@ -103,4 +109,20 @@ dependencies {
     compile 'com.github.chrisbanes:PhotoView:1.3.0'
     //下拉刷新
     compile 'com.baoyz.pullrefreshlayout:library:1.2.0'
+    //https://github.com/dongjunkun/DropDownMenu
+    //    compile 'com.github.dongjunkun:DropDownMenu:1.0.4'
+    compile files('libs/alipaySingle-20160120.jar')
+    //    compile 'com.github.fg2q1q3q:DropDownMenu:1.0.0'
+    //https://github.com/neokree/MaterialTabs
+    compile 'it.neokree:MaterialTabs:0.11'
+//    compile files('libs/baidumapapi_base_v4_3_1.jar')
+    compile files('libs/AnimatorPropertyTools.jar')
+    //微信
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    //必选
+    compile 'com.alibaba.mobileim:IMCore:2.0.2.1@aar'
+    //可选，如果使用SDK的UI必须添加该依赖，如果不使用SDK的UI，完全自己开发UI则无需添加该依赖
+    compile 'com.alibaba.mobileim:IMKit:2.0.2.1@aar'
+//    //可选，如果使用小视频功能必须添加该依赖，如果不使用小视频功能则无需添加该依赖
+//    compile 'com.alibaba.mobileim:RecorderSDK:1.0.0@aar'
 }

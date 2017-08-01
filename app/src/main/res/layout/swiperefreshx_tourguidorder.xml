@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/iv_avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/icon_activity"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="15dp"
+        />
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_alignTop="@+id/iv_avatar"
+        android:textSize="14sp"
+        android:textColor="@color/font_333"
+        android:text="钱江新城观潮"/>
+
+    <TextView
+        android:id="@+id/tv_personality"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title"
+        android:textSize="12sp"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:textColor="@color/font_666"
+        android:text="有车 杭州生活8年 为人热情"/>
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:textColor="@color/order_price_color_red"
+        android:text="￥250元"
+        android:layout_alignTop="@+id/iv_avatar"
+        android:gravity="bottom"
+        />
+    <TextView
+        android:id="@+id/tv_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_personality"
+        android:textSize="12sp"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:textColor="@color/blue"
+        android:text="5次乐游"
+        android:layout_alignBottom="@+id/iv_avatar"
+        android:gravity="bottom"/>
+    <ImageView
+        android:id="@+id/iv_right"
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:src="@drawable/rightbut_disabled"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="5dp"
+        android:layout_alignBottom="@+id/iv_avatar"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="查看详情"
+        android:textSize="12sp"
+        android:textColor="@color/font_333"
+        android:layout_toLeftOf="@+id/iv_right"
+        android:layout_alignBottom="@+id/iv_avatar"/>
+</RelativeLayout>

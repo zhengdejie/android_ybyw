@@ -1,9 +1,16 @@
 package appframe.appframe.fragment;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.mobileim.YWIMKit;
+import com.alibaba.mobileim.channel.itf.tribe.MemberLevelSettingPacker;
 import com.alibaba.mobileim.conversation.IYWConversationService;
 import com.alibaba.mobileim.conversation.IYWConversationUnreadChangeListener;
 import com.umeng.analytics.MobclickAgent;
@@ -21,10 +29,13 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import appframe.appframe.R;
 import appframe.appframe.activity.CertificateActivity;
+import appframe.appframe.activity.DiscoveryActivity;
 import appframe.appframe.activity.EstimateActivity;
 import appframe.appframe.activity.ExpandFriendsActivity;
+import appframe.appframe.activity.GuiderOrderActivity;
 import appframe.appframe.activity.MyAnswerActivity;
 import appframe.appframe.activity.MyCollectActivity;
 import appframe.appframe.activity.MyInfoActivity;
@@ -57,18 +68,22 @@ import static appframe.appframe.R.id.tv_revenue;
  */
 
 public class PersonalFragment extends BaseFragment implements View.OnClickListener{
-    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission,tv_myestimate,tv_author,tv_question,tv_answer,tv_myhelp,tv_contactservice,tv_myfocus,tv_progress_content,tv_balance,tv_income,tv_consume,tv_purchase,tv_sell;
-    public static TextView tv_unread;
+    TextView tb_back,tb_title,tv_name,tv_contact,tv_collect,tv_mymessage,tv_updatecontact,tv_expandhr,tv_setting,tv_tel,tv_mission,tv_myestimate,tv_author,tv_question,tv_answer,tv_myhelp,tv_contactservice,tv_myfocus,tv_progress_content,tv_balance,tv_income,tv_consume,tv_purchase,tv_sell,tv_guide;
+//    public static TextView tv_unread;
     ImageView iv_sex,iv_member;
 //    com.android.volley.toolbox.NetworkImageView iv_avater;
     appframe.appframe.utils.CircleImageViewCustomer iv_avater;
     View root;
-    LinearLayout progress_bar,ll_wallet;
+    LinearLayout progress_bar,ll_wallet,ll_guideorder;
     RelativeLayout ll_person;
     List<UserContact> contactsList = new ArrayList<UserContact>();
     private IYWConversationUnreadChangeListener mConversationUnreadChangeListener;
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private IYWConversationService mConversationService;
+    private final int ReadContacts =100;
+    private static final String READ_CONTACTS_PERMISSION = "android.permission.READ_CONTACTS";
+
+
     public View onLoadView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         root = inflater.inflate(R.layout.fragment_personal, null);
@@ -85,26 +100,26 @@ public class PersonalFragment extends BaseFragment implements View.OnClickListen
 
     protected void initdata(final boolean hasmessage)
     {
-        Http.request(getActivity(), API.HAS_UNREAD, new Http.RequestListener<MessageTypeCount>() {
-            @Override
-            public void onSuccess(MessageTypeCount result) {
-                super.onSuccess(result);
-
-                if (result.getCount() > 0 && hasmessage || result.getCount() > 0 || hasmessage) {
-
-                    tv_unread.setVisibility(View.VISIBLE);
-                } else {
-                    //initConversationServiceAndListener(false);
-                    tv_unread.setVisibility(View.INVISIBLE);
-                }
-            }
-        });
+//        Http.request(getActivity(), API.HAS_UNREAD, new Http.RequestListener<MessageTypeCount>() {
+//            @Override
+//            public void onSuccess(MessageTypeCount result) {
+//                super.onSuccess(result);
+//
+//                if (result.getCount() > 0 && hasmessage || result.getCount() > 0 || hasmessage) {
+//
+//                    tv_unread.setVisibility(View.VISIBLE);
+//                } else {
+//                    //initConversationServiceAndListener(false);
+//                    tv_unread.setVisibility(View.INVISIBLE);
+//                }
+//            }
+//        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        tv_unread.setVisibility(View.INVISIBLE);
+//        tv_unread.setVisibility(View.INVISIBLE);
         tv_name.setText(Auth.getCurrentUser().getName());
         if(Auth.getCurrentUser().getAvatar() != null && !Auth.getCurrentUser().getAvatar().equals("")) {
             ImageUtils.setImageUrl(iv_avater, Auth.getCurrentUser().getAvatar());
@@ -208,28 +223,11 @@ public class PersonalFragment extends BaseFragment implements View.OnClickListen
                 startActivity(new Intent(getActivity(), MyCollectActivity.class));
                 break;
             case R.id.tv_mymessage:
-                tv_unread.setVisibility(View.INVISIBLE);
-                startActivity(new Intent(getActivity(), MyMessageActivity.class));
+//                tv_unread.setVisibility(View.INVISIBLE);
+                startActivity(new Intent(getActivity(), DiscoveryActivity.class));
                 break;
             case R.id.tv_updatecontact:
-                progress_bar.setVisibility(View.VISIBLE);
-                List<UserContact> contactsList = UploadUtils.uploadContact(getActivity());
-                Http.request(getActivity(), API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
-                        "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
-                    @Override
-                    public void onSuccess(String result) {
-                        super.onSuccess(result);
-                        progress_bar.setVisibility(View.GONE);
-                        Toast.makeText(getActivity(), "更新通讯录成功", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFail(String code) {
-                        super.onFail(code);
-                        progress_bar.setVisibility(View.GONE);
-//                        Toast.makeText(getActivity(), "上传通讯录失败", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                requestPermission();
                 break;
             case R.id.tv_myhelp:
                 startActivity(new Intent(getActivity(), MyRequireActivity.class));
@@ -261,8 +259,124 @@ public class PersonalFragment extends BaseFragment implements View.OnClickListen
                 intent = ls.getIMKit().getChattingActivityIntent(target);
                 startActivity(intent);
                 break;
+            case R.id.tv_guide:
+                startActivity(new Intent(getActivity(), GuiderOrderActivity.class));
+                break;
         }
     }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(message)
+                .setPositiveButton("确认", okListener)
+                .setNegativeButton("取消", null)
+                .create()
+                .show();
+    }
+    /**
+     * 申请通讯录权限
+     */
+    private void requestPermission()
+    {
+        //判断Android版本是否大于23
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        {
+            int hasWriteContactsPermission = ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.READ_CONTACTS);
+            if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+                        Manifest.permission.READ_CONTACTS)) {
+                    showMessageOKCancel("您需要开启读取通讯录权限",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    requestPermissions(
+                                            new String[] {Manifest.permission.READ_CONTACTS},
+                                            ReadContacts);
+                                }
+                            });
+                    return;
+                }
+                requestPermissions(
+                        new String[] {Manifest.permission.READ_CONTACTS},
+                        ReadContacts);
+                return;
+            }
+            runReadContacts();
+
+//            int checkReadContactsPermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS);
+//
+//
+//            if (checkReadContactsPermission != PackageManager.PERMISSION_GRANTED)
+//            {
+//                requestPermissions( new String[]{Manifest.permission.READ_CONTACTS},
+//                        ReadContacts);
+//                return;
+//            }
+//            else
+//            {
+//                runReadContacts();
+//            }
+
+        }
+        else
+        {
+            runReadContacts();
+        }
+    }
+
+
+    /**
+     * 注册权限申请回调
+     * @param requestCode 申请码
+     * @param permissions 申请的权限
+     * @param grantResults 结果
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
+    {
+        switch (requestCode)
+        {
+            case  ReadContacts:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                {
+                    runReadContacts();
+                }
+                else
+                {
+                    // Permission Denied
+                    Toast.makeText(getActivity(), "请打开通讯录权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void runReadContacts()
+    {
+        progress_bar.setVisibility(View.VISIBLE);
+
+
+        List<UserContact> contactsList = UploadUtils.uploadContact(getActivity());
+        Http.request(getActivity(), API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
+                "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
+            @Override
+            public void onSuccess(String result) {
+                super.onSuccess(result);
+                progress_bar.setVisibility(View.GONE);
+                Toast.makeText(getActivity(), "更新通讯录成功", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFail(String code) {
+                super.onFail(code);
+                progress_bar.setVisibility(View.GONE);
+//                        Toast.makeText(getActivity(), "上传通讯录失败", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private  void init()
     {
         tv_name = (TextView)root.findViewById(R.id.tv_name);
@@ -275,7 +389,7 @@ public class PersonalFragment extends BaseFragment implements View.OnClickListen
         tv_updatecontact = (TextView)root.findViewById(R.id.tv_updatecontact);
         tv_expandhr = (TextView)root.findViewById(R.id.tv_expandhr);
         tv_setting = (TextView)root.findViewById(R.id.tv_setting);
-        tv_unread = (TextView)root.findViewById(R.id.tv_unread);
+//        tv_unread = (TextView)root.findViewById(R.id.tv_unread);
         tv_tel = (TextView)root.findViewById(R.id.tv_tel);
         tv_mission = (TextView)root.findViewById(R.id.tv_mission);
         tv_myestimate = (TextView)root.findViewById(R.id.tv_myestimate);
@@ -293,10 +407,12 @@ public class PersonalFragment extends BaseFragment implements View.OnClickListen
         tv_balance = (TextView)root.findViewById(R.id.tv_balance);
         tv_income = (TextView)root.findViewById(R.id.tv_income);
         tv_consume = (TextView)root.findViewById(R.id.tv_consume);
-        tv_purchase = (TextView)root.findViewById(R.id.tv_purchase);
-        tv_sell = (TextView)root.findViewById(R.id.tv_sell);
+//        tv_purchase = (TextView)root.findViewById(R.id.tv_purchase);
+//        tv_sell = (TextView)root.findViewById(R.id.tv_sell);
         tv_progress_content.setText("正在更新通讯录");
 //        tv_myfans = (TextView)root.findViewById(R.id.tv_myfans);
+        ll_guideorder = (LinearLayout)root.findViewById(R.id.ll_guideorder);
+        tv_guide = (TextView)root.findViewById(R.id.tv_guide);
 
         tv_contact.setOnClickListener(this);
         tv_collect.setOnClickListener(this);
@@ -315,8 +431,9 @@ public class PersonalFragment extends BaseFragment implements View.OnClickListen
         tv_myhelp.setOnClickListener(this);
         tv_contactservice.setOnClickListener(this);
         tv_myfocus.setOnClickListener(this);
-        tv_purchase.setOnClickListener(this);
-        tv_sell.setOnClickListener(this);
+        tv_guide.setOnClickListener(this);
+//        tv_purchase.setOnClickListener(this);
+//        tv_sell.setOnClickListener(this);
 //        tv_myfans.setOnClickListener(this);
 
         tb_title = (TextView)root.findViewById(R.id.tb_title);
@@ -324,12 +441,43 @@ public class PersonalFragment extends BaseFragment implements View.OnClickListen
         tb_back.setVisibility(View.GONE);
         tb_title.setText("我的");
 
+        Http.request(getActivity(), API.IFGUIDE, new Http.RequestListener<String>() {
+            @Override
+            public void onSuccess(String result) {
+                super.onSuccess(result);
+//                if(result != null) {
+//                    if (result.equals("你是导游")) {
+//                        ll_guideorder.setVisibility(View.VISIBLE);
+//                    } else {
+//                        ll_guideorder.setVisibility(View.GONE);
+//                    }
+//                }
+            }
+
+            @Override
+            public void onMessage(String result) {
+                super.onMessage(result);
+                if(result != null) {
+                    if (result.contains("你是导游")) {
+                        ll_guideorder.setVisibility(View.VISIBLE);
+                    } else {
+                        ll_guideorder.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onDone() {
+                super.onDone();
+            }
+        });
+
         Http.request(getActivity(), API.USER_PROFILE, new Object[]{Auth.getCurrentUserId()}, new Http.RequestListener<UserDetail>() {
             @Override
             public void onSuccess(UserDetail result) {
                 super.onSuccess(result);
 
-                tv_balance.setText("  余额： " + result.getWalletTotal());
+//                tv_balance.setText("  余额： " + result.getWalletTotal());
                 tv_income.setText("  总收益： " + result.getTotalRevenue());
                 tv_consume.setText("  总消费： " + result.getTotalExpense());
             }
@@ -375,7 +523,7 @@ public class PersonalFragment extends BaseFragment implements View.OnClickListen
         {
             iv_member.setVisibility(View.GONE);
         }
-        tv_unread.setVisibility(View.INVISIBLE);
+//        tv_unread.setVisibility(View.INVISIBLE);
         initConversationServiceAndListener();
 
     }

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:background="@drawable/listview_item_pressed">
+    <appframe.appframe.utils.CircleImageViewCustomer
+        android:id="@+id/niv_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:visibility="invisible"
+        />
+    <ImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="10dp"
+        android:visibility="invisible"
+        />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:text=""
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_time"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        />
+
+    <RatingBar
+        android:id="@+id/rb_evaluation"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:numStars="5"
+        android:isIndicator="true"
+        android:layout_toRightOf="@+id/iv_avatar"
+        style="@style/myRatingBar"
+        android:layout_below="@+id/tv_name"
+
+        />
+
+    <TextView
+        android:id="@+id/tv_ordercomment"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text=""
+        android:layout_below="@+id/iv_avatar"
+        android:lines="2"
+        android:ellipsize="end"
+        android:layout_toLeftOf="@+id/ib_delete"
+
+        android:layout_toRightOf="@+id/iv_avatar"
+        />
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:layout_alignParentRight="true"
+        android:textColor="@color/font_gray"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/ib_delete"-->
+        <!--android:layout_width="40dp"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:src="@drawable/ic_delete"-->
+        <!--android:background="@color/white"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_below="@+id/iv_avatar"-->
+
+        <!--/>-->
+
+</RelativeLayout>

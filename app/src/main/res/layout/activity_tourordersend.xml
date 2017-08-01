@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_bar"
+        android:layout_marginBottom="40dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+            <RelativeLayout
+                android:id="@+id/rl_startdate"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    style="@style/more_item_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:drawableRight="@drawable/aliwx_arrow"
+                    android:text="开始日期" />
+                <TextView
+                    android:id="@+id/tv_startdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:hint="选择开始时间"
+                    android:layout_alignParentRight="true"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:textColor="@color/font_999"
+                    android:layout_marginRight="30dp"/>
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divide"
+                />
+            <RelativeLayout
+                android:id="@+id/rl_hours"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    style="@style/more_item_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:drawableRight="@drawable/aliwx_arrow"
+                    android:text="时间" />
+                <TextView
+                    android:id="@+id/tv_hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:hint="选择时间"
+                    android:layout_alignParentRight="true"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:textColor="@color/font_999"
+                    android:layout_marginRight="30dp"/>
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divide"
+                />
+            <RelativeLayout
+                android:id="@+id/rl_location"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:id="@+id/tv_location"
+                    style="@style/more_item_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:drawableRight="@drawable/aliwx_arrow"
+                    android:text="地点" />
+                <TextView
+                    android:id="@+id/tv_map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:hint="选择地点"
+                    android:layout_alignParentRight="true"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:textColor="@color/font_999"
+                    android:layout_marginRight="30dp"/>
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divide"
+                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    android:id="@+id/tv_price"
+                    style="@style/more_item_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="服务费用" />
+                <TextView
+                    android:id="@+id/tv_fee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:textColor="@color/font_999"
+                    android:layout_marginRight="15dp"/>
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divide"
+                />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+                <TextView
+                    style="@style/more_item_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="合计" />
+                <TextView
+                    android:id="@+id/tv_total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:textColor="@color/font_999"
+                    android:layout_marginRight="15dp"/>
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:background="@color/divide"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/edit_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="@drawable/editext_none"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:inputType="textMultiLine"
+                    android:hint="简单说说你的要求吧~"
+                    android:textSize="14sp"
+                    android:maxLength="140"
+                    android:gravity="top"/>
+
+                <TextView
+                    android:id="@+id/tv_contentcount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="0/140"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center"
+                    android:textColor="@color/font_999"
+                    android:paddingRight="20dp"
+                    android:layout_below="@+id/edit_content"
+                    android:textSize="14sp"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divide"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                >
+                <CheckBox
+                    android:id="@+id/cb_agree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/tv_agree"
+                    android:gravity="center"/>
+                <TextView
+                    android:id="@+id/tv_agree"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+
+                    android:text="同意"
+                    android:layout_toLeftOf="@+id/tv_protocol"
+
+                    android:gravity="center"
+                    />
+                <TextView
+                    android:id="@+id/tv_protocol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:text="《友问友帮服务协议》"
+                    android:gravity="right|center"
+                    android:textColor="@color/blue"
+
+                    />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="创建订单"
+        android:id="@+id/btn_createorder"
+        android:layout_gravity="bottom"
+        android:layout_weight="1"
+        android:background="@drawable/textview_clicked"
+        android:textColor="@drawable/textview_pressed"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>

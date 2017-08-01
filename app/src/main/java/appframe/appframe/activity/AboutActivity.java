@@ -15,7 +15,7 @@ import appframe.appframe.utils.UriHandler;
 /**
  * Created by Administrator on 2015/8/24.
  */
-public class    AboutActivity extends BaseActivity implements View.OnClickListener {
+public class AboutActivity extends BaseActivity implements View.OnClickListener {
 
     private TextView tb_title,tb_back,tv_score,tv_help,tv_protocol,tv_version;
 

@@ -1,8 +1,11 @@
 package appframe.appframe.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -13,9 +16,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.DataAsyncHttpResponseHandler;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.List;
+
 import appframe.appframe.R;
+import appframe.appframe.app.API;
+import appframe.appframe.dto.ConfirmedOrderDetail;
+import appframe.appframe.dto.RussianTour;
 import appframe.appframe.fragment.BaseFragment;
 import appframe.appframe.fragment.CKXCFragment;
 import appframe.appframe.fragment.CKXXFragment;
@@ -25,6 +34,7 @@ import appframe.appframe.fragment.MyOrderFragment;
 import appframe.appframe.fragment.PersonalFragment;
 import appframe.appframe.fragment.XCTSFragment;
 import appframe.appframe.fragment.ZYSXFragment;
+import appframe.appframe.utils.Http;
 import appframe.appframe.utils.LoginSampleHelper;
 import appframe.appframe.utils.PackageUtils;
 import appframe.appframe.utils.UriHandler;
@@ -43,6 +53,8 @@ public class DateActivity extends BaseFrameActivity implements View.OnClickListe
     BaseFragment[] fragments;
     HoverScrollView hoversv;
     Intent intent = new Intent();
+    RussianTour russianTour;
+    int RUSSIA_ID;
 
     class TabsAdapter extends FragmentPagerAdapter {
 
@@ -73,6 +85,7 @@ public class DateActivity extends BaseFrameActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_date);
         initViews();
+        initDatas();
     }
 
     @Override
@@ -80,6 +93,20 @@ public class DateActivity extends BaseFrameActivity implements View.OnClickListe
         int mBuyLayout2ParentTop = Math.max(scrollY, rl_title.getTop());
         rl_top.layout(0, mBuyLayout2ParentTop, rl_top.getWidth(), mBuyLayout2ParentTop + rl_top.getHeight());
 
+    }
+    protected  void initDatas()
+    {
+        Http.request(DateActivity.this, API.RUSSIANTOUR,
+                new Http.RequestListener<List<RussianTour>>() {
+                    @Override
+                    public void onSuccess(List<RussianTour> result) {
+                        super.onSuccess(result);
+//                        RUSSIA_ID = result.get(0).getId();
+                        if(result != null) {
+                            russianTour = result.get(0);
+                        }
+                    }
+                });
     }
 
     protected  void initViews()
@@ -152,7 +179,7 @@ public class DateActivity extends BaseFrameActivity implements View.OnClickListe
                 new CKXXFragment(),
                 new ZYSXFragment()
         };
-        pager.setOffscreenPageLimit(4);
+//        pager.setOffscreenPageLimit(4);
         pager.setAdapter(new TabsAdapter());
 //        indicator.setViewPager(pager);
 
@@ -281,6 +308,44 @@ public class DateActivity extends BaseFrameActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.btn_enroll:
+                Http.request(DateActivity.this, API.RUSSIANTOURAPPLY, new Object[]{String.valueOf(russianTour.getId())},
+                        new Http.RequestListener<String>() {
+                            @Override
+                            public void onSuccess(String result) {
+                                super.onSuccess(result);
+                                Intent newintent = new Intent();
+                                Bundle bundle = new Bundle();
+                                newintent.setClass(DateActivity.this, PayActivity.class);
+                                bundle.putSerializable("RussianTour", russianTour);
+                                newintent.putExtras(bundle);
+
+                                startActivity(newintent);
+
+                            }
+
+                            @Override
+                            public void onFail(String code) {
+                                super.onFail(code);
+                                if(code.equals("Error"))
+                                {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(DateActivity.this);
+                                    builder.setTitle("提示").setMessage("您已经报过名，请在订单中查看报名进程").setPositiveButton("确定",null).show();
+//                                    builder.setTitle("提示").setView(layout).setPositiveButton("确认", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            dialog.dismiss();
+//
+//                                        }
+//                                    }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            dialog.dismiss();
+//                                        }
+//                                    }).show();
+                                }
+//                                Toast.makeText(DateActivity.this,code,Toast.LENGTH_SHORT).show();sd
+                            }
+                        });
                 break;
             case R.id.tv_xcts:
                 setXCTSText(true);

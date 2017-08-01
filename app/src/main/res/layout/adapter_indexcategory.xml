@@ -8,17 +8,18 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/icon_activity"
+
         />
 
     <TextView
         android:id="@+id/tv_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="df"
+        android:text="sd"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/iv_category"
-
+        android:textSize="12sp"
         android:gravity="center"
+        android:paddingBottom="10dp"
         />
 </RelativeLayout>

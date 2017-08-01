@@ -2,9 +2,14 @@ package appframe.appframe.utils;
 
 import android.app.Application;
 
+import com.alibaba.mobileim.FeedbackAPI;
 import com.alibaba.mobileim.YWAPI;
-import com.alibaba.mobileim.contact.IYWContactService;
+
 import com.alibaba.wxlib.util.SysUtil;
+
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * SDK
@@ -14,7 +19,6 @@ import com.alibaba.wxlib.util.SysUtil;
 public class InitHelper {
 
 	public static void initYWSDK(Application application){
-
 		//todo 只在主进程进行云旺SDK的初始化!!!
 		if(SysUtil.isMainProcess()){
 			//TODO 注意：--------------------------------------
@@ -26,16 +30,32 @@ public class InitHelper {
 			//［IM定制初始化］，如果不需要定制化，可以去掉此方法的调用
 			//todo 注意：由于增加全局初始化，该配置需最先执行！
 
-//			CustomSampleHelper.initCustom();
+			CustomSampleHelper.initCustom();
 
 			// ------[todo step2]-------------
 			//SDK初始化
 			LoginSampleHelper.getInstance().initSDK_Sample(application);
-			//自定义头像和昵称回调初始化(如果不需要自定义头像和昵称，则可以省去)
-			UserProfileSampleHelper.initProfileCallback();
+
 			//后期将使用Override的方式进行集中配置，请参照YWSDKGlobalConfigSample
 			YWAPI.enableSDKLogOutput(true);
+//			LeakCanary.install(application);
+		}
+	}
 
+	public static void initFeedBack(Application application) {
+		if(SysUtil.isMainProcess()) {
+			JSONObject jsonObject = new JSONObject();
+			try {
+				jsonObject.put("loginTime", "登录时间");
+				jsonObject.put("visitPath", "登陆，关于，反馈");
+
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			FeedbackAPI.initFeedback(application, YWAPI.getAppKey(), "反馈", null);
+			FeedbackAPI.setAppExtInfo(jsonObject);
+
+			FeedbackAPI.setCustomContact("", false);
 		}
 	}
 }

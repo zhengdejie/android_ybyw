@@ -326,6 +326,11 @@ public final class Http {
         public void onSuccess(T result){
             //showResponseMessage(response);
         }
+
+        public void onMessage(String result)
+        {
+
+        }
         /*
          * request 失败
          */
@@ -455,7 +460,19 @@ public final class Http {
             }
             if(response.canceled) return;
             if(success){
-                onSuccess(result.Data);
+                if(result.Data == null && result.ResponseStatus.Message != null)
+                {
+                    if(result.ResponseStatus.Message.contains("导游")) {
+                        onMessage(result.ResponseStatus.Message);
+                    }
+                    else
+                    {
+                        onSuccess(result.Data);
+                    }
+                }
+                else {
+                    onSuccess(result.Data);
+                }
             }else{
                 onFail(result.ResponseStatus.ErrorCode);
             }

@@ -126,12 +126,24 @@
                     style="@style/tab_text_style"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:drawableTop="@drawable/discoverygray"
+                    android:drawableTop="@drawable/my_ic_newsgray"
                     android:gravity="center"
-                    android:text="发现"
+                    android:text="消息"
                     android:textSize="12sp"
                     android:layout_marginTop="5dp"
                     android:textColor="@color/tab_normal_color" />
+                <TextView
+                    android:id="@+id/tv_unread"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/aliwx_topbar_icon_new"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/aliwx_unread_text_size"
+                    android:visibility="invisible"
+                    android:layout_gravity="right|top" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -161,18 +173,18 @@
                     android:layout_marginTop="5dp"
                     android:textColor="@color/tab_normal_color" />
 
-                <TextView
-                    android:id="@+id/tv_unread"
-                    android:layout_width="10dp"
-                    android:layout_height="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginRight="20dp"
-                    android:background="@drawable/aliwx_topbar_icon_new"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/aliwx_unread_text_size"
-                    android:visibility="invisible"
-                    android:layout_gravity="right|top" />
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_unread"-->
+                    <!--android:layout_width="10dp"-->
+                    <!--android:layout_height="10dp"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:layout_marginRight="20dp"-->
+                    <!--android:background="@drawable/aliwx_topbar_icon_new"-->
+                    <!--android:textColor="@android:color/white"-->
+                    <!--android:textSize="@dimen/aliwx_unread_text_size"-->
+                    <!--android:visibility="invisible"-->
+                    <!--android:layout_gravity="right|top" />-->
 
                 <!--</RelativeLayout>-->
 

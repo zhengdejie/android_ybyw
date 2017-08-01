@@ -59,6 +59,7 @@ public class ModifyPasswordActivity extends BaseActivity implements View.OnClick
                                 super.onSuccess(result);
                                 // 上传成功
                                 Auth.updateCurrentUser(result);
+                                Toast.makeText(ModifyPasswordActivity.this,"修改密码成功",Toast.LENGTH_SHORT).show();
                                 finish();
                             }
 

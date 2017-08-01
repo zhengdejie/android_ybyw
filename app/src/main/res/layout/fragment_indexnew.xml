@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent_ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#ffffffff">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar_indexnew" />
+
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/id_stickynavlayout_topview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <!--<android.support.v7.widget.RecyclerView-->
+                    <!--android:id="@+id/rv_category"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="10dp"-->
+                    <!--/>-->
+
+                <!--<View-->
+                    <!--android:id="@+id/view1"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1dp"-->
+                    <!--android:background="@color/bg_gray"-->
+                    <!--android:layout_below="@+id/rv_category"-->
+                    <!--/>-->
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewpager_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:layout_below="@+id/view1"
+                    android:layout_margin="10dp"
+                    />
+
+                <LinearLayout
+                    android:id="@+id/ll"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignBottom="@+id/viewpager_banner"
+                    android:layout_marginBottom="10dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:clickable="true"
+                        android:padding="5dp"
+                        android:src="@drawable/dot"
+                        />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:clickable="true"
+                        android:padding="5dp"
+                        android:src="@drawable/dot" />
+
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/bg_gray"
+                    android:layout_below="@+id/viewpager_banner"
+                    />
+
+                <!--<appframe.appframe.utils.ScrollListView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:layout_below="@+id/view2"-->
+                    <!--android:layout_marginBottom="45dp">-->
+                    <!---->
+                <!--</appframe.appframe.utils.ScrollListView>-->
+
+                <LinearLayout
+                    android:id="@+id/ll_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_below="@+id/view2"
+                    >
+
+                    <ImageView
+                        android:id="@+id/iv_ubang"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/icon_ubang"/>
+
+                    <ImageView
+                        android:id="@+id/iv_guide"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_margin="5dp"
+                        android:src="@drawable/icon_guide"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_below="@+id/ll_image">
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="20dp"
+
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_below="@+id/ll_image"
+                        android:background="#2aa0f3"
+                        />
+                    <TextView
+                        android:id="@+id/tv_titleid"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:textSize="14sp"
+                        android:text="订单推荐"
+                        android:layout_margin="10dp"
+                        android:layout_gravity="center"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/font_333"
+                        />
+                </LinearLayout>
+                <ListView
+                    android:id="@+id/rv_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="10dp"
+                    android:layout_below="@+id/ll_title"
+
+                    />
+                <!--android:layout_marginBottom="45dp"-->
+            </RelativeLayout>
+
+        </ScrollView>
+
+    </com.baoyz.widget.PullRefreshLayout>
+
+</LinearLayout>

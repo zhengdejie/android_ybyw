@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@color/white"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!--<include-->
         <!--android:id="@+id/title_bar"-->
@@ -18,7 +19,8 @@
         android:baselineAligned="false"
         android:background="@color/white"
         android:layout_below="@+id/title_bar"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="0dip"
@@ -176,20 +178,29 @@
 
     </LinearLayout>
 
-    <!--<View-->
-        <!--android:id="@+id/divider"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@color/divide"-->
-        <!--android:layout_below="@+id/tabtop"-->
-        <!--/>-->
 
+    <it.neokree.materialtabs.MaterialTabHost
+        android:id="@+id/tabHost"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_below="@+id/title_bar"
+        app:primaryColor="@color/blue"
+        app:accentColor="@color/white"
+        android:visibility="visible"
+         />
 
-        <appframe.appframe.widget.swiperefresh.SwipeRefreshX
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabHost" />
+
+    <appframe.appframe.widget.swiperefresh.SwipeRefreshX
             android:id="@+id/swipeRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/tabtop">
+            android:layout_below="@+id/tabtop"
+            android:visibility="gone">
 
             <ListView
                 android:id="@+id/proListView"
@@ -199,18 +210,20 @@
                 android:background="@color/white"
                 >
             </ListView>
-        </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
+    </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
 
-    <TextView
-        android:id="@+id/tv_empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="没有相关订单"
-        android:visibility="gone"/>
+    <!--<TextView-->
+        <!--android:id="@+id/tv_empty"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center"-->
+        <!--android:text="没有相关订单"-->
+        <!--android:visibility="gone"/>-->
+
     <include
         android:id="@+id/progress_bar"
-        layout="@layout/progressbar_loading" />
+        layout="@layout/progressbar_loading"
+        android:visibility="gone"/>
 
 
 </RelativeLayout>

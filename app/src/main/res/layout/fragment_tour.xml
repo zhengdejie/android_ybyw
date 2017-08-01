@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--<include-->
+    <!--android:id="@+id/title_bar"-->
+    <!--layout="@layout/titlebar" />-->
+
+    <!--<it.neokree.materialtabs.MaterialTabHost-->
+    <!--android:id="@+id/tabHost"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="48dp"-->
+    <!--android:layout_below="@+id/title_bar"-->
+    <!--app:primaryColor="@color/white"-->
+    <!--app:accentColor="@color/blue"-->
+    <!--android:visibility="visible"-->
+    <!--/>-->
+    <LinearLayout
+        android:id="@+id/tabtop"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:baselineAligned="false"
+        android:background="@color/white"
+        android:layout_below="@+id/title_bar"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_apply"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="申请中"
+                android:textSize="12sp"
+                android:textColor="@color/blue" />
+
+            <View
+                android:id="@+id/bottomLine_apply"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#56abe4"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_done"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="进行中"
+                android:textSize="12sp"
+                android:textColor="@color/font_999" />
+
+            <View
+                android:id="@+id/bottomLine_done"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#56abe4"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab_fail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="已完成"
+                android:textSize="12sp"
+                android:textColor="@color/font_999" />
+
+            <View
+                android:id="@+id/bottomLine_fail"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="#56abe4"
+                android:layout_alignParentBottom="true"
+                android:visibility="invisible"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                />
+
+        </RelativeLayout>
+
+
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/bg_gray"/>
+
+    <appframe.appframe.widget.swiperefresh.SwipeRefreshX
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <ListView
+            android:id="@+id/proListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            >
+        </ListView>
+    </appframe.appframe.widget.swiperefresh.SwipeRefreshX>
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="没有相关订单"
+        android:visibility="gone"/>
+
+    <include
+        android:id="@+id/progress_bar"
+        layout="@layout/progressbar_loading"
+        android:visibility="gone"/>
+
+</LinearLayout>

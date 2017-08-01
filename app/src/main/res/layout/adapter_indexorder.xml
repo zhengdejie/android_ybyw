@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
+    android:padding="10dp"
+    >
+    <!--android:background="@drawable/listview_item_pressed"-->
+    <com.android.volley.toolbox.NetworkImageView
+        android:id="@+id/niv_avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        android:visibility="invisible"
+        />
+    <ImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/maleavatar"
+        android:visibility="invisible"/>
+    <!--<TextView-->
+    <!--android:id="@+id/tv_fans"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="20dp"-->
+    <!--android:lines="1"-->
+    <!--android:ellipsize="end"-->
+    <!--android:text="粉丝"-->
+    <!--android:layout_below="@+id/iv_avatar"-->
+    <!--android:layout_toLeftOf="@+id/tv_content"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:layout_marginRight="10dp"-->
+    <!--android:layout_marginBottom="10dp"/>-->
+
+    <TextView
+        android:id="@+id/tv_focus"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@+id/rb_totalvalue"
+        android:layout_toLeftOf="@+id/tv_content"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/textview_clicked"
+        android:textColor="@drawable/textview_pressed"
+        android:text="+关注"
+        android:gravity="center"
+        android:textSize="12sp"
+
+        />
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:textSize="16sp"
+        android:text="标题标题标题标"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/txt_bounty"
+        android:layout_alignTop="@+id/iv_avatar" />
+
+    <TextView
+        android:id="@+id/txt_bounty"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:textSize="16sp"
+        android:text="￥0.01"/>
+
+    <ImageView
+        android:id="@+id/iv_gender"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/txt_title"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:src="@drawable/male"
+        android:layout_marginRight="5dp"/>
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:text="名字名字名字名字名字名字名字名字名字名字"
+        android:layout_below="@+id/txt_title"
+        android:layout_toRightOf="@+id/iv_gender"
+        android:gravity="center_vertical"
+        android:lines="1"
+        android:ellipsize="end"
+
+        />
+
+    <RatingBar
+        android:id="@+id/rb_totalvalue"
+        android:layout_width="50dp"
+        android:layout_height="10dp"
+        android:numStars="5"
+        android:isIndicator="true"
+        style="@style/myRatingBar"
+        android:layout_below="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        />
+
+
+    <TextView
+        android:id="@+id/tv_numofconforder"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:text="0次友帮|0粉丝"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_below="@+id/tv_pay"
+        android:textSize="12sp"
+        android:gravity="center_vertical"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/font_gray"/>
+
+    <TextView
+        android:id="@+id/tv_pay"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:layout_alignParentRight="true"
+        android:text="已付"
+        android:textSize="12sp"
+        android:layout_below="@+id/txt_bounty"
+        android:textColor="@color/font_gray"
+        android:gravity="center_vertical"
+
+        />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:text="内内容内容内内内容内容内容内容容内内容内容内容内容容内内容内容内容内容容内内容内容内容内容容容内容容"
+        android:layout_below="@+id/tv_name"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_pay"
+        />
+
+    <GridView
+        android:id="@+id/gridview"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:horizontalSpacing="10dp"
+        android:numColumns="3"
+        android:scrollbars="none"
+        android:verticalSpacing="5dp"
+        android:layout_below="@+id/tv_content"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:layout_toLeftOf="@+id/tv_pay"
+        android:listSelector="@android:color/transparent"
+        android:focusable="false"
+        />
+
+    <TextView
+        android:id="@+id/txt_type"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textSize="10sp"
+        android:gravity="center_vertical"
+        android:text="我也不知道分哪类"
+        android:lines="1"
+        android:ellipsize="end"
+        android:textColor="@color/font_gray"
+        android:layout_below="@+id/gridview"
+        android:layout_toRightOf="@+id/iv_avatar"
+        android:paddingRight="20dp"/>
+
+    <TextView
+        android:id="@+id/txt_location"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:textSize="10sp"
+        android:lines="1"
+        android:ellipsize="end"
+        android:text="地址地址地址地址地址地址地地址地址地"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/gridview"
+        android:layout_toRightOf="@+id/txt_type"
+        android:textColor="@color/font_gray"/>
+
+    <appframe.appframe.widget.tagview.TagView
+        android:id="@+id/tv_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lineMargin="5dp"
+        app:tagMargin="3dp"
+        app:textPaddingBottom="3dp"
+        app:textPaddingLeft="10dp"
+        app:textPaddingRight="10dp"
+        app:textPaddingTop="3dp"
+        android:layout_below="@+id/txt_type"
+        android:layout_toRightOf="@+id/iv_avatar"
+        />
+
+    <!--<com.android.volley.toolbox.NetworkImageView-->
+    <!--android:id="@+id/iv_avatar"-->
+    <!--android:layout_width="60dp"-->
+    <!--android:layout_height="60dp"-->
+    <!--android:layout_marginTop= "5dp"-->
+    <!--android:layout_marginLeft= "5dp"-->
+    <!--android:layout_marginRight= "5dp"-->
+    <!--android:src="@drawable/default_avatar"-->
+    <!--/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_name"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="60dp"-->
+    <!--android:gravity="center"-->
+    <!--android:textSize="14sp"-->
+    <!--android:lines="2"-->
+    <!--android:ellipsize="end"-->
+    <!--android:text="昵称昵称昵称昵称昵称昵称昵称"-->
+    <!--android:layout_below="@+id/iv_avatar"-->
+    <!--android:layout_alignLeft="@+id/iv_avatar"-->
+    <!--android:layout_alignRight="@+id/iv_avatar"-->
+    <!--/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/txt_title"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:textSize="14sp"-->
+    <!--android:text="标题标题标题标"-->
+    <!--android:lines="2"-->
+    <!--android:ellipsize="end"-->
+    <!--android:layout_toRightOf="@+id/iv_avatar"-->
+    <!--android:layout_toLeftOf="@+id/tv_time"-->
+    <!--android:layout_alignTop="@+id/iv_avatar"-->
+    <!--/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_time"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="20dp"-->
+    <!--android:textColor="@color/font_gray"-->
+    <!--android:text="2015-2-8 18:30:25"-->
+    <!--android:textSize="14sp"-->
+    <!--android:layout_marginLeft="5dp"-->
+    <!--android:layout_marginRight="5dp"-->
+    <!--android:layout_alignTop="@+id/iv_avatar"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--/>-->
+
+    <!--<RatingBar-->
+    <!--android:id="@+id/rb_totalvalue"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="20dp"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:numStars="5"-->
+    <!--android:isIndicator="true"-->
+    <!--style="?android:attr/ratingBarStyleSmall"-->
+    <!--android:layout_below="@+id/txt_title"-->
+    <!--android:layout_alignLeft="@+id/txt_title"-->
+
+    <!--/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_numofconforder"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="友帮了1次"-->
+    <!--android:textSize="14sp"-->
+    <!--android:gravity="center"-->
+    <!--android:layout_alignRight="@+id/txt_title"-->
+    <!--android:layout_toRightOf="@+id/rb_totalvalue"-->
+    <!--android:layout_below="@+id/txt_title"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/txt_type"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="20dp"-->
+    <!--android:textSize="14sp"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:text="类别类别类别类别类别类别类别类别"-->
+    <!--android:lines="1"-->
+    <!--android:ellipsize="end"-->
+    <!--android:layout_toLeftOf="@+id/txt_bounty"-->
+    <!--android:layout_below="@+id/rb_totalvalue"-->
+    <!--android:layout_alignLeft="@+id/txt_title" />-->
+
+
+    <!--<TextView-->
+    <!--android:id="@+id/txt_location"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="20dp"-->
+    <!--android:textSize="14sp"-->
+    <!--android:lines="1"-->
+    <!--android:ellipsize="end"-->
+    <!--android:text="地址地址地址地址地址地址地地址地址地"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:layout_below="@+id/txt_type"-->
+    <!--android:layout_toLeftOf="@+id/tv_pay"-->
+    <!--android:layout_alignLeft="@+id/txt_title" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/txt_tag"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="20dp"-->
+    <!--android:textSize="14sp"-->
+    <!--android:lines="1"-->
+    <!--android:ellipsize="end"-->
+    <!--android:text="标签标签标签标签标签标签标签标签标签"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:layout_below="@+id/txt_location"-->
+    <!--android:layout_toLeftOf="@+id/tv_pay"-->
+    <!--android:layout_alignLeft="@+id/txt_title" />-->
+
+
+    <!--<TextView-->
+    <!--android:id="@+id/txt_bounty"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="60dp"-->
+    <!--android:textSize="20sp"-->
+    <!--android:text="$4000"-->
+    <!--android:lines="1"-->
+    <!--android:ellipsize="end"-->
+    <!--android:gravity="center"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_toRightOf="@+id/txt_title"-->
+    <!--android:layout_alignLeft="@+id/tv_time"-->
+    <!--android:layout_marginRight="5dp"-->
+    <!--android:layout_below="@+id/tv_time"/>-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_pay"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="20dp"-->
+    <!--android:textSize="14sp"-->
+    <!--android:gravity="center"-->
+    <!--android:text="未支付"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_alignLeft="@+id/tv_time"-->
+    <!--android:layout_marginRight="5dp"-->
+    <!--android:layout_below="@+id/txt_bounty"/>-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:background="@color/divide"-->
+    <!--android:layout_below="@+id/tv_name"-->
+    <!--android:id="@+id/view" />-->
+
+    <!--&lt;!&ndash;<Button&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/btn_estimate"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_alignParentRight="true"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:text="评价"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="14sp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:focusable="false"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_below="@+id/view"&ndash;&gt;-->
+    <!--&lt;!&ndash;/>&ndash;&gt;-->
+    <!--<GridView-->
+    <!--android:id="@+id/gridview"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="70dp"-->
+    <!--android:layout_marginTop="10dp"-->
+    <!--android:horizontalSpacing="3dp"-->
+    <!--android:numColumns="3"-->
+    <!--android:scrollbars="none"-->
+    <!--android:verticalSpacing="5dp"-->
+    <!--android:layout_below="@+id/view"-->
+    <!--android:visibility="gone">-->
+    <!--</GridView>-->
+    <!--<LinearLayout-->
+    <!--android:id="@+id/ll_button"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="55dp"-->
+    <!--android:orientation="horizontal"-->
+    <!--android:layout_below="@+id/gridview"-->
+    <!-->-->
+
+    <!--<RelativeLayout-->
+
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1">-->
+    <!--<Button-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:id="@+id/btn_finish"-->
+    <!--android:text="支付"-->
+    <!--android:textSize="14sp"-->
+    <!--android:focusable="false"-->
+    <!--android:visibility="gone"-->
+    <!--/>-->
+    <!--</RelativeLayout>-->
+    <!--<RelativeLayout-->
+
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1">-->
+    <!--<Button-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:id="@+id/btn_candidate"-->
+    <!--android:text="候选接单人"-->
+    <!--android:textSize="14sp"-->
+    <!--android:focusable="false"-->
+    <!--android:visibility="gone"-->
+    <!--/>-->
+    <!--</RelativeLayout>-->
+    <!--<RelativeLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="1">-->
+
+    <!--<Button-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:id="@+id/btn_estimate"-->
+    <!--android:text="评价"-->
+    <!--android:textSize="14sp"-->
+    <!--android:focusable="false"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--/>-->
+    <!--</RelativeLayout>-->
+
+    <!--</LinearLayout>-->
+
+
+</RelativeLayout>

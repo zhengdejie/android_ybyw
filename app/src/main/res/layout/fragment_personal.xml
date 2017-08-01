@@ -123,7 +123,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/my_ic_balance"
-                        android:text="  余额： "
+                        android:text="  余额 "
                         android:gravity="center"
                         />
                </LinearLayout>
@@ -187,53 +187,53 @@
                 android:background="@color/divide"
                 />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:orientation="horizontal"
-                >
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="90dp"-->
+                <!--android:orientation="horizontal"-->
+                <!--&gt;-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:drawableTop="@drawable/my_ic_purchase"
-                    android:text="我购入的"
-                    android:gravity="center"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:textSize="16sp"
-                    android:background="@drawable/demo_setting_single_bg"
-                    android:id="@+id/tv_purchase" />
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:drawableTop="@drawable/my_ic_purchase"-->
+                    <!--android:text="我购入的"-->
+                    <!--android:gravity="center"-->
+                    <!--android:paddingTop="10dp"-->
+                    <!--android:paddingBottom="10dp"-->
+                    <!--android:textSize="16sp"-->
+                    <!--android:background="@drawable/demo_setting_single_bg"-->
+                    <!--android:id="@+id/tv_purchase" />-->
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:background="@color/divide"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    />
-                <TextView
-                    android:id="@+id/tv_sell"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:drawableTop="@drawable/my_ic_sell"
-                    android:text="我出售的"
-                    android:gravity="center"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:textSize="16sp"
-                    android:background="@drawable/demo_setting_single_bg"
-                    />
+                <!--<View-->
+                    <!--android:layout_width="1dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@color/divide"-->
+                    <!--android:layout_marginTop="10dp"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--/>-->
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_sell"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:drawableTop="@drawable/my_ic_sell"-->
+                    <!--android:text="我出售的"-->
+                    <!--android:gravity="center"-->
+                    <!--android:paddingTop="10dp"-->
+                    <!--android:paddingBottom="10dp"-->
+                    <!--android:textSize="16sp"-->
+                    <!--android:background="@drawable/demo_setting_single_bg"-->
+                    <!--/>-->
 
-            </LinearLayout>
+            <!--</LinearLayout>-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:background="@color/divide"
-                />
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="10dp"-->
+                <!--android:background="@color/divide"-->
+                <!--/>-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -310,6 +310,84 @@
 
             <View
                 android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divide"
+                />
+
+            <LinearLayout
+                android:id="@+id/ll_guideorder"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                >
+                <TextView
+                    android:id="@+id/tv_guide"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:drawableTop="@drawable/my_ic_guideorder"
+                    android:text="导游订单"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textSize="16sp"
+                    android:background="@drawable/demo_setting_single_bg"/>
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/divide"
+                    />
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textSize="16sp"
+                    android:background="@drawable/demo_setting_single_bg"
+                    />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/divide"
+                    />
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textSize="16sp"
+                    android:background="@drawable/demo_setting_single_bg"
+                    />
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/divide"
+                    />
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:textSize="16sp"
+                    android:background="@drawable/demo_setting_single_bg"
+                    />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
                 android:layout_height="10dp"
                 android:background="@color/divide"
                 />
@@ -344,27 +422,27 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:drawableTop="@drawable/my_ic_news"
-                        android:text="我的消息"
+                        android:drawableTop="@drawable/discovery"
+                        android:text="发现"
                         android:gravity="center"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:textSize="16sp"
                         android:background="@drawable/demo_setting_single_bg"/>
 
-                    <TextView
-                        android:id="@+id/tv_unread"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/aliwx_unread_hint"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/aliwx_unread_text_size"
-                        android:visibility="invisible"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="5dp"
-                         />
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_unread"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:background="@drawable/aliwx_unread_hint"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:textSize="@dimen/aliwx_unread_text_size"-->
+                        <!--android:visibility="invisible"-->
+                        <!--android:layout_alignParentTop="true"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:layout_marginTop="5dp"-->
+                        <!--android:layout_marginRight="5dp"-->
+                         <!--/>-->
 
                 </RelativeLayout>
 

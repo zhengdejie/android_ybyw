@@ -28,12 +28,12 @@ import com.alibaba.mobileim.channel.event.IWxCallback;
 import com.alibaba.mobileim.channel.util.YWLog;
 import com.alibaba.mobileim.fundamental.widget.YWAlertDialog;
 import com.alibaba.mobileim.login.YWLoginState;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXTextObject;
-import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 import com.umeng.analytics.MobclickAgent;
 
 
@@ -210,7 +210,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onSuccess(Object... arg0) {
                 Toast.makeText(SettingActivity.this, "退出成功", Toast.LENGTH_SHORT).show();
-                LoginSampleHelper.getInstance().setAutoLoginState(YWLoginState.idle);
+                LoginSampleHelper.getInstance().setAutoLoginState(YWLoginState.disconnect);
                 Auth.login(null, null);
                 MobclickAgent.onProfileSignOff();
                 // 进首页

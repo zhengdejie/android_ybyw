@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/titlebar" />
+
+    <RelativeLayout
+        android:id="@+id/rl_rating"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@+id/title_bar">
+
+        <TextView
+            android:id="@+id/tv_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="评分"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingRight="20dp"
+            />
+        <RatingBar
+            android:id="@+id/rb_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1"
+            android:layout_toRightOf="@+id/tv_rating"
+            />
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/bg_gray"
+            android:layout_below="@+id/rb_rating"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rl_estimate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_rating">
+
+        <EditText
+            android:id="@+id/edit_content"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/editext_none"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:inputType="textMultiLine"
+            android:hint="请说说对导游的看法吧~"
+            android:textSize="14sp"
+            android:maxLength="140"
+            android:gravity="top"/>
+
+        <TextView
+            android:id="@+id/tv_contentcount"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:text="0/140"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:textColor="@color/font_999"
+            android:paddingRight="20dp"
+            android:layout_below="@+id/edit_content"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/bg_gray"
+        android:layout_below="@+id/rl_estimate"/>
+
+    <TextView
+        android:id="@+id/tv_estimate"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/textview_clicked"
+        android:textColor="@drawable/textview_pressed"
+        android:layout_margin="20dp"
+        android:text="评价"
+        android:gravity="center"
+        android:layout_below="@+id/view1"/>
+</RelativeLayout>

@@ -8,12 +8,14 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -71,9 +73,18 @@ public class UpdateAPKService extends Service{
                 switch (msg.what) {
                     case DOWN_OK:
                         // 下载完成，点击安装
-                        Uri uri = Uri.fromFile(FileUtil.updateFile);
+                        Uri uri = null;
+                        if(Build.VERSION.SDK_INT >=24)
+                        {
+                            uri = FileProvider.getUriForFile(UpdateAPKService.this, "appframe.appframe.android7.fileprovider", FileUtil.updateFile);
+                        }
+                        else
+                        {
+                            uri = Uri.fromFile(FileUtil.updateFile);
+                        }
+//                        Uri uri = Uri.fromFile(FileUtil.updateFile);
                         Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                         intent.setDataAndType(uri,
                                 "application/vnd.android.package-archive");
 

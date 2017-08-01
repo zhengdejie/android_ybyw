@@ -1,84 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_title"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_tophover"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:layout_below="@+id/id_stickynavlayout_topview">
+    android:background="@color/white">
 
-    <TextView
-        android:id="@+id/tv_help"
-        android:text="助人"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:layout_centerHorizontal="true"
-        android:padding="10dp"
-        />
-
-    <TextView
-        android:id="@+id/tv_recommand"
-        android:text="求助"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="60dp"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:padding="10dp"
-        android:layout_toLeftOf="@id/tv_help"
-        android:textColor="@color/black"
-        />
-
-    <TextView
-        android:id="@+id/tv_travel"
-        android:text="问答"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="60dp"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:padding="10dp"
-        android:layout_toRightOf="@id/tv_help"
-        android:textColor="@color/black"
-        />
-
-    <View
-        android:id="@+id/v_recommand"
-        android:layout_width="wrap_content"
-        android:layout_height="5dp"
-        android:background="@color/blue"
-        android:layout_below="@+id/tv_help"
-        android:layout_alignRight="@+id/tv_recommand"
-        android:layout_alignLeft="@+id/tv_recommand" />
-
-    <View
-        android:id="@+id/v_help"
-        android:layout_width="wrap_content"
-        android:layout_height="5dp"
-        android:background="@color/blue"
-        android:layout_below="@+id/tv_help"
-        android:layout_alignRight="@+id/tv_help"
-        android:layout_alignLeft="@+id/tv_help"
-        android:visibility="visible"/>
-
-    <View
-        android:id="@+id/v_travel"
-        android:layout_width="wrap_content"
-        android:layout_height="5dp"
-        android:background="@color/blue"
-        android:layout_below="@+id/tv_help"
-        android:layout_alignRight="@+id/tv_travel"
-        android:layout_alignLeft="@+id/tv_travel"
-        />
-
-    <View
+    <it.neokree.materialtabs.MaterialTabHost
+        android:id="@+id/tabHost"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/bg_gray"
-        android:layout_below="@+id/v_recommand"
+        android:layout_height="48dp"
+        android:layout_below="@+id/title_bar"
+        app:primaryColor="@color/blue"
+        app:accentColor="@color/white"
+        android:visibility="gone"
         />
 
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_tp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+        <TextView
+            android:id="@+id/tv_help"
+            android:text="助人"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_centerHorizontal="true"
+            android:padding="10dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_recommand"
+            android:text="求助"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="60dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:layout_toLeftOf="@id/tv_help"
+            android:textColor="@color/black"
+            />
+
+        <TextView
+            android:id="@+id/tv_travel"
+            android:text="问答"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:layout_toRightOf="@id/tv_help"
+            android:textColor="@color/black"
+            />
+
+        <View
+            android:id="@+id/v_recommand"
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:background="@color/blue"
+            android:layout_below="@+id/tv_help"
+            android:layout_alignRight="@+id/tv_recommand"
+            android:layout_alignLeft="@+id/tv_recommand" />
+
+        <View
+            android:id="@+id/v_help"
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:background="@color/blue"
+            android:layout_below="@+id/tv_help"
+            android:layout_alignRight="@+id/tv_help"
+            android:layout_alignLeft="@+id/tv_help"
+            android:visibility="visible"/>
+
+        <View
+            android:id="@+id/v_travel"
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:background="@color/blue"
+            android:layout_below="@+id/tv_help"
+            android:layout_alignRight="@+id/tv_travel"
+            android:layout_alignLeft="@+id/tv_travel"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/bg_gray"
+            android:layout_below="@+id/v_recommand"
+            />
+    </RelativeLayout>
+
+    <appframe.appframe.widget.CustomerViewPager.WrapContentHeightViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tabHost"
+        android:visibility="visible">
+
+    </appframe.appframe.widget.CustomerViewPager.WrapContentHeightViewPager>
+    <!--<android.support.v4.view.ViewPager-->
+        <!--android:id="@+id/pager"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="800dp"-->
+        <!--android:layout_below="@+id/tabHost"-->
+        <!--android:visibility="gone"/>-->
+
+
+
+    <appframe.appframe.widget.filter.DropDownMenu
+        android:id="@+id/dropDownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@id/mFilterContentView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textSize="22sp"
+            android:visibility="gone"/>
+    </appframe.appframe.widget.filter.DropDownMenu>
+
+    <LinearLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:layout_below="@+id/rl_tp"
+        android:visibility="gone"
+        >
+
+        <!--<appframe.appframe.widget.dropdownmenu.DropdownButton-->
+        <!--android:id="@+id/chooseType"-->
+        <!--android:layout_width="0px"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1" />-->
+
+        <!--<View-->
+        <!--android:layout_width="0.5dp"-->
+        <!--android:layout_height="18dp"-->
+        <!--android:background="#dddddd" />-->
+
+        <appframe.appframe.widget.dropdownmenu.DropdownButton
+            android:id="@+id/chooseMulti"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="18dp"
+            android:background="#dddddd" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownButton
+            android:id="@+id/chooseMoney"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="18dp"
+            android:background="#dddddd" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownButton
+            android:id="@+id/chooseSelect"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/question_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="gone"
+
+        >
+
+        <appframe.appframe.widget.dropdownmenu.DropdownButton
+            android:id="@+id/chooseQuestionMoney"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="18dp"
+            android:background="#dddddd" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownButton
+            android:id="@+id/chooseQuestionStatus"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="18dp"
+            android:background="#dddddd" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownButton
+            android:id="@+id/chooseQuestionSelect"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/drowdownframe"
+        android:layout_below="@+id/tabs"
+        android:visibility="gone">
+
+        <!--<ListView-->
+        <!--android:id="@+id/listView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:footerDividersEnabled="false" />-->
+
+        <View
+            android:id="@+id/mask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80000000"
+            />
+
+
+        <appframe.appframe.widget.dropdownmenu.DropdownListView
+            android:id="@+id/dropdownMulti"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownListView
+            android:id="@+id/dropdownMoney"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownListView
+            android:id="@+id/dropdownSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownListView
+            android:id="@+id/dropdownQeustionMoney"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownListView
+            android:id="@+id/dropdownQuestionStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <appframe.appframe.widget.dropdownmenu.DropdownListView
+            android:id="@+id/dropdownQuestionSelect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </RelativeLayout>
+
+</LinearLayout>

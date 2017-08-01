@@ -74,7 +74,7 @@
                 android:src="@color/blue"
                 app:civ_border_width="2dp"
                 app:civ_border_color="@color/white"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true" />
 
 
 

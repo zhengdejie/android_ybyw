@@ -162,28 +162,34 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                                         try {
                                             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                                             imm.hideSoftInputFromWindow(password.getWindowToken(), 0); //强制隐藏键盘
-
-                                            contactsList = UploadUtils.uploadContact(RegisterActivity.this);
                                             Auth.login(result.Token, result.User);
 
-                                            Http.request(RegisterActivity.this, API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
-                                                    "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
-                                                @Override
-                                                public void onSuccess(String result) {
-                                                    super.onSuccess(result);
-                                                    SplashActivity.startRootActivity(RegisterActivity.this);
-                                                    SMSSDK.unregisterEventHandler(eh);
-                                                    progress_bar.setVisibility(View.GONE);
-                                                }
+                                            SplashActivity.startRootActivity(RegisterActivity.this);
+                                            SMSSDK.unregisterEventHandler(eh);
+                                            progress_bar.setVisibility(View.GONE);
 
-                                                @Override
-                                                public void onFail(String code) {
-                                                    super.onFail(code);
-//                                                    Toast.makeText(RegisterActivity.this,code,Toast.LENGTH_SHORT).show();
-                                                    SplashActivity.startRootActivity(RegisterActivity.this);
-                                                    progress_bar.setVisibility(View.GONE);
-                                                }
-                                            });
+
+//                                            contactsList = UploadUtils.uploadContact(RegisterActivity.this);
+//                                            Auth.login(result.Token, result.User);
+//
+//                                            Http.request(RegisterActivity.this, API.USER_CONTACT_UPLOAD, Http.map("Contact", GsonHelper.getGson().toJson(contactsList),
+//                                                    "Id", String.valueOf(Auth.getCurrentUserId())), new Http.RequestListener<String>() {
+//                                                @Override
+//                                                public void onSuccess(String result) {
+//                                                    super.onSuccess(result);
+//                                                    SplashActivity.startRootActivity(RegisterActivity.this);
+//                                                    SMSSDK.unregisterEventHandler(eh);
+//                                                    progress_bar.setVisibility(View.GONE);
+//                                                }
+//
+//                                                @Override
+//                                                public void onFail(String code) {
+//                                                    super.onFail(code);
+////                                                    Toast.makeText(RegisterActivity.this,code,Toast.LENGTH_SHORT).show();
+//                                                    SplashActivity.startRootActivity(RegisterActivity.this);
+//                                                    progress_bar.setVisibility(View.GONE);
+//                                                }
+//                                            });
 
                                         } catch (Exception e) {
                                             e.printStackTrace();
@@ -229,27 +235,38 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     EventHandler eh=new EventHandler(){
-
-        @Override
         public void afterEvent(int event, int result, Object data) {
-
-            if (result == SMSSDK.RESULT_COMPLETE) {
-                //回调完成
-                if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
-                    //提交验证码成功
-                }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
-                    //获取验证码成功
-//                    SMSSDK.submitVerificationCode("86",et_mobile.getText().toString(),et_code.getText().toString());
-                }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
-                    //返回支持发送验证码的国家列表
-//                    HashMap<String,Object> phoneMap = (HashMap<String, Object>) data;
-//                    String country = (String) phoneMap.get("country");
-
+            if (data instanceof Throwable) {
+                Throwable throwable = (Throwable)data;
+                String msg = throwable.getMessage();
+                Toast.makeText(RegisterActivity.this, msg, Toast.LENGTH_SHORT).show();
+            } else {
+                if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+                    // 处理你自己的逻辑
                 }
-            }else{
-                ((Throwable)data).printStackTrace();
             }
         }
+
+//        @Override
+//        public void afterEvent(int event, int result, Object data) {
+//
+//            if (result == SMSSDK.RESULT_COMPLETE) {
+//                //回调完成
+//                if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+//                    //提交验证码成功
+//                }else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE){
+//                    //获取验证码成功
+////                    SMSSDK.submitVerificationCode("86",et_mobile.getText().toString(),et_code.getText().toString());
+//                }else if (event ==SMSSDK.EVENT_GET_SUPPORTED_COUNTRIES){
+//                    //返回支持发送验证码的国家列表
+////                    HashMap<String,Object> phoneMap = (HashMap<String, Object>) data;
+////                    String country = (String) phoneMap.get("country");
+//
+//                }
+//            }else{
+//                ((Throwable)data).printStackTrace();
+//            }
+//        }
     };
 
 //    private String getPhoneNumber(){
@@ -295,7 +312,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         MobclickAgent.onPause(this);
     }
 
-//    @Override
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SMSSDK.unregisterEventHandler(eh);
+    }
+
+    //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
 //        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 //
